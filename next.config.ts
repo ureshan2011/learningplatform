@@ -47,12 +47,15 @@ const firebasePublicEnv: Record<string, string> = {
     process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || injected.messagingSenderId || "",
   NEXT_PUBLIC_FIREBASE_APP_ID:
     process.env.NEXT_PUBLIC_FIREBASE_APP_ID || injected.appId || "",
-  // The injected blob usually omits the RTDB URL. Fall back to the default
-  // instance name Firebase creates for a project.
+  // Deliberately NOT guessed. Only databases in us-central1 use
+  // `<name>.firebaseio.com`; every other region uses
+  // `<name>.<region>.firebasedatabase.app`. Guessing the wrong host points the
+  // app at a database that does not exist and fails silently at runtime, which
+  // is far worse than an empty value — nothing uses RTDB until live classes are
+  // added, and an empty value simply reports the feature as unconfigured.
+  // Copy the real URL from the Firebase console when that time comes.
   NEXT_PUBLIC_FIREBASE_DATABASE_URL:
-    process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ||
-    injected.databaseURL ||
-    (projectId ? `https://${projectId}-default-rtdb.firebaseio.com` : ""),
+    process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || injected.databaseURL || "",
 };
 
 const nextConfig: NextConfig = {

@@ -10,8 +10,10 @@ It's free. Firebase needs a card on file for the Blaze plan, but you stay at
 
 ## Part 1 — Switch on three things in Firebase
 
-Go to [console.firebase.google.com](https://console.firebase.google.com) and
-open your project.
+Your project is **`srizone-1fc76`** (project number `272944098194`), already
+pinned in `.firebaserc`. Open it here:
+
+**https://console.firebase.google.com/project/srizone-1fc76/overview**
 
 ### 1.1 Phone sign-in
 
@@ -40,6 +42,11 @@ reads Firestore only from the server, so nothing is blocked.
 
 Not used until live classes arrive, but making it now saves a trip back.
 
+When you get there, copy the URL shown at the top of the Data tab — it will look
+like `https://srizone-1fc76-default-rtdb.asia-southeast1.firebasedatabase.app`.
+Paste it to me then. Only us-central1 databases use the older
+`.firebaseio.com` form, so this URL cannot be guessed from the project ID.
+
 ### 1.4 Blaze plan
 
 Bottom-left, click the **Spark** badge → **Upgrade** → **Blaze** → add a card.
@@ -62,7 +69,7 @@ Then, in order:
 | Root directory | `/` (leave as-is) |
 | Live branch | **`main`** |
 | Automatic rollouts | **On** |
-| Backend name | anything, e.g. `ictclass` |
+| Backend name | **`ictclass`** — must match `firebase.json` |
 | Region | **asia-south1 (Mumbai)** |
 | Firebase web app | **Create a new one** — it wires the config in for you |
 
