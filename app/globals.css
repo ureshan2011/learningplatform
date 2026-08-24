@@ -15,6 +15,20 @@
   --color-success: #22c55e;
   --color-danger: #ef4444;
   --font-sans: ui-sans-serif, system-ui, "Segoe UI", "Noto Sans Sinhala", sans-serif;
+
+  /*
+   * "Awaken" light palette — trial run on the landing page only. Additive:
+   * existing --color-* tokens above are untouched so every other page keeps
+   * the dark theme until we decide to roll this out further.
+   */
+  --color-awaken-bg: #fafbf9;
+  --color-awaken-card: #ffffff;
+  --color-awaken-line: #ecedf1;
+  --color-awaken-ink: #15171f;
+  --color-awaken-ink-soft: #5b5f6b;
+  --color-awaken-accent: #ea580c;
+  --color-awaken-accent-soft: #fff1e8;
+  --color-awaken-deep: #1e2340;
 }
 
 :root {
