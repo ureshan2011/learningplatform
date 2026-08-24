@@ -23,6 +23,20 @@ Then, on the same Phone panel, expand **Phone numbers for testing** and add your
 own number with a code like `123456`. Real SMS costs money; test numbers don't.
 Delete it before real students sign up.
 
+### 1.1b Allow SMS to Sri Lanka
+
+**Authentication → Settings → SMS Region Policy → Allow → tick Sri Lanka → Save**
+
+New projects block SMS to every country by default, as protection against
+SMS-pumping fraud. Without this you get:
+
+> `Firebase: SMS unable to be sent until this region enabled by the app
+> developer. (auth/operation-not-allowed)`
+
+**Allow Sri Lanka only.** Every student is in Sri Lanka, and an open allowlist
+lets an attacker pump verification requests to expensive destinations on your
+card. Keeping the list to one country caps that risk at nearly nothing.
+
 ### 1.2 Firestore
 
 **Build → Firestore Database → Create database**
@@ -171,7 +185,8 @@ Or paste `storage.rules` into the console under **Storage → Rules → Publish*
 
 | Problem | Cause |
 | --- | --- |
-| No SMS when signing in | Domain missing from Authentication → Authorized domains |
+| No SMS, no error at all | Domain missing from Authentication → Authorized domains |
+| `SMS unable to be sent until this region enabled` | Sri Lanka not allowed in Authentication → Settings → SMS Region Policy |
 | Signed in but no teacher console | Someone else signed in first — use `make-teacher` |
 | Build fails in App Hosting | Check the build log; live branch must be `main` |
 | Site loads but no subjects | Click **Create my two subjects** on `/teacher` |

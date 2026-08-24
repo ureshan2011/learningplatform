@@ -62,6 +62,20 @@ Zoom, PayHere and R2 are each optional and detected at runtime by
 `503 not_configured` and pages render a "not set up yet" card. Keep this
 property — the app must always run with Firebase alone.
 
+## Phone auth gotchas
+
+Two separate settings, both under Authentication, both fail confusingly:
+
+- **Authorized domains** — the live hostname must be listed, or sign-in fails
+  silently with no SMS and no error.
+- **SMS Region Policy** — must allow Sri Lanka, or you get
+  `auth/operation-not-allowed`. Keep the allowlist to Sri Lanka only: an open
+  list invites SMS-pumping fraud against the billing account.
+
+SMS is billed per verification on Blaze. Session cookies last 5 days
+(`lib/auth/session.ts`) partly to keep that cost down — shortening them
+multiplies the SMS bill.
+
 ## Bootstrapping
 
 The first person to sign in on an empty project becomes the teacher
