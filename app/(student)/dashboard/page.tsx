@@ -28,6 +28,7 @@ export default async function DashboardPage() {
   const sessions = await listUpcomingSessions(activeSubjectIds);
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
   const cardPaymentsOn = payhereConfigured();
+  const isStaff = user.role === "teacher" || user.role === "admin";
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-8">
@@ -40,6 +41,26 @@ export default async function DashboardPage() {
           Account
         </Link>
       </header>
+
+      {/*
+        The teacher console had no link anywhere, so the owner had to know to
+        type /teacher. Somewhere you can only reach by guessing the URL may as
+        well not exist.
+      */}
+      {isStaff ? (
+        <Link
+          href="/teacher"
+          className="mt-6 flex items-center justify-between gap-4 rounded-xl border border-[--color-brand]/40 bg-[--color-brand]/10 p-4"
+        >
+          <span>
+            <span className="block font-semibold text-[--color-brand]">Teacher console</span>
+            <span className="block text-sm text-white/65">
+              Schedule classes, approve payments, manage subjects
+            </span>
+          </span>
+          <span aria-hidden className="text-xl text-[--color-brand]">→</span>
+        </Link>
+      ) : null}
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Next classes</h2>

@@ -10,6 +10,13 @@ import { MAX_DEVICES_PER_USER, type User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+const ROLE_LABEL: Record<string, string> = {
+  student: "Student",
+  teacher: "Teacher — full access",
+  admin: "Admin — full access",
+  parent: "Parent",
+};
+
 export default async function AccountPage() {
   const session = await getSessionUser();
   if (!session) redirect("/signin");
@@ -32,6 +39,8 @@ export default async function AccountPage() {
 
       <dl className="mt-6 space-y-3 rounded-xl border border-white/10 bg-white/[0.03] p-5 text-sm">
         <Row label="Name" value={user.name} />
+        {/* Shown so "why can't I see the teacher console?" is answerable at a glance. */}
+        <Row label="Role" value={ROLE_LABEL[user.role] ?? user.role} />
         <Row label="Phone" value={formatLocal(user.phone)} />
         {user.school ? <Row label="School" value={user.school} /> : null}
         <Row label="Referral code" value={user.referralCode} />

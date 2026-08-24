@@ -1,7 +1,7 @@
 import "server-only";
 
 import { randomBytes } from "node:crypto";
-import { adminAuth, col } from "@/lib/firebase/admin";
+import { adminAuth, adminDb, col } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
 import type { Role, User } from "@/lib/types";
 
@@ -32,8 +32,16 @@ export async function provisionUser(params: {
 
   if (snap.exists) {
     const existing = snap.data() as User;
-    await ensureClaims(params.uid, existing.role, existing.tenantId);
-    return existing;
+
+    // Self-heal: a platform with no teacher at all cannot be administered, and
+    // the owner would be locked out of their own site with no way back in
+    // except a command line. If nobody holds the role, whoever is signing in
+    // claims it. Once a teacher exists this never fires again.
+    const claimed = await claimTeacherIfVacant(params.uid);
+    const role = claimed ?? existing.role;
+
+    await ensureClaims(params.uid, role, existing.tenantId);
+    return { ...existing, role };
   }
 
   const role: Role = (await isFirstUser()) ? "teacher" : "student";
@@ -71,6 +79,37 @@ export async function provisionUser(params: {
 async function isFirstUser(): Promise<boolean> {
   const existing = await col.users().limit(1).get();
   return existing.empty;
+}
+
+/**
+ * Promotes this user to teacher if the platform has no teacher or admin.
+ *
+ * Covers the case `isFirstUser` cannot: an account created before that rule
+ * existed, or a first sign-in that half-failed and left a student record. The
+ * owner would otherwise be permanently locked out of their own teacher console
+ * with no browser-only way back.
+ *
+ * Runs in a transaction so two simultaneous sign-ins on an empty platform
+ * cannot both claim the role. Returns the new role, or null if a teacher
+ * already existed and nothing changed.
+ *
+ * Single-field `in` query, so it needs no composite index. Phase 4
+ * multi-tenancy will have to scope this by tenantId and add one.
+ */
+async function claimTeacherIfVacant(uid: string): Promise<Role | null> {
+  return adminDb().runTransaction(async (tx) => {
+    const staff = await tx.get(
+      col.users().where("role", "in", ["teacher", "admin"]).limit(1),
+    );
+    if (!staff.empty) return null;
+
+    const ref = col.users().doc(uid);
+    const snap = await tx.get(ref);
+    if (!snap.exists) return null;
+
+    tx.update(ref, { role: "teacher" });
+    return "teacher" as Role;
+  });
 }
 
 /** Writes claims only when they differ — every set costs a token refresh. */
