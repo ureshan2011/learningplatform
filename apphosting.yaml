@@ -20,6 +20,12 @@ runConfig:
   memoryMiB: 512
 
 env:
+  # The live site. PayHere's notify_url and Zoom's simulcast page_url are both
+  # built from this, so a wrong value means paid students never get unlocked.
+  - variable: NEXT_PUBLIC_APP_URL
+    value: https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app
+    availability: [BUILD, RUNTIME]
+
   # Realtime Database, Singapore. Set explicitly because it cannot be derived:
   # only us-central1 databases use `<name>.firebaseio.com`; every other region
   # uses `<name>.<region>.firebasedatabase.app`. A wrong host fails silently.
@@ -27,17 +33,6 @@ env:
   - variable: NEXT_PUBLIC_FIREBASE_DATABASE_URL
     value: https://srizone-1fc76-default-rtdb.asia-southeast1.firebasedatabase.app
     availability: [BUILD, RUNTIME]
-
-# ---------------------------------------------------------------------------
-# LATER: your public site address.
-#
-# Needed only once card payments or the Zoom simulcast are on — PayHere's
-# notify_url and Zoom's page_url are both built from it. Fill in the real
-# domain after your first deploy tells you what it is.
-# ---------------------------------------------------------------------------
-#  - variable: NEXT_PUBLIC_APP_URL
-#    value: https://your-app.web.app
-#    availability: [BUILD, RUNTIME]
 
 # ---------------------------------------------------------------------------
 # LATER: live classes (Zoom).

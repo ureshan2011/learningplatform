@@ -69,8 +69,8 @@ Then, in order:
 | Root directory | `/` (leave as-is) |
 | Live branch | **`main`** |
 | Automatic rollouts | **On** |
-| Backend name | **`ictclass`** — must match `firebase.json` |
-| Region | **asia-south1 (Mumbai)** |
+| Backend name | **`learningplatform`** — matches `firebase.json` |
+| Region | **asia-southeast1 (Singapore)** — same region as the Realtime Database |
 | Firebase web app | **Create a new one** — it wires the config in for you |
 
 Click **Finish and deploy**. First build takes 3–5 minutes.
@@ -85,9 +85,15 @@ rebuilds itself.
 
 ### 3.1 Authorize your domain
 
-Copy your new URL, then:
+**https://console.firebase.google.com/project/srizone-1fc76/authentication/settings**
 
-**Authentication → Settings → Authorized domains → Add domain** → paste it.
+→ **Authorized domains** → **Add domain** → paste exactly:
+
+```
+learningplatform--srizone-1fc76.asia-southeast1.hosted.app
+```
+
+No `https://`, no trailing slash — just the hostname.
 
 Without this, phone sign-in fails **silently** — no error, no SMS. It is the
 single most common thing to get stuck on.
@@ -99,7 +105,7 @@ single most common thing to get stuck on.
    you. Everyone after is a student.
 2. Go to `/teacher` and click **Create my two subjects** (O/L ICT and A/L ICT).
 
-Done. Your site is live.
+Your site: **https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app**
 
 ---
 

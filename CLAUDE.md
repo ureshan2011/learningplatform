@@ -21,9 +21,10 @@ The owner is a teacher, not a developer.
 | Firebase project number | `272944098194` |
 | GitHub repo | `ureshan2011/learningplatform` |
 | Live branch | `main` (the only branch) |
-| Hosting | Firebase App Hosting, auto-deploys on push to `main` |
+| Hosting | Firebase App Hosting backend `learningplatform`, asia-southeast1, auto-deploys on push to `main` |
 | Firestore region | asia-south1 (Mumbai) |
 | Realtime Database region | asia-southeast1 (Singapore) |
+| Live URL | `learningplatform--srizone-1fc76.asia-southeast1.hosted.app` |
 
 Firebase must stay on the **Blaze** plan — App Hosting requires it. Free within
 quotas.
