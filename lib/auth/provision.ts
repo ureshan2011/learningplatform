@@ -36,11 +36,13 @@ export async function provisionUser(params: {
     return existing;
   }
 
+  const role: Role = (await isFirstUser()) ? "teacher" : "student";
+
   const user: User = {
     uid: params.uid,
     tenantId: publicEnv.tenantId,
-    role: "student",
-    name: params.name?.trim() || "New student",
+    role,
+    name: params.name?.trim() || (role === "teacher" ? "Teacher" : "New student"),
     phone: params.phone,
     medium: "sinhala",
     devices: [],
@@ -52,6 +54,23 @@ export async function provisionUser(params: {
   await ref.set(user);
   await ensureClaims(user.uid, user.role, user.tenantId);
   return user;
+}
+
+/**
+ * Is this the very first person to sign in?
+ *
+ * On a brand-new project that is the teacher setting up their own platform, so
+ * they become the teacher automatically. Without this, becoming a teacher needs
+ * the Admin SDK from a command line, which means the whole setup requires a
+ * developer machine just to bootstrap one account.
+ *
+ * Safe because it only ever fires on a genuinely empty user collection: once
+ * anyone exists, every later sign-up is a student. Use
+ * `scripts/admin.mjs make-teacher` to promote anyone after that.
+ */
+async function isFirstUser(): Promise<boolean> {
+  const existing = await col.users().limit(1).get();
+  return existing.empty;
 }
 
 /** Writes claims only when they differ — every set costs a token refresh. */
