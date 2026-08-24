@@ -1,0 +1,96 @@
+rules_version = '2';
+
+// Posture: clients READ their own data; everything that grants access, moves
+// money, or awards XP is written ONLY by Cloud Functions / server routes via
+// the Admin SDK (which bypasses these rules). If a client can write it, a
+// student can forge it.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function uid() {
+      return request.auth.uid;
+    }
+
+    function isTeacher() {
+      return signedIn() && request.auth.token.role in ['teacher', 'admin'];
+    }
+
+    function sameTenant(doc) {
+      return doc.tenantId == request.auth.token.tenantId;
+    }
+
+    // ---- users ------------------------------------------------------------
+    match /users/{userId} {
+      allow read: if signedIn() && (
+        userId == uid()
+        || isTeacher()
+        // A parent may read the students they are linked to.
+        || (resource.data.parentUid == uid())
+      );
+
+      // Students may edit presentation fields only. Role, devices, phone,
+      // tenant and referral data are server-owned — those are access control.
+      allow update: if signedIn() && userId == uid()
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['name', 'school', 'district', 'medium']);
+
+      allow create, delete: if false;
+    }
+
+    // ---- subjects (public catalogue) --------------------------------------
+    match /subjects/{subjectId} {
+      allow read: if true;
+      allow write: if false; // teacher console writes through the Admin SDK
+    }
+
+    // ---- enrollments: readable by owner, never client-writable ------------
+    match /enrollments/{enrollmentId} {
+      allow read: if signedIn() && (resource.data.uid == uid() || isTeacher());
+      allow write: if false;
+    }
+
+    // ---- sessions ---------------------------------------------------------
+    match /sessions/{sessionId} {
+      // Metadata (title, time, topic) is readable so students see the
+      // timetable before paying. Join URLs are NOT stored here — they are
+      // minted per student per request by the server.
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    // ---- attendance -------------------------------------------------------
+    match /attendance/{recordId} {
+      allow read: if signedIn() && (resource.data.uid == uid() || isTeacher());
+      allow write: if false; // written from Zoom webhooks only
+    }
+
+    // ---- payments ---------------------------------------------------------
+    match /payments/{paymentId} {
+      allow read: if signedIn() && (resource.data.uid == uid() || isTeacher());
+      allow write: if false; // PayHere webhook / teacher approval, server-side
+    }
+
+    // ---- content ----------------------------------------------------------
+    match /content/{contentId} {
+      // Public items power the SEO funnel. Gated items are checked server-side
+      // before a signed R2 URL is issued, so metadata exposure is harmless.
+      allow read: if resource.data.isPublic == true || signedIn();
+      allow write: if false;
+    }
+
+    // ---- progress / gamification -----------------------------------------
+    match /progress/{progressId} {
+      allow read: if signedIn() && (resource.data.uid == uid() || isTeacher());
+      allow write: if false; // XP is server-awarded; client writes = cheating
+    }
+
+    // Anything not matched above is denied.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

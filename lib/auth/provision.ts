@@ -1,0 +1,63 @@
+import "server-only";
+
+import { randomBytes } from "node:crypto";
+import { adminAuth, col } from "@/lib/firebase/admin";
+import { publicEnv } from "@/lib/env";
+import type { Role, User } from "@/lib/types";
+
+/** Ambiguous characters (0/O, 1/I) are excluded — codes get read aloud and mistyped. */
+const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+function newReferralCode(): string {
+  const bytes = randomBytes(6);
+  return Array.from(bytes, (b) => CODE_ALPHABET[b % CODE_ALPHABET.length]).join("");
+}
+
+/**
+ * Creates the Firestore user on first sign-in and mirrors role + tenant into
+ * custom claims.
+ *
+ * Claims matter because security rules cannot afford a document read on every
+ * evaluation — `request.auth.token.role` is free, a `get()` in rules is billed
+ * and slow.
+ */
+export async function provisionUser(params: {
+  uid: string;
+  phone: string;
+  name?: string;
+  referredBy?: string;
+}): Promise<User> {
+  const ref = col.users().doc(params.uid);
+  const snap = await ref.get();
+
+  if (snap.exists) {
+    const existing = snap.data() as User;
+    await ensureClaims(params.uid, existing.role, existing.tenantId);
+    return existing;
+  }
+
+  const user: User = {
+    uid: params.uid,
+    tenantId: publicEnv.tenantId,
+    role: "student",
+    name: params.name?.trim() || "New student",
+    phone: params.phone,
+    medium: "sinhala",
+    devices: [],
+    referralCode: newReferralCode(),
+    ...(params.referredBy ? { referredBy: params.referredBy } : {}),
+    createdAt: Date.now(),
+  };
+
+  await ref.set(user);
+  await ensureClaims(user.uid, user.role, user.tenantId);
+  return user;
+}
+
+/** Writes claims only when they differ — every set costs a token refresh. */
+async function ensureClaims(uid: string, role: Role, tenantId: string): Promise<void> {
+  const record = await adminAuth().getUser(uid);
+  const current = record.customClaims ?? {};
+  if (current.role === role && current.tenantId === tenantId) return;
+  await adminAuth().setCustomUserClaims(uid, { ...current, role, tenantId });
+}

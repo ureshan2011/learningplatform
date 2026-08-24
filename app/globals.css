@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Dark-first: students study at night on cheap Android screens,
+ * and a dark UI costs less battery on OLED.
+ */
+@theme {
+  --color-ink: #0b1020;
+  --color-ink-soft: #141b33;
+  --color-ink-line: #232c4d;
+  --color-paper: #f7f8fc;
+  --color-brand: #ffb703;
+  --color-brand-deep: #fb8500;
+  --color-accent: #4cc9f0;
+  --color-success: #22c55e;
+  --color-danger: #ef4444;
+  --font-sans: ui-sans-serif, system-ui, "Segoe UI", "Noto Sans Sinhala", sans-serif;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Sinhala renders with taller glyphs than Latin; give lines room to breathe. */
+.si,
+[lang="si"] {
+  line-height: 1.85;
+}
+
+/* Live Arena and chat panes scroll internally, never the page body. */
+.scroll-pane {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}

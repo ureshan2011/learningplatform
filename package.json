@@ -1,0 +1,51 @@
+{
+  "name": "learningplatform",
+  "version": "1.0.0",
+  "description": "Interactive online tuition platform for Sri Lankan O/L and A/L ICT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ureshan2011/learningplatform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/ureshan2011/learningplatform/issues"
+  },
+  "homepage": "https://github.com/ureshan2011/learningplatform#readme",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1116.0",
+    "@aws-sdk/s3-request-presigner": "^3.1116.0",
+    "clsx": "^2.1.1",
+    "firebase": "^12.18.0",
+    "firebase-admin": "^14.3.0",
+    "hls.js": "^1.7.1",
+    "jose": "^6.2.10",
+    "next": "^16.3.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "server-only": "^0.0.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "autoprefixer": "^10.5.4",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.2",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  },
+  "private": true
+}

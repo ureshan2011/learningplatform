@@ -1,0 +1,75 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "live": {
+      "$sessionId": {
+        "chat": {
+          ".read": "auth != null",
+          ".indexOn": ["at"],
+          "$messageId": {
+            ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid",
+            ".validate": "newData.hasChildren(['uid', 'name', 'text', 'at']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 200 && newData.child('at').val() === now && newData.parent().parent().child('rate').child(auth.uid).val() === now && (!root.child('live').child($sessionId).child('rate').child(auth.uid).exists() || root.child('live').child($sessionId).child('rate').child(auth.uid).val() < now - 5000)"
+          }
+        },
+
+        "rate": {
+          "$uid": {
+            ".write": "auth != null && $uid === auth.uid",
+            ".validate": "newData.isNumber() && newData.val() === now"
+          }
+        },
+
+        "presence": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && $uid === auth.uid",
+            ".validate": "newData.hasChildren(['name', 'at'])"
+          }
+        },
+
+        "reactions": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && $uid === auth.uid",
+            ".validate": "newData.hasChildren(['emoji', 'at']) && newData.child('at').val() === now && (!root.child('live').child($sessionId).child('reactions').child(auth.uid).child('at').exists() || root.child('live').child($sessionId).child('reactions').child(auth.uid).child('at').val() < now - 2000)"
+          }
+        },
+
+        "hands": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && $uid === auth.uid",
+            ".validate": "newData.hasChildren(['question', 'at']) && newData.child('question').isString() && newData.child('question').val().length <= 300"
+          }
+        },
+
+        "quiz": {
+          ".read": "auth != null",
+          ".write": false
+        },
+
+        "leaderboard": {
+          ".read": "auth != null",
+          ".write": false
+        },
+
+        "stats": {
+          ".read": "auth != null",
+          ".write": false
+        },
+
+        "answers": {
+          "$quizId": {
+            "$uid": {
+              ".read": "auth != null && $uid === auth.uid",
+              ".write": "auth != null && $uid === auth.uid && !data.exists()",
+              ".validate": "newData.hasChildren(['choice', 'msSinceShown']) && newData.child('msSinceShown').isNumber() && newData.child('msSinceShown').val() >= 0"
+            }
+          }
+        }
+      }
+    }
+  }
+}

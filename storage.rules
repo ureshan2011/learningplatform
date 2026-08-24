@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// Firebase Storage holds ONLY small user uploads (bank deposit slips).
+// Notes, past papers and recordings live in Cloudflare R2 — zero egress fees,
+// which is what keeps per-student cost near zero at Sri Lankan scale.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    match /slips/{userId}/{fileName} {
+      // A student uploads their own deposit slip and may re-read it.
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*|application/pdf');
+
+      allow delete: if false; // slips are payment evidence — keep the audit trail
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
