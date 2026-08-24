@@ -40,7 +40,7 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
           setState({
             kind: "error",
             message: messageForJoinError(data.reason ?? data.error),
-            reason: data.reason,
+            reason: data.reason ?? data.error,
           });
           return;
         }
@@ -111,6 +111,10 @@ function prefersHls(): boolean {
 
 function messageForJoinError(reason?: string): string {
   switch (reason) {
+    // Zoom has not been connected yet. Not an error the student caused, so do
+    // not word it as one.
+    case "not_configured":
+      return "Live classes are not set up yet. Your teacher is still getting things ready.";
     case "expired":
       return "Your subscription for this subject has ended. Renew to join the class.";
     case "not_enrolled":

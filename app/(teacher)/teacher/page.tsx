@@ -6,6 +6,8 @@ import { publicEnv } from "@/lib/env";
 import { formatLKR, formatSessionTime } from "@/lib/format";
 import { ScheduleSessionForm } from "@/components/teacher/ScheduleSessionForm";
 import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
+import { NotConfigured } from "@/components/ui/NotConfigured";
+import { zoomConfigured } from "@/lib/features";
 import type { ClassSession, Payment, SessionSecrets, User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +34,15 @@ export default async function TeacherConsolePage() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Schedule a class</h2>
-        <ScheduleSessionForm subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
+        {zoomConfigured() ? (
+          <div className="mt-4">
+            <ScheduleSessionForm subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
+          </div>
+        ) : (
+          <div className="mt-4">
+            <NotConfigured feature="zoom" forTeacher />
+          </div>
+        )}
       </section>
 
       <section className="mt-10">

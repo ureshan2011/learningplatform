@@ -1,159 +1,102 @@
 # Firebase App Hosting configuration.
 #
-# Safe to commit: secrets are referenced by NAME only — their values live in
-# Cloud Secret Manager. Create each one with:
+# Nothing to fill in for your first deploy. App Hosting injects your Firebase
+# config automatically (see next.config.ts), and every other service is optional
+# until you turn it on.
 #
-#   firebase apphosting:secrets:set <secret-name>
-#
-# See README.md → Deploying for the full walkthrough.
+# To add a service later, ask in chat — or uncomment its block below.
 
 runConfig:
-  # Deliberately conservative. App Hosting is pay-as-you-go past the free tier,
-  # and an unbounded maxInstances is how a bad query turns into a shocking bill.
-  # Raise this once you know your real cost per student per class.
+  # Deliberately capped. App Hosting is pay-as-you-go past the free tier, and an
+  # unbounded maxInstances is how a bad query becomes a shocking bill. Raise it
+  # once you know your real cost per student per class.
   maxInstances: 5
-  # Free, at the cost of a cold start on the first request. That is fine most of
-  # the time and bad at 6pm when a whole class hits /api/sessions/[id]/join at
-  # once — raise to 1 before a big class, or leave it at 1 once revenue covers it.
+  # Free, at the cost of a few seconds on the first request to a cold backend.
+  # Raise to 1 shortly before a big class so 500 students are not all waiting on
+  # a cold start at once.
   minInstances: 0
   concurrency: 80
   cpu: 1
   memoryMiB: 512
 
-env:
-  # ---------------------------------------------------------------------------
-  # Public config.
-  #
-  # Next.js inlines NEXT_PUBLIC_* into the client bundle at BUILD time, so these
-  # must be available at BUILD. Omit that and they compile to empty strings and
-  # the app fails at runtime with no obvious cause.
-  # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# LATER: your public site address.
+#
+# Needed only once card payments or the Zoom simulcast are on — PayHere's
+# notify_url and Zoom's page_url are both built from it. Fill in the real
+# domain after your first deploy tells you what it is.
+# ---------------------------------------------------------------------------
+# env:
+#   - variable: NEXT_PUBLIC_APP_URL
+#     value: https://your-app.web.app
+#     availability: [BUILD, RUNTIME]
 
-  # Set this to the real backend domain after the first deploy, then redeploy.
-  # PayHere's notify_url and Zoom's simulcast page_url are both derived from it;
-  # leaving the placeholder means paid students never get unlocked.
-  - variable: NEXT_PUBLIC_APP_URL
-    value: https://REPLACE-WITH-YOUR-BACKEND.web.app
-    availability: [BUILD, RUNTIME]
+# ---------------------------------------------------------------------------
+# LATER: live classes (Zoom).
+#
+# Create two apps in the Zoom Marketplace — Server-to-Server OAuth, and Meeting
+# SDK — then store the three secrets:
+#   firebase apphosting:secrets:set zoom-s2s-client-secret
+#   firebase apphosting:secrets:set zoom-sdk-secret
+#   firebase apphosting:secrets:set zoom-webhook-secret-token
+# ---------------------------------------------------------------------------
+#   - variable: ZOOM_ACCOUNT_ID
+#     value: your-account-id
+#     availability: [RUNTIME]
+#   - variable: ZOOM_S2S_CLIENT_ID
+#     value: your-client-id
+#     availability: [RUNTIME]
+#   - variable: ZOOM_HOST_USER_ID
+#     value: you@example.com
+#     availability: [RUNTIME]
+#   - variable: NEXT_PUBLIC_ZOOM_SDK_KEY
+#     value: your-sdk-key
+#     availability: [BUILD, RUNTIME]
+#   - variable: ZOOM_S2S_CLIENT_SECRET
+#     secret: zoom-s2s-client-secret
+#     availability: [RUNTIME]
+#   - variable: ZOOM_SDK_SECRET
+#     secret: zoom-sdk-secret
+#     availability: [RUNTIME]
+#   - variable: ZOOM_WEBHOOK_SECRET_TOKEN
+#     secret: zoom-webhook-secret-token
+#     availability: [RUNTIME]
 
-  - variable: NEXT_PUBLIC_TENANT_ID
-    value: default
-    availability: [BUILD, RUNTIME]
+# ---------------------------------------------------------------------------
+# LATER: card payments (PayHere).
+#
+# Bank deposit slips already work without this.
+#   firebase apphosting:secrets:set payhere-merchant-secret
+# Keep mode "sandbox" until a full test payment has gone through end to end.
+# ---------------------------------------------------------------------------
+#   - variable: NEXT_PUBLIC_PAYHERE_MERCHANT_ID
+#     value: your-merchant-id
+#     availability: [BUILD, RUNTIME]
+#   - variable: NEXT_PUBLIC_PAYHERE_MODE
+#     value: sandbox
+#     availability: [BUILD, RUNTIME]
+#   - variable: PAYHERE_MERCHANT_SECRET
+#     secret: payhere-merchant-secret
+#     availability: [RUNTIME]
 
-  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: REPLACE_ME
-    availability: [BUILD, RUNTIME]
-
-  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
-    value: REPLACE_ME.firebaseapp.com
-    availability: [BUILD, RUNTIME]
-
-  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
-    value: REPLACE_ME
-    availability: [BUILD, RUNTIME]
-
-  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
-    value: REPLACE_ME.firebasestorage.app
-    availability: [BUILD, RUNTIME]
-
-  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-    value: REPLACE_ME
-    availability: [BUILD, RUNTIME]
-
-  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
-    value: REPLACE_ME
-    availability: [BUILD, RUNTIME]
-
-  # Realtime Database carries all live class traffic. Required at RUNTIME too —
-  # the Admin SDK reads it to reach RTDB.
-  - variable: NEXT_PUBLIC_FIREBASE_DATABASE_URL
-    value: https://REPLACE_ME-default-rtdb.firebaseio.com
-    availability: [BUILD, RUNTIME]
-
-  - variable: NEXT_PUBLIC_ZOOM_SDK_KEY
-    value: REPLACE_ME
-    availability: [BUILD, RUNTIME]
-
-  # Pin the Meeting SDK build served from source.zoom.us. Bump deliberately.
-  - variable: NEXT_PUBLIC_ZOOM_SDK_VERSION
-    value: "3.13.2"
-    availability: [BUILD, RUNTIME]
-
-  - variable: NEXT_PUBLIC_PAYHERE_MERCHANT_ID
-    value: REPLACE_ME
-    availability: [BUILD, RUNTIME]
-
-  # Flip to "live" only after a full sandbox payment has been verified end to end.
-  - variable: NEXT_PUBLIC_PAYHERE_MODE
-    value: sandbox
-    availability: [BUILD, RUNTIME]
-
-  - variable: NEXT_PUBLIC_R2_PUBLIC_BASE_URL
-    value: https://REPLACE_ME
-    availability: [BUILD, RUNTIME]
-
-  # ---------------------------------------------------------------------------
-  # Non-secret server config.
-  # ---------------------------------------------------------------------------
-
-  - variable: ZOOM_ACCOUNT_ID
-    value: REPLACE_ME
-    availability: [RUNTIME]
-
-  - variable: ZOOM_S2S_CLIENT_ID
-    value: REPLACE_ME
-    availability: [RUNTIME]
-
-  # The Zoom user (email or userId) that hosts classes.
-  - variable: ZOOM_HOST_USER_ID
-    value: REPLACE_ME
-    availability: [RUNTIME]
-
-  - variable: R2_ACCOUNT_ID
-    value: REPLACE_ME
-    availability: [RUNTIME]
-
-  - variable: R2_BUCKET
-    value: REPLACE_ME
-    availability: [RUNTIME]
-
-  # ---------------------------------------------------------------------------
-  # Secrets — RUNTIME only.
-  #
-  # These are never needed to compile the app, and a secret exposed at BUILD can
-  # be baked into a build artifact. Each maps to a Cloud Secret Manager entry.
-  #
-  # Note there is no FIREBASE_PRIVATE_KEY here, on purpose: in production the
-  # backend authenticates with Application Default Credentials (the Cloud Run
-  # service account), so the private key does not exist in production at all.
-  # See lib/firebase/admin.ts.
-  # ---------------------------------------------------------------------------
-
-  # Signs Meeting SDK join tokens. A leak lets anyone mint a HOST signature and
-  # take over a live class.
-  - variable: ZOOM_SDK_SECRET
-    secret: zoom-sdk-secret
-    availability: [RUNTIME]
-
-  - variable: ZOOM_S2S_CLIENT_SECRET
-    secret: zoom-s2s-client-secret
-    availability: [RUNTIME]
-
-  # Verifies Zoom webhook signatures — the basis of trusted attendance data.
-  - variable: ZOOM_WEBHOOK_SECRET_TOKEN
-    secret: zoom-webhook-secret-token
-    availability: [RUNTIME]
-
-  # Signs checkouts and verifies payment notifications. A leak lets anyone forge
-  # a payment and grant themselves free access.
-  - variable: PAYHERE_MERCHANT_SECRET
-    secret: payhere-merchant-secret
-    availability: [RUNTIME]
-
-  - variable: R2_ACCESS_KEY_ID
-    secret: r2-access-key-id
-    availability: [RUNTIME]
-
-  - variable: R2_SECRET_ACCESS_KEY
-    secret: r2-secret-access-key
-    availability: [RUNTIME]
+# ---------------------------------------------------------------------------
+# LATER: notes and past papers (Cloudflare R2).
+#
+#   firebase apphosting:secrets:set r2-access-key-id
+#   firebase apphosting:secrets:set r2-secret-access-key
+# ---------------------------------------------------------------------------
+#   - variable: R2_ACCOUNT_ID
+#     value: your-account-id
+#     availability: [RUNTIME]
+#   - variable: R2_BUCKET
+#     value: your-bucket
+#     availability: [RUNTIME]
+#   - variable: NEXT_PUBLIC_R2_PUBLIC_BASE_URL
+#     value: https://your-public-bucket-url
+#     availability: [BUILD, RUNTIME]
+#   - variable: R2_ACCESS_KEY_ID
+#     secret: r2-access-key-id
+#     availability: [RUNTIME]
+#   - variable: R2_SECRET_ACCESS_KEY
+#     secret: r2-secret-access-key
+#     availability: [RUNTIME]

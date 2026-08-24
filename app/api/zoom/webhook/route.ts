@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { FieldValue } from "firebase-admin/firestore";
 import { col, attendanceId } from "@/lib/firebase/admin";
-import { requireServerEnv } from "@/lib/env";
+import { optionalServerEnv, requireServerEnv } from "@/lib/env";
 import type { AttendanceRecord, ClassSession } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -16,6 +16,12 @@ export const dynamic = "force-dynamic";
  * students have every incentive to inflate.
  */
 export async function POST(req: NextRequest) {
+  // Zoom not connected yet. No webhooks should be arriving; if one does, it is
+  // not from a configured integration and there is nothing to verify it against.
+  if (!optionalServerEnv("ZOOM_WEBHOOK_SECRET_TOKEN")) {
+    return NextResponse.json({ error: "not_configured", feature: "zoom" }, { status: 503 });
+  }
+
   // The signature covers the exact bytes Zoom sent, so read the raw body.
   const raw = await req.text();
   const secret = requireServerEnv("ZOOM_WEBHOOK_SECRET_TOKEN");

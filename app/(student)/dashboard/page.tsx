@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { listEnrollments, listSubjects, listUpcomingSessions } from "@/lib/queries";
 import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
+import { payhereConfigured } from "@/lib/features";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,7 @@ export default async function DashboardPage() {
 
   const sessions = await listUpcomingSessions(activeSubjectIds);
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
+  const cardPaymentsOn = payhereConfigured();
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-8">
@@ -111,8 +113,17 @@ export default async function DashboardPage() {
                     >
                       Notes &amp; papers
                     </Link>
-                  ) : (
+                  ) : cardPaymentsOn ? (
                     <SubscribeButton subjectId={subject.id} />
+                  ) : (
+                    // No card payments yet — bank deposit is how most Sri Lankan
+                    // parents pay anyway, so this is a working path, not a stub.
+                    <Link
+                      href="/pay/slip"
+                      className="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
+                    >
+                      Pay by bank slip
+                    </Link>
                   )}
                 </div>
               </li>

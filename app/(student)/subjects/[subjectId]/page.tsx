@@ -5,6 +5,8 @@ import { getSubject, listContent } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { formatDate } from "@/lib/format";
 import { DownloadButton } from "@/components/content/DownloadButton";
+import { NotConfigured } from "@/components/ui/NotConfigured";
+import { r2Configured } from "@/lib/features";
 import type { ContentKind } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -66,7 +68,11 @@ export default async function SubjectPage({
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Notes &amp; past papers</h2>
-        {visible.length === 0 ? (
+        {!r2Configured() ? (
+          <div className="mt-3">
+            <NotConfigured feature="r2" />
+          </div>
+        ) : visible.length === 0 ? (
           <p className="mt-3 text-sm text-white/50">Nothing published yet.</p>
         ) : (
           <ul className="mt-3 space-y-3">

@@ -4,6 +4,7 @@ import { col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/payhere";
 import { addMonths } from "@/lib/payments/entitlements";
+import { payhereConfigured } from "@/lib/features";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -18,6 +19,14 @@ const bodySchema = z.object({ subjectId: z.string().min(1).max(64) });
  * that can name its own price is a client that pays Rs 1.
  */
 export async function POST(req: NextRequest) {
+  // Card payments not connected yet — students can still send a bank slip.
+  if (!payhereConfigured()) {
+    return NextResponse.json(
+      { error: "not_configured", feature: "payhere" },
+      { status: 503 },
+    );
+  }
+
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
 

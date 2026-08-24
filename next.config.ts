@@ -1,7 +1,63 @@
 import type { NextConfig } from "next";
 
+/**
+ * Firebase web config, resolved without you having to type it in.
+ *
+ * Firebase App Hosting injects FIREBASE_WEBAPP_CONFIG (a JSON blob) into the
+ * build environment automatically. It is not NEXT_PUBLIC_-prefixed, so Next
+ * will not inline it on its own — mapping it through `env` below does that,
+ * which is what lets a fresh deploy work with nothing filled in.
+ *
+ * An explicit .env.local value always wins, so local development is unaffected.
+ */
+interface FirebaseWebConfig {
+  apiKey?: string;
+  authDomain?: string;
+  projectId?: string;
+  storageBucket?: string;
+  messagingSenderId?: string;
+  appId?: string;
+  databaseURL?: string;
+}
+
+function injectedFirebaseConfig(): FirebaseWebConfig {
+  const raw = process.env.FIREBASE_WEBAPP_CONFIG;
+  if (!raw) return {};
+  try {
+    return JSON.parse(raw) as FirebaseWebConfig;
+  } catch {
+    // Malformed blob should not take the whole build down — fall back to env vars.
+    console.warn("[config] FIREBASE_WEBAPP_CONFIG was not valid JSON; ignoring it.");
+    return {};
+  }
+}
+
+const injected = injectedFirebaseConfig();
+const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || injected.projectId || "";
+
+const firebasePublicEnv: Record<string, string> = {
+  NEXT_PUBLIC_FIREBASE_API_KEY:
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY || injected.apiKey || "",
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN:
+    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || injected.authDomain || "",
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: projectId,
+  NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET:
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || injected.storageBucket || "",
+  NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:
+    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || injected.messagingSenderId || "",
+  NEXT_PUBLIC_FIREBASE_APP_ID:
+    process.env.NEXT_PUBLIC_FIREBASE_APP_ID || injected.appId || "",
+  // The injected blob usually omits the RTDB URL. Fall back to the default
+  // instance name Firebase creates for a project.
+  NEXT_PUBLIC_FIREBASE_DATABASE_URL:
+    process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ||
+    injected.databaseURL ||
+    (projectId ? `https://${projectId}-default-rtdb.firebaseio.com` : ""),
+};
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  env: firebasePublicEnv,
   // Zoom's Meeting SDK is loaded from source.zoom.us at runtime rather than npm:
   // @zoom/meetingsdk pins react@18.2.0 as a peer dependency and would conflict
   // with React 19. See components/player/ZoomEmbed.tsx.

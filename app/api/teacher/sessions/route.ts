@@ -4,6 +4,7 @@ import { adminDb, col } from "@/lib/firebase/admin";
 import { requireTeacher } from "@/lib/auth/session";
 import { createClassMeeting, configureSimulcast } from "@/lib/zoom/meetings";
 import { publicEnv } from "@/lib/env";
+import { zoomConfigured } from "@/lib/features";
 import type { ClassSession, SessionSecrets } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -30,6 +31,13 @@ const bodySchema = z.object({
  * seats sit in Zoom, everyone else watches the mirror inside our own player.
  */
 export async function POST(req: NextRequest) {
+  if (!zoomConfigured()) {
+    return NextResponse.json(
+      { error: "not_configured", feature: "zoom" },
+      { status: 503 },
+    );
+  }
+
   let tenantId: string;
   try {
     ({ tenantId } = await requireTeacher());

@@ -6,6 +6,7 @@ import { hasAccess } from "@/lib/payments/entitlements";
 import { registerStudent } from "@/lib/zoom/meetings";
 import { createSdkSignature } from "@/lib/zoom/signature";
 import { maskPhone } from "@/lib/phone";
+import { zoomConfigured } from "@/lib/features";
 import type { ClassSession } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -58,10 +59,19 @@ export async function POST(
     );
   }
 
+  // Zoom not connected yet: say so plainly rather than throwing a 500 that
+  // looks like a broken class.
+  if (!zoomConfigured() && !session.hlsUrl) {
+    return NextResponse.json(
+      { error: "not_configured", feature: "zoom" },
+      { status: 503 },
+    );
+  }
+
   // Mobile browsers cannot reliably run the embedded Meeting SDK, and the
   // simulcast is the better experience there anyway: less data, no app switch,
   // and the Live Arena sits beside the video instead of behind it.
-  if (preferHls || !session.zoomMeetingId) {
+  if (preferHls || !session.zoomMeetingId || !zoomConfigured()) {
     if (!session.hlsUrl) {
       return NextResponse.json({ error: "stream_not_ready" }, { status: 409 });
     }

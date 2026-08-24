@@ -46,96 +46,15 @@ outbound calls do not work on Spark. Set a budget alert before your first class.
 
 ## Setup
 
-### 1. Install
+**See [SETUP.md](SETUP.md)** — three steps, about 15 minutes.
 
-```bash
-npm install
-cp .env.example .env.local
-```
+The short version: create a Firebase project, run `npm run setup`, then connect
+the repo in the Firebase console under App Hosting. Nothing to configure — App
+Hosting supplies the Firebase config automatically.
 
-### 2. Firebase
-
-Create a project, then enable:
-
-- **Authentication → Phone** (add your own number under test numbers to avoid burning SMS credit while developing)
-- **Firestore**
-- **Realtime Database**
-- **Storage**
-
-Generate a service account key (Project settings → Service accounts) and put
-`FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` and `FIREBASE_PRIVATE_KEY` into
-`.env.local`. Keep the private key's `\n` escapes and wrap it in quotes.
-
-Deploy the security rules:
-
-```bash
-npx firebase deploy --only firestore:rules,database,storage
-```
-
-The rules assume that **only the server writes anything that grants access,
-moves money, or awards XP**. If a client can write it, a student can forge it.
-
-### 3. Zoom
-
-You need **two** Zoom apps in the Zoom Marketplace:
-
-1. **Server-to-Server OAuth** — creates meetings and registrants.
-   Scopes: `meeting:write:admin`, `meeting:read:admin`, `user:read:admin`.
-   Fills `ZOOM_ACCOUNT_ID`, `ZOOM_S2S_CLIENT_ID`, `ZOOM_S2S_CLIENT_SECRET`.
-2. **Meeting SDK** — the embedded desktop player.
-   Fills `NEXT_PUBLIC_ZOOM_SDK_KEY`, `ZOOM_SDK_SECRET`.
-
-On the S2S app's **Feature** tab, add the event subscription pointing at
-`https://<your-domain>/api/zoom/webhook` and subscribe to `meeting.started`,
-`meeting.ended`, `meeting.participant_joined`, `meeting.participant_left` and
-`recording.completed`. Copy the Secret Token into `ZOOM_WEBHOOK_SECRET_TOKEN`.
-
-For the simulcast, enable **Custom Live Streaming Service** in Zoom settings
-(Settings → In Meeting (Advanced)). Requires Zoom Pro or above.
-
-### 4. PayHere
-
-Register a business (sole proprietorship is enough) and a business bank account
-— PayHere will not approve a merchant account without one.
-
-Start in **sandbox** mode. Set the notify URL to
-`https://<your-domain>/api/payments/payhere/notify`.
-
-> Auto-renewal is **not** wired up yet, deliberately. PayHere's Recurring API
-> requires their PLUS plan (~Rs 3,990/month). Until there is monthly revenue to
-> cover that, students pay once a month from a reminder and
-> `lib/payments/entitlements.ts` extends the period. Switching to auto-renewal
-> later changes `lib/payments/payhere.ts` and nothing else.
-> Verify current fees and plan tiers before enabling live mode.
-
-### 5. Cloudflare R2
-
-Create a bucket and an API token. Fill the `R2_*` variables. Set a public
-hostname for the bucket if you want free/SEO content served directly.
-
-### 6. Seed and run
-
-```bash
-node scripts/admin.mjs seed          # creates the O/L ICT and A/L ICT subjects
-npm run dev
-```
-
-Sign in once with your own phone, then promote yourself:
-
-```bash
-node scripts/admin.mjs make-teacher +94771234567
-```
-
-Sign in again to pick up the teacher role, then open `/teacher`.
-
----
-
-## Deploying
-
-**Host: Firebase App Hosting.** Same console as Auth/Firestore/RTDB, native
-Next.js support, auto-deploy from GitHub, and a permanent free tier (10 GiB
-egress/month, 180k vCPU-seconds). Because media serves from R2 with zero egress,
-that 10 GiB carries only HTML and JS.
+Zoom, card payments and file storage are **not** needed to go live. Each shows a
+plain "not set up yet" message until connected; add them one at a time via
+[docs/services.md](docs/services.md), or just ask in chat.
 
 > **GitHub Pages cannot host this**, and it is not a limitation to work around.
 > Pages serves static files and runs no server code, but this app has 9 API
@@ -145,69 +64,18 @@ that 10 GiB carries only HTML and JS.
 > would run on the student's own machine, which means it would not run at all.
 > **Static hosting and paid content are mutually exclusive.**
 >
-> Vercel's free Hobby tier is also unavailable: their fair-use terms prohibit
-> commercial projects and name payment processing explicitly.
+> Vercel's free tier is also out: their terms prohibit commercial projects and
+> name payment processing explicitly.
 
-### 1. Create the backend
+### Cost guardrails
 
-In the Firebase console → App Hosting → Create backend, connect this GitHub
-repo, and pick the branch to deploy from (`main` for production).
+`apphosting.yaml` caps `maxInstances: 5` on purpose — App Hosting is
+pay-as-you-go past the free tier, and an unbounded cap is how a bad query
+becomes a large bill. Set a budget alert in Google Cloud Billing too.
 
-### 2. Create the secrets
-
-Six values are secrets. Each becomes a Cloud Secret Manager entry:
-
-```bash
-firebase apphosting:secrets:set zoom-sdk-secret
-firebase apphosting:secrets:set zoom-s2s-client-secret
-firebase apphosting:secrets:set zoom-webhook-secret-token
-firebase apphosting:secrets:set payhere-merchant-secret
-firebase apphosting:secrets:set r2-access-key-id
-firebase apphosting:secrets:set r2-secret-access-key
-```
-
-`apphosting.yaml` references them by name, so it is safe to commit.
-
-**There is no `FIREBASE_PRIVATE_KEY` in production.** The backend authenticates
-with Application Default Credentials — the Cloud Run service account. The key
-only exists in your local `.env.local`. A secret that is never stored cannot
-leak.
-
-### 3. Fill in the public config
-
-Replace every `REPLACE_ME` in `apphosting.yaml`. These are `NEXT_PUBLIC_*`
-values that Next.js inlines at **build** time — that is why they carry
-`availability: [BUILD, RUNTIME]`. Drop `BUILD` and they compile to empty strings
-and the app fails at runtime with no obvious cause.
-
-### 4. Deploy twice — this trips everyone once
-
-`NEXT_PUBLIC_APP_URL` is not cosmetic. PayHere's `return_url`, `cancel_url` and
-**`notify_url`** are all derived from it, as is Zoom's simulcast `page_url`. But
-you do not know your domain until the first deploy finishes. So:
-
-1. Push with the placeholder. Let it deploy.
-2. Copy the real backend URL from the Firebase console.
-3. Put it in `apphosting.yaml`, commit, and let it redeploy.
-
-Skip step 3 and PayHere posts payment confirmations into the void — students pay
-and stay locked out.
-
-### 5. Post-deploy checklist
-
-| Do this | Or else |
-| --- | --- |
-| Add the domain to **Firebase Auth → Authorized domains** | Phone OTP fails **silently** — reCAPTCHA refuses to run and no SMS is ever sent |
-| Set the **PayHere notify URL** to `<domain>/api/payments/payhere/notify` | Nothing ever activates a paid enrollment |
-| Set the **Zoom webhook** to `<domain>/api/zoom/webhook` and re-run Zoom's validation | Attendance stops recording |
-| Set a **budget alert** in Google Cloud Billing | App Hosting is pay-as-you-go past the free tier |
-
-### Cold starts
-
-`minInstances: 0` is free but means the first request to a cold backend waits a
-few seconds. That is fine most of the time and bad at 6pm when a whole class
-hits `/api/sessions/[id]/join` at once. Raise it to 1 before a big class, or
-leave it at 1 once revenue covers it.
+`minInstances: 0` is free but means a few seconds' cold start on the first
+request. Raise it to 1 shortly before a big class so a whole cohort is not
+waiting on a cold start at once.
 
 ---
 
