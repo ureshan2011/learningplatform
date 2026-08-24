@@ -9,7 +9,28 @@ import type { ClassSession, ContentItem, Enrollment, Subject } from "@/lib/types
  *
  * These run through the Admin SDK, so security rules do not apply — every
  * function here must scope by uid or tenant itself.
+ *
+ * ## Why these queries look narrower than they need to be
+ *
+ * Firestore demands a composite index whenever a query mixes an equality (or
+ * `in`) filter on one field with a range or `orderBy` on another. Building one
+ * requires `firebase deploy --only firestore:indexes` from a command line — and
+ * this platform is deliberately set up entirely from a browser, so that deploy
+ * never happens. A query needing a missing index does not degrade: it throws
+ * FAILED_PRECONDITION and 500s the page.
+ *
+ * So each query below filters on a single field (or a range and `orderBy` on
+ * that same field, which Firestore indexes automatically), fetches a generous
+ * window, and narrows it in memory.
+ *
+ * This is sound while the collections are small — hundreds of sessions a year,
+ * tens of pending payments. Past roughly a thousand documents per collection,
+ * deploy the composite indexes in `firestore.indexes.json` and push the filters
+ * back into the queries.
  */
+
+/** How many documents to pull before narrowing in memory. */
+const SCAN_WINDOW = 200;
 
 export async function listSubjects(): Promise<Subject[]> {
   const snap = await col
@@ -43,20 +64,24 @@ export async function listUpcomingSessions(
 ): Promise<ClassSession[]> {
   if (subjectIds.length === 0) return [];
 
-  // Include sessions that started recently — a student arriving ten minutes
-  // late must still find the class they are paying for.
-  const from = Date.now() - 30 * 60 * 1000;
+  // Look back a full class length, not a few minutes. A student who joins 40
+  // minutes into a 90-minute lesson — dropped connection, came home late — must
+  // still find the class they are paying for on their dashboard.
+  const from = Date.now() - 3 * 60 * 60 * 1000;
+  const wanted = new Set(subjectIds);
 
+  // Range + orderBy on the same field needs no composite index.
   const snap = await col
     .sessions()
-    .where("tenantId", "==", publicEnv.tenantId)
-    .where("subjectId", "in", subjectIds.slice(0, 30))
     .where("startsAt", ">=", from)
     .orderBy("startsAt", "asc")
-    .limit(limit)
+    .limit(SCAN_WINDOW)
     .get();
 
-  return snap.docs.map((d) => d.data() as ClassSession);
+  return snap.docs
+    .map((d) => d.data() as ClassSession)
+    .filter((s) => s.tenantId === publicEnv.tenantId && wanted.has(s.subjectId))
+    .slice(0, limit);
 }
 
 export async function getSession(sessionId: string): Promise<ClassSession | null> {
@@ -74,21 +99,27 @@ export async function getSession(sessionId: string): Promise<ClassSession | null
 export async function listPublicContent(limit = 60): Promise<ContentItem[]> {
   const snap = await col
     .content()
-    .where("tenantId", "==", publicEnv.tenantId)
     .where("isPublic", "==", true)
-    .orderBy("createdAt", "desc")
-    .limit(limit)
+    .limit(SCAN_WINDOW)
     .get();
-  return snap.docs.map((d) => d.data() as ContentItem);
+
+  return snap.docs
+    .map((d) => d.data() as ContentItem)
+    .filter((c) => c.tenantId === publicEnv.tenantId)
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, limit);
 }
 
 export async function listContent(subjectId: string, limit = 50): Promise<ContentItem[]> {
   const snap = await col
     .content()
-    .where("tenantId", "==", publicEnv.tenantId)
     .where("subjectId", "==", subjectId)
-    .orderBy("createdAt", "desc")
-    .limit(limit)
+    .limit(SCAN_WINDOW)
     .get();
-  return snap.docs.map((d) => d.data() as ContentItem);
+
+  return snap.docs
+    .map((d) => d.data() as ContentItem)
+    .filter((c) => c.tenantId === publicEnv.tenantId)
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, limit);
 }

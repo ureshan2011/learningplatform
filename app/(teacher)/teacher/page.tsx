@@ -13,20 +13,39 @@ import type { ClassSession, Payment, SessionSecrets, User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Runs one page section's read, falling back to `empty` if it throws.
+ *
+ * Logs loudly rather than silently: a Firestore FAILED_PRECONDITION here means
+ * a query needs a composite index that does not exist, and that message
+ * contains the console link to create it.
+ */
+async function section<T>(name: string, read: () => Promise<T>, empty: T): Promise<T> {
+  try {
+    return await read();
+  } catch (err) {
+    console.error(`[teacher] "${name}" failed to load`, err);
+    return empty;
+  }
+}
+
 export default async function TeacherConsolePage() {
   const user = await getSessionUser();
   if (!user) redirect("/signin");
   if (user.role !== "teacher" && user.role !== "admin") redirect("/dashboard");
 
+  // Each section is fetched independently so one failing read degrades that
+  // section instead of blanking the whole console. The teacher losing access to
+  // payment approvals because the timetable query broke is the worse outcome.
   const [subjects, sessions, slips] = await Promise.all([
-    listSubjects(),
-    upcomingSessions(),
-    pendingSlips(),
+    section("subjects", () => listSubjects(), []),
+    section("sessions", () => upcomingSessions(), []),
+    section("slips", () => pendingSlips(), []),
   ]);
 
   // Start URLs are read here, server-side, and rendered only into this
   // teacher-gated page. They never touch a student-readable document.
-  const startUrls = await startUrlsFor(sessions.map((s) => s.id));
+  const startUrls = await section("startUrls", () => startUrlsFor(sessions.map((s) => s.id)), {});
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-8">
@@ -97,15 +116,24 @@ export default async function TeacherConsolePage() {
   );
 }
 
+/**
+ * Range + orderBy on the same field, so Firestore's automatic single-field
+ * index covers it. Adding the tenantId equality back into the query would
+ * demand a composite index, which a browser-only setup can never deploy — see
+ * the note at the top of lib/queries.ts.
+ */
 async function upcomingSessions(): Promise<ClassSession[]> {
   const snap = await col
     .sessions()
-    .where("tenantId", "==", publicEnv.tenantId)
     .where("startsAt", ">=", Date.now() - 3 * 60 * 60 * 1000)
     .orderBy("startsAt", "asc")
-    .limit(20)
+    .limit(60)
     .get();
-  return snap.docs.map((d) => d.data() as ClassSession);
+
+  return snap.docs
+    .map((d) => d.data() as ClassSession)
+    .filter((s) => s.tenantId === publicEnv.tenantId)
+    .slice(0, 20);
 }
 
 async function startUrlsFor(sessionIds: string[]): Promise<Record<string, string>> {
@@ -121,17 +149,15 @@ async function startUrlsFor(sessionIds: string[]): Promise<Record<string, string
 }
 
 async function pendingSlips(): Promise<PendingSlip[]> {
-  const snap = await col
-    .payments()
-    .where("tenantId", "==", publicEnv.tenantId)
-    .where("status", "==", "pending")
-    .orderBy("createdAt", "desc")
-    .limit(50)
-    .get();
+  // Single equality filter — automatically indexed. Tenant, provider and
+  // ordering are applied in memory to avoid needing a composite index.
+  const snap = await col.payments().where("status", "==", "pending").limit(200).get();
 
   const payments = snap.docs
     .map((d) => d.data() as Payment)
-    .filter((p) => p.provider === "bank_slip");
+    .filter((p) => p.tenantId === publicEnv.tenantId && p.provider === "bank_slip")
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, 50);
 
   if (payments.length === 0) return [];
 
