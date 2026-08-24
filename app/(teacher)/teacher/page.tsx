@@ -6,6 +6,7 @@ import { publicEnv } from "@/lib/env";
 import { formatLKR, formatSessionTime } from "@/lib/format";
 import { ScheduleSessionForm } from "@/components/teacher/ScheduleSessionForm";
 import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
+import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
 import { zoomConfigured } from "@/lib/features";
 import type { ClassSession, Payment, SessionSecrets, User } from "@/lib/types";
@@ -31,6 +32,12 @@ export default async function TeacherConsolePage() {
     <main className="mx-auto max-w-3xl px-5 py-8">
       <h1 className="text-2xl font-bold">Teacher console</h1>
       <p className="mt-1 text-sm text-white/50">Schedule classes and approve payments.</p>
+
+      {subjects.length === 0 ? (
+        <div className="mt-8">
+          <SeedSubjectsButton />
+        </div>
+      ) : null}
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Schedule a class</h2>

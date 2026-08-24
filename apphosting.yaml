@@ -19,17 +19,20 @@ runConfig:
   cpu: 1
   memoryMiB: 512
 
-# ---------------------------------------------------------------------------
-# LATER: your public site address.
-#
-# Needed only once card payments or the Zoom simulcast are on — PayHere's
-# notify_url and Zoom's page_url are both built from it. Fill in the real
-# domain after your first deploy tells you what it is.
-# ---------------------------------------------------------------------------
-# env:
-#   - variable: NEXT_PUBLIC_APP_URL
-#     value: https://your-app.web.app
-#     availability: [BUILD, RUNTIME]
+env:
+  # The live site. PayHere's notify_url and Zoom's simulcast page_url are both
+  # built from this, so a wrong value means paid students never get unlocked.
+  - variable: NEXT_PUBLIC_APP_URL
+    value: https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app
+    availability: [BUILD, RUNTIME]
+
+  # Realtime Database, Singapore. Set explicitly because it cannot be derived:
+  # only us-central1 databases use `<name>.firebaseio.com`; every other region
+  # uses `<name>.<region>.firebasedatabase.app`. A wrong host fails silently.
+  # Verified reachable and in locked mode (a root read returns 401).
+  - variable: NEXT_PUBLIC_FIREBASE_DATABASE_URL
+    value: https://srizone-1fc76-default-rtdb.asia-southeast1.firebasedatabase.app
+    availability: [BUILD, RUNTIME]
 
 # ---------------------------------------------------------------------------
 # LATER: live classes (Zoom).
@@ -40,27 +43,27 @@ runConfig:
 #   firebase apphosting:secrets:set zoom-sdk-secret
 #   firebase apphosting:secrets:set zoom-webhook-secret-token
 # ---------------------------------------------------------------------------
-#   - variable: ZOOM_ACCOUNT_ID
-#     value: your-account-id
-#     availability: [RUNTIME]
-#   - variable: ZOOM_S2S_CLIENT_ID
-#     value: your-client-id
-#     availability: [RUNTIME]
-#   - variable: ZOOM_HOST_USER_ID
-#     value: you@example.com
-#     availability: [RUNTIME]
-#   - variable: NEXT_PUBLIC_ZOOM_SDK_KEY
-#     value: your-sdk-key
-#     availability: [BUILD, RUNTIME]
-#   - variable: ZOOM_S2S_CLIENT_SECRET
-#     secret: zoom-s2s-client-secret
-#     availability: [RUNTIME]
-#   - variable: ZOOM_SDK_SECRET
-#     secret: zoom-sdk-secret
-#     availability: [RUNTIME]
-#   - variable: ZOOM_WEBHOOK_SECRET_TOKEN
-#     secret: zoom-webhook-secret-token
-#     availability: [RUNTIME]
+#  - variable: ZOOM_ACCOUNT_ID
+#    value: your-account-id
+#    availability: [RUNTIME]
+#  - variable: ZOOM_S2S_CLIENT_ID
+#    value: your-client-id
+#    availability: [RUNTIME]
+#  - variable: ZOOM_HOST_USER_ID
+#    value: you@example.com
+#    availability: [RUNTIME]
+#  - variable: NEXT_PUBLIC_ZOOM_SDK_KEY
+#    value: your-sdk-key
+#    availability: [BUILD, RUNTIME]
+#  - variable: ZOOM_S2S_CLIENT_SECRET
+#    secret: zoom-s2s-client-secret
+#    availability: [RUNTIME]
+#  - variable: ZOOM_SDK_SECRET
+#    secret: zoom-sdk-secret
+#    availability: [RUNTIME]
+#  - variable: ZOOM_WEBHOOK_SECRET_TOKEN
+#    secret: zoom-webhook-secret-token
+#    availability: [RUNTIME]
 
 # ---------------------------------------------------------------------------
 # LATER: card payments (PayHere).
@@ -69,15 +72,15 @@ runConfig:
 #   firebase apphosting:secrets:set payhere-merchant-secret
 # Keep mode "sandbox" until a full test payment has gone through end to end.
 # ---------------------------------------------------------------------------
-#   - variable: NEXT_PUBLIC_PAYHERE_MERCHANT_ID
-#     value: your-merchant-id
-#     availability: [BUILD, RUNTIME]
-#   - variable: NEXT_PUBLIC_PAYHERE_MODE
-#     value: sandbox
-#     availability: [BUILD, RUNTIME]
-#   - variable: PAYHERE_MERCHANT_SECRET
-#     secret: payhere-merchant-secret
-#     availability: [RUNTIME]
+#  - variable: NEXT_PUBLIC_PAYHERE_MERCHANT_ID
+#    value: your-merchant-id
+#    availability: [BUILD, RUNTIME]
+#  - variable: NEXT_PUBLIC_PAYHERE_MODE
+#    value: sandbox
+#    availability: [BUILD, RUNTIME]
+#  - variable: PAYHERE_MERCHANT_SECRET
+#    secret: payhere-merchant-secret
+#    availability: [RUNTIME]
 
 # ---------------------------------------------------------------------------
 # LATER: notes and past papers (Cloudflare R2).
@@ -85,18 +88,18 @@ runConfig:
 #   firebase apphosting:secrets:set r2-access-key-id
 #   firebase apphosting:secrets:set r2-secret-access-key
 # ---------------------------------------------------------------------------
-#   - variable: R2_ACCOUNT_ID
-#     value: your-account-id
-#     availability: [RUNTIME]
-#   - variable: R2_BUCKET
-#     value: your-bucket
-#     availability: [RUNTIME]
-#   - variable: NEXT_PUBLIC_R2_PUBLIC_BASE_URL
-#     value: https://your-public-bucket-url
-#     availability: [BUILD, RUNTIME]
-#   - variable: R2_ACCESS_KEY_ID
-#     secret: r2-access-key-id
-#     availability: [RUNTIME]
-#   - variable: R2_SECRET_ACCESS_KEY
-#     secret: r2-secret-access-key
-#     availability: [RUNTIME]
+#  - variable: R2_ACCOUNT_ID
+#    value: your-account-id
+#    availability: [RUNTIME]
+#  - variable: R2_BUCKET
+#    value: your-bucket
+#    availability: [RUNTIME]
+#  - variable: NEXT_PUBLIC_R2_PUBLIC_BASE_URL
+#    value: https://your-public-bucket-url
+#    availability: [BUILD, RUNTIME]
+#  - variable: R2_ACCESS_KEY_ID
+#    secret: r2-access-key-id
+#    availability: [RUNTIME]
+#  - variable: R2_SECRET_ACCESS_KEY
+#    secret: r2-secret-access-key
+#    availability: [RUNTIME]
