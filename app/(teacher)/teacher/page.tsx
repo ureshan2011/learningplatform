@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { adminDb, col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
@@ -53,8 +54,18 @@ export default async function TeacherConsolePage() {
     <>
       <SiteHeader user={user} />
       <main className="mx-auto max-w-3xl px-5 py-8">
-      <h1 className="text-2xl font-bold">Teacher console</h1>
-      <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Schedule classes and approve payments.</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold">Teacher console</h1>
+          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Schedule classes and approve payments.</p>
+        </div>
+        <Link
+          href="/teacher/insights"
+          className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+        >
+          📊 Insights
+        </Link>
+      </div>
 
       {subjects.length === 0 ? (
         <div className="mt-8">
