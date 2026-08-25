@@ -7,6 +7,7 @@ import { formatLKR, formatSessionTime } from "@/lib/format";
 import { ScheduleSessionForm } from "@/components/teacher/ScheduleSessionForm";
 import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
+import { SeedQuestionsButton } from "@/components/teacher/SeedQuestionsButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
 import { zoomConfigured } from "@/lib/features";
 import type { ClassSession, Payment, SessionSecrets, User } from "@/lib/types";
@@ -56,7 +57,11 @@ export default async function TeacherConsolePage() {
         <div className="mt-8">
           <SeedSubjectsButton />
         </div>
-      ) : null}
+      ) : (
+        <div className="mt-8">
+          <SeedQuestionsButton />
+        </div>
+      )}
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Schedule a class</h2>

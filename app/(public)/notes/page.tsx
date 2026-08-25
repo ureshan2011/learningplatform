@@ -38,7 +38,11 @@ export default async function PublicNotesPage() {
       <h1 className="mt-4 text-3xl font-bold">Free ICT notes &amp; past papers</h1>
       <p className="mt-3 text-white/65">
         Download these free. No sign-up needed. For live classes, quizzes and marked
-        answers, join a class.
+        answers, join a class. Also free:{" "}
+        <Link href="/command-words" className="underline">
+          exam command words explained
+        </Link>
+        .
       </p>
 
       {items.length === 0 ? (

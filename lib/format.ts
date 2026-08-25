@@ -13,6 +13,11 @@ export function formatSessionTime(ms: number): string {
   }).format(new Date(ms));
 }
 
+/** Calendar day in Colombo time, as `YYYY-MM-DD` — the unit streaks are counted in. */
+export function colomboDateString(ms: number): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: COLOMBO_TZ }).format(new Date(ms));
+}
+
 export function formatDate(ms: number): string {
   return new Intl.DateTimeFormat("en-GB", {
     timeZone: COLOMBO_TZ,

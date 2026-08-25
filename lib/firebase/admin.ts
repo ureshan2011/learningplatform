@@ -104,6 +104,8 @@ export const col = {
   payments: () => adminDb().collection("payments"),
   content: () => adminDb().collection("content"),
   progress: () => adminDb().collection("progress"),
+  questions: () => adminDb().collection("questions"),
+  attempts: () => adminDb().collection("attempts"),
 } as const;
 
 export function enrollmentId(uid: string, subjectId: string): string {
@@ -116,4 +118,8 @@ export function attendanceId(sessionId: string, uid: string): string {
 
 export function progressId(uid: string, subjectId: string): string {
   return `${uid}_${subjectId}`;
+}
+
+export function attemptId(uid: string, questionId: string): string {
+  return `${uid}_${questionId}`;
 }

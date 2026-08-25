@@ -88,6 +88,21 @@ service cloud.firestore {
       allow write: if false; // XP is server-awarded; client writes = cheating
     }
 
+    // ---- practice question bank --------------------------------------------
+    match /questions/{questionId} {
+      // Served to students only through the server (which strips
+      // correctIndex/explanation until answered) so entitlement checks run
+      // first. Direct client reads would leak answers and bypass hasAccess().
+      allow read: if false;
+      allow write: if false; // teacher console writes through the Admin SDK
+    }
+
+    // ---- spaced-repetition attempts -----------------------------------------
+    match /attempts/{attemptId} {
+      allow read: if signedIn() && (resource.data.uid == uid() || isTeacher());
+      allow write: if false; // scored and scheduled server-side only
+    }
+
     // Anything not matched above is denied.
     match /{document=**} {
       allow read, write: if false;

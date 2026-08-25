@@ -107,6 +107,45 @@ export async function grantAccess(params: {
 }
 
 /**
+ * Grants or extends access by a fixed number of days rather than months.
+ *
+ * Used for the referral bonus (3 free days each). Separate from
+ * `grantAccess` because a day count must never silently roll into the
+ * calendar-month arithmetic `addMonths` does for paid periods — a referral
+ * bonus is exact days, not "close enough".
+ */
+export async function grantBonusDays(params: {
+  uid: string;
+  subjectId: string;
+  tenantId: string;
+  days: number;
+  source: Enrollment["source"];
+}): Promise<Enrollment> {
+  const ref = col.enrollments().doc(enrollmentId(params.uid, params.subjectId));
+  const now = Date.now();
+
+  const snap = await ref.get();
+  const existing = snap.exists ? (snap.data() as Enrollment) : undefined;
+  const base = existing && existing.currentPeriodEnd > now ? existing.currentPeriodEnd : now;
+
+  const enrollment: Enrollment = {
+    id: ref.id,
+    tenantId: params.tenantId,
+    uid: params.uid,
+    subjectId: params.subjectId,
+    status: "active",
+    currentPeriodStart: existing?.currentPeriodStart ?? now,
+    currentPeriodEnd: base + params.days * 24 * 60 * 60 * 1000,
+    source: params.source,
+    createdAt: existing?.createdAt ?? now,
+    updatedAt: now,
+  };
+
+  await ref.set(enrollment, { merge: true });
+  return enrollment;
+}
+
+/**
  * Adds calendar months, clamping to the end of a short month.
  *
  * Paying on the 31st must not skip a month: 31 Jan + 1 month is 28 Feb, not

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { col } from "@/lib/firebase/admin";
 import { requireTeacher } from "@/lib/auth/session";
 import { grantAccess } from "@/lib/payments/entitlements";
+import { applyReferralBonus } from "@/lib/referrals";
 import type { Payment } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest) {
     source: "bank_slip",
     paymentId: payment.id,
   });
+  await applyReferralBonus(payment);
 
   await ref.update({
     status: "paid",

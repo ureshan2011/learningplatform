@@ -40,6 +40,10 @@ export interface User {
   childUids?: string[];
   referralCode: string;
   referredBy?: string;
+  /** Set once the referrer + referred pair have both received their bonus days. Blocks double-claiming on renewal. */
+  referralRewarded?: boolean;
+  /** Bumped to invalidate every parent view link issued before the bump. */
+  parentLinkVersion?: number;
   createdAt: number;
   disabled?: boolean;
 }
@@ -193,6 +197,60 @@ export interface Progress {
   /** 0-1 churn risk. Drives the nudge before a parent cancels. */
   riskScore: number;
   updatedAt: number;
+}
+
+export type QuestionSource = "past_paper" | "original" | "command_word_drill";
+
+/**
+ * One practice/revision question.
+ *
+ * Written only by the teacher console (seed script or future authoring UI),
+ * never by students — same posture as `content`. `misconceptions` is what
+ * turns a mark into a diagnosis: keyed by the wrong option's index, it names
+ * the specific misunderstanding that choice usually reveals, so a wrong
+ * answer teaches something instead of just costing a point.
+ */
+export interface Question {
+  id: string;
+  tenantId: TenantId;
+  subjectId: string;
+  topic: string;
+  medium: Medium;
+  commandWord?: string;
+  source: QuestionSource;
+  year?: number;
+  text: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+  misconceptions?: Record<number, string>;
+  active: boolean;
+  createdAt: number;
+}
+
+/**
+ * One student's spaced-repetition state for one question.
+ *
+ * Deterministic id `${uid}_${questionId}` for the same reason enrollment ids
+ * are deterministic: the hot path (recording an answer) is a single document
+ * read, never a query.
+ */
+export interface QuestionAttempt {
+  id: string;
+  uid: string;
+  tenantId: TenantId;
+  subjectId: string;
+  questionId: string;
+  topic: string;
+  timesSeen: number;
+  timesCorrect: number;
+  /** SM-2 ease factor, clamped >= 1.3. */
+  easeFactor: number;
+  intervalDays: number;
+  dueAt: number;
+  lastChoice: number;
+  lastCorrect: boolean;
+  lastAnsweredAt: number;
 }
 
 /** Result of the single server-side access check. */
