@@ -104,14 +104,14 @@ export function PracticeSession({
   }
 
   if (phase === "loading") {
-    return <p className="text-sm text-white/50">Preparing your questions…</p>;
+    return <p className="text-sm text-(--color-awaken-ink-soft)">Preparing your questions…</p>;
   }
 
   if (phase === "error") {
     return (
-      <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-sm">
-        <p className="text-red-300">Something went wrong loading practice.</p>
-        <button onClick={loadBatch} className="mt-3 rounded-lg border border-white/20 px-4 py-2">
+      <div className="rounded-xl border border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft) p-5 text-sm">
+        <p className="text-(--color-awaken-danger)">Something went wrong loading practice.</p>
+        <button onClick={loadBatch} className="mt-3 rounded-lg border border-(--color-awaken-line) px-4 py-2">
           Try again
         </button>
       </div>
@@ -120,7 +120,7 @@ export function PracticeSession({
 
   if (phase === "empty") {
     return (
-      <p className="rounded-xl border border-white/10 bg-white/[0.03] p-5 text-sm text-white/55">
+      <p className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
         No practice questions are ready yet for {subjectName}. Check back once your teacher has
         added some.
       </p>
@@ -132,35 +132,35 @@ export function PracticeSession({
       latestProgress ? ` and a ${latestProgress.streakDays}-day streak 🔥` : ""
     }!`;
     return (
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 text-center">
-        <p className="text-sm text-white/55">Session complete</p>
+      <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 text-center">
+        <p className="text-sm text-(--color-awaken-ink-soft)">Session complete</p>
         <p className="mt-2 text-4xl font-bold">
           {correctCount}/{questions.length}
         </p>
-        <p className="mt-1 text-sm text-white/60">+{xpEarned} XP earned</p>
+        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">+{xpEarned} XP earned</p>
         {latestProgress ? (
           <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-lg border border-white/10 bg-black/20 py-3">
+            <div className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) py-3">
               <p className="text-lg font-bold">Lvl {latestProgress.level}</p>
-              <p className="text-[10px] uppercase tracking-wide text-white/40">Level</p>
+              <p className="text-[10px] uppercase tracking-wide text-(--color-awaken-ink-soft)">Level</p>
             </div>
-            <div className="rounded-lg border border-white/10 bg-black/20 py-3">
+            <div className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) py-3">
               <p className="text-lg font-bold">{latestProgress.streakDays}d</p>
-              <p className="text-[10px] uppercase tracking-wide text-white/40">Streak</p>
+              <p className="text-[10px] uppercase tracking-wide text-(--color-awaken-ink-soft)">Streak</p>
             </div>
           </div>
         ) : null}
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <button
             onClick={loadBatch}
-            className="rounded-lg bg-[--color-brand] px-5 py-2.5 text-sm font-semibold text-black"
+            className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 text-sm font-semibold text-white"
           >
             Practice again
           </button>
           <WhatsAppShareButton text={shareText} label="Share result" />
           <Link
             href={`/subjects/${subjectId}`}
-            className="rounded-lg border border-white/20 px-5 py-2.5 text-sm"
+            className="rounded-lg border border-(--color-awaken-line) px-5 py-2.5 text-sm"
           >
             Back to subject
           </Link>
@@ -173,15 +173,15 @@ export function PracticeSession({
 
   return (
     <div>
-      <div className="flex items-center justify-between text-xs text-white/45">
+      <div className="flex items-center justify-between text-xs text-(--color-awaken-ink-soft)">
         <span>
           Question {index + 1} of {questions.length}
         </span>
         <span>{question.topic}</span>
       </div>
-      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-line)">
         <div
-          className="h-full rounded-full bg-[--color-brand] transition-all"
+          className="h-full rounded-full bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) transition-all"
           style={{ width: `${((index + (result ? 1 : 0)) / questions.length) * 100}%` }}
         />
       </div>
@@ -194,10 +194,10 @@ export function PracticeSession({
           const isCorrectOption = result && i === result.correctIndex;
           const isWrongSelected = result && isSelected && !result.correct;
 
-          let style = "border-white/15 bg-white/[0.03] hover:border-white/30";
-          if (isCorrectOption) style = "border-[--color-success] bg-[--color-success]/10";
-          else if (isWrongSelected) style = "border-[--color-danger] bg-[--color-danger]/10";
-          else if (isSelected) style = "border-[--color-brand] bg-[--color-brand]/10";
+          let style = "border-(--color-awaken-line) bg-(--color-awaken-card) hover:border-(--color-awaken-accent)/40";
+          if (isCorrectOption) style = "border-(--color-awaken-success) bg-(--color-awaken-success-soft)";
+          else if (isWrongSelected) style = "border-(--color-awaken-danger) bg-(--color-awaken-danger-soft)";
+          else if (isSelected) style = "border-(--color-awaken-accent) bg-(--color-awaken-accent-soft)";
 
           return (
             <button
@@ -216,23 +216,23 @@ export function PracticeSession({
         <div
           className={`mt-5 rounded-xl border p-4 text-sm ${
             result.correct
-              ? "border-[--color-success]/30 bg-[--color-success]/10"
-              : "border-[--color-danger]/30 bg-[--color-danger]/10"
+              ? "border-(--color-awaken-success)/30 bg-(--color-awaken-success-soft)"
+              : "border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft)"
           }`}
         >
-          <p className={`font-semibold ${result.correct ? "text-[--color-success]" : "text-[--color-danger]"}`}>
+          <p className={`font-semibold ${result.correct ? "text-(--color-awaken-success)" : "text-(--color-awaken-danger)"}`}>
             {result.correct ? `Correct! +${result.xpAwarded} XP` : `Not quite. +${result.xpAwarded} XP for trying`}
           </p>
-          <p className="mt-2 text-white/75">{result.explanation}</p>
+          <p className="mt-2 text-(--color-awaken-ink-soft)">{result.explanation}</p>
           {result.misconception ? (
-            <p className="mt-2 rounded-lg bg-black/20 p-3 text-white/60">
-              <span className="font-medium text-white/80">Why that answer felt right: </span>
+            <p className="mt-2 rounded-lg bg-(--color-awaken-bg) p-3 text-(--color-awaken-ink-soft)">
+              <span className="font-medium text-(--color-awaken-ink-soft)">Why that answer felt right: </span>
               {result.misconception}
             </p>
           ) : null}
           <button
             onClick={next}
-            className="mt-4 rounded-lg bg-[--color-brand] px-4 py-2 font-semibold text-black"
+            className="mt-4 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white"
           >
             {index + 1 >= questions.length ? "See results" : "Next question"}
           </button>

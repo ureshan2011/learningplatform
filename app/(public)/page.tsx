@@ -1,17 +1,8 @@
 import Link from "next/link";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
 import type { Subject } from "@/lib/types";
-
-// Self-hosted by Next at build time (no runtime request to Google), so this
-// costs nothing extra on a slow connection. Two weights only, kept small.
-const display = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["700", "800"],
-  variable: "--font-display",
-});
 
 const FEATURES = [
   {
@@ -60,9 +51,7 @@ export default async function LandingPage() {
   ]);
 
   return (
-    <main
-      className={`${display.variable} relative min-h-screen overflow-hidden bg-(--color-awaken-bg) text-(--color-awaken-ink)`}
-    >
+    <main className="relative min-h-screen overflow-hidden bg-(--color-awaken-bg) text-(--color-awaken-ink)">
       {/* Decorative gradient blobs. Pure CSS, no images — cheap on slow links. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div

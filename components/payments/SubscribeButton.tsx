@@ -52,11 +52,11 @@ export function SubscribeButton({ subjectId }: { subjectId: string }) {
       <button
         onClick={start}
         disabled={busy}
-        className="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
+        className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
       >
         {busy ? "Opening…" : "Pay monthly"}
       </button>
-      {error ? <p className="mt-1 text-xs text-red-300">{error}</p> : null}
+      {error ? <p className="mt-1 text-xs text-(--color-awaken-danger)">{error}</p> : null}
     </div>
   );
 }

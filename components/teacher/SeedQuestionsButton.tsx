@@ -27,9 +27,9 @@ export function SeedQuestionsButton() {
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+    <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
       <p className="font-semibold">Practice question bank</p>
-      <p className="mt-1.5 text-sm text-white/65">
+      <p className="mt-1.5 text-sm text-(--color-awaken-ink-soft)">
         Loads a starter set of O/L and A/L ICT practice questions — real content with
         exam-style misconception notes, ready for students to start Practice with today. Safe
         to run again after editing <code className="text-xs">lib/content/question-seed.ts</code>.
@@ -37,14 +37,14 @@ export function SeedQuestionsButton() {
       <button
         onClick={seed}
         disabled={busy}
-        className="mt-4 rounded-lg bg-[--color-brand] px-5 py-2.5 font-semibold text-black disabled:opacity-50"
+        className="mt-4 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white disabled:opacity-50"
       >
         {busy ? "Loading…" : "Load question bank"}
       </button>
       {done !== null ? (
-        <p className="mt-2 text-sm text-[--color-success]">Loaded {done} questions.</p>
+        <p className="mt-2 text-sm text-(--color-awaken-success)">Loaded {done} questions.</p>
       ) : null}
-      {error ? <p className="mt-2 text-sm text-red-300">{error}</p> : null}
+      {error ? <p className="mt-2 text-sm text-(--color-awaken-danger)">{error}</p> : null}
     </div>
   );
 }

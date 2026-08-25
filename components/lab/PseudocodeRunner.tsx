@@ -23,7 +23,7 @@ export function PseudocodeRunner() {
 
   return (
     <div>
-      <p className="text-sm text-white/60">
+      <p className="text-sm text-(--color-awaken-ink-soft)">
         SET/PRINT, IF-THEN-ELSE-ENDIF, FOR-TO-NEXT, WHILE-ENDWHILE — the pseudocode style
         used in O/L and A/L ICT textbooks. INPUT asks for a value with a popup when the
         program runs.
@@ -34,13 +34,13 @@ export function PseudocodeRunner() {
         onChange={(e) => setCode(e.target.value)}
         rows={14}
         spellCheck={false}
-        className="mt-3 w-full rounded-lg border border-white/15 bg-black/30 p-3 font-mono text-sm outline-none focus:border-[--color-brand]"
+        className="mt-3 w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-3 font-mono text-sm outline-none focus:border-(--color-awaken-accent)"
       />
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <button
           onClick={run}
-          className="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
+          className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
         >
           Run
         </button>
@@ -51,7 +51,7 @@ export function PseudocodeRunner() {
               setCode(ex.code);
               setHasRun(false);
             }}
-            className="rounded-lg border border-white/15 px-3 py-1.5 text-xs text-white/60 hover:text-white"
+            className="rounded-lg border border-(--color-awaken-line) px-3 py-1.5 text-xs text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)"
           >
             {ex.title}
           </button>
@@ -59,12 +59,12 @@ export function PseudocodeRunner() {
       </div>
 
       {hasRun ? (
-        <div className="mt-4 rounded-lg border border-white/10 bg-black/40 p-3 font-mono text-sm">
+        <div className="mt-4 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-3 font-mono text-sm">
           {output.map((line, i) => (
             <div key={i}>{line}</div>
           ))}
-          {error ? <div className="text-[--color-danger]">{error}</div> : null}
-          {!error && output.length === 0 ? <div className="text-white/40">(no output)</div> : null}
+          {error ? <div className="text-(--color-awaken-danger)">{error}</div> : null}
+          {!error && output.length === 0 ? <div className="text-(--color-awaken-ink-soft)">(no output)</div> : null}
         </div>
       ) : null}
     </div>

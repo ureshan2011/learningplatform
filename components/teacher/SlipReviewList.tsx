@@ -37,18 +37,18 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
   }
 
   if (slips.length === 0) {
-    return <p className="mt-3 text-sm text-white/50">No slips waiting.</p>;
+    return <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">No slips waiting.</p>;
   }
 
   return (
     <>
       <ul className="mt-3 space-y-3">
         {slips.map((slip) => (
-          <li key={slip.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+          <li key={slip.id} className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="font-medium">{slip.studentName}</p>
-                <p className="mt-0.5 text-sm text-white/50">
+                <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)">
                   {slip.subjectId} · {slip.amount} · {slip.submittedAt}
                 </p>
                 {slip.slipUrl ? (
@@ -56,7 +56,7 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
                     href={slip.slipUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-block text-sm text-[--color-accent] underline"
+                    className="mt-1 inline-block text-sm text-(--color-awaken-deep) underline"
                   >
                     View slip
                   </a>
@@ -66,14 +66,14 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
                 <button
                   onClick={() => review(slip.id, "approve")}
                   disabled={busyId === slip.id}
-                  className="rounded-lg bg-[--color-success] px-3 py-2 text-sm font-semibold text-black disabled:opacity-50"
+                  className="rounded-lg bg-(--color-awaken-success) px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   Approve
                 </button>
                 <button
                   onClick={() => review(slip.id, "reject")}
                   disabled={busyId === slip.id}
-                  className="rounded-lg border border-white/20 px-3 py-2 text-sm disabled:opacity-50"
+                  className="rounded-lg border border-(--color-awaken-line) px-3 py-2 text-sm disabled:opacity-50"
                 >
                   Reject
                 </button>
@@ -82,7 +82,7 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
           </li>
         ))}
       </ul>
-      {error ? <p className="mt-2 text-sm text-red-300">{error}</p> : null}
+      {error ? <p className="mt-2 text-sm text-(--color-awaken-danger)">{error}</p> : null}
     </>
   );
 }

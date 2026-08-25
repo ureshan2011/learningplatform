@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getSessionUser } from "@/lib/auth/session";
+import { SiteHeader } from "@/components/nav/SiteHeader";
 
 /**
  * Where PayHere returns the student's browser after payment.
@@ -13,24 +15,28 @@ export default async function PaymentSuccessPage({
   searchParams: Promise<{ order?: string }>;
 }) {
   const { order } = await searchParams;
+  const user = await getSessionUser().catch(() => null);
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-5 text-center">
-      <h1 className="text-2xl font-bold text-[--color-success]">Payment received</h1>
-      <p className="mt-3 text-sm text-white/65">
-        Your class is being unlocked now. This usually takes a few seconds — open your
-        dashboard and it will be ready.
-      </p>
-      {order ? <p className="mt-2 text-xs text-white/35">Reference: {order}</p> : null}
-      <Link
-        href="/dashboard"
-        className="mt-8 rounded-lg bg-[--color-brand] px-6 py-3 font-semibold text-black"
-      >
-        Go to my dashboard
-      </Link>
-      <p className="mt-4 text-xs text-white/40">
-        If it is still locked after a minute, contact your teacher with the reference above.
-      </p>
-    </main>
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto flex min-h-[calc(100dvh-73px)] max-w-md flex-col justify-center px-5 text-center">
+        <h1 className="text-2xl font-bold text-(--color-awaken-success)">Payment received</h1>
+        <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">
+          Your class is being unlocked now. This usually takes a few seconds — open your
+          dashboard and it will be ready.
+        </p>
+        {order ? <p className="mt-2 text-xs text-(--color-awaken-ink-soft)">Reference: {order}</p> : null}
+        <Link
+          href="/dashboard"
+          className="mt-8 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-6 py-3 font-semibold text-white"
+        >
+          Go to my dashboard
+        </Link>
+        <p className="mt-4 text-xs text-(--color-awaken-ink-soft)">
+          If it is still locked after a minute, contact your teacher with the reference above.
+        </p>
+      </main>
+    </>
   );
 }

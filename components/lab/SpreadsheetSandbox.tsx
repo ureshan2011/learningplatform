@@ -34,13 +34,13 @@ export function SpreadsheetSandbox() {
 
   return (
     <div>
-      <p className="text-sm text-white/60">
+      <p className="text-sm text-(--color-awaken-ink-soft)">
         Click a cell, then type a value or a formula — =SUM(B2:B4), =AVERAGE(...), =IF(...) —
         into the formula bar and press Enter.
       </p>
 
       <div className="mt-3 flex items-center gap-2">
-        <span className="w-14 shrink-0 rounded-lg border border-white/15 bg-black/20 px-2 py-1.5 text-center font-mono text-xs">
+        <span className="w-14 shrink-0 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) px-2 py-1.5 text-center font-mono text-xs">
           {active}
         </span>
         <input
@@ -51,22 +51,22 @@ export function SpreadsheetSandbox() {
             if (e.key === "Enter") formulaRef.current?.blur();
           }}
           placeholder="=SUM(B2:B4)"
-          className="flex-1 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 font-mono text-sm outline-none focus:border-[--color-brand]"
+          className="flex-1 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-1.5 font-mono text-sm outline-none focus:border-(--color-awaken-accent)"
         />
-        <button onClick={reset} className="shrink-0 rounded-lg border border-white/20 px-3 py-1.5 text-xs">
+        <button onClick={reset} className="shrink-0 rounded-lg border border-(--color-awaken-line) px-3 py-1.5 text-xs">
           Reset
         </button>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-lg border border-white/10">
+      <div className="mt-4 overflow-x-auto rounded-lg border border-(--color-awaken-line)">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr>
-              <th className="w-10 border border-white/10 bg-white/[0.04]" />
+              <th className="w-10 border border-(--color-awaken-line) bg-(--color-awaken-bg)" />
               {SPREADSHEET_COLS.map((col) => (
                 <th
                   key={col}
-                  className="border border-white/10 bg-white/[0.04] px-2 py-1 text-xs font-medium text-white/50"
+                  className="border border-(--color-awaken-line) bg-(--color-awaken-bg) px-2 py-1 text-xs font-medium text-(--color-awaken-ink-soft)"
                 >
                   {col}
                 </th>
@@ -76,7 +76,7 @@ export function SpreadsheetSandbox() {
           <tbody>
             {Array.from({ length: SPREADSHEET_ROWS }, (_, i) => i + 1).map((row) => (
               <tr key={row}>
-                <td className="border border-white/10 bg-white/[0.04] px-2 text-center text-xs text-white/40">
+                <td className="border border-(--color-awaken-line) bg-(--color-awaken-bg) px-2 text-center text-xs text-(--color-awaken-ink-soft)">
                   {row}
                 </td>
                 {SPREADSHEET_COLS.map((col) => {
@@ -87,11 +87,11 @@ export function SpreadsheetSandbox() {
                     <td
                       key={id}
                       onClick={() => selectCell(id)}
-                      className={`min-w-[92px] cursor-pointer border border-white/10 px-2 py-1.5 ${
+                      className={`min-w-[92px] cursor-pointer border border-(--color-awaken-line) px-2 py-1.5 ${
                         active === id
-                          ? "outline outline-1 outline-[--color-brand] bg-[--color-brand]/15"
-                          : "hover:bg-white/[0.03]"
-                      } ${isError ? "text-[--color-danger]" : ""}`}
+                          ? "outline outline-1 outline-(--color-awaken-accent) bg-(--color-awaken-accent-soft)"
+                          : "hover:bg-(--color-awaken-card)"
+                      } ${isError ? "text-(--color-awaken-danger)" : ""}`}
                     >
                       {displayValue(result)}
                     </td>

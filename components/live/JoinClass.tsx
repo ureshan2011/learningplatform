@@ -68,7 +68,7 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
         {state.reason === "expired" || state.reason === "not_enrolled" ? (
           <Link
             href="/dashboard"
-            className="mt-4 inline-block rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
+            className="mt-4 inline-block rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
           >
             Renew to join
           </Link>
@@ -81,7 +81,7 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
     return (
       <div>
         <HlsPlayer src={state.data.hlsUrl} watermark={state.data.watermark} lowData={lowData} />
-        <label className="mt-3 flex items-center gap-2 text-sm text-white/60">
+        <label className="mt-3 flex items-center gap-2 text-sm text-(--color-awaken-ink-soft)">
           <input
             type="checkbox"
             checked={lowData}
@@ -141,8 +141,8 @@ function Panel({
     <div
       className={`flex min-h-[240px] items-center justify-center rounded-xl border p-6 text-center text-sm ${
         tone === "error"
-          ? "border-red-500/30 bg-red-500/10 text-red-200"
-          : "border-white/10 bg-white/[0.03] text-white/60"
+          ? "border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft) text-(--color-awaken-danger)"
+          : "border-(--color-awaken-line) bg-(--color-awaken-card) text-(--color-awaken-ink-soft)"
       }`}
     >
       <div>{children}</div>

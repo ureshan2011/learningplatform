@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
@@ -9,6 +8,7 @@ import { publicEnv } from "@/lib/env";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
+import { SiteHeader } from "@/components/nav/SiteHeader";
 import { MAX_DEVICES_PER_USER, type User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -33,14 +33,12 @@ export default async function AccountPage() {
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
 
   return (
-    <main className="mx-auto max-w-lg px-5 py-8">
-      <Link href="/dashboard" className="text-sm text-white/50 underline">
-        ← Dashboard
-      </Link>
-
+    <>
+      <SiteHeader user={session} />
+      <main className="mx-auto max-w-lg px-5 py-8">
       <h1 className="mt-4 text-2xl font-bold">Account</h1>
 
-      <dl className="mt-6 space-y-3 rounded-xl border border-white/10 bg-white/[0.03] p-5 text-sm">
+      <dl className="mt-6 space-y-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm">
         <Row label="Name" value={user.name} />
         {/* Shown so "why can't I see the teacher console?" is answerable at a glance. */}
         <Row label="Role" value={ROLE_LABEL[user.role] ?? user.role} />
@@ -52,16 +50,16 @@ export default async function AccountPage() {
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Subscriptions</h2>
         {enrollments.length === 0 ? (
-          <p className="mt-3 text-sm text-white/50">No subscriptions yet.</p>
+          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">No subscriptions yet.</p>
         ) : (
           <ul className="mt-3 space-y-2 text-sm">
             {enrollments.map((e) => (
               <li
                 key={e.id}
-                className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-3"
+                className="flex items-center justify-between rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3"
               >
                 <span>{subjectById.get(e.subjectId)?.name ?? e.subjectId}</span>
-                <span className={e.status === "active" ? "text-[--color-success]" : "text-white/45"}>
+                <span className={e.status === "active" ? "text-(--color-awaken-success)" : "text-(--color-awaken-ink-soft)"}>
                   {e.status === "active"
                     ? `until ${formatDate(e.currentPeriodEnd)}`
                     : e.status}
@@ -74,11 +72,11 @@ export default async function AccountPage() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Invite a friend</h2>
-        <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm">
-          <p className="text-white/70">
+        <div className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 text-sm">
+          <p className="text-(--color-awaken-ink-soft)">
             Share your code — when your friend subscribes, <strong>you both get 3 free days</strong>.
           </p>
-          <p className="mt-3 truncate rounded-lg border border-white/10 bg-black/20 px-3 py-2 font-mono text-xs text-white/80">
+          <p className="mt-3 truncate rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) px-3 py-2 font-mono text-xs text-(--color-awaken-ink-soft)">
             {`${publicEnv.appUrl}/signin?ref=${user.referralCode}`}
           </p>
           <div className="mt-3">
@@ -96,7 +94,7 @@ export default async function AccountPage() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Devices</h2>
-        <p className="mt-1 text-sm text-white/50">
+        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
           Your account works on up to {MAX_DEVICES_PER_USER} devices. To swap one, ask
           your teacher to remove an old device.
         </p>
@@ -104,10 +102,10 @@ export default async function AccountPage() {
           {(user.devices ?? []).map((device) => (
             <li
               key={device.deviceHash}
-              className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] p-3"
+              className="flex items-center justify-between rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3"
             >
               <span>{device.label}</span>
-              <span className="text-white/45">last used {formatDate(device.lastSeenAt)}</span>
+              <span className="text-(--color-awaken-ink-soft)">last used {formatDate(device.lastSeenAt)}</span>
             </li>
           ))}
         </ul>
@@ -116,14 +114,15 @@ export default async function AccountPage() {
       <div className="mt-10">
         <SignOutButton />
       </div>
-    </main>
+      </main>
+    </>
   );
 }
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <dt className="text-white/55">{label}</dt>
+      <dt className="text-(--color-awaken-ink-soft)">{label}</dt>
       <dd className="truncate font-medium">{value}</dd>
     </div>
   );
