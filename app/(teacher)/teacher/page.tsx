@@ -9,6 +9,7 @@ import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipRevie
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { SeedQuestionsButton } from "@/components/teacher/SeedQuestionsButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
+import { SiteHeader } from "@/components/nav/SiteHeader";
 import { zoomConfigured } from "@/lib/features";
 import type { ClassSession, Payment, SessionSecrets, User } from "@/lib/types";
 
@@ -49,9 +50,11 @@ export default async function TeacherConsolePage() {
   const startUrls = await section("startUrls", () => startUrlsFor(sessions.map((s) => s.id)), {});
 
   return (
-    <main className="mx-auto max-w-3xl px-5 py-8">
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto max-w-3xl px-5 py-8">
       <h1 className="text-2xl font-bold">Teacher console</h1>
-      <p className="mt-1 text-sm text-white/50">Schedule classes and approve payments.</p>
+      <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Schedule classes and approve payments.</p>
 
       {subjects.length === 0 ? (
         <div className="mt-8">
@@ -79,17 +82,17 @@ export default async function TeacherConsolePage() {
       <section className="mt-10">
         <h2 className="text-lg font-semibold">Upcoming classes</h2>
         {sessions.length === 0 ? (
-          <p className="mt-3 text-sm text-white/50">Nothing scheduled.</p>
+          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">Nothing scheduled.</p>
         ) : (
           <ul className="mt-3 space-y-3">
             {sessions.map((session) => (
               <li
                 key={session.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
               >
                 <div className="min-w-0">
                   <p className="truncate font-medium">{session.title}</p>
-                  <p className="mt-0.5 text-sm text-white/50">
+                  <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)">
                     {formatSessionTime(session.startsAt)} · {session.durationMinutes} min
                     {session.hlsUrl ? " · simulcast on" : " · no simulcast"}
                   </p>
@@ -99,7 +102,7 @@ export default async function TeacherConsolePage() {
                     href={startUrls[session.id]}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
+                    className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
                   >
                     Start class
                   </a>
@@ -112,12 +115,13 @@ export default async function TeacherConsolePage() {
 
       <section className="mt-10">
         <h2 className="text-lg font-semibold">Bank slips awaiting approval</h2>
-        <p className="mt-1 text-sm text-white/45">
+        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
           Approving grants one month of access from today.
         </p>
         <SlipReviewList slips={slips} />
       </section>
-    </main>
+      </main>
+    </>
   );
 }
 

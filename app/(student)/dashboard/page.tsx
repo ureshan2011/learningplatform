@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { listEnrollments, listSubjects, listUpcomingSessions } from "@/lib/queries";
 import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
+import { SiteHeader } from "@/components/nav/SiteHeader";
 import { payhereConfigured } from "@/lib/features";
 
 export const dynamic = "force-dynamic";
@@ -31,15 +32,12 @@ export default async function DashboardPage() {
   const isStaff = user.role === "teacher" || user.role === "admin";
 
   return (
-    <main className="mx-auto max-w-3xl px-5 py-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Hi, {user.name.split(" ")[0]}</h1>
-          <p className="text-sm text-white/50">Your classes and timetable</p>
-        </div>
-        <Link href="/account" className="text-sm text-white/60 underline">
-          Account
-        </Link>
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto max-w-3xl px-5 py-8">
+      <header>
+        <h1 className="text-2xl font-bold">Hi, {user.name.split(" ")[0]}</h1>
+        <p className="text-sm text-(--color-awaken-ink-soft)">Your classes and timetable</p>
       </header>
 
       {/*
@@ -50,22 +48,22 @@ export default async function DashboardPage() {
       {isStaff ? (
         <Link
           href="/teacher"
-          className="mt-6 flex items-center justify-between gap-4 rounded-xl border border-[--color-brand]/40 bg-[--color-brand]/10 p-4"
+          className="mt-6 flex items-center justify-between gap-4 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-4"
         >
           <span>
-            <span className="block font-semibold text-[--color-brand]">Teacher console</span>
-            <span className="block text-sm text-white/65">
+            <span className="block font-semibold text-(--color-awaken-accent)">Teacher console</span>
+            <span className="block text-sm text-(--color-awaken-ink-soft)">
               Schedule classes, approve payments, manage subjects
             </span>
           </span>
-          <span aria-hidden className="text-xl text-[--color-brand]">→</span>
+          <span aria-hidden className="text-xl text-(--color-awaken-accent)">→</span>
         </Link>
       ) : null}
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Next classes</h2>
         {sessions.length === 0 ? (
-          <p className="mt-3 rounded-xl border border-white/10 bg-white/[0.03] p-5 text-sm text-white/55">
+          <p className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
             {activeSubjectIds.length === 0
               ? "You have no active class yet. Pick a subject below to get started."
               : "No classes scheduled right now. Your teacher will add the next one soon."}
@@ -78,24 +76,24 @@ export default async function DashboardPage() {
               return (
                 <li
                   key={session.id}
-                  className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                  className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <p className="truncate font-semibold">{session.title}</p>
-                      <p className="mt-0.5 truncate text-sm text-white/55">
+                      <p className="mt-0.5 truncate text-sm text-(--color-awaken-ink-soft)">
                         {subject?.name ?? session.subjectId} · {session.topic}
                       </p>
-                      <p className="mt-2 text-sm text-white/70">
+                      <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
                         {formatSessionTime(session.startsAt)}
-                        <span className={isLive ? "ml-2 text-[--color-success]" : "ml-2 text-white/45"}>
+                        <span className={isLive ? "ml-2 text-(--color-awaken-success)" : "ml-2 text-(--color-awaken-ink-soft)"}>
                           {isLive ? "● live now" : relativeToNow(session.startsAt)}
                         </span>
                       </p>
                     </div>
                     <Link
                       href={`/live/${session.id}`}
-                      className="shrink-0 rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
+                      className="shrink-0 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
                     >
                       {isLive ? "Join" : "Open"}
                     </Link>
@@ -116,12 +114,12 @@ export default async function DashboardPage() {
             return (
               <li
                 key={subject.id}
-                className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="font-semibold">{subject.name}</p>
-                    <p className="mt-0.5 text-sm text-white/55">
+                    <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)">
                       {active
                         ? `Paid until ${formatSessionTime(enrollment.currentPeriodEnd)}`
                         : `${formatLKR(subject.priceLKR)} per month`}
@@ -130,7 +128,7 @@ export default async function DashboardPage() {
                   {active ? (
                     <Link
                       href={`/subjects/${subject.id}`}
-                      className="rounded-lg border border-white/20 px-4 py-2 text-sm"
+                      className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm"
                     >
                       Notes &amp; papers
                     </Link>
@@ -141,7 +139,7 @@ export default async function DashboardPage() {
                     // parents pay anyway, so this is a working path, not a stub.
                     <Link
                       href="/pay/slip"
-                      className="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
+                      className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
                     >
                       Pay by bank slip
                     </Link>
@@ -152,6 +150,7 @@ export default async function DashboardPage() {
           })}
         </ul>
       </section>
-    </main>
+      </main>
+    </>
   );
 }

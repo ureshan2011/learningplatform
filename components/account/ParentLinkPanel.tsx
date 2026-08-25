@@ -37,15 +37,15 @@ export function ParentLinkPanel() {
   }
 
   return (
-    <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm">
-      <p className="text-white/70">
+    <div className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 text-sm">
+      <p className="text-(--color-awaken-ink-soft)">
         Give a parent a link to see your attendance and progress — no account needed
         for them, and it never shows anything you wouldn&apos;t want them to see beyond that.
       </p>
 
       {url ? (
         <>
-          <p className="mt-3 truncate rounded-lg border border-white/10 bg-black/20 px-3 py-2 font-mono text-xs text-white/80">
+          <p className="mt-3 truncate rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) px-3 py-2 font-mono text-xs text-(--color-awaken-ink-soft)">
             {url}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -56,7 +56,7 @@ export function ParentLinkPanel() {
             <button
               onClick={() => call("revoke")}
               disabled={busy}
-              className="rounded-lg border border-white/20 px-4 py-2 text-sm disabled:opacity-50"
+              className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm disabled:opacity-50"
             >
               Revoke all links
             </button>
@@ -66,12 +66,12 @@ export function ParentLinkPanel() {
         <button
           onClick={() => call("create")}
           disabled={busy}
-          className="mt-3 rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
+          className="mt-3 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           {busy ? "Creating…" : "Get parent link"}
         </button>
       )}
-      {error ? <p className="mt-2 text-xs text-red-300">{error}</p> : null}
+      {error ? <p className="mt-2 text-xs text-(--color-awaken-danger)">{error}</p> : null}
     </div>
   );
 }

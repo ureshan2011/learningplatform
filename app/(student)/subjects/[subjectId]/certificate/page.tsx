@@ -6,6 +6,7 @@ import { hasAccess } from "@/lib/payments/entitlements";
 import { getCertificateEligibility } from "@/lib/practice/engine";
 import { publicEnv } from "@/lib/env";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
+import { SiteHeader } from "@/components/nav/SiteHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +30,10 @@ export default async function CertificatePage({
   const imageUrl = `/api/certificate/${subjectId}`;
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-8">
-      <Link href={`/subjects/${subjectId}`} className="text-sm text-white/50 underline">
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto max-w-2xl px-5 py-8">
+      <Link href={`/subjects/${subjectId}`} className="text-sm text-(--color-awaken-ink-soft) underline">
         ← {subject.name}
       </Link>
 
@@ -50,13 +53,13 @@ export default async function CertificatePage({
           <img
             src={imageUrl}
             alt={`${subject.name} Practice Mastery certificate for ${user.name}`}
-            className="w-full rounded-xl border border-white/10"
+            className="w-full rounded-xl border border-(--color-awaken-line)"
           />
           <div className="mt-4 flex flex-wrap gap-3">
             <a
               href={imageUrl}
               download={`ict-class-${subject.id}-certificate.png`}
-              className="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
+              className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
             >
               Download certificate
             </a>
@@ -67,22 +70,22 @@ export default async function CertificatePage({
           </div>
         </div>
       ) : (
-        <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-6 text-sm">
-          <p className="text-white/70">
+        <div className="mt-6 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 text-sm">
+          <p className="text-(--color-awaken-ink-soft)">
             Answer <strong>{eligibility.requiredQuestions}</strong> practice questions with at
             least <strong>{eligibility.requiredAccuracyPct}%</strong> accuracy to unlock your
             certificate for {subject.name}.
           </p>
           <div className="mt-4">
-            <p className="flex justify-between text-xs text-white/45">
+            <p className="flex justify-between text-xs text-(--color-awaken-ink-soft)">
               <span>Questions answered</span>
               <span>
                 {eligibility.questionsAnswered}/{eligibility.requiredQuestions}
               </span>
             </p>
-            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-line)">
               <div
-                className="h-full rounded-full bg-[--color-brand]"
+                className="h-full rounded-full bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose)"
                 style={{
                   width: `${Math.min(100, (eligibility.questionsAnswered / eligibility.requiredQuestions) * 100)}%`,
                 }}
@@ -90,18 +93,19 @@ export default async function CertificatePage({
             </div>
           </div>
           {eligibility.questionsAnswered > 0 ? (
-            <p className="mt-4 text-white/55">
-              Current accuracy: <strong className="text-white">{eligibility.accuracyPct}%</strong>
+            <p className="mt-4 text-(--color-awaken-ink-soft)">
+              Current accuracy: <strong className="text-(--color-awaken-ink)">{eligibility.accuracyPct}%</strong>
             </p>
           ) : null}
           <Link
             href={`/subjects/${subjectId}/practice`}
-            className="mt-5 inline-block rounded-lg bg-[--color-brand] px-4 py-2 font-semibold text-black"
+            className="mt-5 inline-block rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white"
           >
             Go to Practice
           </Link>
         </div>
       )}
-    </main>
+      </main>
+    </>
   );
 }

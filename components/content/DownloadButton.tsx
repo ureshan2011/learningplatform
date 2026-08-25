@@ -39,11 +39,11 @@ export function DownloadButton({ contentId, label }: { contentId: string; label:
       <button
         onClick={open}
         disabled={busy}
-        className="rounded-lg border border-white/20 px-4 py-2 text-sm disabled:opacity-50"
+        className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm disabled:opacity-50"
       >
         {busy ? "Preparing…" : label}
       </button>
-      {error ? <p className="mt-1 text-xs text-red-300">{error}</p> : null}
+      {error ? <p className="mt-1 text-xs text-(--color-awaken-danger)">{error}</p> : null}
     </div>
   );
 }

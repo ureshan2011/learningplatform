@@ -22,15 +22,15 @@ export function CodeLab() {
 
   return (
     <div>
-      <div className="flex gap-1 border-b border-white/10">
+      <div className="flex gap-1 border-b border-(--color-awaken-line)">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`px-4 py-2.5 text-sm font-medium transition-colors ${
               tab === t.id
-                ? "border-b-2 border-[--color-brand] text-[--color-brand]"
-                : "text-white/50 hover:text-white/80"
+                ? "border-b-2 border-(--color-awaken-accent) text-(--color-awaken-accent)"
+                : "text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)"
             }`}
           >
             {t.label}

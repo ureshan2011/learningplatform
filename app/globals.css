@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
 /*
- * Design tokens. Dark-first: students study at night on cheap Android screens,
- * and a dark UI costs less battery on OLED.
+ * Design tokens.
+ *
+ * The original dark-first palette (--color-ink etc.) shipped first and is
+ * kept below for the video-player chrome, which conventionally stays dark
+ * regardless of site theme (Zoom, YouTube and every other player do the
+ * same) — see components/player/*.
+ *
+ * Every other surface in the app now uses the "Awaken" light palette, which
+ * started as a landing-page trial and is the site's real look: one visual
+ * language from the marketing page through to the student dashboard, the
+ * teacher console and every feature page.
  */
 @theme {
   --color-ink: #0b1020;
@@ -16,11 +25,6 @@
   --color-danger: #ef4444;
   --font-sans: ui-sans-serif, system-ui, "Segoe UI", "Noto Sans Sinhala", sans-serif;
 
-  /*
-   * "Awaken" light palette — trial run on the landing page only. Additive:
-   * existing --color-* tokens above are untouched so every other page keeps
-   * the dark theme until we decide to roll this out further.
-   */
   --color-awaken-bg: #fafbf9;
   --color-awaken-card: #ffffff;
   --color-awaken-line: #ecedf1;
@@ -30,6 +34,10 @@
   --color-awaken-accent-soft: #fff1e8;
   --color-awaken-deep: #1e2340;
   --color-awaken-rose: #e11d8f;
+  --color-awaken-success: #16a34a;
+  --color-awaken-success-soft: #f0fdf4;
+  --color-awaken-danger: #dc2626;
+  --color-awaken-danger-soft: #fef2f2;
 }
 
 /* Slow, cheap drift for the hero's gradient blobs — pure CSS, GPU-composited,
@@ -60,13 +68,13 @@
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html,
 body {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--color-awaken-bg);
+  color: var(--color-awaken-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }

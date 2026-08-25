@@ -10,6 +10,7 @@ import {
 import { clientAuth } from "@/lib/firebase/client";
 import { collectDeviceSignals } from "@/lib/auth/device-client";
 import { toE164 } from "@/lib/phone";
+import { SiteHeader } from "@/components/nav/SiteHeader";
 
 type Step = "phone" | "code";
 
@@ -104,14 +105,16 @@ export default function SignInPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-5 py-10">
+    <>
+      <SiteHeader user={null} />
+      <main className="mx-auto flex min-h-[calc(100dvh-73px)] max-w-md flex-col justify-center px-5 py-10">
       <h1 className="text-2xl font-bold">Sign in</h1>
-      <p className="mt-2 text-sm text-white/60">
+      <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
         We send a one-time code by SMS. Your phone number is your account.
       </p>
 
       {referredBy ? (
-        <p className="mt-4 rounded-lg border border-[--color-brand]/30 bg-[--color-brand]/10 p-3 text-sm text-[--color-brand]">
+        <p className="mt-4 rounded-lg border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
           You were invited with code {referredBy} — sign up and you&apos;ll both get 3 free days.
         </p>
       ) : null}
@@ -164,7 +167,7 @@ export default function SignInPage() {
               setCode("");
               setError(null);
             }}
-            className="w-full text-sm text-white/50 underline"
+            className="w-full text-sm text-(--color-awaken-ink-soft) underline"
           >
             Change number
           </button>
@@ -172,20 +175,21 @@ export default function SignInPage() {
       )}
 
       {error ? (
-        <p role="alert" className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-300">
+        <p role="alert" className="mt-4 rounded-lg bg-(--color-awaken-danger-soft) p-3 text-sm text-(--color-awaken-danger)">
           {error}
         </p>
       ) : null}
 
       <div id="recaptcha-container" />
-    </main>
+      </main>
+    </>
   );
 }
 
 const inputClass =
-  "w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-base outline-none focus:border-[--color-brand]";
+  "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-3 text-base outline-none focus:border-(--color-awaken-accent)";
 const buttonClass =
-  "w-full rounded-lg bg-[--color-brand] px-4 py-3 font-semibold text-black disabled:opacity-50";
+  "w-full rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-3 font-semibold text-white disabled:opacity-50";
 
 function Field({
   label,
@@ -198,9 +202,9 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-white/80">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-(--color-awaken-ink-soft)">{label}</span>
       {children}
-      {hint ? <span className="mt-1 block text-xs text-white/45">{hint}</span> : null}
+      {hint ? <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">{hint}</span> : null}
     </label>
   );
 }

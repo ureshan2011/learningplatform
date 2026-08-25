@@ -47,9 +47,9 @@ export async function GET(
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #0b1020 0%, #141b33 100%)",
+          background: "#fafbf9",
           fontFamily: "sans-serif",
-          color: "#f7f8fc",
+          color: "#15171f",
         }}
       >
         <div
@@ -60,16 +60,18 @@ export async function GET(
             justifyContent: "center",
             width: "1080px",
             height: "680px",
-            border: "3px solid #ffb703",
+            background: "#ffffff",
+            border: "3px solid #ea580c",
             borderRadius: "20px",
             padding: "56px",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.08)",
           }}
         >
-          <div style={{ display: "flex", fontSize: 26, letterSpacing: 6, color: "#ffb703" }}>
+          <div style={{ display: "flex", fontSize: 26, letterSpacing: 6, color: "#ea580c" }}>
             ICT CLASS
           </div>
 
-          <div style={{ display: "flex", marginTop: 36, fontSize: 22, color: "#9aa3c2" }}>
+          <div style={{ display: "flex", marginTop: 36, fontSize: 22, color: "#5b5f6b" }}>
             CERTIFICATE OF PRACTICE MASTERY
           </div>
 
@@ -79,13 +81,13 @@ export async function GET(
               marginTop: 28,
               fontSize: 56,
               fontWeight: 700,
-              color: "#ffffff",
+              color: "#15171f",
             }}
           >
             {user.name}
           </div>
 
-          <div style={{ display: "flex", marginTop: 20, fontSize: 26, color: "#e5e7eb" }}>
+          <div style={{ display: "flex", marginTop: 20, fontSize: 26, color: "#5b5f6b" }}>
             has demonstrated mastery in
           </div>
           <div
@@ -94,7 +96,7 @@ export async function GET(
               marginTop: 8,
               fontSize: 34,
               fontWeight: 700,
-              color: "#fb8500",
+              color: "#e11d8f",
             }}
           >
             {subject.name}
@@ -105,13 +107,13 @@ export async function GET(
               display: "flex",
               marginTop: 28,
               fontSize: 20,
-              color: "#9aa3c2",
+              color: "#5b5f6b",
             }}
           >
             {eligibility.accuracyPct}% accuracy across {eligibility.questionsAnswered} practice questions
           </div>
 
-          <div style={{ display: "flex", marginTop: 44, fontSize: 18, color: "#6b7395" }}>
+          <div style={{ display: "flex", marginTop: 44, fontSize: 18, color: "#9598a6" }}>
             {formatDate(Date.now())}
           </div>
         </div>

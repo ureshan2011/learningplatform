@@ -74,9 +74,9 @@ export function SlipUploadForm({
 
   if (done) {
     return (
-      <div className="mt-8 rounded-xl border border-[--color-success]/30 bg-[--color-success]/10 p-5 text-sm">
-        <p className="font-semibold text-[--color-success]">Slip received</p>
-        <p className="mt-1 text-white/70">
+      <div className="mt-8 rounded-xl border border-(--color-awaken-success)/30 bg-(--color-awaken-success-soft) p-5 text-sm">
+        <p className="font-semibold text-(--color-awaken-success)">Slip received</p>
+        <p className="mt-1 text-(--color-awaken-ink-soft)">
           Your teacher will approve it shortly. You will see the class unlock on your
           dashboard.
         </p>
@@ -87,10 +87,10 @@ export function SlipUploadForm({
   return (
     <form onSubmit={submit} className="mt-8 space-y-5">
       <label className="block">
-        <span className="mb-1.5 block text-sm font-medium text-white/80">Subject</span>
+        <span className="mb-1.5 block text-sm font-medium text-(--color-awaken-ink-soft)">Subject</span>
         <select name="subjectId" required className={inputClass}>
           {subjects.map((s) => (
-            <option key={s.id} value={s.id} className="bg-[--color-ink]">
+            <option key={s.id} value={s.id} className="bg-(--color-awaken-bg)">
               {s.name} — {s.price}/month
             </option>
           ))}
@@ -98,7 +98,7 @@ export function SlipUploadForm({
       </label>
 
       <label className="block">
-        <span className="mb-1.5 block text-sm font-medium text-white/80">Deposit slip</span>
+        <span className="mb-1.5 block text-sm font-medium text-(--color-awaken-ink-soft)">Deposit slip</span>
         <input
           name="slip"
           type="file"
@@ -107,9 +107,9 @@ export function SlipUploadForm({
           // slip at the bank counter rather than saving a file first.
           capture="environment"
           required
-          className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm file:mr-3 file:rounded file:border-0 file:bg-white/10 file:px-3 file:py-1.5 file:text-white"
+          className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-sm file:mr-3 file:rounded file:border-0 file:bg-(--color-awaken-line) file:px-3 file:py-1.5 file:text-(--color-awaken-ink)"
         />
-        <span className="mt-1 block text-xs text-white/45">
+        <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">
           Photo or PDF, under 5MB. Make sure the amount and date are readable.
         </span>
       </label>
@@ -117,15 +117,15 @@ export function SlipUploadForm({
       <button
         type="submit"
         disabled={busy}
-        className="w-full rounded-lg bg-[--color-brand] px-4 py-3 font-semibold text-black disabled:opacity-50"
+        className="w-full rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-3 font-semibold text-white disabled:opacity-50"
       >
         {busy ? "Uploading…" : "Submit slip"}
       </button>
 
-      {error ? <p className="text-sm text-red-300">{error}</p> : null}
+      {error ? <p className="text-sm text-(--color-awaken-danger)">{error}</p> : null}
     </form>
   );
 }
 
 const inputClass =
-  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-base outline-none focus:border-[--color-brand]";
+  "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-base outline-none focus:border-(--color-awaken-accent)";
