@@ -35,35 +35,32 @@ env:
     availability: [BUILD, RUNTIME]
 
 # ---------------------------------------------------------------------------
-# LATER: live classes (Zoom).
-#
-# Create two apps in the Zoom Marketplace — Server-to-Server OAuth, and Meeting
-# SDK — then store the three secrets:
-#   firebase apphosting:secrets:set zoom-s2s-client-secret
-#   firebase apphosting:secrets:set zoom-sdk-secret
-#   firebase apphosting:secrets:set zoom-webhook-secret-token
+# Live classes (Zoom). On the Basic plan for now — no Custom Live Streaming
+# Service, so class size is capped at Zoom's own participant/duration limits
+# until this account is upgraded to Pro or above. The three secrets below
+# live in Secret Manager, never as plain values here.
 # ---------------------------------------------------------------------------
-#  - variable: ZOOM_ACCOUNT_ID
-#    value: your-account-id
-#    availability: [RUNTIME]
-#  - variable: ZOOM_S2S_CLIENT_ID
-#    value: your-client-id
-#    availability: [RUNTIME]
-#  - variable: ZOOM_HOST_USER_ID
-#    value: you@example.com
-#    availability: [RUNTIME]
-#  - variable: NEXT_PUBLIC_ZOOM_SDK_KEY
-#    value: your-sdk-key
-#    availability: [BUILD, RUNTIME]
-#  - variable: ZOOM_S2S_CLIENT_SECRET
-#    secret: zoom-s2s-client-secret
-#    availability: [RUNTIME]
-#  - variable: ZOOM_SDK_SECRET
-#    secret: zoom-sdk-secret
-#    availability: [RUNTIME]
-#  - variable: ZOOM_WEBHOOK_SECRET_TOKEN
-#    secret: zoom-webhook-secret-token
-#    availability: [RUNTIME]
+  - variable: ZOOM_ACCOUNT_ID
+    value: dMfbjWuFSMKklegsSTE2Nw
+    availability: [RUNTIME]
+  - variable: ZOOM_S2S_CLIENT_ID
+    value: dKdk6qhLTEGQwSllKHfzHQ
+    availability: [RUNTIME]
+  - variable: ZOOM_HOST_USER_ID
+    value: yasassriofficial@gmail.com
+    availability: [RUNTIME]
+  - variable: NEXT_PUBLIC_ZOOM_SDK_KEY
+    value: 78mLQD9tSJq4yNgz7YMsnQ
+    availability: [BUILD, RUNTIME]
+  - variable: ZOOM_S2S_CLIENT_SECRET
+    secret: zoom-s2s-client-secret
+    availability: [RUNTIME]
+  - variable: ZOOM_SDK_SECRET
+    secret: zoom-sdk-secret
+    availability: [RUNTIME]
+  - variable: ZOOM_WEBHOOK_SECRET_TOKEN
+    secret: zoom-webhook-secret-token
+    availability: [RUNTIME]
 
 # ---------------------------------------------------------------------------
 # LATER: card payments (PayHere).
