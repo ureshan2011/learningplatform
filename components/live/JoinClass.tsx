@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ZoomEmbed, type ZoomJoinConfig } from "@/components/player/ZoomEmbed";
 import { HlsPlayer } from "@/components/player/HlsPlayer";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 type JoinResponse =
   | ({ mode: "zoom" } & ZoomJoinConfig & { joinUrl: string })
@@ -58,22 +59,19 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
   }, [sessionId]);
 
   if (state.kind === "loading") {
-    return <Panel>Getting you into class…</Panel>;
+    return <EmptyState role="status">Getting you into class…</EmptyState>;
   }
 
   if (state.kind === "error") {
     return (
-      <Panel tone="error">
+      <EmptyState tone="error" role="alert">
         <p>{state.message}</p>
         {state.reason === "expired" || state.reason === "not_enrolled" ? (
-          <Link
-            href="/dashboard"
-            className="mt-4 inline-block rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
-          >
+          <Link href="/dashboard" className="btn btn-primary mt-4">
             Renew to join
           </Link>
         ) : null}
-      </Panel>
+      </EmptyState>
     );
   }
 
@@ -81,12 +79,12 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
     return (
       <div>
         <HlsPlayer src={state.data.hlsUrl} watermark={state.data.watermark} lowData={lowData} />
-        <label className="mt-3 flex items-center gap-2 text-sm text-white/60">
+        <label className="mt-3 flex items-center gap-2 text-sm text-(--color-text-muted)">
           <input
             type="checkbox"
             checked={lowData}
             onChange={(e) => setLowData(e.target.checked)}
-            className="size-4"
+            className="size-4 accent-(--color-brand)"
           />
           Low data mode (lower quality, saves your data)
         </label>
@@ -128,24 +126,4 @@ function messageForJoinError(reason?: string): string {
     default:
       return "You cannot join this class right now.";
   }
-}
-
-function Panel({
-  children,
-  tone = "info",
-}: {
-  children: React.ReactNode;
-  tone?: "info" | "error";
-}) {
-  return (
-    <div
-      className={`flex min-h-[240px] items-center justify-center rounded-xl border p-6 text-center text-sm ${
-        tone === "error"
-          ? "border-red-500/30 bg-red-500/10 text-red-200"
-          : "border-white/10 bg-white/[0.03] text-white/60"
-      }`}
-    >
-      <div>{children}</div>
-    </div>
-  );
 }

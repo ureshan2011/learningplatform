@@ -29,11 +29,7 @@ export function SignOutButton() {
   }
 
   return (
-    <button
-      onClick={handleSignOut}
-      disabled={busy}
-      className="w-full rounded-lg border border-white/20 px-4 py-3 text-sm disabled:opacity-50"
-    >
+    <button onClick={handleSignOut} disabled={busy} className="btn btn-secondary w-full">
       {busy ? "Signing out…" : "Sign out"}
     </button>
   );

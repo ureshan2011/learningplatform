@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { StatusBanner } from "@/components/ui/StatusBanner";
 
 /**
  * Fetches a short-lived download URL and opens it.
@@ -36,14 +37,14 @@ export function DownloadButton({ contentId, label }: { contentId: string; label:
 
   return (
     <div className="text-right">
-      <button
-        onClick={open}
-        disabled={busy}
-        className="rounded-lg border border-white/20 px-4 py-2 text-sm disabled:opacity-50"
-      >
+      <button onClick={open} disabled={busy} className="btn btn-secondary btn-sm">
         {busy ? "Preparing…" : label}
       </button>
-      {error ? <p className="mt-1 text-xs text-red-300">{error}</p> : null}
+      {error ? (
+        <div className="mt-1.5">
+          <StatusBanner tone="error">{error}</StatusBanner>
+        </div>
+      ) : null}
     </div>
   );
 }

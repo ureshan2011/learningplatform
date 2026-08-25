@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { StatusBanner } from "@/components/ui/StatusBanner";
 
 /**
  * First-run helper: creates the two default ICT subjects.
@@ -29,21 +30,21 @@ export function SeedSubjectsButton() {
   }
 
   return (
-    <div className="rounded-xl border border-[--color-brand]/30 bg-[--color-brand]/10 p-5">
-      <p className="font-semibold text-[--color-brand]">Start here</p>
-      <p className="mt-1.5 text-sm text-white/70">
+    <div className="surface border-(--color-brand)/30 bg-(--color-brand)/[0.08] p-5">
+      <p className="font-semibold text-(--color-brand)">Start here</p>
+      <p className="mt-1.5 text-sm text-(--color-text-muted)">
         You have no subjects yet. This creates <strong>O/L ICT</strong> at Rs 1,500/month and{" "}
         <strong>A/L ICT</strong> at Rs 2,500/month. You can change the prices and descriptions
         afterwards.
       </p>
-      <button
-        onClick={seed}
-        disabled={busy}
-        className="mt-4 rounded-lg bg-[--color-brand] px-5 py-2.5 font-semibold text-black disabled:opacity-50"
-      >
+      <button onClick={seed} disabled={busy} className="btn btn-primary mt-4">
         {busy ? "Creating…" : "Create my two subjects"}
       </button>
-      {error ? <p className="mt-2 text-sm text-red-300">{error}</p> : null}
+      {error ? (
+        <div className="mt-2">
+          <StatusBanner tone="error">{error}</StatusBanner>
+        </div>
+      ) : null}
     </div>
   );
 }

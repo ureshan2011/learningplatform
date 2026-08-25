@@ -15,11 +15,11 @@ export function NotConfigured({
   forTeacher?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-white/20 bg-white/[0.02] p-5 text-sm">
-      <p className="font-medium text-white/80">{FEATURE_LABEL[feature]} — not set up yet</p>
-      <p className="mt-1.5 text-white/55">{FEATURE_HINT[feature]}</p>
+    <div className="rounded-2xl border border-dashed border-(--color-hairline-strong) bg-(--color-surface) p-5 text-sm">
+      <p className="font-medium text-(--color-text)">{FEATURE_LABEL[feature]} — not set up yet</p>
+      <p className="mt-1.5 text-(--color-text-muted)">{FEATURE_HINT[feature]}</p>
       {forTeacher ? (
-        <p className="mt-3 text-xs text-white/40">
+        <p className="mt-3 text-xs text-(--color-text-faint)">
           See SETUP.md → Adding features. Everything else keeps working meanwhile.
         </p>
       ) : null}

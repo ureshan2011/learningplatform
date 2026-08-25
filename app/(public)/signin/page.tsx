@@ -10,6 +10,8 @@ import {
 import { clientAuth } from "@/lib/firebase/client";
 import { collectDeviceSignals } from "@/lib/auth/device-client";
 import { toE164 } from "@/lib/phone";
+import { Field } from "@/components/ui/Field";
+import { StatusBanner } from "@/components/ui/StatusBanner";
 
 type Step = "phone" | "code";
 
@@ -87,97 +89,76 @@ export default function SignInPage() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-5 py-10">
-      <h1 className="text-2xl font-bold">Sign in</h1>
-      <p className="mt-2 text-sm text-white/60">
-        We send a one-time code by SMS. Your phone number is your account.
-      </p>
-
-      {step === "phone" ? (
-        <form onSubmit={sendCode} className="mt-8 space-y-4">
-          <Field label="Mobile number">
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="077 123 4567"
-              className={inputClass}
-            />
-          </Field>
-          <Field label="Your name" hint="Shown on the class leaderboard.">
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              autoComplete="name"
-              placeholder="Nimal Perera"
-              className={inputClass}
-            />
-          </Field>
-          <button type="submit" disabled={busy} className={buttonClass}>
-            {busy ? "Sending…" : "Send code"}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={verifyCode} className="mt-8 space-y-4">
-          <Field label="Verification code" hint={`Sent to ${phone}`}>
-            <input
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={6}
-              placeholder="123456"
-              className={`${inputClass} tracking-[0.4em]`}
-            />
-          </Field>
-          <button type="submit" disabled={busy} className={buttonClass}>
-            {busy ? "Verifying…" : "Verify and continue"}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setStep("phone");
-              setCode("");
-              setError(null);
-            }}
-            className="w-full text-sm text-white/50 underline"
-          >
-            Change number
-          </button>
-        </form>
-      )}
-
-      {error ? (
-        <p role="alert" className="mt-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-300">
-          {error}
+      <div className="rise-in">
+        <h1 className="text-display text-3xl">Sign in</h1>
+        <p className="mt-2 text-sm text-(--color-text-muted)">
+          We send a one-time code by SMS. Your phone number is your account.
         </p>
-      ) : null}
+
+        {step === "phone" ? (
+          <form onSubmit={sendCode} className="mt-8 space-y-4">
+            <Field label="Mobile number">
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="077 123 4567"
+                className="field-input"
+              />
+            </Field>
+            <Field label="Your name" hint="Shown on the class leaderboard.">
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
+                placeholder="Nimal Perera"
+                className="field-input"
+              />
+            </Field>
+            <button type="submit" disabled={busy} className="btn btn-primary w-full">
+              {busy ? "Sending…" : "Send code"}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={verifyCode} className="mt-8 space-y-4">
+            <Field label="Verification code" hint={`Sent to ${phone}`}>
+              <input
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                placeholder="123456"
+                className="field-input tracking-[0.4em]"
+              />
+            </Field>
+            <button type="submit" disabled={busy} className="btn btn-primary w-full">
+              {busy ? "Verifying…" : "Verify and continue"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setStep("phone");
+                setCode("");
+                setError(null);
+              }}
+              className="btn btn-ghost w-full"
+            >
+              Change number
+            </button>
+          </form>
+        )}
+
+        {error ? (
+          <div className="mt-4">
+            <StatusBanner tone="error">{error}</StatusBanner>
+          </div>
+        ) : null}
+      </div>
 
       <div id="recaptcha-container" />
     </main>
-  );
-}
-
-const inputClass =
-  "w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-base outline-none focus:border-[--color-brand]";
-const buttonClass =
-  "w-full rounded-lg bg-[--color-brand] px-4 py-3 font-semibold text-black disabled:opacity-50";
-
-function Field({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-white/80">{label}</span>
-      {children}
-      {hint ? <span className="mt-1 block text-xs text-white/45">{hint}</span> : null}
-    </label>
   );
 }
 

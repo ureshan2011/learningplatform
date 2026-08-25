@@ -15,22 +15,29 @@ export default async function PaymentSuccessPage({
   const { order } = await searchParams;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-5 text-center">
-      <h1 className="text-2xl font-bold text-[--color-success]">Payment received</h1>
-      <p className="mt-3 text-sm text-white/65">
-        Your class is being unlocked now. This usually takes a few seconds — open your
-        dashboard and it will be ready.
-      </p>
-      {order ? <p className="mt-2 text-xs text-white/35">Reference: {order}</p> : null}
-      <Link
-        href="/dashboard"
-        className="mt-8 rounded-lg bg-[--color-brand] px-6 py-3 font-semibold text-black"
-      >
-        Go to my dashboard
-      </Link>
-      <p className="mt-4 text-xs text-white/40">
-        If it is still locked after a minute, contact your teacher with the reference above.
-      </p>
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center px-5 text-center">
+      <div className="rise-in flex flex-col items-center">
+        <span
+          aria-hidden
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-(--color-success)/15 text-(--color-success)"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" className="h-7 w-7">
+            <path d="m5 13 4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
+        <h1 className="text-display mt-5 text-2xl text-(--color-success)">Payment received</h1>
+        <p className="mt-3 text-sm text-(--color-text-muted)">
+          Your class is being unlocked now. This usually takes a few seconds — open your
+          dashboard and it will be ready.
+        </p>
+        {order ? <p className="mt-2 text-xs text-(--color-text-faint)">Reference: {order}</p> : null}
+        <Link href="/dashboard" className="btn btn-primary mt-8">
+          Go to my dashboard
+        </Link>
+        <p className="mt-4 text-xs text-(--color-text-faint)">
+          If it is still locked after a minute, contact your teacher with the reference above.
+        </p>
+      </div>
     </main>
   );
 }

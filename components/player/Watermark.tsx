@@ -32,7 +32,7 @@ export function Watermark({ label }: { label: string }) {
       className="pointer-events-none absolute inset-0 z-20 select-none overflow-hidden"
     >
       <span
-        className="absolute whitespace-nowrap text-xs font-medium text-white/25 transition-all duration-1000 ease-in-out sm:text-sm"
+        className="absolute whitespace-nowrap text-xs font-medium text-white/25 transition-all duration-1000 ease-spring sm:text-sm"
         style={{ top: pos.top, left: pos.left, textShadow: "0 1px 3px rgba(0,0,0,.6)" }}
       >
         {label}

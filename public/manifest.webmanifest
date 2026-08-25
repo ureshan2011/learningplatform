@@ -5,8 +5,8 @@
   "start_url": "/dashboard",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0b1020",
-  "theme_color": "#0b1020",
+  "background_color": "#07080f",
+  "theme_color": "#07080f",
   "categories": ["education"],
   "lang": "en",
   "icons": [

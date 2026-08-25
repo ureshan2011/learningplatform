@@ -8,6 +8,7 @@ import { ScheduleSessionForm } from "@/components/teacher/ScheduleSessionForm";
 import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
+import { TopBar } from "@/components/ui/TopBar";
 import { zoomConfigured } from "@/lib/features";
 import type { ClassSession, Payment, SessionSecrets, User } from "@/lib/types";
 
@@ -48,70 +49,73 @@ export default async function TeacherConsolePage() {
   const startUrls = await section("startUrls", () => startUrlsFor(sessions.map((s) => s.id)), {});
 
   return (
-    <main className="mx-auto max-w-3xl px-5 py-8">
-      <h1 className="text-2xl font-bold">Teacher console</h1>
-      <p className="mt-1 text-sm text-white/50">Schedule classes and approve payments.</p>
+    <main className="min-h-dvh">
+      <TopBar back={{ href: "/dashboard", label: "Dashboard" }} />
 
-      {subjects.length === 0 ? (
-        <div className="mt-8">
-          <SeedSubjectsButton />
+      <div className="mx-auto max-w-3xl px-5 py-8">
+        <div className="rise-in">
+          <h1 className="text-display text-2xl">Teacher console</h1>
+          <p className="mt-1 text-sm text-(--color-text-muted)">Schedule classes and approve payments.</p>
         </div>
-      ) : null}
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold">Schedule a class</h2>
-        {zoomConfigured() ? (
-          <div className="mt-4">
-            <ScheduleSessionForm subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
+        {subjects.length === 0 ? (
+          <div className="mt-8">
+            <SeedSubjectsButton />
           </div>
-        ) : (
-          <div className="mt-4">
-            <NotConfigured feature="zoom" forTeacher />
-          </div>
-        )}
-      </section>
+        ) : null}
 
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold">Upcoming classes</h2>
-        {sessions.length === 0 ? (
-          <p className="mt-3 text-sm text-white/50">Nothing scheduled.</p>
-        ) : (
-          <ul className="mt-3 space-y-3">
-            {sessions.map((session) => (
-              <li
-                key={session.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4"
-              >
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{session.title}</p>
-                  <p className="mt-0.5 text-sm text-white/50">
-                    {formatSessionTime(session.startsAt)} · {session.durationMinutes} min
-                    {session.hlsUrl ? " · simulcast on" : " · no simulcast"}
-                  </p>
-                </div>
-                {startUrls[session.id] ? (
-                  <a
-                    href={startUrls[session.id]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black"
-                  >
-                    Start class
-                  </a>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+        <section className="mt-8">
+          <h2 className="text-title text-lg">Schedule a class</h2>
+          {zoomConfigured() ? (
+            <div className="mt-4">
+              <ScheduleSessionForm subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
+            </div>
+          ) : (
+            <div className="mt-4">
+              <NotConfigured feature="zoom" forTeacher />
+            </div>
+          )}
+        </section>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold">Bank slips awaiting approval</h2>
-        <p className="mt-1 text-sm text-white/45">
-          Approving grants one month of access from today.
-        </p>
-        <SlipReviewList slips={slips} />
-      </section>
+        <section className="mt-10">
+          <h2 className="text-title text-lg">Upcoming classes</h2>
+          {sessions.length === 0 ? (
+            <p className="mt-3 text-sm text-(--color-text-faint)">Nothing scheduled.</p>
+          ) : (
+            <ul className="mt-3 space-y-3">
+              {sessions.map((session) => (
+                <li key={session.id} className="surface flex flex-wrap items-center justify-between gap-3 p-4">
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{session.title}</p>
+                    <p className="mt-0.5 text-sm text-(--color-text-muted)">
+                      {formatSessionTime(session.startsAt)} · {session.durationMinutes} min
+                      {session.hlsUrl ? " · simulcast on" : " · no simulcast"}
+                    </p>
+                  </div>
+                  {startUrls[session.id] ? (
+                    <a
+                      href={startUrls[session.id]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary btn-sm"
+                    >
+                      Start class
+                    </a>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="mt-10">
+          <h2 className="text-title text-lg">Bank slips awaiting approval</h2>
+          <p className="mt-1 text-sm text-(--color-text-faint)">
+            Approving grants one month of access from today.
+          </p>
+          <SlipReviewList slips={slips} />
+        </section>
+      </div>
     </main>
   );
 }

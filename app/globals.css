@@ -1,62 +1,45 @@
 @import "tailwindcss";
 
 /*
- * Design tokens. Dark-first: students study at night on cheap Android screens,
- * and a dark UI costs less battery on OLED.
+ * Design tokens — dark-first. Students study at night on cheap Android
+ * screens: a dark UI costs less battery on OLED and doesn't glare in a dim
+ * room. Every surface below is built as a translucent "material" layer
+ * (Apple's own vocabulary for this) so structure reads through blur and
+ * depth instead of hard borders — see the `.material` / `.surface`
+ * utilities further down.
  */
 @theme {
-  --color-ink: #0b1020;
-  --color-ink-soft: #141b33;
-  --color-ink-line: #232c4d;
-  --color-paper: #f7f8fc;
+  --color-bg: #07080f;
+  --color-surface: rgba(247, 248, 255, 0.045);
+  --color-surface-strong: rgba(247, 248, 255, 0.085);
+  --color-hairline: rgba(247, 248, 255, 0.09);
+  --color-hairline-strong: rgba(247, 248, 255, 0.16);
+
+  --color-text: #f3f4fa;
+  --color-text-muted: rgba(243, 244, 250, 0.66);
+  --color-text-faint: rgba(243, 244, 250, 0.42);
+
   --color-brand: #ffb703;
   --color-brand-deep: #fb8500;
-  --color-accent: #4cc9f0;
-  --color-success: #22c55e;
-  --color-danger: #ef4444;
+  --color-accent: #0a84ff;
+  --color-success: #30d158;
+  --color-warning: #ff9f0a;
+  --color-danger: #ff453a;
+
   --font-sans: ui-sans-serif, system-ui, "Segoe UI", "Noto Sans Sinhala", sans-serif;
+  --font-display: var(--font-display-jakarta), ui-sans-serif, system-ui, sans-serif;
 
-  /*
-   * "Awaken" light palette — trial run on the landing page only. Additive:
-   * existing --color-* tokens above are untouched so every other page keeps
-   * the dark theme until we decide to roll this out further.
-   */
-  --color-awaken-bg: #fafbf9;
-  --color-awaken-card: #ffffff;
-  --color-awaken-line: #ecedf1;
-  --color-awaken-ink: #15171f;
-  --color-awaken-ink-soft: #5b5f6b;
-  --color-awaken-accent: #ea580c;
-  --color-awaken-accent-soft: #fff1e8;
-  --color-awaken-deep: #1e2340;
-  --color-awaken-rose: #e11d8f;
-}
+  /* Designer-friendly spring approximations (damping + response, translated
+     to cubic-bézier) rather than a generic ease — see the apple-design
+     skill. `spring` is the critically-damped default; `spring-bounce` is
+     reserved for elements a gesture actually threw (a flick, a release). */
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-/* Slow, cheap drift for the hero's gradient blobs — pure CSS, GPU-composited,
-   no images, so it costs nothing on a slow connection. */
-@keyframes awaken-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(3%, -4%) scale(1.06); }
-}
-
-@keyframes awaken-rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.awaken-blob {
-  animation: awaken-drift 14s ease-in-out infinite;
-}
-
-.awaken-rise {
-  animation: awaken-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .awaken-blob,
-  .awaken-rise {
-    animation: none;
-  }
+  --duration-instant: 100ms;
+  --duration-fast: 180ms;
+  --duration-base: 280ms;
+  --duration-slow: 420ms;
 }
 
 :root {
@@ -65,8 +48,8 @@
 
 html,
 body {
-  background: var(--color-ink);
-  color: var(--color-paper);
+  background: var(--color-bg);
+  color: var(--color-text);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
@@ -77,9 +60,292 @@ body {
   line-height: 1.85;
 }
 
-/* Live Arena and chat panes scroll internally, never the page body. */
+/* Live Arena, chat panes and long lists scroll internally, never the page body. */
 .scroll-pane {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
+}
+
+/* Safe-area padding for notches / home indicators when the app runs standalone. */
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top), 0.75rem);
+}
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
+}
+
+/* ---------------------------------------------------------------------- *
+ * Typography — size-specific tracking and leading, not one fixed value.
+ * Large display text gets negative tracking and tight leading; body copy
+ * stays near zero tracking with roomier leading.
+ * ---------------------------------------------------------------------- */
+
+@utility text-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+  font-optical-sizing: auto;
+}
+
+@utility text-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  font-optical-sizing: auto;
+}
+
+@utility text-eyebrow {
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+}
+
+/* ---------------------------------------------------------------------- *
+ * Materials — translucent layers with content scrolling underneath, in
+ * place of opaque bars. `.material` is the base blur+tint; `.material-nav`
+ * adds the hairline that catches light where floating chrome meets content.
+ * ---------------------------------------------------------------------- */
+
+@utility material {
+  background: color-mix(in oklab, var(--color-bg) 78%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+}
+
+@utility material-nav {
+  background: color-mix(in oklab, var(--color-bg) 82%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+/* Surfaces — the card/panel vocabulary used everywhere instead of ad-hoc
+   borders. A soft inset highlight on the top edge reads as glass catching
+   light; the outer shadow is heavier than a chip's to read as "thicker". */
+@utility surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-hairline);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    0 16px 32px -24px rgba(0, 0, 0, 0.7);
+}
+
+@utility surface-interactive {
+  transition-property: transform, background-color, border-color, box-shadow;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-spring);
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-hairline-strong);
+    background: var(--color-surface-strong);
+  }
+  &:active {
+    transform: translateY(0) scale(0.985);
+  }
+}
+
+/* ---------------------------------------------------------------------- *
+ * Buttons & chips — feedback starts on press (transform), never waits for
+ * a network round trip. Compose `btn` with one variant and, optionally,
+ * `btn-sm`.
+ * ---------------------------------------------------------------------- */
+
+@utility btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.875rem;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1;
+  padding: 0.8125rem 1.25rem;
+  white-space: nowrap;
+  transition-property: transform, background-color, border-color, box-shadow, opacity, filter;
+  transition-duration: var(--duration-instant);
+  transition-timing-function: ease-out;
+  &:active {
+    transform: scale(0.965);
+  }
+  &:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+@utility btn-sm {
+  padding: 0.5625rem 1rem;
+  font-size: 0.8125rem;
+  border-radius: 0.75rem;
+}
+
+@utility btn-primary {
+  color: #14110a;
+  background: linear-gradient(180deg, var(--color-brand), var(--color-brand-deep));
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.35) inset,
+    0 12px 26px -12px rgba(251, 133, 0, 0.55);
+  &:hover {
+    filter: brightness(1.05);
+  }
+}
+
+@utility btn-secondary {
+  color: var(--color-text);
+  background: var(--color-surface-strong);
+  border: 1px solid var(--color-hairline-strong);
+  &:hover {
+    background: color-mix(in oklab, var(--color-surface-strong), white 6%);
+  }
+}
+
+@utility btn-ghost {
+  color: var(--color-text-muted);
+  &:hover {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+}
+
+@utility btn-danger {
+  color: #ffd4d1;
+  background: color-mix(in oklab, var(--color-danger), transparent 82%);
+  border: 1px solid color-mix(in oklab, var(--color-danger), transparent 62%);
+  &:hover {
+    background: color-mix(in oklab, var(--color-danger), transparent 72%);
+  }
+}
+
+@utility btn-success {
+  color: #062910;
+  background: var(--color-success);
+  &:hover {
+    filter: brightness(1.06);
+  }
+}
+
+@utility chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 999px;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+@utility field-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-hairline-strong);
+  background: var(--color-surface);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: var(--color-text);
+  transition:
+    border-color var(--duration-fast) var(--ease-spring),
+    background-color var(--duration-fast) var(--ease-spring);
+  &::placeholder {
+    color: var(--color-text-faint);
+  }
+  &:focus {
+    outline: none;
+    border-color: var(--color-brand);
+    background: color-mix(in oklab, var(--color-surface), white 4%);
+  }
+}
+
+/* A generic press affordance for plain links/icons that aren't full buttons. */
+@utility press {
+  transition: transform var(--duration-instant) ease-out;
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+/* ---------------------------------------------------------------------- *
+ * Motion — entrance reveals and the live indicator. Kept to opacity +
+ * transform so they're compositor-cheap on low-end hardware.
+ * ---------------------------------------------------------------------- */
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise-in {
+  animation: rise-in var(--duration-slow) var(--ease-spring) both;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(3%, -4%) scale(1.06);
+  }
+}
+.drift {
+  animation: drift 16s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.78);
+  }
+}
+.live-dot {
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------------- *
+ * Accessibility — reduced motion doesn't mean no feedback, it means a
+ * gentler equivalent. Reduced transparency makes materials solid. Higher
+ * contrast strengthens hairlines instead of relying on opacity.
+ * ---------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .rise-in,
+  .drift,
+  .live-dot {
+    animation: none !important;
+  }
+  * {
+    transition-duration: 1ms !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material,
+  .material-nav {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #0d0f1c !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-hairline: rgba(247, 248, 255, 0.38);
+    --color-hairline-strong: rgba(247, 248, 255, 0.55);
+    --color-text-muted: rgba(243, 244, 250, 0.88);
+  }
 }

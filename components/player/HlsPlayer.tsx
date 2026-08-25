@@ -87,7 +87,7 @@ export function HlsPlayer({
       />
       <Watermark label={watermark} />
       {error ? (
-        <p className="absolute inset-x-0 bottom-0 z-30 bg-red-900/80 p-2 text-center text-sm">
+        <p className="material absolute inset-x-0 bottom-0 z-30 border-t border-(--color-danger)/30 p-2 text-center text-sm text-(--color-danger)">
           {error}
         </p>
       ) : null}

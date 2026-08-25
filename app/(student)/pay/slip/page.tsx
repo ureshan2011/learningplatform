@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
 import { SlipUploadForm } from "@/components/payments/SlipUploadForm";
+import { TopBar } from "@/components/ui/TopBar";
 
 export const dynamic = "force-dynamic";
 
@@ -21,24 +21,26 @@ export default async function SlipPage() {
   const subjects = await listSubjects();
 
   return (
-    <main className="mx-auto max-w-md px-5 py-8">
-      <Link href="/dashboard" className="text-sm text-white/50 underline">
-        ← Dashboard
-      </Link>
+    <main className="min-h-dvh">
+      <TopBar back={{ href: "/dashboard", label: "Dashboard" }} maxWidth="md" />
 
-      <h1 className="mt-4 text-2xl font-bold">Send a bank slip</h1>
-      <p className="mt-2 text-sm text-white/60">
-        Deposit the fee, photograph the slip, and upload it here. Your teacher approves it
-        and your class unlocks — usually the same day.
-      </p>
+      <div className="mx-auto max-w-md px-5 py-8">
+        <div className="rise-in">
+          <h1 className="text-display text-2xl">Send a bank slip</h1>
+          <p className="mt-2 text-sm text-(--color-text-muted)">
+            Deposit the fee, photograph the slip, and upload it here. Your teacher approves it
+            and your class unlocks — usually the same day.
+          </p>
+        </div>
 
-      <SlipUploadForm
-        subjects={subjects.map((s) => ({
-          id: s.id,
-          name: s.name,
-          price: formatLKR(s.priceLKR),
-        }))}
-      />
+        <SlipUploadForm
+          subjects={subjects.map((s) => ({
+            id: s.id,
+            name: s.name,
+            price: formatLKR(s.priceLKR),
+          }))}
+        />
+      </div>
     </main>
   );
 }

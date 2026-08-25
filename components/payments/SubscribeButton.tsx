@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { StatusBanner } from "@/components/ui/StatusBanner";
 
 /**
  * Starts a PayHere checkout.
@@ -49,14 +50,14 @@ export function SubscribeButton({ subjectId }: { subjectId: string }) {
 
   return (
     <div className="text-right">
-      <button
-        onClick={start}
-        disabled={busy}
-        className="rounded-lg bg-[--color-brand] px-4 py-2 text-sm font-semibold text-black disabled:opacity-50"
-      >
+      <button onClick={start} disabled={busy} className="btn btn-primary btn-sm">
         {busy ? "Opening…" : "Pay monthly"}
       </button>
-      {error ? <p className="mt-1 text-xs text-red-300">{error}</p> : null}
+      {error ? (
+        <div className="mt-1.5">
+          <StatusBanner tone="error">{error}</StatusBanner>
+        </div>
+      ) : null}
     </div>
   );
 }

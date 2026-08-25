@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Field } from "@/components/ui/Field";
+import { StatusBanner } from "@/components/ui/StatusBanner";
 
 /**
  * Creates a class: a Zoom meeting plus, optionally, the RTMP simulcast that
@@ -73,11 +75,11 @@ export function ScheduleSessionForm({
   }
 
   return (
-    <form onSubmit={submit} className="mt-4 space-y-4 rounded-xl border border-white/10 bg-white/[0.03] p-5">
+    <form onSubmit={submit} className="surface mt-4 space-y-4 p-5">
       <Field label="Subject">
-        <select name="subjectId" required className={inputClass}>
+        <select name="subjectId" required className="field-input">
           {subjects.map((s) => (
-            <option key={s.id} value={s.id} className="bg-[--color-ink]">
+            <option key={s.id} value={s.id} className="bg-(--color-bg)">
               {s.name}
             </option>
           ))}
@@ -85,76 +87,53 @@ export function ScheduleSessionForm({
       </Field>
 
       <Field label="Class title">
-        <input name="title" required maxLength={140} placeholder="Databases — Lesson 4" className={inputClass} />
+        <input name="title" required maxLength={140} placeholder="Databases — Lesson 4" className="field-input" />
       </Field>
 
       <Field label="Topic">
-        <input name="topic" required maxLength={140} placeholder="Normalization" className={inputClass} />
+        <input name="topic" required maxLength={140} placeholder="Normalization" className="field-input" />
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Starts at">
-          <input name="startsAt" type="datetime-local" required className={inputClass} />
+          <input name="startsAt" type="datetime-local" required className="field-input" />
         </Field>
         <Field label="Duration (minutes)">
-          <input name="durationMinutes" type="number" min={15} max={300} defaultValue={90} className={inputClass} />
+          <input name="durationMinutes" type="number" min={15} max={300} defaultValue={90} className="field-input" />
         </Field>
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-white/75">
+      <label className="flex items-center gap-2 text-sm text-(--color-text-muted)">
         <input
           type="checkbox"
           checked={simulcast}
           onChange={(e) => setSimulcast(e.target.checked)}
-          className="size-4"
+          className="size-4 accent-(--color-brand)"
         />
         Simulcast to YouTube Live (lets the class grow past your Zoom seat limit)
       </label>
 
       {simulcast ? (
-        <div className="space-y-4 rounded-lg border border-white/10 bg-black/20 p-4">
+        <div className="space-y-4 rounded-xl border border-(--color-hairline) bg-black/20 p-4">
           <Field label="RTMP stream URL" hint="From YouTube Studio → Go live → Stream settings.">
-            <input name="streamUrl" placeholder="rtmp://a.rtmp.youtube.com/live2" className={inputClass} />
+            <input name="streamUrl" placeholder="rtmp://a.rtmp.youtube.com/live2" className="field-input" />
           </Field>
           <Field label="Stream key" hint="Stored securely and never shown again.">
-            <input name="streamKey" type="password" autoComplete="off" className={inputClass} />
+            <input name="streamKey" type="password" autoComplete="off" className="field-input" />
           </Field>
           <Field label="HLS playback URL" hint="What mobile and overflow students watch in the app.">
-            <input name="hlsUrl" placeholder="https://…/index.m3u8" className={inputClass} />
+            <input name="hlsUrl" placeholder="https://…/index.m3u8" className="field-input" />
           </Field>
         </div>
       ) : null}
 
-      <button type="submit" disabled={busy} className="w-full rounded-lg bg-[--color-brand] px-4 py-3 font-semibold text-black disabled:opacity-50">
+      <button type="submit" disabled={busy} className="btn btn-primary w-full">
         {busy ? "Creating…" : "Schedule class"}
       </button>
 
       {message ? (
-        <p className={`text-sm ${message.tone === "ok" ? "text-[--color-success]" : "text-red-300"}`}>
-          {message.text}
-        </p>
+        <StatusBanner tone={message.tone === "ok" ? "success" : "error"}>{message.text}</StatusBanner>
       ) : null}
     </form>
-  );
-}
-
-const inputClass =
-  "w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-base outline-none focus:border-[--color-brand]";
-
-function Field({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-white/80">{label}</span>
-      {children}
-      {hint ? <span className="mt-1 block text-xs text-white/45">{hint}</span> : null}
-    </label>
   );
 }

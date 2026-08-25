@@ -1,17 +1,8 @@
 import Link from "next/link";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
 import type { Subject } from "@/lib/types";
-
-// Self-hosted by Next at build time (no runtime request to Google), so this
-// costs nothing extra on a slow connection. Two weights only, kept small.
-const display = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["700", "800"],
-  variable: "--font-display",
-});
 
 const FEATURES = [
   {
@@ -28,13 +19,7 @@ const FEATURES = [
   {
     title: "Instant quizzes",
     body: "Answer live, see the island-wide leaderboard right after.",
-    icon: (
-      <path
-        d="m5 13 4 4L19 7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    ),
+    icon: <path d="m5 13 4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />,
   },
   {
     title: "Past papers",
@@ -60,120 +45,93 @@ export default async function LandingPage() {
   ]);
 
   return (
-    <main
-      className={`${display.variable} relative min-h-screen overflow-hidden bg-(--color-awaken-bg) text-(--color-awaken-ink)`}
-    >
-      {/* Decorative gradient blobs. Pure CSS, no images — cheap on slow links. */}
+    <main className="relative min-h-dvh overflow-hidden">
+      {/* Decorative gradient blobs. Pure CSS, no images — cheap on slow links,
+          and pinned behind everything so they never intercept a tap. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
-          className="awaken-blob absolute -top-24 -right-24 h-80 w-80 rounded-full opacity-40 blur-3xl"
-          style={{ background: "radial-gradient(circle, var(--color-awaken-accent), transparent 70%)" }}
+          className="drift absolute -top-24 -right-24 h-96 w-96 rounded-full opacity-30 blur-3xl"
+          style={{ background: "radial-gradient(circle, var(--color-brand), transparent 70%)" }}
         />
         <div
-          className="awaken-blob absolute top-40 -left-32 h-72 w-72 rounded-full opacity-30 blur-3xl"
-          style={{
-            background: "radial-gradient(circle, var(--color-awaken-rose), transparent 70%)",
-            animationDelay: "-7s",
-          }}
+          className="drift absolute top-52 -left-32 h-80 w-80 rounded-full opacity-25 blur-3xl"
+          style={{ background: "radial-gradient(circle, var(--color-accent), transparent 70%)", animationDelay: "-8s" }}
         />
       </div>
 
-      <div className="relative mx-auto max-w-5xl px-5 py-14">
-        <header className="flex items-center justify-between">
-          <span className="font-[family-name:var(--font-display)] text-lg font-extrabold tracking-tight">
-            ICT<span className="text-(--color-awaken-accent)">Class</span>
+      <div className="material-nav pt-safe sticky top-0 z-40">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+          <span className="text-title text-lg">
+            ICT<span className="text-(--color-brand)">Class</span>
           </span>
-          <Link
-            href={user ? "/dashboard" : "/signin"}
-            className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-2 text-sm font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-colors hover:border-(--color-awaken-accent)/40"
-          >
+          <Link href={user ? "/dashboard" : "/signin"} className="btn btn-secondary btn-sm">
             {user ? "My dashboard" : "Sign in"}
           </Link>
-        </header>
+        </div>
+      </div>
 
-        <section className="awaken-rise mt-16 max-w-2xl">
-          <h1 className="font-[family-name:var(--font-display)] text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl">
+      <div className="relative mx-auto max-w-5xl px-5 py-14 sm:py-20">
+        <section className="rise-in max-w-2xl">
+          <h1 className="text-display text-4xl sm:text-6xl">
             O/L &amp; A/L ICT, taught live.
-            <span className="block bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-(--color-brand) to-(--color-brand-deep) bg-clip-text text-transparent">
               Sinhala medium.
             </span>
           </h1>
-          <p className="mt-5 text-lg leading-relaxed text-(--color-awaken-ink-soft)">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-(--color-text-muted)">
             Live classes you join from your phone, instant quizzes during the lesson, a
-            leaderboard against the whole island, and past papers you can download the
-            moment class ends.
+            leaderboard against the whole island, and past papers you can download the moment
+            class ends.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/signin"
-              className="rounded-xl bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-6 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(234,88,12,0.35)] transition-transform hover:scale-[1.02] active:scale-[0.98]"
-            >
+            <Link href="/signin" className="btn btn-primary">
               Join a class
             </Link>
-            <Link
-              href="/notes"
-              className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) px-6 py-3 font-medium transition-colors hover:border-(--color-awaken-accent)/40"
-            >
+            <Link href="/notes" className="btn btn-secondary">
               Free notes &amp; past papers
             </Link>
           </div>
         </section>
 
-        <section
-          className="awaken-rise mt-14 grid gap-4 sm:grid-cols-3"
-          style={{ animationDelay: "0.1s" }}
-        >
+        <section className="rise-in mt-14 grid gap-4 sm:grid-cols-3" style={{ animationDelay: "0.08s" }}>
           {FEATURES.map((feature) => (
-            <div
-              key={feature.title}
-              className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-transform hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
-            >
+            <div key={feature.title} className="surface surface-interactive p-5">
               <svg
                 aria-hidden
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1.8"
-                className="h-6 w-6 text-(--color-awaken-accent)"
+                className="h-6 w-6 text-(--color-brand)"
               >
                 {feature.icon}
               </svg>
               <p className="mt-3 font-semibold">{feature.title}</p>
-              <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">{feature.body}</p>
+              <p className="mt-1 text-sm text-(--color-text-muted)">{feature.body}</p>
             </div>
           ))}
         </section>
 
         <section className="mt-20">
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-            Classes
-          </h2>
+          <h2 className="text-title text-xl">Classes</h2>
           {subjects.length === 0 ? (
-            <p className="mt-4 text-sm text-(--color-awaken-ink-soft)">
+            <p className="mt-4 text-sm text-(--color-text-muted)">
               Classes are being set up. Check back shortly.
             </p>
           ) : (
             <ul className="mt-5 grid gap-4 sm:grid-cols-2">
               {subjects.map((subject) => (
-                <li
-                  key={subject.id}
-                  className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
-                >
+                <li key={subject.id} className="surface surface-interactive p-5">
                   <div className="flex items-baseline justify-between gap-3">
                     <h3 className="font-semibold">{subject.name}</h3>
-                    <span className="shrink-0 rounded-full bg-(--color-awaken-accent-soft) px-2.5 py-0.5 text-xs font-semibold text-(--color-awaken-accent)">
+                    <span className="chip bg-(--color-brand)/15 text-(--color-brand)">
                       {subject.grade === "AL" ? "A/L" : "O/L"}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-                    {subject.description}
-                  </p>
-                  <p className="mt-4 font-semibold text-(--color-awaken-accent)">
+                  <p className="mt-2 text-sm text-(--color-text-muted)">{subject.description}</p>
+                  <p className="mt-4 font-semibold text-(--color-brand)">
                     {formatLKR(subject.priceLKR)}
-                    <span className="text-sm font-normal text-(--color-awaken-ink-soft)">
-                      {" "}
-                      / month
-                    </span>
+                    <span className="text-sm font-normal text-(--color-text-muted)"> / month</span>
                   </p>
                 </li>
               ))}

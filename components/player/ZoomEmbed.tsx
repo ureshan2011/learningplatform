@@ -94,11 +94,11 @@ export function ZoomEmbed({ config }: { config: ZoomJoinConfig }) {
       <Watermark label={config.watermark} />
 
       {status !== "joined" ? (
-        <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/70 text-sm">
+        <div className="material absolute inset-0 z-30 flex items-center justify-center text-sm">
           {status === "error" ? (
-            <p className="max-w-sm px-6 text-center text-red-300">{error}</p>
+            <p className="max-w-sm px-6 text-center text-(--color-danger)">{error}</p>
           ) : (
-            <p className="text-white/70">
+            <p className="text-(--color-text-muted)">
               {status === "loading" ? "Loading class…" : "Joining class…"}
             </p>
           )}
