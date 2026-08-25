@@ -1,8 +1,8 @@
 import "server-only";
 
-import { col } from "@/lib/firebase/admin";
+import { col, progressId } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
-import type { ClassSession, ContentItem, Enrollment, Subject } from "@/lib/types";
+import type { AttendanceRecord, ClassSession, ContentItem, Enrollment, Progress, Subject } from "@/lib/types";
 
 /**
  * Server-side reads for pages.
@@ -108,6 +108,20 @@ export async function listPublicContent(limit = 60): Promise<ContentItem[]> {
     .filter((c) => c.tenantId === publicEnv.tenantId)
     .sort((a, b) => b.createdAt - a.createdAt)
     .slice(0, limit);
+}
+
+/** Single equality filter, so it needs no composite index — see the note above. */
+export async function listAttendance(uid: string, limit = 20): Promise<AttendanceRecord[]> {
+  const snap = await col.attendance().where("uid", "==", uid).limit(SCAN_WINDOW).get();
+  return snap.docs
+    .map((d) => d.data() as AttendanceRecord)
+    .sort((a, b) => (b.joinedAt ?? 0) - (a.joinedAt ?? 0))
+    .slice(0, limit);
+}
+
+export async function getProgress(uid: string, subjectId: string): Promise<Progress | null> {
+  const snap = await col.progress().doc(progressId(uid, subjectId)).get();
+  return snap.exists ? (snap.data() as Progress) : null;
 }
 
 export async function listContent(subjectId: string, limit = 50): Promise<ContentItem[]> {

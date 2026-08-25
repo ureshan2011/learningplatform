@@ -47,6 +47,29 @@ export default async function SubjectPage({
       <h1 className="mt-4 text-2xl font-bold">{subject.name}</h1>
       <p className="mt-1 text-sm text-white/55">{subject.description}</p>
 
+      {access.allowed ? (
+        <nav className="mt-5 flex flex-wrap gap-2">
+          <Link
+            href={`/subjects/${subjectId}/practice`}
+            className="rounded-lg border border-white/15 px-4 py-2 text-sm hover:border-white/30"
+          >
+            🎯 Practice &amp; revision
+          </Link>
+          <Link
+            href={`/subjects/${subjectId}/lab`}
+            className="rounded-lg border border-white/15 px-4 py-2 text-sm hover:border-white/30"
+          >
+            🧪 Code Lab
+          </Link>
+          <Link
+            href={`/subjects/${subjectId}/certificate`}
+            className="rounded-lg border border-white/15 px-4 py-2 text-sm hover:border-white/30"
+          >
+            🎓 Certificate
+          </Link>
+        </nav>
+      ) : null}
+
       {!access.allowed ? (
         <div className="mt-6 rounded-xl border border-[--color-brand]/30 bg-[--color-brand]/10 p-4 text-sm">
           <p className="font-medium text-[--color-brand]">

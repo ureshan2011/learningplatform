@@ -5,7 +5,10 @@ import { col } from "@/lib/firebase/admin";
 import { listEnrollments, listSubjects } from "@/lib/queries";
 import { formatDate } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
+import { publicEnv } from "@/lib/env";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
+import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
 import { MAX_DEVICES_PER_USER, type User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -67,6 +70,28 @@ export default async function AccountPage() {
             ))}
           </ul>
         )}
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Invite a friend</h2>
+        <div className="mt-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 text-sm">
+          <p className="text-white/70">
+            Share your code — when your friend subscribes, <strong>you both get 3 free days</strong>.
+          </p>
+          <p className="mt-3 truncate rounded-lg border border-white/10 bg-black/20 px-3 py-2 font-mono text-xs text-white/80">
+            {`${publicEnv.appUrl}/signin?ref=${user.referralCode}`}
+          </p>
+          <div className="mt-3">
+            <WhatsAppShareButton
+              text={`Join me on ICT Class for O/L and A/L ICT tuition — sign up with my code and we both get 3 free days!\n${publicEnv.appUrl}/signin?ref=${user.referralCode}`}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Parent view</h2>
+        <ParentLinkPanel />
       </section>
 
       <section className="mt-8">

@@ -7,6 +7,7 @@ import {
   type NotifyPayload,
 } from "@/lib/payments/payhere";
 import { grantAccess } from "@/lib/payments/entitlements";
+import { applyReferralBonus } from "@/lib/referrals";
 import type { Payment, PaymentStatus } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -75,6 +76,7 @@ export async function POST(req: NextRequest) {
       source: "payhere",
       paymentId: payment.id,
     });
+    await applyReferralBonus(payment);
   }
 
   await ref.update({

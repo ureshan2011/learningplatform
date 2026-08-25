@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   RecaptchaVerifier,
@@ -21,8 +21,21 @@ export default function SignInPage() {
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [referredBy, setReferredBy] = useState<string | undefined>(undefined);
   const confirmationRef = useRef<ConfirmationResult | null>(null);
   const verifierRef = useRef<RecaptchaVerifier | null>(null);
+
+  // Read from window.location rather than useSearchParams: this page is
+  // entirely client-rendered, and useSearchParams would force a Suspense
+  // boundary just to read a one-off referral code.
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get("ref")?.trim().toUpperCase();
+    // One-off read of the URL on mount, not a sync loop — window is unavailable
+    // during server render, so this can't move into the initial state without
+    // causing a hydration mismatch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (ref) setReferredBy(ref);
+  }, []);
 
   async function sendCode(e: React.FormEvent) {
     e.preventDefault();
@@ -68,7 +81,12 @@ export default function SignInPage() {
       const res = await fetch("/api/auth/session", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ idToken, name: name.trim() || undefined, device: collectDeviceSignals() }),
+        body: JSON.stringify({
+          idToken,
+          name: name.trim() || undefined,
+          referredBy,
+          device: collectDeviceSignals(),
+        }),
       });
 
       if (!res.ok) {
@@ -91,6 +109,12 @@ export default function SignInPage() {
       <p className="mt-2 text-sm text-white/60">
         We send a one-time code by SMS. Your phone number is your account.
       </p>
+
+      {referredBy ? (
+        <p className="mt-4 rounded-lg border border-[--color-brand]/30 bg-[--color-brand]/10 p-3 text-sm text-[--color-brand]">
+          You were invited with code {referredBy} — sign up and you&apos;ll both get 3 free days.
+        </p>
+      ) : null}
 
       {step === "phone" ? (
         <form onSubmit={sendCode} className="mt-8 space-y-4">
