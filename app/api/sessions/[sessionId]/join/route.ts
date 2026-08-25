@@ -70,17 +70,25 @@ export async function POST(
 
   // Mobile browsers cannot reliably run the embedded Meeting SDK, and the
   // simulcast is the better experience there anyway: less data, no app switch,
-  // and the Live Arena sits beside the video instead of behind it.
-  if (preferHls || !session.zoomMeetingId || !zoomConfigured()) {
-    if (!session.hlsUrl) {
-      return NextResponse.json({ error: "stream_not_ready" }, { status: 409 });
-    }
+  // and the Live Arena sits beside the video instead of behind it. But that
+  // only applies once a simulcast actually exists — on a Zoom plan without
+  // Custom Live Streaming Service there is never an hlsUrl, and routing
+  // mobile there would just be a dead end. So the simulcast path is only
+  // taken when a stream is actually live; otherwise everyone, mobile
+  // included, falls through to the embedded Zoom room below. Remove this
+  // fallback once simulcast is configured, so mobile goes back to its
+  // better (HLS) experience.
+  if ((preferHls || !session.zoomMeetingId || !zoomConfigured()) && session.hlsUrl) {
     return NextResponse.json({
       mode: "hls" as const,
       hlsUrl: session.hlsUrl,
       delaySeconds: session.simulcastDelaySeconds ?? 25,
       watermark: watermarkFor(user.name, user.phone),
     });
+  }
+
+  if (!session.zoomMeetingId || !zoomConfigured()) {
+    return NextResponse.json({ error: "stream_not_ready" }, { status: 409 });
   }
 
   const joinUrl = await getOrCreateRegistrantUrl({
