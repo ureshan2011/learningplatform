@@ -5,6 +5,7 @@ import { getSubject, listContent } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { formatDate } from "@/lib/format";
 import { DownloadButton } from "@/components/content/DownloadButton";
+import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { r2Configured } from "@/lib/features";
@@ -78,17 +79,28 @@ export default async function SubjectPage({
           <p className="font-medium text-(--color-awaken-accent)">
             {access.reason === "expired"
               ? "Your subscription has ended."
-              : "You are not enrolled in this subject."}
+              : !access.enrollment
+                ? "You are not enrolled in this subject yet."
+                : "You are not enrolled in this subject."}
           </p>
           <p className="mt-1 text-(--color-awaken-ink-soft)">
             {items.length - visible.length} more resources unlock when you subscribe.
           </p>
-          <Link
-            href="/dashboard"
-            className="mt-3 inline-block rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white"
-          >
-            Subscribe
-          </Link>
+          <div className="mt-3 flex flex-wrap items-center gap-3">
+            {/*
+              A trial is only offered where `hasAccess` found no enrollment
+              document at all — see the reason comment on `startFreeTrial`.
+              A lapsed or cancelled subscriber always has one, so they only
+              ever see "Subscribe".
+            */}
+            {!access.enrollment ? <StartTrialButton subjectId={subjectId} /> : null}
+            <Link
+              href="/dashboard"
+              className="inline-block rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-2 font-semibold hover:border-(--color-awaken-accent)/40"
+            >
+              Subscribe
+            </Link>
+          </div>
         </div>
       ) : null}
 

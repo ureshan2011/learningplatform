@@ -73,7 +73,7 @@ export interface Enrollment {
   /** Access is granted while now <= currentPeriodEnd. */
   currentPeriodStart: number;
   currentPeriodEnd: number;
-  source: "payhere" | "bank_slip" | "manual" | "trial";
+  source: "payhere" | "bank_slip" | "manual" | "trial" | "free_trial";
   lastPaymentId?: string;
   createdAt: number;
   updatedAt: number;
