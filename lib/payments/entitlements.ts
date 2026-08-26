@@ -145,6 +145,40 @@ export async function grantBonusDays(params: {
   return enrollment;
 }
 
+/** Long enough to reach at least one scheduled live class, however the timetable falls. */
+export const FREE_TRIAL_DAYS = 7;
+
+/**
+ * Grants a one-time, no-payment trial for a subject a student has never
+ * touched before.
+ *
+ * "Never touched" is enforced by requiring no enrollment document to exist at
+ * all — not "no active enrollment", which a lapsed or cancelled subscriber
+ * would also satisfy and could otherwise re-trigger a free trial every time
+ * their paid access expires.
+ */
+export async function startFreeTrial(params: {
+  uid: string;
+  subjectId: string;
+  tenantId: string;
+}): Promise<Enrollment> {
+  const ref = col.enrollments().doc(enrollmentId(params.uid, params.subjectId));
+  const snap = await ref.get();
+  if (snap.exists) {
+    const err = new Error("TRIAL_ALREADY_USED") as Error & { reason?: string };
+    err.reason = "trial_already_used";
+    throw err;
+  }
+
+  return grantBonusDays({
+    uid: params.uid,
+    subjectId: params.subjectId,
+    tenantId: params.tenantId,
+    days: FREE_TRIAL_DAYS,
+    source: "free_trial",
+  });
+}
+
 /**
  * Adds calendar months, clamping to the end of a short month.
  *

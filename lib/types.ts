@@ -73,7 +73,7 @@ export interface Enrollment {
   /** Access is granted while now <= currentPeriodEnd. */
   currentPeriodStart: number;
   currentPeriodEnd: number;
-  source: "payhere" | "bank_slip" | "manual" | "trial";
+  source: "payhere" | "bank_slip" | "manual" | "trial" | "free_trial";
   lastPaymentId?: string;
   createdAt: number;
   updatedAt: number;
@@ -251,6 +251,58 @@ export interface QuestionAttempt {
   lastChoice: number;
   lastCorrect: boolean;
   lastAnsweredAt: number;
+}
+
+/**
+ * A fixed, timed paper — the digital equivalent of a Sri Lankan "paper
+ * class": a real past-paper-style sitting with negative marking, not
+ * self-paced practice. `questionIds` is a snapshot chosen at creation time
+ * so every student who sits it gets the exact same paper, and it stays
+ * reproducible even if the question bank changes later.
+ */
+export interface MockExam {
+  id: string;
+  tenantId: TenantId;
+  subjectId: string;
+  title: string;
+  questionIds: string[];
+  durationMinutes: number;
+  /** Fraction deducted per wrong answer (e.g. 0.33 = -1/3). 0 = no negative marking. */
+  negativeMarking: number;
+  active: boolean;
+  createdAt: number;
+  createdBy: string;
+}
+
+/**
+ * One student's sitting of one mock exam. Deterministic id
+ * `${uid}_${mockExamId}` for the same reason enrollment ids are — starting
+ * and submitting are both single-document operations, never a query.
+ *
+ * `questionOrder` is shuffled once, on first start, and reused on every
+ * later read (page refresh mid-exam) so the paper does not reshuffle under
+ * a student who reloads. Scoring fields are undefined until `submittedAt`
+ * is set; once set, the attempt is locked — see `submitMockExam`.
+ */
+export interface MockExamAttempt {
+  id: string;
+  tenantId: TenantId;
+  uid: string;
+  subjectId: string;
+  mockExamId: string;
+  questionOrder: string[];
+  startedAt: number;
+  submittedAt?: number;
+  answers?: Record<string, number>;
+  score?: number;
+  correctCount?: number;
+  wrongCount?: number;
+  unansweredCount?: number;
+  topicBreakdown?: Record<string, { correct: number; total: number }>;
+  rank?: number;
+  totalAttempts?: number;
+  percentile?: number;
+  updatedAt: number;
 }
 
 /** Result of the single server-side access check. */

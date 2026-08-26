@@ -1,8 +1,17 @@
 import "server-only";
 
-import { col, progressId } from "@/lib/firebase/admin";
+import { col, mockExamAttemptId, progressId } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
-import type { AttendanceRecord, ClassSession, ContentItem, Enrollment, Progress, Subject } from "@/lib/types";
+import type {
+  AttendanceRecord,
+  ClassSession,
+  ContentItem,
+  Enrollment,
+  MockExam,
+  MockExamAttempt,
+  Progress,
+  Subject,
+} from "@/lib/types";
 
 /**
  * Server-side reads for pages.
@@ -49,6 +58,27 @@ export async function getSubject(subjectId: string): Promise<Subject | null> {
 export async function listEnrollments(uid: string): Promise<Enrollment[]> {
   const snap = await col.enrollments().where("uid", "==", uid).get();
   return snap.docs.map((d) => d.data() as Enrollment);
+}
+
+/** Two equality filters — automatically indexed, same reasoning as `listSubjects`. */
+export async function listMockExams(subjectId: string): Promise<MockExam[]> {
+  const snap = await col
+    .mockExams()
+    .where("subjectId", "==", subjectId)
+    .where("active", "==", true)
+    .get();
+  return snap.docs.map((d) => d.data() as MockExam).sort((a, b) => b.createdAt - a.createdAt);
+}
+
+export async function getMockExam(mockExamId: string): Promise<MockExam | null> {
+  const snap = await col.mockExams().doc(mockExamId).get();
+  return snap.exists ? (snap.data() as MockExam) : null;
+}
+
+/** Whether — and how — a student has already engaged this mock exam, for the list page's status badges. */
+export async function getMockExamAttempt(uid: string, mockExamId: string): Promise<MockExamAttempt | null> {
+  const snap = await col.mockExamAttempts().doc(mockExamAttemptId(uid, mockExamId)).get();
+  return snap.exists ? (snap.data() as MockExamAttempt) : null;
 }
 
 /**

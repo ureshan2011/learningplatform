@@ -46,7 +46,7 @@ function toPracticeQuestion(q: Question): PracticeQuestion {
 }
 
 /** Fisher-Yates, seeded only by call order — good enough to avoid the same five questions every time. */
-function shuffle<T>(items: T[]): T[] {
+export function shuffle<T>(items: T[]): T[] {
   const out = [...items];
   for (let i = out.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -159,26 +159,36 @@ export async function recordAnswer(params: {
   };
   await attemptRef.set(attempt);
 
-  const progress = await updateProgress({ uid, tenantId, subjectId, correct, now });
+  const xpAwarded = correct ? XP_CORRECT : XP_ATTEMPT;
+  const progress = await updateProgress({ uid, tenantId, subjectId, xpDelta: xpAwarded, now });
 
   return {
     correct,
     correctIndex: question.correctIndex,
     explanation: question.explanation,
     misconception: correct ? undefined : question.misconceptions?.[choiceIndex],
-    xpAwarded: correct ? XP_CORRECT : XP_ATTEMPT,
+    xpAwarded,
     progress: { xp: progress.xp, level: progress.level, streakDays: progress.streakDays },
   };
 }
 
-async function updateProgress(params: {
+/**
+ * Reads, updates and writes one subject's `Progress` doc: XP, level, streak
+ * (one bump per calendar day, however many times this is called that day)
+ * and weak-topic detection.
+ *
+ * Shared by practice (`recordAnswer`, one call per question) and mock exams
+ * (`lib/mockexams/engine.ts`, one call per submitted paper) — the streak and
+ * weak-topic logic is identical either way, only the XP amount differs.
+ */
+export async function updateProgress(params: {
   uid: string;
   tenantId: string;
   subjectId: string;
-  correct: boolean;
+  xpDelta: number;
   now: number;
 }): Promise<Progress> {
-  const { uid, tenantId, subjectId, correct, now } = params;
+  const { uid, tenantId, subjectId, xpDelta, now } = params;
   const ref = col.progress().doc(progressId(uid, subjectId));
   const snap = await ref.get();
   const existing = snap.data() as Progress | undefined;
@@ -186,7 +196,7 @@ async function updateProgress(params: {
   const today = colomboDateString(now);
   const { streakDays, streakGraceRemaining } = advanceStreak(existing, today, now);
 
-  const xp = (existing?.xp ?? 0) + (correct ? XP_CORRECT : XP_ATTEMPT);
+  const xp = (existing?.xp ?? 0) + xpDelta;
   const weakTopics = await recomputeWeakTopics(uid, subjectId);
 
   const progress: Progress = {
