@@ -59,12 +59,20 @@ export default async function TeacherConsolePage() {
           <h1 className="text-2xl font-bold">Teacher console</h1>
           <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Schedule classes and approve payments.</p>
         </div>
-        <Link
-          href="/teacher/insights"
-          className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
-        >
-          📊 Insights
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/teacher/mock-exams"
+            className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+          >
+            ⏱️ Mock exams
+          </Link>
+          <Link
+            href="/teacher/insights"
+            className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+          >
+            📊 Insights
+          </Link>
+        </div>
       </div>
 
       {subjects.length === 0 ? (

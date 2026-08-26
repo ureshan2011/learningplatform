@@ -103,6 +103,20 @@ service cloud.firestore {
       allow write: if false; // scored and scheduled server-side only
     }
 
+    // ---- mock exams ---------------------------------------------------------
+    match /mockExams/{mockExamId} {
+      // Metadata only (title, duration, question ids) — the questions
+      // themselves still deny direct read, so this leaks nothing. Served to
+      // students only through the server anyway, same posture as `questions`.
+      allow read: if false;
+      allow write: if false; // teacher console writes through the Admin SDK
+    }
+
+    match /mockExamAttempts/{attemptId} {
+      allow read: if signedIn() && (resource.data.uid == uid() || isTeacher());
+      allow write: if false; // scored server-side only — see submitMockExam
+    }
+
     // Anything not matched above is denied.
     match /{document=**} {
       allow read, write: if false;

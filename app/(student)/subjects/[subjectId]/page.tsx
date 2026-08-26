@@ -60,6 +60,12 @@ export default async function SubjectPage({
             🎯 Practice &amp; revision
           </Link>
           <Link
+            href={`/subjects/${subjectId}/mock-exams`}
+            className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm hover:border-(--color-awaken-accent)/40"
+          >
+            ⏱️ Mock exams
+          </Link>
+          <Link
             href={`/subjects/${subjectId}/lab`}
             className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm hover:border-(--color-awaken-accent)/40"
           >
