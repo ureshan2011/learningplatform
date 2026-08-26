@@ -7,8 +7,8 @@ import type { Subject } from "@/lib/types";
 
 const FEATURES = [
   {
-    title: "සජීවී පන්ති",
-    body: "පන්තිය පටන්ගන්නා මොහොතේම ඔබේ දුරකථනයෙන්ම සම්බන්ධ වෙන්න.",
+    title: "Live classes",
+    body: "Join from your phone the moment class starts.",
     icon: (
       <path
         d="M4 17V7a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Zm13-7 4-3v10l-4-3"
@@ -18,8 +18,8 @@ const FEATURES = [
     ),
   },
   {
-    title: "ක්ෂණික ප්‍රශ්නාවලි",
-    body: "සජීවීව උත්තර දෙන්න, දිවයින පුරාම ලීඩර්බෝඩ් එකෙන් ඔබේ ස්ථානය ක්ෂණිකව බලන්න.",
+    title: "Instant quizzes",
+    body: "Answer live, see the island-wide leaderboard right after.",
     icon: (
       <path
         d="m5 13 4 4L19 7"
@@ -29,8 +29,8 @@ const FEATURES = [
     ),
   },
   {
-    title: "පසුගිය ප්‍රශ්න පත්‍ර",
-    body: "පන්තිය ඉවර වූ සැණින්ම නෝට්ස් සහ ප්‍රශ්න පත්‍ර බාගත කරගන්න.",
+    title: "Past papers",
+    body: "Download notes and papers the moment class ends.",
     icon: (
       <path
         d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm7 0v5h5"
@@ -41,14 +41,11 @@ const FEATURES = [
   },
 ] as const;
 
-// Displayed on the teacher-credibility card. Kept as plain strings rather
-// than a component so the Sinhala copy is easy to proofread and edit later
-// without touching JSX structure.
 const CREDENTIALS = [
-  "PhD — කැන්ටබරි විශ්වවිද්‍යාලය, නවසීලන්තය",
-  "හිටපු කථිකාචාර්ය — මොරටුව විශ්වවිද්‍යාලය",
-  "ශ්‍රී ලංකාවේ ජාතික MOOC වේදිකාව ගොඩනැගීම — ශිෂ්‍යයන් 150,000+",
-  "ජ්‍යෙෂ්ඨ කථිකාචාර්ය — නවසීලන්තය (වර්තමානයේ)",
+  "PhD — University of Canterbury, NZ",
+  "Former Lecturer — University of Moratuwa",
+  "Built Sri Lanka's National MOOC — 150,000+ learners",
+  "Senior Lecturer — NZ (current)",
 ] as const;
 
 // The landing page is the top of the acquisition funnel and must be indexable,
@@ -62,10 +59,7 @@ export default async function LandingPage() {
   ]);
 
   return (
-    <main
-      lang="si"
-      className="si relative min-h-screen overflow-hidden bg-(--color-awaken-bg) text-(--color-awaken-ink)"
-    >
+    <main className="relative min-h-screen overflow-hidden bg-(--color-awaken-bg) text-(--color-awaken-ink)">
       {/* Decorative gradient blobs. Pure CSS, no images — cheap on slow links. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
         <div
@@ -90,34 +84,37 @@ export default async function LandingPage() {
             href={user ? "/dashboard" : "/signin"}
             className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-2 text-sm font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-colors hover:border-(--color-awaken-accent)/40"
           >
-            {user ? "මගේ ඩෑෂ්බෝඩ්" : "ඇතුල් වෙන්න"}
+            {user ? "My dashboard" : "Sign in"}
           </Link>
         </header>
 
         <section className="awaken-rise mt-16 max-w-2xl">
-          <h1 className="font-[family-name:var(--font-display)] text-4xl font-extrabold leading-[1.2] tracking-tight sm:text-5xl">
-            සජීවී O/L සහ A/L ICT පන්ති.
+          <h1 className="font-[family-name:var(--font-display)] text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl">
+            O/L &amp; A/L ICT, taught live.
             <span className="block bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) bg-clip-text text-transparent">
-              සිංහල මාධ්‍යයෙන්.
+              <span className="si" lang="si">
+                සිංහල
+              </span>{" "}
+              medium.
             </span>
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-(--color-awaken-ink-soft)">
-            ඔබේ දුරකථනයෙන්ම සජීවී පන්තිවලට සම්බන්ධ වෙන්න, පන්තිය අතරතුරදීම ක්ෂණික
-            ප්‍රශ්නාවලිවලට උත්තර දෙන්න, මුළු දිවයිනේම ලීඩර්බෝඩ් එකේ ඔබේ ස්ථානය බලන්න,
-            සහ පන්තිය ඉවර වූ සැණින්ම පසුගිය ප්‍රශ්න පත්‍ර බාගත කරගන්න.
+            Live classes you join from your phone, instant quizzes during the lesson, a
+            leaderboard against the whole island, and past papers you can download the
+            moment class ends.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/signin"
               className="rounded-xl bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-6 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(234,88,12,0.35)] transition-transform hover:scale-[1.02] active:scale-[0.98]"
             >
-              පන්තියකට එකතු වෙන්න
+              Join a class
             </Link>
             <Link
               href="/notes"
               className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) px-6 py-3 font-medium transition-colors hover:border-(--color-awaken-accent)/40"
             >
-              නොමිලේ නෝට්ස් සහ ප්‍රශ්න පත්‍ර
+              Free notes &amp; past papers
             </Link>
           </div>
         </section>
@@ -160,7 +157,7 @@ export default async function LandingPage() {
               <div className="mx-auto w-32 shrink-0 sm:mx-0 sm:w-full">
                 <Image
                   src="/images/dr-yasas.png"
-                  alt="ආචාර්ය යසස් වික්‍රමසිංහ"
+                  alt="Dr. Yasas Wickramasinghe"
                   width={881}
                   height={1241}
                   className="h-auto w-full rounded-2xl"
@@ -168,21 +165,20 @@ export default async function LandingPage() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-(--color-awaken-accent)">
-                  ඔබේ ගුරුවරයා
+                  Your teacher
                 </p>
                 <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-extrabold tracking-tight">
-                  ආචාර්ය යසස් වික්‍රමසිංහ
+                  Dr. Yasas Wickramasinghe
                 </h2>
-                <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)" lang="en">
+                <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)">
                   PhD, Human Interface Technology — University of Canterbury, NZ
                 </p>
                 <p className="mt-4 leading-relaxed text-(--color-awaken-ink-soft)">
-                  ආචාර්ය යසස් වික්‍රමසිංහ මීට පෙර මොරටුව විශ්වවිද්‍යාලයේ Software
-                  Engineering කථිකාචාර්යවරයෙකු ලෙසත්, ශ්‍රී ලංකාවේ ප්‍රථම ජාතික MOOC
-                  වේදිකාවේ (open.uom.lk) ව්‍යාපෘති ප්‍රධානියා ලෙසත් සේවය කර, එය ශිෂ්‍යයන්
-                  150,000කට වඩා වැඩි පිරිසක් දක්වා පුළුල් කළා. දැනට නවසීලන්තයේ
-                  කැන්ටබරි විශ්වවිද්‍යාලයේ පශ්චාත් ආචාර්ය පර්යේෂකයෙකු සහ Yoobee
-                  විද්‍යාලයේ ජ්‍යෙෂ්ඨ කථිකාචාර්යවරයෙකු ලෙස කටයුතු කරනවා.
+                  Dr. Wickramasinghe was previously a Software Engineering lecturer at
+                  the University of Moratuwa and led Sri Lanka&apos;s first national MOOC
+                  platform (open.uom.lk), scaling it to 150,000+ learners. He is
+                  currently a postdoctoral researcher at the University of Canterbury,
+                  New Zealand, and a Senior Lecturer at Yoobee Colleges.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {CREDENTIALS.map((credential) => (
@@ -200,7 +196,7 @@ export default async function LandingPage() {
                   rel="noreferrer"
                   className="mt-5 inline-block text-sm font-semibold text-(--color-awaken-accent) hover:underline"
                 >
-                  සම්පූර්ණ CV / LinkedIn බලන්න →
+                  Full CV / LinkedIn →
                 </a>
               </div>
             </div>
@@ -209,11 +205,11 @@ export default async function LandingPage() {
 
         <section className="mt-20">
           <h2 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-            පන්ති
+            Classes
           </h2>
           {subjects.length === 0 ? (
             <p className="mt-4 text-sm text-(--color-awaken-ink-soft)">
-              පන්ති සකසමින් පවතී. මඳ වේලාවකින් නැවත පරීක්ෂා කරන්න.
+              Classes are being set up. Check back shortly.
             </p>
           ) : (
             <ul className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -235,7 +231,7 @@ export default async function LandingPage() {
                     {formatLKR(subject.priceLKR)}
                     <span className="text-sm font-normal text-(--color-awaken-ink-soft)">
                       {" "}
-                      / මාසයට
+                      / month
                     </span>
                   </p>
                 </li>
