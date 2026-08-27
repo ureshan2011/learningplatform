@@ -74,6 +74,13 @@ export default async function TeacherConsolePage() {
               Mock exams
             </Link>
             <Link
+              href="/teacher/leads"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+            >
+              <Icon name="mail" className="!text-base" />
+              Subscribers
+            </Link>
+            <Link
               href="/teacher/insights"
               className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
             >

@@ -44,7 +44,12 @@ export type IconName =
   | "mail"
   | "send"
   | "play_circle"
-  | "notifications_active";
+  | "notifications_active"
+  | "search"
+  | "content_copy"
+  | "filter_list"
+  | "chevron_left"
+  | "inbox";
 
 export function Icon({
   name,
