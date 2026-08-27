@@ -40,7 +40,11 @@ export type IconName =
   | "family_restroom"
   | "smartphone"
   | "download"
-  | "timer";
+  | "timer"
+  | "mail"
+  | "send"
+  | "play_circle"
+  | "notifications_active";
 
 export function Icon({
   name,

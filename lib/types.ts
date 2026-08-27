@@ -305,6 +305,26 @@ export interface MockExamAttempt {
   updatedAt: number;
 }
 
+/**
+ * An email captured from the free content hub on the landing page — SEO
+ * traffic that isn't a student account yet. Deliberately separate from
+ * `User`: most of these people will never sign in with a phone number at
+ * all, so this is a mailing list, not a partial account.
+ *
+ * Doc id is the lowercased, trimmed email itself: a repeat signup just
+ * refreshes `updatedAt` instead of creating a duplicate, and it makes an
+ * existence check a single get rather than a query.
+ */
+export interface Lead {
+  id: string;
+  tenantId: TenantId;
+  email: string;
+  /** Where the signup happened, e.g. "landing_hero", "landing_resources". */
+  source: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
 /** Result of the single server-side access check. */
 export interface AccessResult {
   allowed: boolean;
