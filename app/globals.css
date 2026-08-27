@@ -38,6 +38,11 @@
   --color-awaken-success-soft: #f0fdf4;
   --color-awaken-danger: #dc2626;
   --color-awaken-danger-soft: #fef2f2;
+  --color-awaken-indigo: #585c7d;
+  --color-awaken-indigo-soft: #d4d8fe;
+  --color-awaken-warn: #d97706;
+  --color-awaken-warn-soft: #fffbeb;
+  --color-awaken-whatsapp: #25d366;
 }
 
 /* Slow, cheap drift for the hero's gradient blobs — pure CSS, GPU-composited,
@@ -90,4 +95,33 @@ body {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
+}
+
+/*
+ * Material Symbols (icon font, linked in app/layout.tsx). Google's own
+ * recommended settings — see https://fonts.google.com/icons — loaded as a
+ * webfont rather than bundled SVGs so the icon set can grow without a
+ * dependency, matching the "browser-only setup" ethos elsewhere in this repo.
+ */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* Sidebar collapse on mobile — a plain checkbox toggle, no client JS needed. */
+.sidebar-toggle:checked ~ .sidebar-panel {
+  transform: translateX(0);
 }

@@ -34,6 +34,24 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={display.variable}>
+      {/*
+        Icon font for the whole app — see the .material-symbols-outlined rule
+        in globals.css. `display=block` (not `swap`) is Google's own
+        recommendation for icon fonts: an icon rendering as its literal glyph
+        name for a moment is worse than a brief blank space. The two ESLint
+        rules below are pages-router-era checks that don't apply to a root
+        layout in the App Router, where this is the correct way to add a link
+        tag that isn't covered by next/font.
+      */}
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font, @next/next/google-font-display */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+          rel="stylesheet"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

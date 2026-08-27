@@ -4,7 +4,6 @@ import { getSessionUser } from "@/lib/auth/session";
 import { getSubject } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { PracticeSession } from "@/components/practice/PracticeSession";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +23,7 @@ export default async function PracticePage({
   const access = await hasAccess(user.uid, subjectId);
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-2xl px-5 py-8">
+    <main className="mx-auto max-w-2xl px-5 py-8">
       <Link href={`/subjects/${subjectId}`} className="text-sm text-(--color-awaken-ink-soft) underline">
         ← {subject.name}
       </Link>
@@ -56,7 +53,6 @@ export default async function PracticePage({
           <PracticeSession subjectId={subjectId} subjectName={subject.name} />
         </div>
       )}
-      </main>
-    </>
+    </main>
   );
 }

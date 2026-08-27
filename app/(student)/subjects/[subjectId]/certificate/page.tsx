@@ -6,7 +6,6 @@ import { hasAccess } from "@/lib/payments/entitlements";
 import { getCertificateEligibility } from "@/lib/practice/engine";
 import { publicEnv } from "@/lib/env";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -30,9 +29,7 @@ export default async function CertificatePage({
   const imageUrl = `/api/certificate/${subjectId}`;
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-2xl px-5 py-8">
+    <main className="mx-auto max-w-2xl px-5 py-8">
       <Link href={`/subjects/${subjectId}`} className="text-sm text-(--color-awaken-ink-soft) underline">
         ← {subject.name}
       </Link>
@@ -105,7 +102,6 @@ export default async function CertificatePage({
           </Link>
         </div>
       )}
-      </main>
-    </>
+    </main>
   );
 }

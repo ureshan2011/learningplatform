@@ -3,7 +3,6 @@ import { notFound, redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth/session";
 import { getSubject, listMockExams, getMockExamAttempt } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 import type { MockExam, MockExamAttempt } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -26,9 +25,7 @@ export default async function MockExamsPage({
   const attemptByExam = access.allowed ? await attemptsFor(user.uid, exams) : new Map<string, MockExamAttempt>();
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-2xl px-5 py-8">
+    <main className="mx-auto max-w-2xl px-5 py-8">
       <Link href={`/subjects/${subjectId}`} className="text-sm text-(--color-awaken-ink-soft) underline">
         ← {subject.name}
       </Link>
@@ -62,8 +59,7 @@ export default async function MockExamsPage({
           ))}
         </ul>
       )}
-      </main>
-    </>
+    </main>
   );
 }
 

@@ -11,6 +11,8 @@ import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { SeedQuestionsButton } from "@/components/teacher/SeedQuestionsButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { Icon } from "@/components/ui/Icon";
+import { StatTile } from "@/components/ui/StatTile";
 import { zoomConfigured } from "@/lib/features";
 import type { ClassSession, Payment, SessionSecrets, User } from "@/lib/types";
 
@@ -50,95 +52,118 @@ export default async function TeacherConsolePage() {
   // teacher-gated page. They never touch a student-readable document.
   const startUrls = await section("startUrls", () => startUrlsFor(sessions.map((s) => s.id)), {});
 
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const thisWeek = sessions.filter((s) => s.startsAt < now + 7 * 24 * 60 * 60 * 1000).length;
+
   return (
     <>
       <SiteHeader user={user} />
       <main className="mx-auto max-w-3xl px-5 py-8">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">Teacher console</h1>
-          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Schedule classes and approve payments.</p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Teacher console</h1>
+            <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Schedule classes and approve payments.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/teacher/mock-exams"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+            >
+              <Icon name="schedule" className="!text-base" />
+              Mock exams
+            </Link>
+            <Link
+              href="/teacher/insights"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+            >
+              <Icon name="insights" className="!text-base" />
+              Insights
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/teacher/mock-exams"
-            className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
-          >
-            ⏱️ Mock exams
-          </Link>
-          <Link
-            href="/teacher/insights"
-            className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
-          >
-            📊 Insights
-          </Link>
-        </div>
-      </div>
 
-      {subjects.length === 0 ? (
-        <div className="mt-8">
-          <SeedSubjectsButton />
+        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <StatTile icon="auto_stories" label="Subjects" value={subjects.length} />
+          <StatTile icon="event" label="Upcoming classes" value={sessions.length} />
+          <StatTile icon="schedule" label="This week" value={thisWeek} tone="accent" />
+          <StatTile icon="receipt_long" label="Pending slips" value={slips.length} tone={slips.length > 0 ? "warn" : "default"} />
         </div>
-      ) : (
-        <div className="mt-8">
-          <SeedQuestionsButton />
-        </div>
-      )}
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold">Schedule a class</h2>
-        {zoomConfigured() ? (
-          <div className="mt-4">
-            <ScheduleSessionForm subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
+        {subjects.length === 0 ? (
+          <div className="mt-8">
+            <SeedSubjectsButton />
           </div>
         ) : (
-          <div className="mt-4">
-            <NotConfigured feature="zoom" forTeacher />
+          <div className="mt-8">
+            <SeedQuestionsButton />
           </div>
         )}
-      </section>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold">Upcoming classes</h2>
-        {sessions.length === 0 ? (
-          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">Nothing scheduled.</p>
-        ) : (
-          <ul className="mt-3 space-y-3">
-            {sessions.map((session) => (
-              <li
-                key={session.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
-              >
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{session.title}</p>
-                  <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)">
-                    {formatSessionTime(session.startsAt)} · {session.durationMinutes} min
-                    {session.hlsUrl ? " · simulcast on" : " · no simulcast"}
-                  </p>
-                </div>
-                {startUrls[session.id] ? (
-                  <a
-                    href={startUrls[session.id]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
-                  >
-                    Start class
-                  </a>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+        <section className="mt-10">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="add_task" className="text-(--color-awaken-accent)" />
+            Schedule a class
+          </h2>
+          {zoomConfigured() ? (
+            <div className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+              <ScheduleSessionForm subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
+            </div>
+          ) : (
+            <div className="mt-4">
+              <NotConfigured feature="zoom" forTeacher />
+            </div>
+          )}
+        </section>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold">Bank slips awaiting approval</h2>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-          Approving grants one month of access from today.
-        </p>
-        <SlipReviewList slips={slips} />
-      </section>
+        <section className="mt-10">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="videocam" className="text-(--color-awaken-accent)" />
+            Upcoming classes
+          </h2>
+          {sessions.length === 0 ? (
+            <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">Nothing scheduled.</p>
+          ) : (
+            <ul className="mt-3 space-y-3">
+              {sessions.map((session) => (
+                <li
+                  key={session.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{session.title}</p>
+                    <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)">
+                      {formatSessionTime(session.startsAt)} · {session.durationMinutes} min
+                      {session.hlsUrl ? " · simulcast on" : " · no simulcast"}
+                    </p>
+                  </div>
+                  {startUrls[session.id] ? (
+                    <a
+                      href={startUrls[session.id]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
+                    >
+                      <Icon name="videocam" className="!text-base" />
+                      Start class
+                    </a>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section className="mt-10 pb-4">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="receipt_long" className="text-(--color-awaken-accent)" />
+            Bank slips awaiting approval
+          </h2>
+          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+            Approving grants one month of access from today.
+          </p>
+          <SlipReviewList slips={slips} />
+        </section>
       </main>
     </>
   );
