@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { COMMAND_WORDS } from "@/lib/content/command-words";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { Icon } from "@/components/ui/Icon";
 
 export const metadata: Metadata = {
   title: "ICT exam command words explained",
@@ -29,7 +30,10 @@ export default function CommandWordsPage() {
       */}
       <SiteHeader user={null} />
       <main className="mx-auto max-w-3xl px-5 py-12">
-      <h1 className="mt-4 text-3xl font-bold">ICT exam command words, explained</h1>
+      <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
+        <Icon name="auto_stories" className="!text-2xl text-(--color-awaken-accent)" />
+        ICT exam command words, explained
+      </h1>
       <p className="mt-3 text-(--color-awaken-ink-soft)">
         Every year, students who know the ICT syllabus cold still lose marks — not on
         content, but on misreading what a question is actually asking for.
@@ -48,7 +52,8 @@ export default function CommandWordsPage() {
               {cw.sinhala}
             </p>
             <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">{cw.meaning}</p>
-            <p className="mt-2 rounded-lg bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
+            <p className="mt-2 flex items-start gap-2 rounded-lg bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
+              <Icon name="bolt" className="mt-0.5 shrink-0 !text-base" />
               {cw.tip}
             </p>
             <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">
@@ -68,8 +73,9 @@ export default function CommandWordsPage() {
         </p>
         <Link
           href="/signin"
-          className="mt-4 inline-block rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white"
+          className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white"
         >
+          <Icon name="videocam" className="!text-base" />
           Join a class
         </Link>
       </section>

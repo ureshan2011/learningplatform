@@ -8,11 +8,13 @@ export function StatTile({
   icon,
   label,
   value,
+  hint,
   tone = "default",
 }: {
   icon: IconName;
   label: string;
   value: string | number;
+  hint?: string;
   tone?: "default" | "accent" | "success" | "warn";
 }) {
   const toneClass = {
@@ -29,6 +31,7 @@ export function StatTile({
         {label}
       </div>
       <p className="mt-1.5 text-2xl font-bold tracking-tight text-(--color-awaken-ink)">{value}</p>
+      {hint ? <p className="mt-0.5 text-xs text-(--color-awaken-ink-soft)">{hint}</p> : null}
     </div>
   );
 }

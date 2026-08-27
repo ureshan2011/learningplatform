@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSessionUser } from "@/lib/auth/session";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { Icon } from "@/components/ui/Icon";
 
 /**
  * Where PayHere returns the student's browser after payment.
@@ -21,7 +22,10 @@ export default async function PaymentSuccessPage({
     <>
       <SiteHeader user={user} />
       <main className="mx-auto flex min-h-[calc(100dvh-73px)] max-w-md flex-col justify-center px-5 text-center">
-        <h1 className="text-2xl font-bold text-(--color-awaken-success)">Payment received</h1>
+        <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-(--color-awaken-success-soft) text-(--color-awaken-success)">
+          <Icon name="check_circle" className="!text-3xl" />
+        </span>
+        <h1 className="mt-4 text-2xl font-bold text-(--color-awaken-success)">Payment received</h1>
         <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">
           Your class is being unlocked now. This usually takes a few seconds — open your
           dashboard and it will be ready.
@@ -29,8 +33,9 @@ export default async function PaymentSuccessPage({
         {order ? <p className="mt-2 text-xs text-(--color-awaken-ink-soft)">Reference: {order}</p> : null}
         <Link
           href="/dashboard"
-          className="mt-8 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-6 py-3 font-semibold text-white"
+          className="mt-8 inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-6 py-3 font-semibold text-white"
         >
+          <Icon name="home" className="!text-base" />
           Go to my dashboard
         </Link>
         <p className="mt-4 text-xs text-(--color-awaken-ink-soft)">

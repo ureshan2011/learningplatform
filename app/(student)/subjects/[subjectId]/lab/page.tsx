@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { getSubject } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { CodeLab } from "@/components/lab/CodeLab";
+import { Icon } from "@/components/ui/Icon";
 
 export const dynamic = "force-dynamic";
 
@@ -24,11 +25,15 @@ export default async function LabPage({
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-8">
-      <Link href={`/subjects/${subjectId}`} className="text-sm text-(--color-awaken-ink-soft) underline">
-        ← {subject.name}
+      <Link href={`/subjects/${subjectId}`} className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
+        <Icon name="arrow_back" className="!text-base" />
+        {subject.name}
       </Link>
 
-      <h1 className="mt-4 text-2xl font-bold">Code Lab</h1>
+      <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
+        <Icon name="code" className="text-(--color-awaken-accent)" />
+        Code Lab
+      </h1>
       <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
         Actually run pseudocode, spreadsheet formulas and SQL — not just read about them.
       </p>

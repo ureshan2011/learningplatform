@@ -3,6 +3,8 @@ import { notFound, redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth/session";
 import { getSubject, listMockExams, getMockExamAttempt } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
+import { Icon } from "@/components/ui/Icon";
+import { StatusPill } from "@/components/ui/StatusPill";
 import type { MockExam, MockExamAttempt } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -26,11 +28,15 @@ export default async function MockExamsPage({
 
   return (
     <main className="mx-auto max-w-2xl px-5 py-8">
-      <Link href={`/subjects/${subjectId}`} className="text-sm text-(--color-awaken-ink-soft) underline">
-        ← {subject.name}
+      <Link href={`/subjects/${subjectId}`} className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
+        <Icon name="arrow_back" className="!text-base" />
+        {subject.name}
       </Link>
 
-      <h1 className="mt-4 text-2xl font-bold">Mock exams</h1>
+      <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
+        <Icon name="schedule" className="text-(--color-awaken-accent)" />
+        Mock exams
+      </h1>
       <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
         Full timed papers with negative marking, just like the real thing — not self-paced practice.
       </p>
@@ -85,13 +91,11 @@ function MockExamRow({
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h2 className="font-semibold">{exam.title}</h2>
         {attempt?.submittedAt ? (
-          <span className="shrink-0 rounded-full bg-(--color-awaken-success-soft) px-2.5 py-0.5 text-xs font-semibold text-(--color-awaken-success)">
+          <StatusPill tone="success">
             {attempt.score} pts · rank {attempt.rank}/{attempt.totalAttempts}
-          </span>
+          </StatusPill>
         ) : attempt ? (
-          <span className="shrink-0 rounded-full bg-(--color-awaken-accent-soft) px-2.5 py-0.5 text-xs font-semibold text-(--color-awaken-accent)">
-            In progress
-          </span>
+          <StatusPill tone="accent">In progress</StatusPill>
         ) : null}
       </div>
       <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
@@ -100,8 +104,9 @@ function MockExamRow({
       </p>
       <Link
         href={href}
-        className="mt-3 inline-block rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
+        className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
       >
+        <Icon name={attempt?.submittedAt ? "military_tech" : "timer"} className="!text-base" />
         {attempt?.submittedAt ? "View results" : attempt ? "Resume" : "Start"}
       </Link>
     </li>

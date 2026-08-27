@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects, listUpcomingSessions } from "@/lib/queries";
 import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
+import { Icon } from "@/components/ui/Icon";
 import type { ClassSession, Subject } from "@/lib/types";
 
 const FEATURES = [
@@ -131,8 +132,13 @@ export default async function LandingPage() {
 
       <div className="relative mx-auto max-w-5xl px-5 py-14">
         <header className="flex items-center justify-between">
-          <span className="font-[family-name:var(--font-display)] text-lg font-extrabold tracking-tight">
-            ICT<span className="text-(--color-awaken-accent)">Class</span>
+          <span className="flex items-center gap-2">
+            <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-(--color-awaken-accent) to-(--color-awaken-rose) text-white">
+              <Icon name="school" className="!text-lg" />
+            </span>
+            <span className="font-[family-name:var(--font-display)] text-lg font-extrabold tracking-tight">
+              ICT<span className="text-(--color-awaken-accent)">Class</span>
+            </span>
           </span>
           <Link
             href={user ? "/dashboard" : "/signin"}
