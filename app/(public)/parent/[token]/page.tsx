@@ -3,6 +3,9 @@ import { verifyParentLink } from "@/lib/auth/parent-link";
 import { listEnrollments, listAttendance, getProgress, listSubjects } from "@/lib/queries";
 import { formatDate, formatSessionTime } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { Icon } from "@/components/ui/Icon";
+import { StatTile } from "@/components/ui/StatTile";
+import { StatusPill } from "@/components/ui/StatusPill";
 import type { User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -64,7 +67,10 @@ export default async function ParentViewPage({
     <>
       <SiteHeader user={null} />
       <main className="mx-auto max-w-2xl px-5 py-10">
-      <p className="text-xs uppercase tracking-wide text-(--color-awaken-ink-soft)">Parent view</p>
+      <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-(--color-awaken-ink-soft)">
+        <Icon name="family_restroom" className="!text-base text-(--color-awaken-accent)" />
+        Parent view
+      </p>
       <h1 className="mt-1 text-2xl font-bold">{user.name}</h1>
       <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Read-only — attendance and progress only.</p>
 
@@ -82,15 +88,15 @@ export default async function ParentViewPage({
                 <li key={e.id} className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
                   <div className="flex items-center justify-between">
                     <p className="font-semibold">{subject?.name ?? e.subjectId}</p>
-                    <span className={active ? "text-sm text-(--color-awaken-success)" : "text-sm text-(--color-awaken-ink-soft)"}>
+                    <StatusPill tone={active ? "success" : "neutral"}>
                       {active ? `Active until ${formatDate(e.currentPeriodEnd)}` : "Not active"}
-                    </span>
+                    </StatusPill>
                   </div>
                   {progress ? (
-                    <div className="mt-3 grid grid-cols-3 gap-3 text-center text-sm">
-                      <Stat label="Streak" value={`${progress.streakDays}d`} />
-                      <Stat label="Level" value={String(progress.level)} />
-                      <Stat label="XP" value={String(progress.xp)} />
+                    <div className="mt-3 grid grid-cols-3 gap-3">
+                      <StatTile icon="local_fire_department" label="Streak" value={`${progress.streakDays}d`} />
+                      <StatTile icon="grade" label="Level" value={progress.level} />
+                      <StatTile icon="bolt" label="XP" value={progress.xp} />
                     </div>
                   ) : null}
                   {progress && progress.weakTopics.length > 0 ? (
@@ -133,14 +139,5 @@ export default async function ParentViewPage({
       </section>
       </main>
     </>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) py-2">
-      <p className="text-base font-bold">{value}</p>
-      <p className="text-[10px] uppercase tracking-wide text-(--color-awaken-ink-soft)">{label}</p>
-    </div>
   );
 }

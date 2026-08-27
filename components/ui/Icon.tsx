@@ -37,7 +37,10 @@ export type IconName =
   | "grade"
   | "auto_stories"
   | "chat"
-  | "family_restroom";
+  | "family_restroom"
+  | "smartphone"
+  | "download"
+  | "timer";
 
 export function Icon({
   name,

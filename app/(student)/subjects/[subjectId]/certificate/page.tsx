@@ -6,6 +6,8 @@ import { hasAccess } from "@/lib/payments/entitlements";
 import { getCertificateEligibility } from "@/lib/practice/engine";
 import { publicEnv } from "@/lib/env";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
+import { Icon } from "@/components/ui/Icon";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 
 export const dynamic = "force-dynamic";
 
@@ -30,11 +32,15 @@ export default async function CertificatePage({
 
   return (
     <main className="mx-auto max-w-2xl px-5 py-8">
-      <Link href={`/subjects/${subjectId}`} className="text-sm text-(--color-awaken-ink-soft) underline">
-        ← {subject.name}
+      <Link href={`/subjects/${subjectId}`} className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
+        <Icon name="arrow_back" className="!text-base" />
+        {subject.name}
       </Link>
 
-      <h1 className="mt-4 text-2xl font-bold">Certificate</h1>
+      <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
+        <Icon name="military_tech" className="text-(--color-awaken-accent)" />
+        Certificate
+      </h1>
 
       {eligibility.eligible ? (
         <div className="mt-6">
@@ -56,8 +62,9 @@ export default async function CertificatePage({
             <a
               href={imageUrl}
               download={`ict-class-${subject.id}-certificate.png`}
-              className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
             >
+              <Icon name="download" className="!text-base" />
               Download certificate
             </a>
             <WhatsAppShareButton
@@ -80,13 +87,8 @@ export default async function CertificatePage({
                 {eligibility.questionsAnswered}/{eligibility.requiredQuestions}
               </span>
             </p>
-            <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-line)">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose)"
-                style={{
-                  width: `${Math.min(100, (eligibility.questionsAnswered / eligibility.requiredQuestions) * 100)}%`,
-                }}
-              />
+            <div className="mt-1.5">
+              <ProgressBar percent={(eligibility.questionsAnswered / eligibility.requiredQuestions) * 100} />
             </div>
           </div>
           {eligibility.questionsAnswered > 0 ? (
@@ -96,8 +98,9 @@ export default async function CertificatePage({
           ) : null}
           <Link
             href={`/subjects/${subjectId}/practice`}
-            className="mt-5 inline-block rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white"
+            className="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white"
           >
+            <Icon name="quiz" className="!text-base" />
             Go to Practice
           </Link>
         </div>

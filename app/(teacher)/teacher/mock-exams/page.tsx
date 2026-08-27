@@ -6,6 +6,7 @@ import { listSubjects } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
 import { CreateMockExamForm } from "@/components/teacher/CreateMockExamForm";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { Icon } from "@/components/ui/Icon";
 import type { MockExam, MockExamAttempt } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -27,17 +28,24 @@ export default async function TeacherMockExamsPage() {
     <>
       <SiteHeader user={user} />
       <main className="mx-auto max-w-3xl px-5 py-8">
-      <Link href="/teacher" className="text-sm text-(--color-awaken-ink-soft) underline">
-        ← Teacher console
+      <Link href="/teacher" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
+        <Icon name="arrow_back" className="!text-base" />
+        Teacher console
       </Link>
 
-      <h1 className="mt-4 text-2xl font-bold">Mock exams</h1>
+      <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
+        <Icon name="schedule" className="text-(--color-awaken-accent)" />
+        Mock exams
+      </h1>
       <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
         Full timed papers, scored with negative marking, drawn from your question bank.
       </p>
 
       <section className="mt-8">
-        <h2 className="text-lg font-semibold">Create a mock exam</h2>
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <Icon name="add_task" className="text-(--color-awaken-accent)" />
+          Create a mock exam
+        </h2>
         {subjects.length === 0 ? (
           <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">Add a subject first.</p>
         ) : (
@@ -47,8 +55,11 @@ export default async function TeacherMockExamsPage() {
         )}
       </section>
 
-      <section className="mt-10">
-        <h2 className="text-lg font-semibold">Existing mock exams</h2>
+      <section className="mt-10 pb-4">
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <Icon name="receipt_long" className="text-(--color-awaken-accent)" />
+          Existing mock exams
+        </h2>
         {exams.length === 0 ? (
           <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">None yet.</p>
         ) : (
@@ -62,7 +73,7 @@ export default async function TeacherMockExamsPage() {
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <p className="font-medium">{exam.title}</p>
-                    <span className="text-xs text-(--color-awaken-ink-soft)">
+                    <span className="rounded-full bg-(--color-awaken-indigo-soft) px-2.5 py-0.5 text-xs font-semibold text-(--color-awaken-indigo)">
                       {subjectName.get(exam.subjectId) ?? exam.subjectId}
                     </span>
                   </div>

@@ -5,6 +5,9 @@ import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
+import { Icon } from "@/components/ui/Icon";
+import { StatTile } from "@/components/ui/StatTile";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import {
   getAtRiskStudents,
   getBusinessOverview,
@@ -54,29 +57,38 @@ export default async function TeacherInsightsPage() {
     <>
       <SiteHeader user={user} />
       <main className="mx-auto max-w-3xl px-5 py-8">
-        <Link href="/teacher" className="text-sm text-(--color-awaken-ink-soft) underline">
-          ← Teacher console
+        <Link href="/teacher" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
+          <Icon name="arrow_back" className="!text-base" />
+          Teacher console
         </Link>
 
-        <h1 className="mt-4 text-2xl font-bold">Insights</h1>
+        <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
+          <Icon name="insights" className="text-(--color-awaken-accent)" />
+          Insights
+        </h1>
         <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
           What&apos;s working, who needs a nudge, and what to teach next — all from data
           students are already generating.
         </p>
 
         <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard label="Active students" value={String(overview.activeStudents)} />
-          <StatCard label="Monthly revenue" value={formatLKR(overview.mrrLKR)} />
-          <StatCard label="New this month" value={String(overview.newStudentsThisMonth)} />
-          <StatCard
+          <StatTile icon="group" label="Active students" value={overview.activeStudents} />
+          <StatTile icon="credit_card" label="Monthly revenue" value={formatLKR(overview.mrrLKR)} tone="success" />
+          <StatTile icon="bolt" label="New this month" value={overview.newStudentsThisMonth} tone="accent" />
+          <StatTile
+            icon="receipt_long"
             label="Awaiting approval"
             value={formatLKR(overview.pendingRevenueLKR)}
             hint={overview.pendingSlipCount > 0 ? `${overview.pendingSlipCount} slip${overview.pendingSlipCount === 1 ? "" : "s"}` : undefined}
+            tone={overview.pendingSlipCount > 0 ? "warn" : "default"}
           />
         </section>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold">Reach out before they lapse</h2>
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="chat" className="text-(--color-awaken-accent)" />
+            Reach out before they lapse
+          </h2>
           <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
             Active subscriptions expiring within two weeks, quietest students first.
           </p>
@@ -121,7 +133,10 @@ export default async function TeacherInsightsPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="text-lg font-semibold">Teach this next</h2>
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="quiz" className="text-(--color-awaken-accent)" />
+            Teach this next
+          </h2>
           <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
             Topics the whole cohort is struggling with, worst first — straight from Practice
             answers, not a guess.
@@ -147,11 +162,8 @@ export default async function TeacherInsightsPage() {
                     {t.subjectName} · {t.studentsSeen} student{t.studentsSeen === 1 ? "" : "s"} ·{" "}
                     {t.timesAnswered} answers
                   </p>
-                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-line)">
-                    <div
-                      className={`h-full rounded-full ${accuracyBarColor(t.accuracyPct)}`}
-                      style={{ width: `${t.accuracyPct}%` }}
-                    />
+                  <div className="mt-2">
+                    <ProgressBar percent={t.accuracyPct} />
                   </div>
                 </li>
               ))}
@@ -159,8 +171,11 @@ export default async function TeacherInsightsPage() {
           )}
         </section>
 
-        <section className="mt-10">
-          <h2 className="text-lg font-semibold">By subject</h2>
+        <section className="mt-10 pb-4">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="auto_stories" className="text-(--color-awaken-accent)" />
+            By subject
+          </h2>
           {breakdown.length === 0 ? (
             <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">No subjects yet.</p>
           ) : (
@@ -193,16 +208,6 @@ export default async function TeacherInsightsPage() {
   );
 }
 
-function StatCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
-  return (
-    <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
-      <p className="text-xs uppercase tracking-wide text-(--color-awaken-ink-soft)">{label}</p>
-      <p className="mt-1 text-xl font-bold">{value}</p>
-      {hint ? <p className="mt-0.5 text-xs text-(--color-awaken-ink-soft)">{hint}</p> : null}
-    </div>
-  );
-}
-
 function Th({ children }: { children: React.ReactNode }) {
   return (
     <th className="border-b border-(--color-awaken-line) bg-(--color-awaken-bg) px-3 py-2 text-left text-xs font-medium text-(--color-awaken-ink-soft)">
@@ -219,10 +224,4 @@ function accuracyColor(pct: number): string {
   if (pct < 50) return "text-(--color-awaken-danger)";
   if (pct < 70) return "text-(--color-awaken-accent)";
   return "text-(--color-awaken-success)";
-}
-
-function accuracyBarColor(pct: number): string {
-  if (pct < 50) return "bg-(--color-awaken-danger)";
-  if (pct < 70) return "bg-(--color-awaken-accent)";
-  return "bg-(--color-awaken-success)";
 }
