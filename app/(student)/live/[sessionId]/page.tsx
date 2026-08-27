@@ -4,7 +4,6 @@ import { getSessionUser } from "@/lib/auth/session";
 import { getSession, getSubject } from "@/lib/queries";
 import { formatSessionTime, relativeToNow } from "@/lib/format";
 import { JoinClass } from "@/components/live/JoinClass";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -29,9 +28,7 @@ export default async function LiveSessionPage({
   const joinable = session.state === "live" || (session.state === "scheduled" && startsSoon);
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-6xl px-4 py-6">
+    <main className="mx-auto max-w-6xl px-4 py-6">
       <Link href="/dashboard" className="text-sm text-(--color-awaken-ink-soft) underline">
         ← Dashboard
       </Link>
@@ -71,8 +68,7 @@ export default async function LiveSessionPage({
         hand — sharing this layout so simulcast and Zoom students sit in the
         same room.
       */}
-      </main>
-    </>
+    </main>
   );
 }
 

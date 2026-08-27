@@ -4,7 +4,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
 import { SlipUploadForm } from "@/components/payments/SlipUploadForm";
-import { SiteHeader } from "@/components/nav/SiteHeader";
+import { Icon } from "@/components/ui/Icon";
 
 export const dynamic = "force-dynamic";
 
@@ -22,18 +22,19 @@ export default async function SlipPage() {
   const subjects = await listSubjects();
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-md px-5 py-8">
-      <Link href="/dashboard" className="text-sm text-(--color-awaken-ink-soft) underline">
-        ← Dashboard
+    <main className="mx-auto max-w-md px-5 py-8">
+      <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
+        <Icon name="arrow_back" className="!text-base" />
+        Dashboard
       </Link>
 
-      <h1 className="mt-4 text-2xl font-bold">Send a bank slip</h1>
-      <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-        Deposit the fee, photograph the slip, and upload it here. Your teacher approves it
-        and your class unlocks — usually the same day.
-      </p>
+      <div className="mt-6 text-center">
+        <h1 className="text-2xl font-bold tracking-tight">Complete your enrollment</h1>
+        <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
+          Deposit the fee, photograph the slip, and upload it below. Your teacher verifies
+          it and your class unlocks — usually the same day.
+        </p>
+      </div>
 
       <SlipUploadForm
         subjects={subjects.map((s) => ({
@@ -42,7 +43,6 @@ export default async function SlipPage() {
           price: formatLKR(s.priceLKR),
         }))}
       />
-      </main>
-    </>
+    </main>
   );
 }

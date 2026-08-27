@@ -5,7 +5,6 @@ import { getSubject, getMockExam, getMockExamAttempt } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { getMockExamResult } from "@/lib/mockexams/engine";
 import { MockExamRunner } from "@/components/mockexams/MockExamRunner";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -25,9 +24,7 @@ export default async function MockExamPage({
   const access = await hasAccess(user.uid, subjectId);
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-2xl px-5 py-8">
+    <main className="mx-auto max-w-2xl px-5 py-8">
       <Link href={`/subjects/${subjectId}/mock-exams`} className="text-sm text-(--color-awaken-ink-soft) underline">
         ← Mock exams
       </Link>
@@ -47,8 +44,7 @@ export default async function MockExamPage({
       ) : (
         <MockExamBody uid={user.uid} subjectId={subjectId} mockExamId={mockExamId} />
       )}
-      </main>
-    </>
+    </main>
   );
 }
 

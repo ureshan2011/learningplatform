@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { SessionUser } from "@/lib/auth/session";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { Icon } from "@/components/ui/Icon";
 
 /**
  * The one navigation bar every page (other than the landing hero, which has
@@ -18,11 +19,13 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
   return (
     <header className="border-b border-(--color-awaken-line) bg-(--color-awaken-card)">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-4">
-        <Link
-          href={user ? "/dashboard" : "/"}
-          className="font-[family-name:var(--font-display)] text-lg font-extrabold tracking-tight"
-        >
-          ICT<span className="text-(--color-awaken-accent)">Class</span>
+        <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-(--color-awaken-accent) to-(--color-awaken-rose) text-white">
+            <Icon name="school" className="!text-lg" />
+          </span>
+          <span className="font-[family-name:var(--font-display)] text-lg font-extrabold tracking-tight">
+            ICT<span className="text-(--color-awaken-accent)">Class</span>
+          </span>
         </Link>
 
         <nav className="flex flex-wrap items-center gap-1 text-sm">

@@ -8,7 +8,6 @@ import { publicEnv } from "@/lib/env";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 import { MAX_DEVICES_PER_USER, type User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -33,9 +32,7 @@ export default async function AccountPage() {
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
 
   return (
-    <>
-      <SiteHeader user={session} />
-      <main className="mx-auto max-w-lg px-5 py-8">
+    <main className="mx-auto max-w-lg px-5 py-8">
       <h1 className="mt-4 text-2xl font-bold">Account</h1>
 
       <dl className="mt-6 space-y-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm">
@@ -114,8 +111,7 @@ export default async function AccountPage() {
       <div className="mt-10">
         <SignOutButton />
       </div>
-      </main>
-    </>
+    </main>
   );
 }
 
