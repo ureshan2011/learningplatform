@@ -31,6 +31,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
         <nav className="flex flex-wrap items-center gap-1 text-sm">
           {!user ? (
             <>
+              <NavLink href="/syllabus">Syllabus</NavLink>
               <NavLink href="/notes">Free notes</NavLink>
               <NavLink href="/command-words">Command words</NavLink>
               <Link
@@ -43,6 +44,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
           ) : (
             <>
               <NavLink href="/dashboard">Dashboard</NavLink>
+              <NavLink href="/syllabus">Syllabus</NavLink>
               {isStaff ? <NavLink href="/teacher">Teacher console</NavLink> : null}
               <NavLink href="/account">Account</NavLink>
               <div className="ml-1">

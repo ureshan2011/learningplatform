@@ -198,6 +198,9 @@ export default async function LandingPage() {
             <Link href="/notes" className="text-(--color-awaken-accent) hover:underline">
               Browse free notes →
             </Link>
+            <Link href="/syllabus" className="text-(--color-awaken-accent) hover:underline">
+              Explore the full syllabus →
+            </Link>
             <a href="#classes" className="text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)">
               See live classes ↓
             </a>

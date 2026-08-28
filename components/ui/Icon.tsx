@@ -50,7 +50,22 @@ export type IconName =
   | "filter_list"
   | "chevron_left"
   | "inbox"
-  | "priority_high";
+  | "priority_high"
+  | "computer"
+  | "memory"
+  | "settings"
+  | "hub"
+  | "account_tree"
+  | "storage"
+  | "terminal"
+  | "sensors"
+  | "storefront"
+  | "auto_awesome"
+  | "assignment"
+  | "expand_more"
+  | "unfold_more"
+  | "unfold_less"
+  | "north_east";
 
 export function Icon({
   name,

@@ -108,7 +108,7 @@ export default async function SubjectPage({
               <h2 className="flex items-center justify-between text-lg font-semibold">
                 <span>Syllabus</span>
                 <Link
-                  href={`/subjects/${subjectId}/syllabus`}
+                  href={`/syllabus/${subjectId}`}
                   className="flex items-center gap-1 text-sm font-normal text-(--color-awaken-accent) underline"
                 >
                   Full breakdown by unit
