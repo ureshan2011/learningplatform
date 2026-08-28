@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth/session";
-import { getSubject, listContent } from "@/lib/queries";
+import { getSubject, listContent, listUnits } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { formatDate, formatLKR, formatSessionTime } from "@/lib/format";
 import { DownloadButton } from "@/components/content/DownloadButton";
@@ -44,6 +44,7 @@ export default async function SubjectPage({
 
   const access = await hasAccess(user.uid, subjectId);
   const items = await listContent(subjectId);
+  const units = await listUnits(subjectId);
 
   // Locked students still see the catalogue — knowing what they are missing is
   // the most effective renewal prompt there is.
@@ -102,7 +103,24 @@ export default async function SubjectPage({
             </div>
           ) : null}
 
-          {subject.syllabusTopics.length > 0 ? (
+          {units.length > 0 ? (
+            <section className="mt-8">
+              <h2 className="flex items-center justify-between text-lg font-semibold">
+                <span>Syllabus</span>
+                <Link
+                  href={`/subjects/${subjectId}/syllabus`}
+                  className="flex items-center gap-1 text-sm font-normal text-(--color-awaken-accent) underline"
+                >
+                  Full breakdown by unit
+                  <Icon name="chevron_right" className="!text-base" />
+                </Link>
+              </h2>
+              <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+                {units.length} units · {units.reduce((n, u) => n + u.lessons.length, 0)} lessons, each with exam
+                objectives and exam-focus notes.
+              </p>
+            </section>
+          ) : subject.syllabusTopics.length > 0 ? (
             <section className="mt-8">
               <h2 className="flex items-center justify-between text-lg font-semibold">
                 <span>Syllabus</span>

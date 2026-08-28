@@ -11,6 +11,7 @@ import type {
   MockExamAttempt,
   Progress,
   Subject,
+  Unit,
 } from "@/lib/types";
 
 /**
@@ -152,6 +153,23 @@ export async function listAttendance(uid: string, limit = 20): Promise<Attendanc
 export async function getProgress(uid: string, subjectId: string): Promise<Progress | null> {
   const snap = await col.progress().doc(progressId(uid, subjectId)).get();
   return snap.exists ? (snap.data() as Progress) : null;
+}
+
+/**
+ * Full unit + lesson breakdown for a subject's syllabus, ordered for display.
+ * ~14 documents for A/L ICT — one `.get()`, no composite index needed.
+ */
+export async function listUnits(subjectId: string): Promise<Unit[]> {
+  const snap = await col.units().where("subjectId", "==", subjectId).get();
+  return snap.docs
+    .map((d) => d.data() as Unit)
+    .filter((u) => u.tenantId === publicEnv.tenantId)
+    .sort((a, b) => a.order - b.order);
+}
+
+export async function getUnit(unitId: string): Promise<Unit | null> {
+  const snap = await col.units().doc(unitId).get();
+  return snap.exists ? (snap.data() as Unit) : null;
 }
 
 export async function listContent(subjectId: string, limit = 50): Promise<ContentItem[]> {
