@@ -1,13 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getSubject, listUnits } from "@/lib/queries";
+import { getSubject, listSubjectSessions, listUnits } from "@/lib/queries";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
-import { StatTile } from "@/components/ui/StatTile";
-import { UnitExplorer } from "@/components/syllabus/UnitExplorer";
+import { SyllabusHero } from "@/components/syllabus/SyllabusHero";
+import { SyllabusExplorer } from "@/components/syllabus/SyllabusExplorer";
+import { indexClassesBySyllabus, toTopicClass } from "@/lib/content/topic-classes";
+import type { ClassSession } from "@/lib/types";
 
-export const revalidate = 3600;
+/**
+ * Public, crawlable, and cached for everyone rather than rendered per visitor
+ * — the same posture as /notes. Five minutes rather than an hour because the
+ * class timetable is on this page now; anything finer-grained than that
+ * (a countdown, "live now") is computed on the client from the timestamps, so
+ * a cached copy is never wrong, only slightly behind on which classes exist.
+ */
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -18,8 +27,8 @@ export async function generateMetadata({
   const subject = await getSubject(subjectId);
   if (!subject) return {};
   return {
-    title: `${subject.name} syllabus — units, lessons & exam focus`,
-    description: `Every unit and lesson in the ${subject.name} syllabus, with exam-targeted objectives and where marks concentrate. Free to browse.`,
+    title: `${subject.name} syllabus — every unit, lesson and live class`,
+    description: `The full ${subject.name} syllabus as an interactive roadmap: every unit and competency level, exam-targeted objectives, where marks concentrate — and the live class for each topic. Free to browse.`,
   };
 }
 
@@ -34,59 +43,76 @@ export default async function SubjectSyllabusPage({
   if (!subject) notFound();
 
   const units = await listUnits(subjectId);
+
+  // A missing or broken timetable must not take the syllabus down with it —
+  // the syllabus is the page, the classes are the invitation on top of it.
+  const sessions = await listSubjectSessions(subjectId).catch((err) => {
+    console.error("[syllabus] class timetable failed to load", err);
+    return [] as ClassSession[];
+  });
+
+  const classIndex = indexClassesBySyllabus(units, sessions);
   const totalLessons = units.reduce((n, u) => n + u.lessons.length, 0);
   const totalPeriods = units.reduce((n, u) => n + u.periods, 0);
+  const nextClass = sessions[0] ? toTopicClass(sessions[0]) : undefined;
 
   return (
     <>
       <SiteHeader user={null} />
-      <main className="mx-auto max-w-5xl px-5 py-10 md:px-8">
-        <Link href="/syllabus" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
+      <main className="mx-auto max-w-6xl px-5 py-8 md:px-8">
+        <Link
+          href="/syllabus"
+          className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) transition-colors hover:text-(--color-awaken-ink)"
+        >
           <Icon name="arrow_back" className="!text-base" />
           All syllabuses
         </Link>
 
-        <div className="mt-4 rounded-2xl border border-(--color-awaken-line) bg-gradient-to-br from-(--color-awaken-card) to-(--color-awaken-accent-soft) p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-8">
-          <h1 className="flex items-center gap-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
-            <Icon name="auto_stories" className="!text-2xl text-(--color-awaken-accent)" />
-            {subject.name} syllabus
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-(--color-awaken-ink-soft)">
-            Every official unit and competency-level lesson, with exam-targeted objectives and
-            exam-focus notes for each — tap a unit to go deeper. Free to explore, no sign-up
-            needed.
-          </p>
-
-          <div className="mt-6 grid grid-cols-3 gap-3 sm:max-w-md">
-            <StatTile icon="auto_stories" label="Units" value={units.length} />
-            <StatTile icon="description" label="Lessons" value={totalLessons} />
-            <StatTile icon="schedule" label="Periods" value={totalPeriods} />
-          </div>
+        <div className="mt-4">
+          <SyllabusHero
+            subjectId={subjectId}
+            subjectName={subject.name}
+            gradeLabel={`${subject.grade === "AL" ? "A/L" : "O/L"} · ${subject.medium[0].toUpperCase()}${subject.medium.slice(1)} medium`}
+            unitCount={units.length}
+            lessonCount={totalLessons}
+            periodCount={totalPeriods}
+            classCount={sessions.length}
+            nextClass={nextClass}
+          />
         </div>
 
-        <div className="mt-8">
+        <div id="roadmap" className="mt-10 scroll-mt-4">
           {units.length === 0 ? (
-            <p className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
+            <p className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6 text-sm text-(--color-awaken-ink-soft)">
               No syllabus breakdown has been loaded for {subject.name} yet.
             </p>
           ) : (
-            <UnitExplorer subjectId={subjectId} units={units} />
+            <SyllabusExplorer subjectId={subjectId} units={units} classIndex={classIndex} />
           )}
         </div>
 
-        <section className="mt-14 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
-          <h2 className="text-lg font-bold">Want live teaching on every unit?</h2>
-          <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-            Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and every
-            past paper worked through step by step.
-          </p>
-          <Link
-            href="/signin"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white"
-          >
-            <Icon name="videocam" className="!text-base" />
-            Join a class
-          </Link>
+        <section className="relative mt-16 overflow-hidden rounded-[2rem] bg-gradient-to-br from-(--color-awaken-accent) to-(--color-awaken-rose) p-8 text-white sm:p-12">
+          <div
+            aria-hidden
+            className="awaken-blob pointer-events-none absolute -top-20 -right-10 size-64 rounded-full bg-white/20 blur-3xl"
+          />
+          <div className="relative max-w-xl">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-extrabold tracking-tight sm:text-3xl">
+              Pick a topic. Sit in the class that teaches it.
+            </h2>
+            <p className="mt-3 leading-relaxed text-white/90">
+              Live lessons in Sinhala, quizzes during class, an island-wide leaderboard
+              and every past paper worked through step by step. Every subject starts
+              with a free 7-day trial — no card needed.
+            </p>
+            <Link
+              href={`/signin?next=/subjects/${subjectId}`}
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-(--color-awaken-accent) shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.99]"
+            >
+              <Icon name="videocam" className="!text-lg" />
+              Start my free trial
+            </Link>
+          </div>
         </section>
       </main>
     </>

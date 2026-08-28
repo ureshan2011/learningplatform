@@ -13,6 +13,20 @@ export function formatSessionTime(ms: number): string {
   }).format(new Date(ms));
 }
 
+/**
+ * "Sat 4:00 pm" — the same instant as `formatSessionTime`, short enough to sit
+ * inside a button on a 360px phone without the label wrapping or overflowing.
+ */
+export function formatSessionTimeShort(ms: number): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: COLOMBO_TZ,
+    weekday: "short",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date(ms));
+}
+
 /** Calendar day in Colombo time, as `YYYY-MM-DD` — the unit streaks are counted in. */
 export function colomboDateString(ms: number): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: COLOMBO_TZ }).format(new Date(ms));

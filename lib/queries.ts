@@ -115,6 +115,41 @@ export async function listUpcomingSessions(
     .slice(0, limit);
 }
 
+/**
+ * Every class for one subject that has not already finished — the timetable
+ * behind the syllabus page's per-topic "join this class" buttons.
+ *
+ * One range query on `startsAt` (self-indexed, see the note at the top of this
+ * file), narrowed in memory. It deliberately does not take a uid: the syllabus
+ * page is public and cached, so this returns the schedule only. Nothing here
+ * grants access — joining still goes through `hasAccess()` in the live route.
+ */
+export async function listSubjectSessions(
+  subjectId: string,
+  limit = 60,
+): Promise<ClassSession[]> {
+  // Same three-hour look-back as the dashboard: a class that started 40
+  // minutes ago is still the one a student wants to join, not history.
+  const from = Date.now() - 3 * 60 * 60 * 1000;
+
+  const snap = await col
+    .sessions()
+    .where("startsAt", ">=", from)
+    .orderBy("startsAt", "asc")
+    .limit(SCAN_WINDOW)
+    .get();
+
+  return snap.docs
+    .map((d) => d.data() as ClassSession)
+    .filter(
+      (s) =>
+        s.tenantId === publicEnv.tenantId &&
+        s.subjectId === subjectId &&
+        s.state !== "cancelled",
+    )
+    .slice(0, limit);
+}
+
 export async function getSession(sessionId: string): Promise<ClassSession | null> {
   const snap = await col.sessions().doc(sessionId).get();
   return snap.exists ? (snap.data() as ClassSession) : null;

@@ -65,7 +65,13 @@ export type IconName =
   | "expand_more"
   | "unfold_more"
   | "unfold_less"
-  | "north_east";
+  | "north_east"
+  | "grid_view"
+  | "route"
+  | "arrow_forward"
+  | "flag"
+  | "live_tv"
+  | "calendar_month";
 
 export function Icon({
   name,

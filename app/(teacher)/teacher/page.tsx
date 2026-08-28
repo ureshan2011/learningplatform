@@ -2,10 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { adminDb, col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
-import { listSubjects } from "@/lib/queries";
+import { listSubjects, listUnits } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
 import { formatLKR, formatSessionTime } from "@/lib/format";
-import { ScheduleSessionForm } from "@/components/teacher/ScheduleSessionForm";
+import {
+  ScheduleSessionForm,
+  type UnitOption,
+} from "@/components/teacher/ScheduleSessionForm";
 import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { SeedQuestionsButton } from "@/components/teacher/SeedQuestionsButton";
@@ -52,6 +55,14 @@ export default async function TeacherConsolePage() {
   // Start URLs are read here, server-side, and rendered only into this
   // teacher-gated page. They never touch a student-readable document.
   const startUrls = await section("startUrls", () => startUrlsFor(sessions.map((s) => s.id)), {});
+
+  // Lets the schedule form tag a class with the syllabus unit it teaches,
+  // which is what surfaces it on the public syllabus page beside that topic.
+  const unitsBySubject = await section(
+    "units",
+    () => unitOptions(subjects.map((s) => s.id)),
+    {} as Record<string, UnitOption[]>,
+  );
 
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
@@ -116,7 +127,10 @@ export default async function TeacherConsolePage() {
           </h2>
           {zoomConfigured() ? (
             <div className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-              <ScheduleSessionForm subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
+              <ScheduleSessionForm
+                subjects={subjects.map((s) => ({ id: s.id, name: s.name }))}
+                unitsBySubject={unitsBySubject}
+              />
             </div>
           ) : (
             <div className="mt-4">
@@ -196,6 +210,30 @@ async function upcomingSessions(): Promise<ClassSession[]> {
     .map((d) => d.data() as ClassSession)
     .filter((s) => s.tenantId === publicEnv.tenantId)
     .slice(0, 20);
+}
+
+/**
+ * The unit and lesson lists behind the schedule form's pickers, keyed by
+ * subject. Only the fields the pickers show — the lesson bodies are large and
+ * the console never renders them.
+ */
+async function unitOptions(subjectIds: string[]): Promise<Record<string, UnitOption[]>> {
+  const entries = await Promise.all(
+    subjectIds.map(async (subjectId) => {
+      const units = await listUnits(subjectId);
+      return [
+        subjectId,
+        units.map((u) => ({
+          id: u.id,
+          competencyNumber: u.competencyNumber,
+          title: u.title,
+          lessons: u.lessons.map((l) => ({ id: l.id, title: l.title })),
+        })),
+      ] as const;
+    }),
+  );
+
+  return Object.fromEntries(entries);
 }
 
 async function startUrlsFor(sessionIds: string[]): Promise<Record<string, string>> {
