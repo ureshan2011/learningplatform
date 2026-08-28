@@ -92,6 +92,19 @@ export interface ClassSession {
   state: SessionState;
 
   /**
+   * Syllabus unit this class teaches, when the teacher picked one while
+   * scheduling. Optional so every class scheduled before this field existed
+   * still loads — those fall back to matching on `topic`/`title` text.
+   *
+   * This is what lets the public syllabus page put a real "join this class"
+   * button beside the exact competency a student is looking at, instead of one
+   * generic sign-up button for the whole subject.
+   */
+  unitId?: string;
+  /** Competency level within that unit, e.g. "3.2". Narrower than `unitId`. */
+  lessonId?: string;
+
+  /**
    * Zoom meeting hosting the interactive room.
    *
    * The host `start_url` is deliberately NOT stored here: this document is

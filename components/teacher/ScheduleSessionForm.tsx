@@ -3,22 +3,43 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+/** Just enough of a unit to fill the pickers — the console never needs the lesson bodies. */
+export interface UnitOption {
+  id: string;
+  competencyNumber: number;
+  title: string;
+  lessons: Array<{ id: string; title: string }>;
+}
+
 /**
  * Creates a class: a Zoom meeting plus, optionally, the RTMP simulcast that
  * carries the class to students beyond the Zoom licence.
  *
  * The stream key is write-only from here — it is stored server-side in
  * `sessionSecrets` and never rendered back into the page.
+ *
+ * Tagging the class with a syllabus unit is optional but worth doing: it is
+ * what makes the class show up as a "join this class" button beside that exact
+ * topic on the public syllabus page, instead of only in the timetable.
  */
 export function ScheduleSessionForm({
   subjects,
+  unitsBySubject,
 }: {
   subjects: Array<{ id: string; name: string }>;
+  unitsBySubject: Record<string, UnitOption[]>;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ tone: "ok" | "err"; text: string } | null>(null);
   const [simulcast, setSimulcast] = useState(false);
+
+  const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
+  const [unitId, setUnitId] = useState("");
+  const [lessonId, setLessonId] = useState("");
+
+  const units = unitsBySubject[subjectId] ?? [];
+  const lessons = units.find((u) => u.id === unitId)?.lessons ?? [];
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,9 +64,11 @@ export function ScheduleSessionForm({
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          subjectId: form.get("subjectId"),
+          subjectId,
           title: form.get("title"),
           topic: form.get("topic"),
+          unitId: unitId || undefined,
+          lessonId: lessonId || undefined,
           startsAt,
           durationMinutes: Number(form.get("durationMinutes")) || 90,
           hlsUrl: String(form.get("hlsUrl") ?? "").trim() || undefined,
@@ -64,6 +87,8 @@ export function ScheduleSessionForm({
 
       setMessage({ tone: "ok", text: "Class scheduled." });
       (e.target as HTMLFormElement).reset();
+      setUnitId("");
+      setLessonId("");
       router.refresh();
     } catch (err) {
       setMessage({ tone: "err", text: err instanceof Error ? err.message : "Failed." });
@@ -75,7 +100,17 @@ export function ScheduleSessionForm({
   return (
     <form onSubmit={submit} className="mt-4 space-y-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
       <Field label="Subject">
-        <select name="subjectId" required className={inputClass}>
+        <select
+          name="subjectId"
+          required
+          value={subjectId}
+          onChange={(e) => {
+            setSubjectId(e.target.value);
+            setUnitId("");
+            setLessonId("");
+          }}
+          className={inputClass}
+        >
           {subjects.map((s) => (
             <option key={s.id} value={s.id} className="bg-(--color-awaken-bg)">
               {s.name}
@@ -91,6 +126,47 @@ export function ScheduleSessionForm({
       <Field label="Topic">
         <input name="topic" required maxLength={140} placeholder="Normalization" className={inputClass} />
       </Field>
+
+      {units.length > 0 ? (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            label="Syllabus unit (optional)"
+            hint="Puts a “join this class” button beside this unit on the public syllabus page."
+          >
+            <select
+              value={unitId}
+              onChange={(e) => {
+                setUnitId(e.target.value);
+                setLessonId("");
+              }}
+              className={inputClass}
+            >
+              <option value="">Not tied to a unit</option>
+              {units.map((u) => (
+                <option key={u.id} value={u.id} className="bg-(--color-awaken-bg)">
+                  {u.competencyNumber}. {u.title}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field label="Lesson (optional)" hint="Narrows it to one competency level.">
+            <select
+              value={lessonId}
+              onChange={(e) => setLessonId(e.target.value)}
+              disabled={lessons.length === 0}
+              className={`${inputClass} disabled:opacity-50`}
+            >
+              <option value="">Whole unit</option>
+              {lessons.map((l) => (
+                <option key={l.id} value={l.id} className="bg-(--color-awaken-bg)">
+                  {l.id} {l.title}
+                </option>
+              ))}
+            </select>
+          </Field>
+        </div>
+      ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Starts at">

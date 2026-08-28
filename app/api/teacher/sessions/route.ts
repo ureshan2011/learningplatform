@@ -13,6 +13,14 @@ const bodySchema = z.object({
   subjectId: z.string().min(1).max(64),
   title: z.string().trim().min(1).max(140),
   topic: z.string().trim().min(1).max(140),
+  /**
+   * Syllabus unit (and optionally the competency level) this class teaches.
+   * Optional so nothing about scheduling changes for a teacher who ignores
+   * them, but setting them is what puts a "join this class" button beside
+   * that exact topic on the public syllabus page.
+   */
+  unitId: z.string().trim().max(64).optional(),
+  lessonId: z.string().trim().max(16).optional(),
   startsAt: z.number().int().positive(),
   durationMinutes: z.number().int().min(15).max(300).default(90),
   /** HLS URL of the simulcast, for mobile and overflow students. */
@@ -90,6 +98,8 @@ export async function POST(req: NextRequest) {
     startsAt: body.startsAt,
     durationMinutes: body.durationMinutes,
     state: "scheduled",
+    ...(body.unitId ? { unitId: body.unitId } : {}),
+    ...(body.lessonId ? { lessonId: body.lessonId } : {}),
     zoomMeetingId: String(meeting.id),
     ...(body.hlsUrl ? { hlsUrl: body.hlsUrl } : {}),
     simulcastDelaySeconds: 25,
