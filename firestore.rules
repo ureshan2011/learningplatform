@@ -47,6 +47,13 @@ service cloud.firestore {
       allow write: if false; // teacher console writes through the Admin SDK
     }
 
+    // ---- units (syllabus breakdown: competency levels, exam objectives) ---
+    match /units/{unitId} {
+      // Same posture as subjects — public catalogue info, no gated content.
+      allow read: if true;
+      allow write: if false; // teacher console writes through the Admin SDK
+    }
+
     // ---- enrollments: readable by owner, never client-writable ------------
     match /enrollments/{enrollmentId} {
       allow read: if signedIn() && (resource.data.uid == uid() || isTeacher());

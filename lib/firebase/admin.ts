@@ -109,6 +109,7 @@ export const col = {
   mockExams: () => adminDb().collection("mockExams"),
   mockExamAttempts: () => adminDb().collection("mockExamAttempts"),
   leads: () => adminDb().collection("leads"),
+  units: () => adminDb().collection("units"),
 } as const;
 
 export function enrollmentId(uid: string, subjectId: string): string {

@@ -9,6 +9,7 @@ import { ScheduleSessionForm } from "@/components/teacher/ScheduleSessionForm";
 import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { SeedQuestionsButton } from "@/components/teacher/SeedQuestionsButton";
+import { SeedLessonsButton } from "@/components/teacher/SeedLessonsButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
@@ -102,8 +103,9 @@ export default async function TeacherConsolePage() {
             <SeedSubjectsButton />
           </div>
         ) : (
-          <div className="mt-8">
+          <div className="mt-8 space-y-4">
             <SeedQuestionsButton />
+            <SeedLessonsButton />
           </div>
         )}
 

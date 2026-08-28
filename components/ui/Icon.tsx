@@ -49,7 +49,8 @@ export type IconName =
   | "content_copy"
   | "filter_list"
   | "chevron_left"
-  | "inbox";
+  | "inbox"
+  | "priority_high";
 
 export function Icon({
   name,

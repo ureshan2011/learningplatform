@@ -167,6 +167,50 @@ export interface Payment {
 
 export type ContentKind = "notes" | "past_paper" | "marking_scheme" | "replay";
 
+/**
+ * One official syllabus competency level, nested inside its `Unit` document
+ * rather than living in its own collection — ~80 of these across A/L ICT,
+ * and they change together (a syllabus revision touches a whole unit), so one
+ * read per unit beats 80 per-lesson documents. `content` is deliberately
+ * optional: this type ships with objectives and exam guidance only, full
+ * teaching content is added later without a schema change.
+ */
+export interface Lesson {
+  /** The syllabus competency-level number, e.g. "1.1". Stable across re-seeding. */
+  id: string;
+  order: number;
+  title: string;
+  /** Recommended teaching periods (40 min each), from the syllabus's own allocation table. */
+  periods: number;
+  /** What a student must be able to do to answer exam questions on this competency level. */
+  examObjectives: string[];
+  /** Where marks concentrate in Paper I/II — drawn from the syllabus's period-weighting and known paper structure, not a substitute for checking recent past papers. */
+  importantAreas: string[];
+  /** Full lesson content (notes, slides, activities). Absent until authored. */
+  content?: string;
+}
+
+/**
+ * One official syllabus unit (a "Competency" in NIE's own terms) for a
+ * subject — the A/L ICT syllabus has 14, grades 12 and 13 combined.
+ */
+export interface Unit {
+  id: string;
+  tenantId: TenantId;
+  subjectId: string;
+  order: number;
+  /** The NIE competency number this unit corresponds to, e.g. 7 for "System Analysis and Design". */
+  competencyNumber: number;
+  /** Which year of the two-year A/L syllabus this unit is taught in. */
+  gradeYear: 12 | 13;
+  title: string;
+  /** The full "Explores ... / Uses ... / Designs ..." competency statement from the syllabus. */
+  competencyStatement: string;
+  periods: number;
+  lessons: Lesson[];
+  createdAt: number;
+}
+
 export interface ContentItem {
   id: string;
   tenantId: TenantId;
