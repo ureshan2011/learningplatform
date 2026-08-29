@@ -5,11 +5,28 @@ import { DM_Sans, JetBrains_Mono, Manrope } from "next/font/google";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects, listUpcomingSessions } from "@/lib/queries";
 import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
-import { Icon, type IconName } from "@/components/ui/Icon";
 import { EmailCaptureForm } from "@/components/marketing/EmailCaptureForm";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
 import { FaqAccordion } from "@/components/marketing/landing/FaqAccordion";
+import {
+  ArrowRightIcon,
+  ArrowUpRightIcon,
+  BellIcon,
+  BoltIcon,
+  CheckCircleIcon,
+  ChecklistIcon,
+  DownloadIcon,
+  GraduationCapIcon,
+  MedalIcon,
+  PencilIcon,
+  PeopleIcon,
+  PresenterIcon,
+  SearchIcon,
+  VideoIcon,
+} from "@/components/marketing/landing/icons";
 import type { ClassSession, Subject } from "@/lib/types";
+
+type LandingIcon = (props: { className?: string }) => React.JSX.Element;
 
 // `components/syllabus/motion.tsx`'s cssVars is a "use client" export and
 // can't be called from this server component — same helper, defined locally.
@@ -32,24 +49,24 @@ export const metadata: Metadata = {
 const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";
 const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
 
-const STATS: Array<{ icon: IconName; value: string; label: string }> = [
-  { icon: "work", value: "3", label: "global companies" },
-  { icon: "school", value: "PhD", label: "Canterbury, NZ" },
-  { icon: "co_present", value: "12+ yrs", label: "teaching ICT" },
-  { icon: "description", value: "100%", label: "free notes" },
+const STATS: Array<{ icon: LandingIcon; value: string; label: string }> = [
+  { icon: PeopleIcon, value: "70,000+", label: "students · Udemy & open.uom.lk" },
+  { icon: GraduationCapIcon, value: "PhD", label: "Canterbury, NZ" },
+  { icon: PresenterIcon, value: "12+ yrs", label: "teaching ICT" },
+  { icon: MedalIcon, value: "5 yrs", label: "tech lead in IT industry" },
 ];
 
-const OFFERS: Array<{ icon: IconName; title: string; body: string }> = [
-  { icon: "videocam", title: "Live classes", body: "Join from your phone the moment class starts." },
-  { icon: "bolt", title: "Instant quizzes", body: "Answer live, see the island-wide leaderboard right after." },
-  { icon: "military_tech", title: "Mock exams", body: "Timed papers with negative marking and a live rank." },
-  { icon: "download", title: "Notes to keep", body: "Download class notes and past papers straight after." },
+const OFFERS: Array<{ icon: LandingIcon; title: string; body: string }> = [
+  { icon: VideoIcon, title: "Live classes", body: "Join from your phone the moment class starts." },
+  { icon: BoltIcon, title: "Instant quizzes", body: "Answer live, see the island-wide leaderboard right after." },
+  { icon: MedalIcon, title: "Mock exams", body: "Timed papers with negative marking and a live rank." },
+  { icon: DownloadIcon, title: "Notes to keep", body: "Download class notes and past papers straight after." },
 ];
 
-const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: string; icon: IconName }> = [
-  { delay: 0, badge: "Free", tag: "Past paper breakdown", title: "2024 A/L ICT Paper 1 — full walkthrough", icon: "manage_search" },
-  { delay: 90, badge: "Free", tag: "Exam technique", title: 'How to answer a "distinguish between" question', icon: "edit_note" },
-  { delay: 180, badge: "Free", tag: "Syllabus", title: "A/L ICT syllabus — what changed and what didn't", icon: "fact_check" },
+const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: string; icon: LandingIcon }> = [
+  { delay: 0, badge: "Free", tag: "Past paper breakdown", title: "2024 A/L ICT Paper 1 — full walkthrough", icon: SearchIcon },
+  { delay: 90, badge: "Free", tag: "Exam technique", title: 'How to answer a "distinguish between" question', icon: PencilIcon },
+  { delay: 180, badge: "Free", tag: "Syllabus", title: "A/L ICT syllabus — what changed and what didn't", icon: ChecklistIcon },
 ];
 
 const STEPS = [
@@ -127,16 +144,16 @@ export default async function LandingPage() {
               ICT<span className="text-(--lp-orange-500)">CAMPUS</span>
             </a>
             <nav className="hidden items-center gap-0.5 sm:flex">
-              <a href="#teach" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
+              <a href="#teach" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-paper-50) hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)">
                 Classes
               </a>
-              <a href="#resources" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
+              <a href="#resources" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-paper-50) hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)">
                 Free notes
               </a>
-              <a href="#how" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
+              <a href="#how" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-paper-50) hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)">
                 How it works
               </a>
-              <a href="#faq" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
+              <a href="#faq" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-paper-50) hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)">
                 FAQ
               </a>
             </nav>
@@ -146,7 +163,7 @@ export default async function LandingPage() {
             >
               Start free
               <span className="grid size-6 place-items-center overflow-hidden rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
-                <Icon name="arrow_forward" className="!text-sm" />
+                <ArrowRightIcon className="size-3.5" />
               </span>
             </a>
           </div>
@@ -163,11 +180,6 @@ export default async function LandingPage() {
 
           <div className={`${CONTAINER} relative grid items-center gap-[clamp(32px,5vw,56px)]`} style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(430px,100%), 1fr))" }}>
             <div className="lp-reveal">
-              <div className="mb-[clamp(20px,3vw,28px)] inline-flex items-center gap-2.5 rounded-full border border-(--lp-border-subtle) bg-(--lp-paper-0) px-4 py-2 shadow-[var(--lp-shadow-xs)]">
-                <span className="size-[7px] rounded-full bg-(--lp-orange-500)" />
-                <span className="text-xs font-bold tracking-[0.14em] text-(--lp-ink-900) uppercase">Sinhala medium · O/L &amp; A/L ICT</span>
-              </div>
-
               <p className="mb-2 text-xs font-semibold text-(--lp-ink-400)">ICT Campus — by Dr. Yasas Sri Wickramasinghe</p>
 
               <h1 className="m-0 text-[clamp(40px,6.4vw,68px)] leading-[1.02] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) text-wrap-balance font-[family-name:var(--lp-font-display)]">
@@ -190,13 +202,13 @@ export default async function LandingPage() {
                 >
                   Start free
                   <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
-                    <Icon name="arrow_forward" />
+                    <ArrowRightIcon className="size-4" />
                   </span>
                 </a>
                 <a href="#resources" className="flex h-12 items-center gap-3 px-1 text-base font-semibold text-(--lp-ink-900) hover:text-(--lp-orange-600)">
                   Browse free notes
                   <span className="grid size-8 place-items-center overflow-hidden rounded-full border-[1.5px] border-(--lp-ink-900) text-(--lp-ink-900)">
-                    <Icon name="north_east" className="!text-sm" />
+                    <ArrowUpRightIcon className="size-3.5" />
                   </span>
                 </a>
               </div>
@@ -246,7 +258,7 @@ export default async function LandingPage() {
                 className="absolute top-[8%] left-0 flex items-center gap-2.5 rounded-full bg-(--lp-paper-0) py-[9px] pr-4 pl-[10px] shadow-[var(--lp-shadow-md)]"
               >
                 <span className="grid size-[30px] place-items-center overflow-hidden rounded-full bg-(--lp-orange-50) text-(--lp-orange-500)">
-                  <Icon name="school" className="!text-lg" />
+                  <GraduationCapIcon className="size-[18px]" />
                 </span>
                 <span className="text-xs font-semibold whitespace-nowrap text-(--lp-ink-900)">PhD, Human Interface Tech</span>
               </div>
@@ -271,7 +283,7 @@ export default async function LandingPage() {
               {STATS.map((stat) => (
                 <div key={stat.label} className="flex flex-col items-center gap-2 text-center">
                   <span className="grid size-[42px] place-items-center overflow-hidden rounded-full bg-(--lp-orange-50) text-(--lp-orange-500)">
-                    <Icon name={stat.icon} />
+                    <stat.icon className="size-5" />
                   </span>
                   <div className="font-[family-name:var(--lp-font-display)] text-[clamp(24px,2.6vw,32px)] leading-none font-extrabold tracking-[-0.02em] text-(--lp-ink-900)">
                     {stat.value}
@@ -313,12 +325,12 @@ export default async function LandingPage() {
                       className="flex min-h-[210px] flex-col rounded-[var(--lp-radius-md)] border border-(--lp-border-dark) bg-(--lp-ink-800) p-5 shadow-[var(--lp-shadow-inset-dark)] transition-colors hover:bg-(--lp-ink-700)"
                     >
                       <span className="grid size-[42px] place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
-                        <Icon name={offer.icon} />
+                        <offer.icon className="size-5" />
                       </span>
                       <div className="mt-[18px] mb-[7px] text-lg font-bold text-(--lp-paper-50)">{offer.title}</div>
                       <p className="m-0 text-xs text-(--lp-ink-300)">{offer.body}</p>
                       <span className="mt-auto ml-auto grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
-                        <Icon name="north_east" className="!text-sm" />
+                        <ArrowUpRightIcon className="size-3.5" />
                       </span>
                     </div>
                   ))}
@@ -365,7 +377,7 @@ export default async function LandingPage() {
               </div>
             )}
             <p className="mt-6 flex items-center gap-1.5 text-xs text-(--lp-ink-400)">
-              <Icon name="check_circle" className="!text-sm text-(--lp-green-500)" />
+              <CheckCircleIcon className="size-4 text-(--lp-green-500)" />
               Secure payments via PayHere, or pay by bank deposit slip.
             </p>
           </div>
@@ -390,7 +402,7 @@ export default async function LandingPage() {
                 >
                   <div className="relative grid h-[clamp(150px,17vw,190px)] place-items-center overflow-hidden rounded-[var(--lp-radius-md)] bg-(--lp-paper-200)">
                     <span className="text-(--lp-ink-900) opacity-55">
-                      <Icon name={resource.icon} className="!text-5xl" />
+                      <resource.icon className="size-12" />
                     </span>
                     <span className="absolute top-3 right-3 rounded-full bg-(--lp-paper-0) px-3 py-1.5 text-[11px] font-bold tracking-[0.14em] text-(--lp-ink-900) uppercase">
                       {resource.badge}
@@ -402,7 +414,7 @@ export default async function LandingPage() {
                       <div className="mt-2 text-lg font-bold text-(--lp-paper-50) text-wrap-pretty">{resource.title}</div>
                     </div>
                     <span className="grid size-[38px] shrink-0 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
-                      <Icon name="arrow_forward" className="!text-base" />
+                      <ArrowRightIcon className="size-4" />
                     </span>
                   </div>
                 </div>
@@ -411,7 +423,7 @@ export default async function LandingPage() {
 
             <div className="mt-6 flex flex-col items-start gap-3 rounded-[var(--lp-radius-card)] border border-(--lp-orange-200) bg-(--lp-orange-50) p-5 sm:flex-row sm:items-center sm:justify-between">
               <p className="m-0 flex items-center gap-2 font-semibold text-(--lp-orange-600)">
-                <Icon name="notifications_active" />
+                <BellIcon className="size-5" />
                 Be the first to know when we publish
               </p>
               <EmailCaptureForm source="landing_resources" buttonLabel="Notify me" className="w-full sm:w-auto sm:min-w-[22rem]" />
@@ -483,7 +495,7 @@ export default async function LandingPage() {
                 >
                   {startLabel}
                   <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
-                    <Icon name="arrow_forward" />
+                    <ArrowRightIcon className="size-4" />
                   </span>
                 </Link>
                 <span className="text-xs text-white/85">One SMS code. No password.</span>
