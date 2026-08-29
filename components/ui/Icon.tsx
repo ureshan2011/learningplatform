@@ -71,7 +71,11 @@ export type IconName =
   | "arrow_forward"
   | "flag"
   | "live_tv"
-  | "calendar_month";
+  | "calendar_month"
+  | "co_present"
+  | "manage_search"
+  | "edit_note"
+  | "fact_check";
 
 export function Icon({
   name,

@@ -1,84 +1,76 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { DM_Sans, JetBrains_Mono, Manrope } from "next/font/google";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects, listUpcomingSessions } from "@/lib/queries";
 import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { StatusPill } from "@/components/ui/StatusPill";
 import { EmailCaptureForm } from "@/components/marketing/EmailCaptureForm";
+import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
+import { FaqAccordion } from "@/components/marketing/landing/FaqAccordion";
 import type { ClassSession, Subject } from "@/lib/types";
+
+// `components/syllabus/motion.tsx`'s cssVars is a "use client" export and
+// can't be called from this server component — same helper, defined locally.
+function cssVars(vars: Record<string, string>): React.CSSProperties {
+  return vars as React.CSSProperties;
+}
+
+// Self-hosted at build time, scoped to this page only (via the .variable
+// classes below) so the rest of the app keeps its own type system.
+const displayFont = Manrope({ subsets: ["latin"], weight: ["700", "800"], variable: "--font-lp-display" });
+const bodyFont = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-lp-body" });
+const monoFont = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-lp-mono" });
 
 export const metadata: Metadata = {
   title: "Free A/L ICT Notes, Articles & Video Lessons",
   description:
-    "Free A/L ICT exam resources for Sri Lankan students — articles, video breakdowns of past papers and revision notes in Sinhala medium. New content published regularly, no payment required. Live interactive classes optional, with a free 7-day trial.",
+    "Free A/L ICT exam resources for Sri Lankan students — articles, video breakdowns of past papers and revision notes in Sinhala medium, taught by Dr. Yasas Wickramasinghe. New content published regularly, no payment required. Live interactive classes optional, with a free 7-day trial.",
 };
 
-// Placeholder entries for the content hub — real articles and video
-// discussions replace these as they're published. Kept here rather than in
-// Firestore until there's a reason to manage them outside a code change:
-// a handful of hand-written cards need no CMS.
-const PLACEHOLDER_ARTICLES = [
+const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";
+const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
+
+const STATS: Array<{ icon: IconName; value: string; label: string }> = [
+  { icon: "group", value: "150,000+", label: "learners reached" },
+  { icon: "school", value: "PhD", label: "Canterbury, NZ" },
+  { icon: "co_present", value: "12+ yrs", label: "teaching ICT" },
+  { icon: "description", value: "100%", label: "free notes" },
+];
+
+const OFFERS: Array<{ icon: IconName; title: string; body: string }> = [
+  { icon: "videocam", title: "Live classes", body: "Join from your phone the moment class starts." },
+  { icon: "bolt", title: "Instant quizzes", body: "Answer live, see the island-wide leaderboard right after." },
+  { icon: "military_tech", title: "Mock exams", body: "Timed papers with negative marking and a live rank." },
+  { icon: "download", title: "Notes to keep", body: "Download class notes and past papers straight after." },
+];
+
+const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: string; icon: IconName }> = [
+  { delay: 0, badge: "Free", tag: "Past paper breakdown", title: "2024 A/L ICT Paper 1 — full walkthrough", icon: "manage_search" },
+  { delay: 90, badge: "Free", tag: "Exam technique", title: 'How to answer a "distinguish between" question', icon: "edit_note" },
+  { delay: 180, badge: "Free", tag: "Syllabus", title: "A/L ICT syllabus — what changed and what didn't", icon: "fact_check" },
+];
+
+const STEPS = [
+  { delay: 0, step: "01", title: "Sign up with your phone", body: "One-time SMS code — no password to forget." },
+  { delay: 80, step: "02", title: "Start free", body: "Every subject includes a free 7-day trial. No card needed." },
+  { delay: 160, step: "03", title: "Join live from your phone", body: "Zoom class, instant quizzes, island-wide leaderboard." },
+  { delay: 240, step: "04", title: "Keep the notes", body: "Download class notes and past papers straight after." },
+] as const;
+
+const FAQS = [
   {
-    tag: "Past paper breakdown",
-    title: "2024 A/L ICT Paper 1 — full walkthrough",
-    blurb: "Question-by-question breakdown of where students lost the most marks, and how to avoid it.",
-  },
-  {
-    tag: "Exam technique",
-    title: "How to actually answer a \"distinguish between\" question",
-    blurb: "The exact structure examiners are marking for — most students lose marks on format, not content.",
-  },
-  {
-    tag: "Syllabus",
-    title: "A/L ICT syllabus — what changed and what didn't",
-    blurb: "A plain-language summary of the current topics and how much each one is worth.",
-  },
-] as const;
-
-const PLACEHOLDER_VIDEOS = [
-  { title: "Database normalisation, explained from scratch", duration: "18 min" },
-  { title: "Networking topologies — the mistakes examiners see every year", duration: "22 min" },
-  { title: "Tracing an algorithm step by step, on a real past paper", duration: "15 min" },
-] as const;
-
-const FEATURES: Array<{ title: string; body: string; icon: IconName }> = [
-  { title: "Live classes", body: "Join from your phone the moment class starts.", icon: "videocam" },
-  { title: "Instant quizzes", body: "Answer live, see the island-wide leaderboard right after.", icon: "quiz" },
-  { title: "Mock exams", body: "Timed papers with negative marking and a live rank.", icon: "military_tech" },
-] as const;
-
-// Each one independently true and checkable — no platform-usage numbers
-// invented for a service this new. The MOOC figure is the teacher's track
-// record, not this platform's, so it is worded as an attribution, not a
-// user count of ICT Class itself.
-const TRUST_BADGES = [
-  "🆓 Articles, videos and notes — 100% free, always",
-  "🎓 Written and taught by a PhD educator",
-  "🇱🇰 Built Sri Lanka's National MOOC — 150,000+ learners",
-  "🔴 Real live Zoom classes too, not just content",
-] as const;
-
-const HOW_IT_WORKS = [
-  { step: "1", title: "Sign up with your phone", body: "One-time SMS code — no password to forget." },
-  { step: "2", title: "Start free — no card needed", body: "Every subject includes a free 7-day trial." },
-  { step: "3", title: "Join live from your phone", body: "Zoom class, instant quizzes, island-wide leaderboard." },
-  { step: "4", title: "Keep the notes", body: "Download the class notes and past papers straight after." },
-] as const;
-
-const FAQ = [
-  {
-    q: "Do I have to pay to read the articles or watch the video discussions?",
-    a: "No. Every article, video discussion and downloadable note on this site is free, permanently. Live classes are the only paid part of ICT Class, and even those start with a free 7-day trial.",
+    q: "Do I have to pay to read the articles or watch the videos?",
+    a: "No. Every article, video discussion and downloadable note is free, permanently. Live classes are the only paid part, and those start with a free 7-day trial.",
   },
   {
     q: "How often is new content published?",
-    a: "New articles and video discussions are added regularly, especially around exam season and whenever the syllabus changes. Sign up with your email and we'll let you know when something new goes up.",
+    a: "Regularly — especially around exam season and whenever the syllabus changes. Sign up and you'll hear when something new goes up.",
   },
   {
     q: "Can I try live classes before I pay?",
-    a: "Yes — every subject includes a free 7-day trial with no card required, so you can sit in on a real live class before deciding.",
+    a: "Yes. Every subject includes a free 7-day trial with no card required, so you can sit in on a real class before deciding.",
   },
   {
     q: "Is this only for O/L, or A/L too?",
@@ -86,19 +78,12 @@ const FAQ = [
   },
   {
     q: "What if I miss a live class?",
-    a: "Ask your teacher for the replay — published class recordings stay downloadable from your subject page.",
+    a: "Ask for the replay — published class recordings stay downloadable from your subject page.",
   },
   {
     q: "Is paying for live classes safe?",
-    a: "Payments go through PayHere, a licensed Sri Lankan payment gateway. If you'd rather not pay by card, you can upload a bank deposit slip instead.",
+    a: "Payments go through PayHere, a licensed Sri Lankan payment gateway. You can also upload a bank deposit slip instead.",
   },
-] as const;
-
-const CREDENTIALS = [
-  "PhD — University of Canterbury, NZ",
-  "Former Lecturer — University of Moratuwa",
-  "Built Sri Lanka's National MOOC — 150,000+ learners",
-  "Senior Lecturer — NZ (current)",
 ] as const;
 
 // The landing page is the top of the acquisition funnel and must be indexable,
@@ -112,398 +97,449 @@ export default async function LandingPage() {
   ]);
 
   // Real, live-data proof the platform is actually running classes, not just
-  // a brochure — shown only when a session genuinely exists, same as the
-  // "Classes are being set up" fallback below when there is nothing yet.
+  // a brochure — shown only when a session genuinely exists.
   const [nextSession] = await listUpcomingSessions(
     subjects.map((s) => s.id),
     5,
   )
     .then((sessions) => sessions.filter((s) => s.state !== "cancelled"))
     .catch(() => [] as ClassSession[]);
-  const nextSessionSubject = nextSession
-    ? subjects.find((s) => s.id === nextSession.subjectId)
-    : undefined;
+  const nextSessionSubject = nextSession ? subjects.find((s) => s.id === nextSession.subjectId) : undefined;
+
+  const startHref = user ? "/dashboard" : "/signin";
+  const startLabel = user ? "Go to dashboard" : "Sign up with your phone";
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-(--color-awaken-bg) text-(--color-awaken-ink)">
-      {/* Decorative gradient blobs. Pure CSS, no images — cheap on slow links. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div
-          className="awaken-blob absolute -top-24 -right-24 h-80 w-80 rounded-full opacity-40 blur-3xl"
-          style={{ background: "radial-gradient(circle, var(--color-awaken-accent), transparent 70%)" }}
-        />
-        <div
-          className="awaken-blob absolute top-40 -left-32 h-72 w-72 rounded-full opacity-30 blur-3xl"
-          style={{
-            background: "radial-gradient(circle, var(--color-awaken-rose), transparent 70%)",
-            animationDelay: "-7s",
-          }}
-        />
-      </div>
+    <div className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
+      <ScrollEffects>
+        <div data-lp-progress className="fixed top-0 left-0 z-[60] h-[3px] w-0 bg-(--lp-orange-500)" />
 
-      <div className="relative mx-auto max-w-5xl px-5 py-14">
-        <header className="flex items-center justify-between">
-          <span className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-(--color-awaken-accent) to-(--color-awaken-rose) text-white">
-              <Icon name="school" className="!text-lg" />
-            </span>
-            <span className="font-[family-name:var(--font-display)] text-lg font-extrabold tracking-tight">
-              ICT<span className="text-(--color-awaken-accent)">Class</span>
-            </span>
-          </span>
-          <nav className="flex items-center gap-4">
-            <div className="hidden items-center gap-4 text-sm font-medium text-(--color-awaken-ink-soft) sm:flex">
-              <a href="#resources" className="hover:text-(--color-awaken-ink)">
-                Free resources
+        {/* Floating pill nav */}
+        <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+          <div
+            data-lp-nav
+            className="lp-nav pointer-events-auto flex max-w-full items-center gap-[clamp(8px,1.6vw,18px)] rounded-full bg-(--lp-ink-900) py-2 pr-2 pl-5"
+          >
+            <a
+              href="#top"
+              className="font-[family-name:var(--lp-font-display)] text-lg font-extrabold tracking-[-0.02em] whitespace-nowrap text-(--lp-paper-50)"
+            >
+              ICT<span className="text-(--lp-orange-500)">CLASS</span>
+            </a>
+            <nav className="hidden items-center gap-0.5 sm:flex">
+              <a href="#teach" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
+                Classes
               </a>
-              <a href="#classes" className="hover:text-(--color-awaken-ink)">
-                Live classes
+              <a href="#resources" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
+                Free notes
               </a>
-              <a href="#faq" className="hover:text-(--color-awaken-ink)">
+              <a href="#how" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
+                How it works
+              </a>
+              <a href="#faq" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
                 FAQ
               </a>
-            </div>
-            <Link
-              href={user ? "/dashboard" : "/signin"}
-              className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-2 text-sm font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-colors hover:border-(--color-awaken-accent)/40"
+            </nav>
+            <a
+              href="#cta"
+              className="flex items-center gap-2 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-4 text-xs font-semibold whitespace-nowrap text-(--lp-paper-0) shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600)"
             >
-              {user ? "My dashboard" : "Sign in"}
-            </Link>
-          </nav>
-        </header>
-
-        <section className="awaken-rise mt-16 max-w-2xl">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-(--color-awaken-accent-soft) px-3 py-1 text-xs font-semibold text-(--color-awaken-accent)">
-            🇱🇰 Free for Sri Lankan A/L ICT students — no payment, ever
-          </span>
-          <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl">
-            Free A/L ICT resources,
-            <span className="block bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) bg-clip-text text-transparent">
-              built for{" "}
-              <span className="si" lang="si">
-                සිංහල
-              </span>{" "}
-              medium.
-            </span>
-          </h1>
-          <p className="mt-5 text-lg leading-relaxed text-(--color-awaken-ink-soft)">
-            Exam-focused articles, video breakdowns of past papers, and revision notes —
-            published regularly, free to read, no sign-up required. Want live interactive
-            classes too? Every subject includes a free 7-day trial.
-          </p>
-
-          <EmailCaptureForm source="landing_hero" className="mt-7 max-w-md" />
-
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium">
-            <Link href="/notes" className="text-(--color-awaken-accent) hover:underline">
-              Browse free notes →
-            </Link>
-            <Link href="/syllabus" className="text-(--color-awaken-accent) hover:underline">
-              Explore the full syllabus →
-            </Link>
-            <a href="#classes" className="text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)">
-              See live classes ↓
+              Start free
+              <span className="grid size-6 place-items-center rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
+                <Icon name="arrow_forward" className="!text-sm" />
+              </span>
             </a>
           </div>
+        </div>
 
-          {nextSession && nextSessionSubject ? (
-            <p className="mt-6 flex items-center gap-2 text-sm text-(--color-awaken-ink-soft)">
-              <span className="relative flex h-2 w-2 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-(--color-awaken-danger) opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-(--color-awaken-danger)" />
-              </span>
-              Next live class: <span className="font-semibold text-(--color-awaken-ink)">{nextSessionSubject.name}</span>{" "}
-              · {formatSessionTime(nextSession.startsAt)} ({relativeToNow(nextSession.startsAt)})
-            </p>
-          ) : null}
-        </section>
+        {/* Hero */}
+        <section id="top" className="relative flex min-h-[100svh] items-center overflow-hidden py-[clamp(120px,14vh,180px)] pb-[clamp(48px,7vh,96px)]">
+          <div
+            data-lp-par="0.05"
+            aria-hidden
+            className="pointer-events-none absolute -top-[8%] -right-[6%] size-[min(60vw,760px)] rounded-full"
+            style={{ background: "radial-gradient(circle at 50% 50%, rgba(244,85,30,0.20), rgba(244,85,30,0) 68%)" }}
+          />
 
-        <section
-          className="awaken-rise mt-10 flex flex-wrap gap-2"
-          style={{ animationDelay: "0.05s" }}
-        >
-          {TRUST_BADGES.map((badge) => (
-            <span
-              key={badge}
-              className="rounded-full border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-1.5 text-xs font-medium text-(--color-awaken-ink-soft)"
-            >
-              {badge}
-            </span>
-          ))}
-        </section>
+          <div className={`${CONTAINER} relative grid items-center gap-[clamp(32px,5vw,56px)]`} style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(430px,100%), 1fr))" }}>
+            <div className="lp-reveal">
+              <div className="mb-[clamp(20px,3vw,28px)] inline-flex items-center gap-2.5 rounded-full border border-(--lp-border-subtle) bg-(--lp-paper-0) px-4 py-2 shadow-[var(--lp-shadow-xs)]">
+                <span className="size-[7px] rounded-full bg-(--lp-orange-500)" />
+                <span className="text-xs font-bold tracking-[0.14em] text-(--lp-ink-900) uppercase">Sinhala medium · O/L &amp; A/L ICT</span>
+              </div>
 
-        {/*
-          The content hub — the whole reason for this redesign. Real articles
-          and video discussions replace PLACEHOLDER_ARTICLES /
-          PLACEHOLDER_VIDEOS above as they're written; the "Coming soon" pill
-          is there so nothing here looks clickable before it actually is.
-        */}
-        <section id="resources" className="mt-20 scroll-mt-6">
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-            Free articles &amp; video discussions
-          </h2>
-          <p className="mt-2 max-w-2xl text-(--color-awaken-ink-soft)">
-            Exam-focused breakdowns of past papers, syllabus changes and the mistakes students
-            make most — published regularly, free to read.
-          </p>
+              <h1 className="m-0 text-[clamp(40px,6.4vw,68px)] leading-[1.02] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) text-wrap-balance font-[family-name:var(--lp-font-display)]">
+                ICT taught by
+                <br />
+                someone who <span className="text-(--lp-orange-500)">built it</span>
+                <span className="text-(--lp-orange-500)">.</span>
+              </h1>
 
-          <h3 className="mt-8 text-sm font-semibold tracking-wide text-(--color-awaken-ink-soft) uppercase">
-            Articles
-          </h3>
-          <ul className="mt-3 grid gap-4 sm:grid-cols-3">
-            {PLACEHOLDER_ARTICLES.map((article) => (
-              <li
-                key={article.title}
-                className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)">
-                    <Icon name="description" />
+              <p className="my-[clamp(18px,2.4vw,26px)] max-w-[520px] text-[clamp(15px,1.4vw,18px)] text-(--lp-ink-500) text-wrap-pretty">
+                I&apos;m <strong className="font-bold text-(--lp-ink-900)">Dr. Yasas Wickramasinghe</strong> — PhD in Human
+                Interface Technology, senior lecturer, and the person who built Sri Lanka&apos;s first national MOOC. Every
+                note, video and live class here comes from me.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-[clamp(12px,1.6vw,18px)]">
+                <a
+                  href="#cta"
+                  className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-6 text-base font-semibold text-(--lp-paper-0) shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600)"
+                >
+                  Start free
+                  <span className="grid size-8 place-items-center rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
+                    <Icon name="arrow_forward" />
                   </span>
-                  <StatusPill tone="neutral">Coming soon</StatusPill>
-                </div>
-                <p className="mt-3 text-xs font-semibold tracking-wide text-(--color-awaken-accent) uppercase">
-                  {article.tag}
-                </p>
-                <p className="mt-1 font-semibold">{article.title}</p>
-                <p className="mt-1.5 text-sm text-(--color-awaken-ink-soft)">{article.blurb}</p>
-              </li>
-            ))}
-          </ul>
-
-          <h3 className="mt-10 text-sm font-semibold tracking-wide text-(--color-awaken-ink-soft) uppercase">
-            Video discussions
-          </h3>
-          <ul className="mt-3 grid gap-4 sm:grid-cols-3">
-            {PLACEHOLDER_VIDEOS.map((video) => (
-              <li
-                key={video.title}
-                className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--color-awaken-indigo-soft) text-(--color-awaken-indigo)">
-                    <Icon name="play_circle" />
+                </a>
+                <a href="#resources" className="flex h-12 items-center gap-3 px-1 text-base font-semibold text-(--lp-ink-900) hover:text-(--lp-orange-600)">
+                  Browse free notes
+                  <span className="grid size-8 place-items-center rounded-full border-[1.5px] border-(--lp-ink-900) text-(--lp-ink-900)">
+                    <Icon name="north_east" className="!text-sm" />
                   </span>
-                  <StatusPill tone="neutral">Coming soon</StatusPill>
-                </div>
-                <p className="mt-3 text-xs font-semibold tracking-wide text-(--color-awaken-indigo) uppercase">
-                  Video discussion · {video.duration}
-                </p>
-                <p className="mt-1 font-semibold">{video.title}</p>
-              </li>
-            ))}
-          </ul>
+                </a>
+              </div>
 
-          <div className="mt-8 flex flex-col items-start gap-3 rounded-2xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-5 sm:flex-row sm:items-center sm:justify-between">
-            <p className="flex items-center gap-2 font-semibold text-(--color-awaken-accent)">
-              <Icon name="notifications_active" />
-              Be the first to know when we publish
-            </p>
-            <EmailCaptureForm source="landing_resources" buttonLabel="Notify me" className="w-full sm:w-auto sm:min-w-[22rem]" />
+              <div className="mt-[clamp(28px,3.6vw,40px)] flex flex-wrap gap-2.5">
+                <span className="rounded-full border border-(--lp-border-subtle) bg-(--lp-paper-0) px-3.5 py-1.5 text-xs text-(--lp-ink-500)">
+                  PhD — University of Canterbury, NZ
+                </span>
+                <span className="rounded-full border border-(--lp-border-subtle) bg-(--lp-paper-0) px-3.5 py-1.5 text-xs text-(--lp-ink-500)">
+                  Senior Lecturer — NZ
+                </span>
+                <span className="rounded-full border border-(--lp-border-subtle) bg-(--lp-paper-0) px-3.5 py-1.5 text-xs text-(--lp-ink-500)">
+                  Ex-Lecturer — Univ. of Moratuwa
+                </span>
+              </div>
+
+              {nextSession && nextSessionSubject ? (
+                <p className="mt-5 flex items-center gap-2 text-sm text-(--lp-ink-500)">
+                  <span className="relative flex size-2 shrink-0">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-(--lp-orange-500) opacity-75" />
+                    <span className="relative inline-flex size-2 rounded-full bg-(--lp-orange-500)" />
+                  </span>
+                  Next live class: <span className="font-semibold text-(--lp-ink-900)">{nextSessionSubject.name}</span> ·{" "}
+                  {formatSessionTime(nextSession.startsAt)} ({relativeToNow(nextSession.startsAt)})
+                </p>
+              ) : null}
+            </div>
+
+            <div className="relative grid min-h-[clamp(360px,52vh,560px)] place-items-end justify-items-center">
+              <div
+                data-lp-par="0.10"
+                aria-hidden
+                className="absolute bottom-[6%] left-1/2 aspect-square w-[min(80%,420px)] -translate-x-1/2 rounded-full bg-(--lp-orange-500)"
+              />
+              <Image
+                data-lp-par="-0.06"
+                src="/images/dr-yasas.png"
+                alt="Dr. Yasas Wickramasinghe"
+                width={881}
+                height={1241}
+                priority
+                className="relative block h-auto w-[min(88%,440px)] drop-shadow-[0_24px_48px_rgba(14,12,11,0.22)]"
+              />
+
+              <div
+                data-lp-par="-0.14"
+                className="absolute top-[8%] left-0 flex items-center gap-2.5 rounded-full bg-(--lp-paper-0) py-[9px] pr-4 pl-[10px] shadow-[var(--lp-shadow-md)]"
+              >
+                <span className="grid size-[30px] place-items-center rounded-full bg-(--lp-orange-50) text-(--lp-orange-500)">
+                  <Icon name="school" className="!text-lg" />
+                </span>
+                <span className="text-xs font-semibold whitespace-nowrap text-(--lp-ink-900)">PhD, Human Interface Tech</span>
+              </div>
+
+              <div data-lp-par="-0.20" className="absolute right-0 bottom-[14%] rounded-2xl bg-(--lp-ink-900) px-[18px] py-3.5 shadow-[var(--lp-shadow-lg)]">
+                <div className="font-[family-name:var(--lp-font-display)] text-[26px] leading-none font-extrabold tracking-[-0.02em] text-(--lp-paper-50)">
+                  150,000<span className="text-(--lp-orange-500)">+</span>
+                </div>
+                <div className="mt-1 text-[11px] text-(--lp-ink-300)">learners on the national MOOC</div>
+              </div>
+            </div>
           </div>
         </section>
 
-        {/*
-          Teacher credibility card. A solo tuition platform is trusted through
-          the one person running it, not a brand — so the teacher's face and
-          real credentials go on the landing page itself, not a buried /about
-          route. Sri-Lanka-relevant lines (Moratuwa, the national MOOC) are
-          ordered ahead of the NZ postdoc line: parents recognise those first.
-        */}
-        <section className="awaken-rise mt-20" style={{ animationDelay: "0.15s" }}>
-          <div className="rounded-3xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-8">
-            <div className="grid gap-6 sm:grid-cols-[11rem_1fr] sm:items-start">
-              <div className="mx-auto w-32 shrink-0 sm:mx-0 sm:w-full">
-                <Image
-                  src="/images/dr-yasas.png"
-                  alt="Dr. Yasas Wickramasinghe"
-                  width={881}
-                  height={1241}
-                  className="h-auto w-full rounded-2xl"
-                />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-(--color-awaken-accent)">
-                  Who&apos;s behind this
-                </p>
-                <h2 className="mt-1 font-[family-name:var(--font-display)] text-2xl font-extrabold tracking-tight">
-                  Dr. Yasas Wickramasinghe
-                </h2>
-                <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)">
-                  PhD, Human Interface Technology — University of Canterbury, NZ
-                </p>
-                <p className="mt-4 leading-relaxed text-(--color-awaken-ink-soft)">
-                  Dr. Wickramasinghe was previously a Software Engineering lecturer at
-                  the University of Moratuwa and led Sri Lanka&apos;s first national MOOC
-                  platform (open.uom.lk), scaling it to 150,000+ learners. He is
-                  currently a postdoctoral researcher at the University of Canterbury,
-                  New Zealand, and a Senior Lecturer at Yoobee Colleges. Every article,
-                  video and live class on ICT Class comes from the same person.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {CREDENTIALS.map((credential) => (
-                    <span
-                      key={credential}
-                      className="rounded-full bg-(--color-awaken-accent-soft) px-3 py-1 text-xs font-semibold text-(--color-awaken-accent)"
+        {/* Stats bar */}
+        <section className="w-full py-[clamp(16px,3vw,32px)]">
+          <div className={CONTAINER}>
+            <div
+              className="lp-reveal grid gap-[clamp(16px,2.4vw,28px)] rounded-[var(--lp-radius-card)] border border-(--lp-border-subtle) bg-(--lp-paper-0) p-[clamp(20px,3vw,28px)] shadow-[var(--lp-shadow-sm)]"
+              style={{ gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}
+            >
+              {STATS.map((stat) => (
+                <div key={stat.label} className="flex flex-col items-center gap-2 text-center">
+                  <span className="grid size-[42px] place-items-center rounded-full bg-(--lp-orange-50) text-(--lp-orange-500)">
+                    <Icon name={stat.icon} />
+                  </span>
+                  <div className="font-[family-name:var(--lp-font-display)] text-[clamp(24px,2.6vw,32px)] leading-none font-extrabold tracking-[-0.02em] text-(--lp-ink-900)">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs text-(--lp-ink-400)">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* What you get */}
+        <section id="teach" className="w-full py-[clamp(32px,6vw,72px)]">
+          <div className={CONTAINER}>
+            <div className="lp-reveal relative overflow-hidden rounded-[var(--lp-radius-panel)] bg-(--lp-ink-900) p-[clamp(26px,4vw,44px)]">
+              <div
+                data-lp-par="0.06"
+                aria-hidden
+                className="pointer-events-none absolute -top-[30%] -left-[10%] size-[520px] rounded-full"
+                style={{ background: "radial-gradient(circle, rgba(244,85,30,0.18), rgba(244,85,30,0) 70%)" }}
+              />
+              <div className="relative">
+                <div className={EYEBROW}>What you get</div>
+                <div className="my-2.5 mb-[clamp(24px,3vw,34px)] flex flex-wrap items-start gap-[clamp(20px,4vw,40px)]">
+                  <h2 className="m-0 text-[clamp(30px,4.4vw,46px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-(--lp-paper-50) font-[family-name:var(--lp-font-display)]">
+                    Live classes,
+                    <br />
+                    real practice<span className="text-(--lp-orange-500)">.</span>
+                  </h2>
+                  <p className="mt-1.5 ml-auto max-w-[320px] text-sm text-(--lp-ink-300) text-wrap-pretty">
+                    The free notes and video breakdowns stay free forever. Live classes add the parts you can&apos;t get
+                    from a PDF.
+                  </p>
+                </div>
+                <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(220px,100%), 1fr))" }}>
+                  {OFFERS.map((offer) => (
+                    <div
+                      key={offer.title}
+                      className="flex min-h-[210px] flex-col rounded-[var(--lp-radius-md)] border border-(--lp-border-dark) bg-(--lp-ink-800) p-5 shadow-[var(--lp-shadow-inset-dark)] transition-colors hover:bg-(--lp-ink-700)"
                     >
-                      {credential}
-                    </span>
+                      <span className="grid size-[42px] place-items-center rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                        <Icon name={offer.icon} />
+                      </span>
+                      <div className="mt-[18px] mb-[7px] text-lg font-bold text-(--lp-paper-50)">{offer.title}</div>
+                      <p className="m-0 text-xs text-(--lp-ink-300)">{offer.body}</p>
+                      <span className="mt-auto ml-auto grid size-8 place-items-center rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                        <Icon name="north_east" className="!text-sm" />
+                      </span>
+                    </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Live classes — real subjects & pricing */}
+        <section id="classes" className="w-full py-[clamp(32px,6vw,72px)]">
+          <div className={CONTAINER}>
+            <div className={EYEBROW}>Live classes</div>
+            <h2
+              className="lp-reveal mt-2.5 mb-[clamp(24px,3vw,34px)] max-w-[18ch] text-[clamp(30px,4.6vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) font-[family-name:var(--lp-font-display)]"
+              style={cssVars({ "--lp-reveal-delay": "60ms" })}
+            >
+              Pick a subject, start free<span className="text-(--lp-orange-500)">.</span>
+            </h2>
+            {subjects.length === 0 ? (
+              <p className="text-sm text-(--lp-ink-400)">Classes are being set up. Check back shortly.</p>
+            ) : (
+              <div className="grid gap-[clamp(14px,2vw,20px)]" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(280px,100%), 1fr))" }}>
+                {subjects.map((subject, i) => (
+                  <div
+                    key={subject.id}
+                    className="lp-reveal lp-lift rounded-[var(--lp-radius-card)] border border-(--lp-border-subtle) bg-(--lp-paper-0) p-6 shadow-[var(--lp-shadow-sm)]"
+                    style={cssVars({ "--lp-reveal-delay": `${i * 60}ms` })}
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="text-lg font-bold text-(--lp-ink-900)">{subject.name}</h3>
+                      <span className="shrink-0 rounded-full bg-(--lp-orange-50) px-2.5 py-0.5 text-xs font-semibold text-(--lp-orange-500)">
+                        {subject.grade === "AL" ? "A/L" : "O/L"}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm text-(--lp-ink-400)">{subject.description}</p>
+                    <p className="mt-4 font-[family-name:var(--lp-font-display)] text-xl font-extrabold text-(--lp-ink-900)">
+                      {formatLKR(subject.priceLKR)}
+                      <span className="text-sm font-normal text-(--lp-ink-400)"> / month</span>
+                    </p>
+                    <p className="mt-1 text-xs font-semibold text-(--lp-green-500)">First 7 days free</p>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p className="mt-6 flex items-center gap-1.5 text-xs text-(--lp-ink-400)">
+              <Icon name="check_circle" className="!text-sm text-(--lp-green-500)" />
+              Secure payments via PayHere, or pay by bank deposit slip.
+            </p>
+          </div>
+        </section>
+
+        {/* Free resources */}
+        <section id="resources" className="w-full py-[clamp(32px,6vw,72px)]">
+          <div className={CONTAINER}>
+            <div className={`lp-reveal ${EYEBROW}`}>Free resources</div>
+            <h2
+              className="lp-reveal my-2.5 mb-[clamp(24px,3vw,34px)] max-w-[16ch] text-[clamp(30px,4.6vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) font-[family-name:var(--lp-font-display)]"
+              style={cssVars({ "--lp-reveal-delay": "60ms" })}
+            >
+              Notes, papers, breakdowns<span className="text-(--lp-orange-500)">.</span>
+            </h2>
+            <div className="grid gap-[clamp(14px,2vw,20px)]" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(280px,100%), 1fr))" }}>
+              {RESOURCES.map((resource) => (
+                <div
+                  key={resource.title}
+                  className="lp-reveal lp-lift flex flex-col rounded-[var(--lp-radius-card)] border-[1.5px] border-(--lp-ink-900) bg-(--lp-ink-900) p-2.5"
+                  style={cssVars({ "--lp-reveal-delay": `${resource.delay}ms` })}
+                >
+                  <div className="relative grid h-[clamp(150px,17vw,190px)] place-items-center overflow-hidden rounded-[var(--lp-radius-md)] bg-(--lp-paper-200)">
+                    <span className="text-(--lp-ink-900) opacity-55">
+                      <Icon name={resource.icon} className="!text-5xl" />
+                    </span>
+                    <span className="absolute top-3 right-3 rounded-full bg-(--lp-paper-0) px-3 py-1.5 text-[11px] font-bold tracking-[0.14em] text-(--lp-ink-900) uppercase">
+                      {resource.badge}
+                    </span>
+                  </div>
+                  <div className="flex items-end gap-3.5 px-2 pt-4 pb-2">
+                    <div className="flex-1">
+                      <div className="text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">{resource.tag}</div>
+                      <div className="mt-2 text-lg font-bold text-(--lp-paper-50) text-wrap-pretty">{resource.title}</div>
+                    </div>
+                    <span className="grid size-[38px] shrink-0 place-items-center rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                      <Icon name="arrow_forward" className="!text-base" />
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 flex flex-col items-start gap-3 rounded-[var(--lp-radius-card)] border border-(--lp-orange-200) bg-(--lp-orange-50) p-5 sm:flex-row sm:items-center sm:justify-between">
+              <p className="m-0 flex items-center gap-2 font-semibold text-(--lp-orange-600)">
+                <Icon name="notifications_active" />
+                Be the first to know when we publish
+              </p>
+              <EmailCaptureForm source="landing_resources" buttonLabel="Notify me" className="w-full sm:w-auto sm:min-w-[22rem]" />
+            </div>
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section id="how" className="w-full py-[clamp(32px,6vw,72px)]">
+          <div className={CONTAINER}>
+            <div className={`lp-reveal ${EYEBROW}`}>How it works</div>
+            <h2
+              className="lp-reveal my-2.5 mb-[clamp(24px,3vw,34px)] max-w-[18ch] text-[clamp(30px,4.6vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) font-[family-name:var(--lp-font-display)]"
+              style={cssVars({ "--lp-reveal-delay": "60ms" })}
+            >
+              Four steps to your first class<span className="text-(--lp-orange-500)">.</span>
+            </h2>
+            <div className="grid gap-[clamp(14px,2vw,20px)]" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(230px,100%), 1fr))" }}>
+              {STEPS.map((step) => (
+                <div
+                  key={step.step}
+                  className="lp-reveal lp-lift rounded-[var(--lp-radius-card)] border border-(--lp-border-subtle) bg-(--lp-paper-0) p-6 shadow-[var(--lp-shadow-sm)]"
+                  style={cssVars({ "--lp-reveal-delay": `${step.delay}ms` })}
+                >
+                  <div className="font-[family-name:var(--lp-font-mono)] text-xs text-(--lp-orange-500)">{step.step}</div>
+                  <div className="mt-3 mb-2 text-lg font-bold text-(--lp-ink-900)">{step.title}</div>
+                  <p className="m-0 text-sm text-(--lp-ink-400) text-wrap-pretty">{step.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section id="faq" className="w-full py-[clamp(32px,6vw,72px)]">
+          <div className="mx-auto w-full max-w-[900px] px-[clamp(20px,4vw,32px)]">
+            <div className={`lp-reveal ${EYEBROW}`}>FAQ</div>
+            <h2
+              className="lp-reveal my-2.5 mb-[clamp(20px,3vw,30px)] max-w-[18ch] text-[clamp(30px,4.6vw,48px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) font-[family-name:var(--lp-font-display)]"
+              style={cssVars({ "--lp-reveal-delay": "60ms" })}
+            >
+              Questions parents ask<span className="text-(--lp-orange-500)">.</span>
+            </h2>
+            <FaqAccordion items={FAQS} />
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section id="cta" className="w-full pt-[clamp(32px,6vw,72px)]">
+          <div className="lp-reveal relative w-full overflow-hidden bg-(--lp-orange-500)">
+            <div
+              data-lp-par="0.08"
+              aria-hidden
+              className="pointer-events-none absolute -top-[40%] -right-[5%] size-[520px] rounded-full bg-white/10"
+            />
+            <div className={`${CONTAINER} relative flex flex-wrap items-center gap-[clamp(24px,4vw,48px)] py-[clamp(40px,6vw,80px)]`}>
+              <div className="flex-1 basis-[380px]">
+                <div className="text-xs font-bold tracking-[0.14em] text-white/75 uppercase">Free 7-day trial</div>
+                <h2 className="mt-3 text-[clamp(28px,4.4vw,46px)] leading-[1.06] font-extrabold tracking-[-0.03em] text-(--lp-paper-0) font-[family-name:var(--lp-font-display)]">
+                  Start free. No card,
+                  <br />
+                  no catch<span className="text-(--lp-ink-900)">.</span>
+                </h2>
+              </div>
+              <div className="flex flex-wrap items-center gap-4">
+                <Link
+                  href={startHref}
+                  className="flex h-12 items-center gap-3 rounded-full bg-(--lp-ink-900) py-2 pr-2 pl-6 text-base font-semibold text-(--lp-paper-50) hover:bg-(--lp-ink-700)"
+                >
+                  {startLabel}
+                  <span className="grid size-8 place-items-center rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                    <Icon name="arrow_forward" />
+                  </span>
+                </Link>
+                <span className="text-xs text-white/85">One SMS code. No password.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="w-full bg-(--lp-ink-900) pt-[clamp(40px,6vw,72px)] pb-7">
+          <div className={`${CONTAINER} grid gap-[clamp(24px,4vw,48px)]`} style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(200px,100%), 1fr))" }}>
+            <div>
+              <div className="text-[22px] leading-none font-extrabold tracking-[-0.02em] text-(--lp-paper-50) font-[family-name:var(--lp-font-display)]">
+                ICT<span className="text-(--lp-orange-500)">CLASS</span>
+                <span className="text-(--lp-orange-500)">.</span>
+              </div>
+              <p className="mt-3.5 max-w-[240px] text-xs text-(--lp-ink-300)">
+                O/L and A/L ICT in Sinhala medium, taught by Dr. Yasas Wickramasinghe.
+              </p>
+            </div>
+            <div>
+              <div className="mb-3.5 text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">Learn</div>
+              <div className="flex flex-col gap-2.5">
+                <a href="#resources" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Free notes</a>
+                <a href="#resources" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Past papers</a>
+                <a href="#teach" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Live classes</a>
+                <a href="#faq" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Syllabus</a>
+              </div>
+            </div>
+            <div>
+              <div className="mb-3.5 text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">Teacher</div>
+              <div className="flex flex-col gap-2.5">
+                <span className="text-xs text-(--lp-ink-300)">PhD — Univ. of Canterbury</span>
+                <span className="text-xs text-(--lp-ink-300)">Senior Lecturer — NZ</span>
                 <a
                   href="https://www.linkedin.com/in/yasassri"
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-5 inline-block text-sm font-semibold text-(--color-awaken-accent) hover:underline"
+                  className="text-xs text-(--lp-orange-500) hover:text-(--lp-orange-300)"
                 >
-                  Full CV / LinkedIn →
+                  LinkedIn / full CV
                 </a>
               </div>
             </div>
-          </div>
-        </section>
-
-        {/*
-          The paid product, deliberately positioned after the free content
-          has made its case rather than as the opening pitch — see the
-          landing-page redesign discussion: cold SEO traffic converts on free
-          value first, live classes are the upsell once someone is engaged.
-        */}
-        <section id="classes" className="mt-20 scroll-mt-6">
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-            Want live classes too?
-          </h2>
-          <p className="mt-2 max-w-2xl text-(--color-awaken-ink-soft)">
-            Everything above is free, permanently. If you also want live interactive
-            lessons, instant quizzes and a leaderboard against the whole island, here&apos;s
-            how that works.
-          </p>
-
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {FEATURES.map((feature) => (
-              <div
-                key={feature.title}
-                className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-transform hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]"
-              >
-                <Icon name={feature.icon} className="!text-2xl text-(--color-awaken-accent)" />
-                <p className="mt-3 font-semibold">{feature.title}</p>
-                <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">{feature.body}</p>
+            <div>
+              <div className="mb-3.5 text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">Pay</div>
+              <div className="flex flex-col gap-2.5">
+                <span className="text-xs text-(--lp-ink-300)">PayHere card payments</span>
+                <span className="text-xs text-(--lp-ink-300)">Bank deposit slip</span>
               </div>
-            ))}
-          </div>
-
-          <ol className="mt-10 grid gap-4 sm:grid-cols-4">
-            {HOW_IT_WORKS.map((item) => (
-              <li key={item.step} className="relative rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) text-sm font-bold text-white">
-                  {item.step}
-                </span>
-                <p className="mt-3 font-semibold">{item.title}</p>
-                <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">{item.body}</p>
-              </li>
-            ))}
-          </ol>
-
-          {subjects.length === 0 ? (
-            <p className="mt-10 text-sm text-(--color-awaken-ink-soft)">
-              Classes are being set up. Check back shortly.
-            </p>
-          ) : (
-            <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-              {subjects.map((subject) => (
-                <li
-                  key={subject.id}
-                  className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)]"
-                >
-                  <div className="flex items-baseline justify-between gap-3">
-                    <h3 className="font-semibold">{subject.name}</h3>
-                    <span className="shrink-0 rounded-full bg-(--color-awaken-accent-soft) px-2.5 py-0.5 text-xs font-semibold text-(--color-awaken-accent)">
-                      {subject.grade === "AL" ? "A/L" : "O/L"}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-                    {subject.description}
-                  </p>
-                  <p className="mt-4 font-semibold text-(--color-awaken-accent)">
-                    {formatLKR(subject.priceLKR)}
-                    <span className="text-sm font-normal text-(--color-awaken-ink-soft)">
-                      {" "}
-                      / month
-                    </span>
-                  </p>
-                  <p className="mt-1 text-xs font-medium text-(--color-awaken-success)">
-                    First 7 days free
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <p className="mt-6 flex items-center gap-1.5 text-xs text-(--color-awaken-ink-soft)">
-            <Icon name="check_circle" className="!text-sm text-(--color-awaken-success)" />
-            Secure payments via PayHere, or pay by bank deposit slip.
-          </p>
-        </section>
-
-        <section id="faq" className="mt-20 scroll-mt-6">
-          <h2 className="font-[family-name:var(--font-display)] text-xl font-bold tracking-tight">
-            Questions parents ask
-          </h2>
-          <div className="mt-5 space-y-3">
-            {FAQ.map((item) => (
-              <details
-                key={item.q}
-                className="group rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 open:shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-              >
-                <summary className="cursor-pointer list-none font-semibold marker:content-none">
-                  <span className="flex items-center justify-between gap-3">
-                    {item.q}
-                    <span className="shrink-0 text-(--color-awaken-ink-soft) transition-transform group-open:rotate-45">
-                      +
-                    </span>
-                  </span>
-                </summary>
-                <p className="mt-2 text-sm leading-relaxed text-(--color-awaken-ink-soft)">
-                  {item.a}
-                </p>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        <section className="awaken-rise mt-20 rounded-3xl bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) p-8 text-white sm:p-12">
-          <div className="mx-auto max-w-md text-center">
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-extrabold tracking-tight sm:text-3xl">
-              Get every new article, free.
-            </h2>
-            <p className="mt-3 text-white/90">
-              We&apos;ll email you when a new article or video discussion goes up. No spam,
-              unsubscribe anytime.
-            </p>
-            <div className="mx-auto mt-6 max-w-sm">
-              {/* Styled inline rather than reusing EmailCaptureForm's own
-                  colours, since this sits on a gradient background rather
-                  than the page's card surface. */}
-              <FinalCtaEmailForm />
             </div>
-            <p className="mt-5 text-sm text-white/80">
-              Or{" "}
-              <Link href="/signin" className="font-semibold underline">
-                start a free live-class trial
-              </Link>
-              .
-            </p>
           </div>
-        </section>
-      </div>
-    </main>
-  );
-}
-
-function FinalCtaEmailForm() {
-  return (
-    <div className="[&_input]:border-white/30 [&_input]:bg-white/10 [&_input]:text-white [&_input]:placeholder:text-white/60 [&_input]:focus:border-white [&_button]:bg-white [&_button]:bg-none [&_button]:text-(--color-awaken-accent) [&_button]:shadow-none [&_p]:text-white/70">
-      <EmailCaptureForm source="landing_final" buttonLabel="Notify me" />
+          <div className={`${CONTAINER} mt-[clamp(32px,4vw,48px)] flex flex-wrap justify-between gap-3 border-t border-(--lp-border-dark) pt-5`}>
+            <span className="text-[11px] text-(--lp-ink-400)">© 2026 ICT Class. All rights reserved.</span>
+            <span className="text-[11px] text-(--lp-ink-400)">Articles, videos and notes — free, always.</span>
+          </div>
+        </footer>
+      </ScrollEffects>
     </div>
   );
 }
