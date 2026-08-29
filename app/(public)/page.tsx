@@ -145,7 +145,7 @@ export default async function LandingPage() {
               className="flex items-center gap-2 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-4 text-xs font-semibold whitespace-nowrap text-(--lp-paper-0) shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600)"
             >
               Start free
-              <span className="grid size-6 place-items-center rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
+              <span className="grid size-6 place-items-center overflow-hidden rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
                 <Icon name="arrow_forward" className="!text-sm" />
               </span>
             </a>
@@ -187,13 +187,13 @@ export default async function LandingPage() {
                   className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-6 text-base font-semibold text-(--lp-paper-0) shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600)"
                 >
                   Start free
-                  <span className="grid size-8 place-items-center rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
+                  <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
                     <Icon name="arrow_forward" />
                   </span>
                 </a>
                 <a href="#resources" className="flex h-12 items-center gap-3 px-1 text-base font-semibold text-(--lp-ink-900) hover:text-(--lp-orange-600)">
                   Browse free notes
-                  <span className="grid size-8 place-items-center rounded-full border-[1.5px] border-(--lp-ink-900) text-(--lp-ink-900)">
+                  <span className="grid size-8 place-items-center overflow-hidden rounded-full border-[1.5px] border-(--lp-ink-900) text-(--lp-ink-900)">
                     <Icon name="north_east" className="!text-sm" />
                   </span>
                 </a>
@@ -243,7 +243,7 @@ export default async function LandingPage() {
                 data-lp-par="-0.14"
                 className="absolute top-[8%] left-0 flex items-center gap-2.5 rounded-full bg-(--lp-paper-0) py-[9px] pr-4 pl-[10px] shadow-[var(--lp-shadow-md)]"
               >
-                <span className="grid size-[30px] place-items-center rounded-full bg-(--lp-orange-50) text-(--lp-orange-500)">
+                <span className="grid size-[30px] place-items-center overflow-hidden rounded-full bg-(--lp-orange-50) text-(--lp-orange-500)">
                   <Icon name="school" className="!text-lg" />
                 </span>
                 <span className="text-xs font-semibold whitespace-nowrap text-(--lp-ink-900)">PhD, Human Interface Tech</span>
@@ -268,7 +268,7 @@ export default async function LandingPage() {
             >
               {STATS.map((stat) => (
                 <div key={stat.label} className="flex flex-col items-center gap-2 text-center">
-                  <span className="grid size-[42px] place-items-center rounded-full bg-(--lp-orange-50) text-(--lp-orange-500)">
+                  <span className="grid size-[42px] place-items-center overflow-hidden rounded-full bg-(--lp-orange-50) text-(--lp-orange-500)">
                     <Icon name={stat.icon} />
                   </span>
                   <div className="font-[family-name:var(--lp-font-display)] text-[clamp(24px,2.6vw,32px)] leading-none font-extrabold tracking-[-0.02em] text-(--lp-ink-900)">
@@ -310,12 +310,12 @@ export default async function LandingPage() {
                       key={offer.title}
                       className="flex min-h-[210px] flex-col rounded-[var(--lp-radius-md)] border border-(--lp-border-dark) bg-(--lp-ink-800) p-5 shadow-[var(--lp-shadow-inset-dark)] transition-colors hover:bg-(--lp-ink-700)"
                     >
-                      <span className="grid size-[42px] place-items-center rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                      <span className="grid size-[42px] place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
                         <Icon name={offer.icon} />
                       </span>
                       <div className="mt-[18px] mb-[7px] text-lg font-bold text-(--lp-paper-50)">{offer.title}</div>
                       <p className="m-0 text-xs text-(--lp-ink-300)">{offer.body}</p>
-                      <span className="mt-auto ml-auto grid size-8 place-items-center rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                      <span className="mt-auto ml-auto grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
                         <Icon name="north_east" className="!text-sm" />
                       </span>
                     </div>
@@ -399,7 +399,7 @@ export default async function LandingPage() {
                       <div className="text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">{resource.tag}</div>
                       <div className="mt-2 text-lg font-bold text-(--lp-paper-50) text-wrap-pretty">{resource.title}</div>
                     </div>
-                    <span className="grid size-[38px] shrink-0 place-items-center rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                    <span className="grid size-[38px] shrink-0 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
                       <Icon name="arrow_forward" className="!text-base" />
                     </span>
                   </div>
@@ -480,7 +480,7 @@ export default async function LandingPage() {
                   className="flex h-12 items-center gap-3 rounded-full bg-(--lp-ink-900) py-2 pr-2 pl-6 text-base font-semibold text-(--lp-paper-50) hover:bg-(--lp-ink-700)"
                 >
                   {startLabel}
-                  <span className="grid size-8 place-items-center rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                  <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
                     <Icon name="arrow_forward" />
                   </span>
                 </Link>
