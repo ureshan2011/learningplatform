@@ -251,3 +251,126 @@ body {
 .sidebar-toggle:checked ~ .sidebar-panel {
   transform: translateX(0);
 }
+
+/*
+ * ICT Class marketing landing page.
+ *
+ * A separate cream/orange token set scoped under `.landing-ict`, so the rest
+ * of the app (dashboard, teacher console) keeps the Awaken palette untouched.
+ * See app/(public)/page.tsx and components/marketing/landing/*.
+ */
+.landing-ict {
+  --lp-orange-50: #fff1ea;
+  --lp-orange-100: #ffdccb;
+  --lp-orange-200: #ffb894;
+  --lp-orange-300: #ff8f5c;
+  --lp-orange-400: #fb6a2e;
+  --lp-orange-500: #f4551e;
+  --lp-orange-600: #d8410f;
+  --lp-orange-700: #a5300a;
+
+  --lp-ink-900: #0e0c0b;
+  --lp-ink-850: #141110;
+  --lp-ink-800: #1a1615;
+  --lp-ink-700: #231e1c;
+  --lp-ink-600: #2e2826;
+  --lp-ink-500: #403936;
+  --lp-ink-400: #6b615d;
+  --lp-ink-300: #9b918d;
+  --lp-ink-200: #c8c0bc;
+
+  --lp-paper-0: #ffffff;
+  --lp-paper-50: #fefaf7;
+  --lp-paper-100: #fdf4ee;
+  --lp-paper-200: #f8e9df;
+  --lp-paper-300: #efd8c9;
+
+  --lp-green-500: #2fa36b;
+  --lp-green-50: #e7f6ee;
+
+  --lp-border-subtle: var(--lp-paper-300);
+  --lp-border-dark: #2a2321;
+
+  --lp-radius-md: 14px;
+  --lp-radius-card: 20px;
+  --lp-radius-panel: 28px;
+
+  --lp-shadow-xs: 0 1px 2px rgba(20, 17, 16, 0.06);
+  --lp-shadow-sm: 0 2px 6px rgba(20, 17, 16, 0.07);
+  --lp-shadow-md: 0 8px 20px -6px rgba(20, 17, 16, 0.12);
+  --lp-shadow-lg: 0 20px 44px -16px rgba(20, 17, 16, 0.18);
+  --lp-shadow-brand: 0 10px 24px -8px rgba(244, 85, 30, 0.45);
+  --lp-shadow-nav-scrolled: 0 18px 40px rgba(14, 12, 11, 0.3);
+  --lp-shadow-inset-dark: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  --lp-font-display: var(--font-lp-display), "Helvetica Neue", Arial, sans-serif;
+  --lp-font-body: var(--font-lp-body), "Helvetica Neue", Arial, sans-serif;
+  --lp-font-mono: var(--font-lp-mono), ui-monospace, Menlo, monospace;
+
+  background: var(--lp-paper-100);
+  color: var(--lp-ink-900);
+  font-family: var(--lp-font-body);
+  overflow-x: hidden;
+}
+
+.landing-ict a {
+  color: var(--lp-orange-500);
+  transition: color 120ms cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+.landing-ict a:hover {
+  color: var(--lp-orange-600);
+}
+.landing-ict ::selection {
+  background: var(--lp-orange-200);
+}
+
+/* Nav shadow deepens once the page has scrolled — toggled imperatively by
+   ScrollEffects, which writes data-scrolled directly (no re-render). */
+.landing-ict .lp-nav {
+  box-shadow: var(--lp-shadow-lg);
+  transition: box-shadow 200ms cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+.landing-ict .lp-nav[data-scrolled="true"] {
+  box-shadow: var(--lp-shadow-nav-scrolled);
+}
+
+.landing-ict [data-lp-par] {
+  will-change: transform;
+}
+
+/* Fade-up on scroll — the same data-revealed convention as .syl-reveal in
+   the syllabus explorer (see components/syllabus/motion.tsx), driven by
+   ScrollEffects' IntersectionObserver. */
+.landing-ict .lp-reveal {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 340ms cubic-bezier(0.2, 0.8, 0.25, 1) var(--lp-reveal-delay, 0ms),
+    transform 340ms cubic-bezier(0.2, 0.8, 0.25, 1) var(--lp-reveal-delay, 0ms);
+}
+.landing-ict .lp-reveal[data-revealed="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Card hover lift — pure CSS, no pointer listener needed. */
+.landing-ict .lp-lift {
+  transition:
+    transform 200ms cubic-bezier(0.2, 0.8, 0.25, 1),
+    box-shadow 200ms cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+.landing-ict .lp-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--lp-shadow-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-ict .lp-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .landing-ict .lp-lift:hover {
+    transform: none;
+  }
+}
