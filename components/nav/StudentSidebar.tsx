@@ -124,7 +124,7 @@ function Wordmark() {
         <Icon name="school" className="!text-lg" />
       </span>
       <span className="font-[family-name:var(--font-display)] text-base font-extrabold tracking-tight">
-        ICT<span className="text-(--color-awaken-accent)">Class</span>
+        ICT<span className="text-(--color-awaken-accent)">Campus</span>
       </span>
     </Link>
   );

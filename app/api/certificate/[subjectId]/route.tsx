@@ -68,7 +68,7 @@ export async function GET(
           }}
         >
           <div style={{ display: "flex", fontSize: 26, letterSpacing: 6, color: "#ea580c" }}>
-            ICT CLASS
+            ICT CAMPUS
           </div>
 
           <div style={{ display: "flex", marginTop: 36, fontSize: 22, color: "#5b5f6b" }}>

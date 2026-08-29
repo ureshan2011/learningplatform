@@ -75,7 +75,7 @@ export function LeadsTable({ leads }: { leads: LeadRow[] }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `ict-class-subscribers-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `ict-campus-subscribers-${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

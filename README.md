@@ -1,4 +1,4 @@
-# ICT Class — online tuition platform by Dr. Yasas
+# ICT Campus — online tuition platform by Dr. Yasas
 
 Interactive live-class platform for Sri Lankan **O/L and A/L ICT**, Sinhala medium.
 Zoom hosts the live room; everything around it — access control, payments, the

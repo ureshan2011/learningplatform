@@ -75,7 +75,8 @@ export type IconName =
   | "co_present"
   | "manage_search"
   | "edit_note"
-  | "fact_check";
+  | "fact_check"
+  | "work";
 
 export function Icon({
   name,

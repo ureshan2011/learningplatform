@@ -1,4 +1,4 @@
-# ICT Class — working notes for Claude
+# ICT Campus — working notes for Claude
 
 Online tuition platform for Sri Lankan O/L and A/L ICT, Sinhala medium.
 The owner is a teacher, not a developer.
