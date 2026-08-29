@@ -26,14 +26,14 @@ const monoFont = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], va
 export const metadata: Metadata = {
   title: "Free A/L ICT Notes, Articles & Video Lessons",
   description:
-    "Free A/L ICT exam resources for Sri Lankan students — articles, video breakdowns of past papers and revision notes in Sinhala medium, taught by Dr. Yasas Wickramasinghe. New content published regularly, no payment required. Live interactive classes optional, with a free 7-day trial.",
+    "Free A/L ICT exam resources for Sri Lankan students — articles, video breakdowns of past papers and revision notes in Sinhala medium, taught by Dr. Yasas Sri Wickramasinghe. New content published regularly, no payment required. Live interactive classes optional, with a free 7-day trial.",
 };
 
 const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";
 const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
 
 const STATS: Array<{ icon: IconName; value: string; label: string }> = [
-  { icon: "group", value: "150,000+", label: "learners reached" },
+  { icon: "work", value: "3", label: "global companies" },
   { icon: "school", value: "PhD", label: "Canterbury, NZ" },
   { icon: "co_present", value: "12+ yrs", label: "teaching ICT" },
   { icon: "description", value: "100%", label: "free notes" },
@@ -124,7 +124,7 @@ export default async function LandingPage() {
               href="#top"
               className="font-[family-name:var(--lp-font-display)] text-lg font-extrabold tracking-[-0.02em] whitespace-nowrap text-(--lp-paper-50)"
             >
-              ICT<span className="text-(--lp-orange-500)">CLASS</span>
+              ICT<span className="text-(--lp-orange-500)">CAMPUS</span>
             </a>
             <nav className="hidden items-center gap-0.5 sm:flex">
               <a href="#teach" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-ink-300) hover:bg-(--lp-ink-700) hover:text-(--lp-paper-50)">
@@ -168,6 +168,8 @@ export default async function LandingPage() {
                 <span className="text-xs font-bold tracking-[0.14em] text-(--lp-ink-900) uppercase">Sinhala medium · O/L &amp; A/L ICT</span>
               </div>
 
+              <p className="mb-2 text-xs font-semibold text-(--lp-ink-400)">ICT Campus — by Dr. Yasas Sri Wickramasinghe</p>
+
               <h1 className="m-0 text-[clamp(40px,6.4vw,68px)] leading-[1.02] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) text-wrap-balance font-[family-name:var(--lp-font-display)]">
                 ICT taught by
                 <br />
@@ -176,9 +178,9 @@ export default async function LandingPage() {
               </h1>
 
               <p className="my-[clamp(18px,2.4vw,26px)] max-w-[520px] text-[clamp(15px,1.4vw,18px)] text-(--lp-ink-500) text-wrap-pretty">
-                I&apos;m <strong className="font-bold text-(--lp-ink-900)">Dr. Yasas Wickramasinghe</strong> — PhD in Human
-                Interface Technology, senior lecturer, and the person who built Sri Lanka&apos;s first national MOOC. Every
-                note, video and live class here comes from me.
+                I&apos;m <strong className="font-bold text-(--lp-ink-900)">Dr. Yasas Sri Wickramasinghe</strong> — PhD in
+                Human Interface Technology, senior lecturer, and a postdoctoral researcher with industry experience at
+                Sony, 99X and Niantic. Every note, video and live class here comes from me.
               </p>
 
               <div className="flex flex-wrap items-center gap-[clamp(12px,1.6vw,18px)]">
@@ -232,7 +234,7 @@ export default async function LandingPage() {
               <Image
                 data-lp-par="-0.06"
                 src="/images/dr-yasas.png"
-                alt="Dr. Yasas Wickramasinghe"
+                alt="Dr. Yasas Sri Wickramasinghe"
                 width={881}
                 height={1241}
                 priority
@@ -250,10 +252,10 @@ export default async function LandingPage() {
               </div>
 
               <div data-lp-par="-0.20" className="absolute right-0 bottom-[14%] rounded-2xl bg-(--lp-ink-900) px-[18px] py-3.5 shadow-[var(--lp-shadow-lg)]">
-                <div className="font-[family-name:var(--lp-font-display)] text-[26px] leading-none font-extrabold tracking-[-0.02em] text-(--lp-paper-50)">
-                  150,000<span className="text-(--lp-orange-500)">+</span>
+                <div className="font-[family-name:var(--lp-font-display)] text-lg leading-tight font-extrabold tracking-[-0.02em] whitespace-nowrap text-(--lp-paper-50)">
+                  Sony <span className="text-(--lp-orange-500)">·</span> 99X <span className="text-(--lp-orange-500)">·</span> Niantic
                 </div>
-                <div className="mt-1 text-[11px] text-(--lp-ink-300)">learners on the national MOOC</div>
+                <div className="mt-1 text-[11px] text-(--lp-ink-300)">researcher, tech lead &amp; AR developer</div>
               </div>
             </div>
           </div>
@@ -495,11 +497,11 @@ export default async function LandingPage() {
           <div className={`${CONTAINER} grid gap-[clamp(24px,4vw,48px)]`} style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(200px,100%), 1fr))" }}>
             <div>
               <div className="text-[22px] leading-none font-extrabold tracking-[-0.02em] text-(--lp-paper-50) font-[family-name:var(--lp-font-display)]">
-                ICT<span className="text-(--lp-orange-500)">CLASS</span>
+                ICT<span className="text-(--lp-orange-500)">CAMPUS</span>
                 <span className="text-(--lp-orange-500)">.</span>
               </div>
               <p className="mt-3.5 max-w-[240px] text-xs text-(--lp-ink-300)">
-                O/L and A/L ICT in Sinhala medium, taught by Dr. Yasas Wickramasinghe.
+                O/L and A/L ICT in Sinhala medium, taught by Dr. Yasas Sri Wickramasinghe.
               </p>
             </div>
             <div>
@@ -535,7 +537,7 @@ export default async function LandingPage() {
             </div>
           </div>
           <div className={`${CONTAINER} mt-[clamp(32px,4vw,48px)] flex flex-wrap justify-between gap-3 border-t border-(--lp-border-dark) pt-5`}>
-            <span className="text-[11px] text-(--lp-ink-400)">© 2026 ICT Class. All rights reserved.</span>
+            <span className="text-[11px] text-(--lp-ink-400)">© 2026 ICT Campus. All rights reserved.</span>
             <span className="text-[11px] text-(--lp-ink-400)">Articles, videos and notes — free, always.</span>
           </div>
         </footer>

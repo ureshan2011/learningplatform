@@ -1,6 +1,6 @@
 {
-  "name": "ICT Class — O/L & A/L ICT Tuition",
-  "short_name": "ICT Class",
+  "name": "ICT Campus — O/L & A/L ICT Tuition",
+  "short_name": "ICT Campus",
   "description": "Live interactive ICT tuition for Sri Lankan O/L and A/L students.",
   "start_url": "/dashboard",
   "display": "standalone",

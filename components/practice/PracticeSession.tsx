@@ -128,7 +128,7 @@ export function PracticeSession({
   }
 
   if (phase === "summary") {
-    const shareText = `I just practised ${subjectName} on ICT Class — ${correctCount}/${questions.length} correct${
+    const shareText = `I just practised ${subjectName} on ICT Campus — ${correctCount}/${questions.length} correct${
       latestProgress ? ` and a ${latestProgress.streakDays}-day streak 🔥` : ""
     }!`;
     return (

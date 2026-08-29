@@ -90,7 +90,7 @@ export default async function AccountPage() {
           </p>
           <div className="mt-3">
             <WhatsAppShareButton
-              text={`Join me on ICT Class for O/L and A/L ICT tuition — sign up with my code and we both get 3 free days!\n${publicEnv.appUrl}/signin?ref=${user.referralCode}`}
+              text={`Join me on ICT Campus for O/L and A/L ICT tuition — sign up with my code and we both get 3 free days!\n${publicEnv.appUrl}/signin?ref=${user.referralCode}`}
             />
           </div>
         </div>

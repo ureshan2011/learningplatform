@@ -61,14 +61,14 @@ export default async function CertificatePage({
           <div className="mt-4 flex flex-wrap gap-3">
             <a
               href={imageUrl}
-              download={`ict-class-${subject.id}-certificate.png`}
+              download={`ict-campus-${subject.id}-certificate.png`}
               className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
             >
               <Icon name="download" className="!text-base" />
               Download certificate
             </a>
             <WhatsAppShareButton
-              text={`I just earned a Practice Mastery certificate in ${subject.name} on ICT Class! 🎓 ${publicEnv.appUrl}`}
+              text={`I just earned a Practice Mastery certificate in ${subject.name} on ICT Campus! 🎓 ${publicEnv.appUrl}`}
               label="Share the news"
             />
           </div>
