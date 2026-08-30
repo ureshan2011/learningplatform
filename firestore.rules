@@ -81,6 +81,24 @@ service cloud.firestore {
       allow write: if false; // PayHere webhook / teacher approval, server-side
     }
 
+    // ---- payment evidence, settings and counters --------------------------
+    // Raw gateway notifications, the bank details printed on receipts, and the
+    // receipt number series. All three are read and written by the server only:
+    // the pages that show them (teacher console, deposit page, receipts) are
+    // server-rendered, so no client ever needs a direct read — and a client
+    // that could write the receipt counter could reissue someone else's number.
+    match /paymentEvents/{eventId} {
+      allow read, write: if false;
+    }
+
+    match /settings/{settingId} {
+      allow read, write: if false;
+    }
+
+    match /counters/{counterId} {
+      allow read, write: if false;
+    }
+
     // ---- content ----------------------------------------------------------
     match /content/{contentId} {
       // Public items power the SEO funnel. Gated items are checked server-side

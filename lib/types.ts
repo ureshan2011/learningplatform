@@ -154,28 +154,115 @@ export interface AttendanceRecord {
   attendanceScore: number;
 }
 
-export type PaymentStatus = "pending" | "paid" | "failed" | "cancelled" | "chargeback";
+export type PaymentStatus =
+  | "pending"
+  | "paid"
+  | "failed"
+  | "cancelled"
+  | "chargeback"
+  | "refunded";
+
+/** Card through PayHere, an uploaded deposit slip, or cash/transfer the teacher recorded. */
+export type PaymentProvider = "payhere" | "bank_slip" | "manual";
 
 export interface Payment {
   id: string;
   tenantId: TenantId;
   uid: string;
   subjectId: string;
-  provider: "payhere" | "bank_slip";
+  provider: PaymentProvider;
   amountLKR: number;
   status: PaymentStatus;
   /** Billing period this payment buys. */
   periodStart: number;
   periodEnd: number;
+  /**
+   * Sequential receipt number, e.g. "ICT-2026-0007".
+   *
+   * Assigned once, when the payment first becomes `paid`, and never reused or
+   * renumbered — an accounting record whose identifiers move is not a record.
+   * A payment that is refunded later keeps the number it was issued under, and
+   * the refund is a separate line in the ledger.
+   */
+  receiptNo?: string;
+  paidAt?: number;
   /** PayHere's payment_id, for reconciliation against their dashboard. */
   providerRef?: string;
-  /** Bank deposit slip in R2, awaiting teacher approval. */
+  /** How PayHere says it was paid (VISA, MASTER, ...), straight from the notification. */
+  providerMethod?: string;
+  /** Bank deposit slip image, awaiting teacher approval. */
   slipUrl?: string;
+  /** Bank reference or deposit id the teacher read off the slip, for reconciliation. */
+  bankRef?: string;
+  /** Free-text note the teacher attached — why an amount differs, who paid in cash. */
+  note?: string;
+  /** Set on a manually recorded payment: the teacher account that entered it. */
+  recordedBy?: string;
   reviewedBy?: string;
   reviewedAt?: number;
   rejectionReason?: string;
+  refundedAt?: number;
+  refundReason?: string;
+  /** True once access bought by this payment has been taken back (refund or chargeback). */
+  accessRevoked?: boolean;
   createdAt: number;
   updatedAt: number;
+}
+
+/**
+ * One raw provider notification, kept exactly as it arrived.
+ *
+ * The payment document holds the *decision*; this holds the *evidence*. When a
+ * student says they paid and the class never unlocked, this is the only record
+ * that can say whether PayHere ever called, what it said, and why it was
+ * accepted or rejected — including notifications that failed signature
+ * verification, which are precisely the ones worth keeping.
+ */
+export interface PaymentEvent {
+  id: string;
+  tenantId: TenantId;
+  provider: "payhere";
+  orderId: string;
+  /** "accepted", "bad_signature", "unknown_order", "amount_mismatch", "duplicate". */
+  outcome: string;
+  statusCode?: string;
+  amount?: string;
+  currency?: string;
+  providerRef?: string;
+  /** Every field of the notification, for audit. Never contains card data — PayHere does not send any. */
+  raw: Record<string, string>;
+  receivedAt: number;
+}
+
+/**
+ * Business and bank details the platform prints on receipts and shows to
+ * students paying by deposit.
+ *
+ * Stored in Firestore rather than environment variables so the teacher can
+ * change a bank account from the browser — the whole platform is set up
+ * without a command line, and a bank account is exactly the kind of thing that
+ * changes at short notice.
+ */
+export interface PaymentSettings {
+  tenantId: TenantId;
+  /** Printed on receipts. A registered business name if there is one, otherwise the teacher's own name. */
+  businessName: string;
+  ownerName: string;
+  addressLine: string;
+  contactPhone: string;
+  contactEmail: string;
+  /** Business Registration number, once registered. Blank is fine — receipts simply omit the line. */
+  brNumber?: string;
+  /** Taxpayer Identification Number from the IRD, if registered. */
+  taxId?: string;
+  bankName: string;
+  bankBranch: string;
+  accountName: string;
+  accountNumber: string;
+  /** Anything else a depositor must do — e.g. "put your phone number as the reference". */
+  slipInstructions?: string;
+  updatedAt: number;
+  updatedBy?: string;
 }
 
 export type ContentKind = "notes" | "past_paper" | "marking_scheme" | "replay";

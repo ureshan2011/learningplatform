@@ -110,6 +110,12 @@ export const col = {
   mockExamAttempts: () => adminDb().collection("mockExamAttempts"),
   leads: () => adminDb().collection("leads"),
   units: () => adminDb().collection("units"),
+  /** Raw provider notifications, kept as evidence behind every payment decision. */
+  paymentEvents: () => adminDb().collection("paymentEvents"),
+  /** Single-document settings (bank details, receipt identity). Server-read only. */
+  settings: () => adminDb().collection("settings"),
+  /** Monotonic counters — currently just the receipt series. */
+  counters: () => adminDb().collection("counters"),
 } as const;
 
 export function enrollmentId(uid: string, subjectId: string): string {

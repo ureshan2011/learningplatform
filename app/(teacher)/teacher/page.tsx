@@ -4,12 +4,11 @@ import { adminDb, col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects, listUnits } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
-import { formatLKR, formatSessionTime } from "@/lib/format";
+import { formatSessionTime } from "@/lib/format";
 import {
   ScheduleSessionForm,
   type UnitOption,
 } from "@/components/teacher/ScheduleSessionForm";
-import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { SeedQuestionsButton } from "@/components/teacher/SeedQuestionsButton";
 import { SeedLessonsButton } from "@/components/teacher/SeedLessonsButton";
@@ -18,7 +17,7 @@ import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import { StatTile } from "@/components/ui/StatTile";
 import { zoomConfigured } from "@/lib/features";
-import type { ClassSession, Payment, SessionSecrets, User } from "@/lib/types";
+import type { ClassSession, Payment, SessionSecrets } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -46,10 +45,10 @@ export default async function TeacherConsolePage() {
   // Each section is fetched independently so one failing read degrades that
   // section instead of blanking the whole console. The teacher losing access to
   // payment approvals because the timetable query broke is the worse outcome.
-  const [subjects, sessions, slips] = await Promise.all([
+  const [subjects, sessions, slipCount] = await Promise.all([
     section("subjects", () => listSubjects(), []),
     section("sessions", () => upcomingSessions(), []),
-    section("slips", () => pendingSlips(), []),
+    section("slips", () => pendingSlipCount(), 0),
   ]);
 
   // Start URLs are read here, server-side, and rendered only into this
@@ -79,6 +78,13 @@ export default async function TeacherConsolePage() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
+              href="/teacher/payments"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+            >
+              <Icon name="payments" className="!text-base" />
+              Payments
+            </Link>
+            <Link
               href="/teacher/mock-exams"
               className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
             >
@@ -106,7 +112,7 @@ export default async function TeacherConsolePage() {
           <StatTile icon="auto_stories" label="Subjects" value={subjects.length} />
           <StatTile icon="event" label="Upcoming classes" value={sessions.length} />
           <StatTile icon="schedule" label="This week" value={thisWeek} tone="accent" />
-          <StatTile icon="receipt_long" label="Pending slips" value={slips.length} tone={slips.length > 0 ? "warn" : "default"} />
+          <StatTile icon="receipt_long" label="Pending slips" value={slipCount} tone={slipCount > 0 ? "warn" : "default"} />
         </div>
 
         {subjects.length === 0 ? (
@@ -180,13 +186,24 @@ export default async function TeacherConsolePage() {
         <section className="mt-10 pb-4">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
             <Icon name="receipt_long" className="text-(--color-awaken-accent)" />
-            Bank slips awaiting approval
+            Money
           </h2>
-          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-            Approving grants one month of access from today.
-          </p>
-          <SlipReviewList slips={slips} />
+          <Link
+            href="/teacher/payments"
+            className="mt-3 flex items-center justify-between gap-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:border-(--color-awaken-accent)/40"
+          >
+            <span>
+              <span className="block font-semibold">Payments &amp; accounts</span>
+              <span className="mt-0.5 block text-sm text-(--color-awaken-ink-soft)">
+                {slipCount > 0
+                  ? `${slipCount} bank slip${slipCount === 1 ? "" : "s"} waiting for approval`
+                  : "Every payment, monthly totals, receipts and the CSV for your accountant"}
+              </span>
+            </span>
+            <Icon name="chevron_right" className="text-(--color-awaken-accent)" />
+          </Link>
         </section>
+
       </main>
     </>
   );
@@ -248,34 +265,11 @@ async function startUrlsFor(sessionIds: string[]): Promise<Record<string, string
   return out;
 }
 
-async function pendingSlips(): Promise<PendingSlip[]> {
-  // Single equality filter — automatically indexed. Tenant, provider and
-  // ordering are applied in memory to avoid needing a composite index.
+async function pendingSlipCount(): Promise<number> {
+  // Single equality filter — automatically indexed. Tenant and provider are
+  // applied in memory to avoid needing a composite index.
   const snap = await col.payments().where("status", "==", "pending").limit(200).get();
-
-  const payments = snap.docs
+  return snap.docs
     .map((d) => d.data() as Payment)
-    .filter((p) => p.tenantId === publicEnv.tenantId && p.provider === "bank_slip")
-    .sort((a, b) => b.createdAt - a.createdAt)
-    .slice(0, 50);
-
-  if (payments.length === 0) return [];
-
-  // One batched read for the student names rather than a query per slip.
-  const userRefs = [...new Set(payments.map((p) => p.uid))].map((uid) =>
-    col.users().doc(uid),
-  );
-  const userSnaps = await adminDb().getAll(...userRefs);
-  const nameByUid = new Map(
-    userSnaps.map((s) => [s.id, (s.data() as User | undefined)?.name ?? "Unknown"]),
-  );
-
-  return payments.map((p) => ({
-    id: p.id,
-    studentName: nameByUid.get(p.uid) ?? "Unknown",
-    subjectId: p.subjectId,
-    amount: formatLKR(p.amountLKR),
-    slipUrl: p.slipUrl ?? "",
-    submittedAt: formatSessionTime(p.createdAt),
-  }));
+    .filter((p) => p.tenantId === publicEnv.tenantId && p.provider === "bank_slip").length;
 }

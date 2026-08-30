@@ -118,6 +118,14 @@ single most common thing to get stuck on.
    **The first person to sign in becomes the teacher automatically** — that's
    you. Everyone after is a student.
 2. Go to `/teacher` and click **Create my A/L ICT class**.
+3. Go to **Teacher → Payments** and fill in *Bank details & receipt identity*.
+   This is what students see when they pay by deposit, and what gets printed on
+   receipts and into the terms, privacy and refund pages. Until it is filled in,
+   students have no account number to pay into.
+
+You can take money from day one this way — bank deposits and cash both work
+with no payment gateway at all. See `docs/services.md` for adding PayHere card
+payments on top.
 
 Your site: **https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app**
 
@@ -131,6 +139,7 @@ Your site: **https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app*
 | Student dashboard, timetable | Card payments (PayHere) |
 | Teacher console | Notes & past papers (R2) |
 | Subscriptions & access control | |
+| Bank deposits, cash, receipts, ledger | |
 
 The three on the right show a plain "not set up yet" message where they'd
 appear. Nothing is broken — they just aren't connected.

@@ -19,12 +19,15 @@ const MAX_BYTES = 5 * 1024 * 1024;
  */
 export function SlipUploadForm({
   subjects,
+  initialSubjectId,
 }: {
   subjects: Array<{ id: string; name: string; price: string }>;
+  /** Preselects the subject the student came here to pay for. */
+  initialSubjectId?: string;
 }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
+  const [subjectId, setSubjectId] = useState(initialSubjectId ?? subjects[0]?.id ?? "");
   const [fileName, setFileName] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [busy, setBusy] = useState(false);

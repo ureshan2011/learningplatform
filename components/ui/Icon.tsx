@@ -76,7 +76,14 @@ export type IconName =
   | "manage_search"
   | "edit_note"
   | "fact_check"
-  | "work";
+  | "work"
+  | "save"
+  | "image"
+  | "payments"
+  | "account_balance"
+  | "rule"
+  | "print"
+  | "gavel";
 
 export function Icon({
   name,
