@@ -99,6 +99,12 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // The teacher's money notifications. Polled through a server route that
+    // checks the role, so no client needs a direct read here either.
+    match /teacherActivity/{activityId} {
+      allow read, write: if false;
+    }
+
     // ---- content ----------------------------------------------------------
     match /content/{contentId} {
       // Public items power the SEO funnel. Gated items are checked server-side

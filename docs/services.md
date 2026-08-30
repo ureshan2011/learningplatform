@@ -56,15 +56,28 @@ same class — not a lesser one.
 
 ### Configuration
 
-- `NEXT_PUBLIC_PAYHERE_MERCHANT_ID`, `PAYHERE_MERCHANT_SECRET`
-- Notify URL: `https://<your-domain>/api/payments/payhere/notify`
-- Keep `NEXT_PUBLIC_PAYHERE_MODE=sandbox` until a full test payment has gone
-  through end to end.
+**From the browser (the normal route).** Teacher → Payments → *Card payments
+(PayHere)*: merchant id, merchant secret, mode. Saved to Firestore, read only
+by the server, never sent back to a browser. This exists because setting an
+App Hosting secret needs Secret Manager and a command line — without it, card
+payments could not be switched on at all by the person who owns this platform.
 
-Sandbox and live are **separate accounts with separate credentials**. The
-sandbox merchant id and secret come from sandbox.payhere.lk; the live ones
-from the real dashboard. Swapping the mode without swapping the credentials
-fails every signature check.
+**From the environment (optional).** `NEXT_PUBLIC_PAYHERE_MERCHANT_ID`,
+`PAYHERE_MERCHANT_SECRET`, `NEXT_PUBLIC_PAYHERE_MODE`. When both id and secret
+are present they win, and the console form goes read-only and says so.
+
+Two things that are easy to miss and both fail *before* a card is entered:
+
+- Sandbox and live are **separate accounts with separate credentials**. The
+  sandbox merchant id and secret come from sandbox.payhere.lk; the live ones
+  from the real dashboard. Swapping the mode without swapping the credentials
+  fails every signature check.
+- Your **domain must be added and approved** in the PayHere portal under
+  Settings → Domains & Credentials. An unapproved domain has its checkout
+  refused outright.
+
+Notify URL (PayHere calls this; it is the only thing that unlocks a class):
+`https://<your-domain>/api/payments/payhere/notify`
 
 ### Testing it
 
@@ -78,11 +91,20 @@ PayHere calls the notify URL from their servers, so it has to be a real public
 mode still set to sandbox — the deployment is safe to test against, because in
 sandbox mode no real card is ever charged.
 
-A full pass looks like: sign in as a student on a second phone number → Pay
-monthly → pay with PayHere's published sandbox test card → the class unlocks
-and the payment shows as **Paid** with a receipt number → the notification is
-listed as `accepted`. If it stays **Pending** with no notification listed, the
-notify URL is not reachable and nothing else is wrong.
+**Rehearse it first.** In sandbox mode the same page offers *Run a sandbox test
+payment*: it builds a notification for a real student, signs it with your real
+merchant secret and feeds it through the same handler PayHere hits — same
+signature check, same ledger write, same receipt, same unlock. If that works,
+everything on this side is correct and anything still failing is at PayHere's
+end. It refuses to run in live mode.
+
+**Then the real pass:** sign in as a student on a second phone number in a
+different browser → Pay monthly → pay with PayHere's published sandbox test
+card → the class unlocks, the payment shows as **Paid** with a receipt number,
+the notification is listed as `accepted`, and the Activity bell in the console
+counts it within twenty seconds. If it stays **Pending** with no notification
+listed, PayHere could not reach the notify URL — check the URL is your real
+https domain and that the domain is approved. Nothing else causes that.
 
 **Watch out:** `NEXT_PUBLIC_APP_URL` must be your real domain before enabling
 this. PayHere's `notify_url` is built from it, and that notification is the only

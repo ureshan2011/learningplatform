@@ -72,6 +72,12 @@ issued once, in a transaction, when a payment first becomes `paid`.
 - Every PayHere notification is written to `paymentEvents` before it is acted
   on, accepted or rejected. That log is the only evidence when a student says
   they paid and nothing unlocked.
+- PayHere credentials live in `settings/payments` too, entered in the console.
+  Environment variables still win when present. `getPayHereConfig()` resolves
+  the two; never read the env vars directly to decide whether cards are on.
+- In sandbox mode the console can rehearse a notification through the real
+  handler (`/api/teacher/payments/simulate`). It refuses in live mode, and must
+  keep refusing — it mints a paid enrollment.
 - PayHere order ids are unique **per attempt**. Never key them by billing month
   again: two payments in one month then collide, the second is dismissed as a
   duplicate, and the student pays for nothing.
@@ -82,6 +88,15 @@ Zoom, PayHere and R2 are each optional and detected at runtime by
 `lib/features.ts`. When one is unconfigured, API routes return
 `503 not_configured` and pages render a "not set up yet" card. Keep this
 property — the app must always run with Firebase alone.
+
+## Devices
+
+`MAX_DEVICES_PER_USER` caps students at 2 bound devices. **Teachers and admins
+are exempt** — the owner has to open the console on a laptop, a phone and a
+second browser to test what students see, and there is nobody above them to ask
+for a reset. A student who is capped is freed from Teacher console → Device
+reset (`/api/teacher/devices`), which is the browser equivalent of
+`scripts/admin.mjs release-devices`.
 
 ## Phone auth gotchas
 

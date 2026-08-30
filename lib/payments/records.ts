@@ -156,6 +156,51 @@ export async function savePaymentSettings(
   );
 }
 
+export interface PayHereConfig {
+  merchantId: string;
+  merchantSecret: string;
+  mode: "sandbox" | "live";
+  /** Where the credentials came from, so the console can say which it is using. */
+  source: "env" | "console" | "none";
+  configured: boolean;
+}
+
+/**
+ * The PayHere credentials in force, from the environment if deployed there and
+ * otherwise from the console.
+ *
+ * Environment wins deliberately: a deployment that has been given a real
+ * secret through Secret Manager should not be overridable by anyone who can
+ * reach the teacher console.
+ */
+export async function getPayHereConfig(): Promise<PayHereConfig> {
+  const envId = process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID?.trim();
+  const envSecret = process.env.PAYHERE_MERCHANT_SECRET?.trim();
+  const envMode = process.env.NEXT_PUBLIC_PAYHERE_MODE === "live" ? "live" : "sandbox";
+
+  if (envId && envSecret) {
+    return {
+      merchantId: envId,
+      merchantSecret: envSecret,
+      mode: envMode,
+      source: "env",
+      configured: true,
+    };
+  }
+
+  const settings = await getPaymentSettings();
+  const id = settings.payhereMerchantId?.trim() ?? "";
+  const secret = settings.payhereMerchantSecret?.trim() ?? "";
+
+  return {
+    merchantId: id,
+    merchantSecret: secret,
+    mode: settings.payhereMode === "live" ? "live" : "sandbox",
+    source: id && secret ? "console" : "none",
+    configured: Boolean(id && secret),
+  };
+}
+
 /** True once a student could actually deposit money — every bank field is filled in. */
 export function bankDetailsReady(settings: PaymentSettings): boolean {
   return Boolean(

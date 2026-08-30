@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
       {
         error: "device_limit",
         message:
-          "This account is already signed in on the maximum number of devices. Ask your teacher to remove an old device.",
+          "This account is already signed in on the maximum number of devices. Ask your teacher to free one — Teacher console → Device reset, then look your number up.",
         devices: device.devices.map((d) => ({ label: d.label, lastSeenAt: d.lastSeenAt })),
       },
       { status: 403 },

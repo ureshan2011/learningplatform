@@ -261,6 +261,22 @@ export interface PaymentSettings {
   accountNumber: string;
   /** Anything else a depositor must do — e.g. "put your phone number as the reference". */
   slipInstructions?: string;
+
+  /**
+   * PayHere credentials, entered in the console rather than deployed as
+   * environment variables.
+   *
+   * Environment variables are the safer home for a secret and stay supported —
+   * they win when present. But setting one on App Hosting means Secret Manager
+   * and a command line, and this platform's owner has neither, which in
+   * practice meant card payments could never be switched on at all. Here they
+   * can, from a phone. The secret is never sent to a browser and the document
+   * is server-read only (see firestore.rules).
+   */
+  payhereMerchantId?: string;
+  payhereMerchantSecret?: string;
+  payhereMode?: "sandbox" | "live";
+
   updatedAt: number;
   updatedBy?: string;
 }

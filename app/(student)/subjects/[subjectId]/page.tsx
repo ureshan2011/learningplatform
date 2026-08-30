@@ -10,7 +10,8 @@ import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { StatusPill } from "@/components/ui/StatusPill";
-import { payhereConfigured, r2Configured } from "@/lib/features";
+import { r2Configured } from "@/lib/features";
+import { getPayHereConfig } from "@/lib/payments/records";
 import type { ContentKind } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -49,7 +50,8 @@ export default async function SubjectPage({
   // Locked students still see the catalogue — knowing what they are missing is
   // the most effective renewal prompt there is.
   const visible = access.allowed ? items : items.filter((i) => i.isPublic);
-  const cardPaymentsOn = payhereConfigured();
+  const payhere = await getPayHereConfig();
+  const cardPaymentsOn = payhere.configured;
 
   const features: Array<{ icon: IconName; title: string; subtitle: string; href: string }> = [
     { icon: "quiz", title: "Practice & revision", subtitle: "Spaced-repetition questions that adapt to weak topics", href: `/subjects/${subjectId}/practice` },
@@ -198,7 +200,7 @@ export default async function SubjectPage({
                 <div className="mt-4 space-y-2">
                   {cardPaymentsOn ? (
                     <div className="[&>div]:text-left [&_button]:w-full [&_button]:justify-center [&_button]:py-2.5">
-                      <SubscribeButton subjectId={subjectId} />
+                      <SubscribeButton subjectId={subjectId} sandbox={payhere.mode === "sandbox"} />
                     </div>
                   ) : null}
                   <Link

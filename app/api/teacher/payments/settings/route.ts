@@ -20,6 +20,10 @@ const bodySchema = z.object({
   accountName: text(140),
   accountNumber: text(60),
   slipInstructions: text(300).optional(),
+  payhereMerchantId: text(40).optional(),
+  /** Absent means "keep the saved one" — an empty box must never wipe it. */
+  payhereMerchantSecret: text(200).min(1).optional(),
+  payhereMode: z.enum(["sandbox", "live"]).optional(),
 });
 
 /**

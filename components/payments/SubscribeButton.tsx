@@ -9,7 +9,14 @@ import { useState } from "react";
  * server-signed fields and submit it. The signing secret never reaches the
  * browser — only the resulting hash does.
  */
-export function SubscribeButton({ subjectId }: { subjectId: string }) {
+export function SubscribeButton({
+  subjectId,
+  sandbox,
+}: {
+  subjectId: string;
+  /** Test mode. Said out loud so nobody types a real card into a rehearsal. */
+  sandbox?: boolean;
+}) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,6 +63,11 @@ export function SubscribeButton({ subjectId }: { subjectId: string }) {
       >
         {busy ? "Opening…" : "Pay monthly"}
       </button>
+      {sandbox ? (
+        <p className="mt-1 text-xs font-semibold text-(--color-awaken-warn)">
+          Sandbox — test cards only
+        </p>
+      ) : null}
       {error ? <p className="mt-1 text-xs text-(--color-awaken-danger)">{error}</p> : null}
     </div>
   );

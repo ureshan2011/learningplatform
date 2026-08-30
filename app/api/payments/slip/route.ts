@@ -3,6 +3,7 @@ import { z } from "zod";
 import { col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { addMonths } from "@/lib/payments/entitlements";
+import { notifyTeacher } from "@/lib/payments/activity";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -56,5 +57,17 @@ export async function POST(req: NextRequest) {
   };
 
   await col.payments().doc(id).set(payment);
+
+  // The teacher has to act on this one — a slip sitting unreviewed is a
+  // student who paid and is still locked out.
+  await notifyTeacher({
+    kind: "slip_uploaded",
+    uid: user.uid,
+    subjectId: body.subjectId,
+    amountLKR: subject.priceLKR,
+    paymentId: id,
+    method: "Bank slip — needs approval",
+  });
+
   return NextResponse.json({ ok: true, paymentId: id });
 }

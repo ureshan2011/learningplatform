@@ -4,7 +4,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { listEnrollments, listSubjects, listUpcomingSessions, getProgress } from "@/lib/queries";
 import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
-import { payhereConfigured } from "@/lib/features";
+import { getPayHereConfig } from "@/lib/payments/records";
 import { Icon } from "@/components/ui/Icon";
 import { StatTile } from "@/components/ui/StatTile";
 import { StatusPill } from "@/components/ui/StatusPill";
@@ -34,7 +34,8 @@ export default async function DashboardPage() {
   ]);
 
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
-  const cardPaymentsOn = payhereConfigured();
+  const payhere = await getPayHereConfig();
+  const cardPaymentsOn = payhere.configured;
   const isStaff = user.role === "teacher" || user.role === "admin";
 
   const streakDays = progressList.reduce((max, p) => Math.max(max, p?.streakDays ?? 0), 0);
@@ -200,7 +201,7 @@ export default async function DashboardPage() {
                     // most Sri Lankan parents actually pay, so neither is
                     // hidden behind the other.
                     <div className="flex flex-wrap items-center gap-3">
-                      {cardPaymentsOn ? <SubscribeButton subjectId={subject.id} /> : null}
+                      {cardPaymentsOn ? <SubscribeButton subjectId={subject.id} sandbox={payhere.mode === "sandbox"} /> : null}
                       <Link
                         href={`/pay/slip?subject=${subject.id}`}
                         className={
