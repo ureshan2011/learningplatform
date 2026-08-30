@@ -49,30 +49,6 @@ process.exit(0);
 async function seed() {
   const subjects = [
     {
-      id: "ol-ict",
-      tenantId: TENANT,
-      name: "O/L ICT",
-      grade: "OL",
-      medium: "sinhala",
-      priceLKR: 1500,
-      description: "Grade 10-11 ICT, full syllabus with weekly past-paper practice.",
-      syllabusTopics: [
-        "Basic concepts of ICT",
-        "Computer systems",
-        "Data representation",
-        "Operating systems",
-        "Word processing",
-        "Spreadsheets",
-        "Presentations",
-        "Databases",
-        "Programming",
-        "Web development",
-        "ICT in business",
-        "New trends",
-      ],
-      active: true,
-    },
-    {
       id: "al-ict",
       tenantId: TENANT,
       name: "A/L ICT",

@@ -35,16 +35,16 @@ function q(
 }
 
 /**
- * Starter question bank — real O/L and A/L ICT content with genuine
+ * Starter question bank — real A/L ICT content with genuine
  * misconception notes, so Practice, spaced repetition and weak-topic
  * detection all have something real to work with the moment a teacher clicks
  * "seed". Meant as a first batch to build on, not a finished bank.
  */
 export const QUESTION_SEED: QuestionSeed[] = [
-  // ---- O/L ICT — Computer systems ---------------------------------------
+  // ---- A/L ICT — Fundamentals of computer systems -----------------------
   q(
-    "ol-ict",
-    "Computer systems",
+    "al-ict",
+    "Fundamentals of computer systems",
     "Why is RAM described as volatile memory?",
     [
       "It is very fast compared to secondary storage",
@@ -61,8 +61,8 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
-    "ol-ict",
-    "Computer systems",
+    "al-ict",
+    "Fundamentals of computer systems",
     "Which of these is an output device?",
     ["Scanner", "Microphone", "Projector", "Keyboard"],
     2,
@@ -74,8 +74,8 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
-    "ol-ict",
-    "Computer systems",
+    "al-ict",
+    "Fundamentals of computer systems",
     "\"Distinguish between RAM and ROM.\" Which answer would actually earn the marks?",
     [
       "RAM stores data temporarily.",
@@ -93,9 +93,9 @@ export const QUESTION_SEED: QuestionSeed[] = [
     { source: "command_word_drill", commandWord: "Distinguish" },
   ),
 
-  // ---- O/L ICT — Data representation ------------------------------------
+  // ---- A/L ICT — Data representation ------------------------------------
   q(
-    "ol-ict",
+    "al-ict",
     "Data representation",
     "What is the denary (base 10) value of the binary number 1101?",
     ["11", "13", "14", "15"],
@@ -108,7 +108,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
-    "ol-ict",
+    "al-ict",
     "Data representation",
     "What is the 8-bit binary representation of the denary number 13?",
     ["00001101", "00001110", "00001011", "00010011"],
@@ -121,9 +121,9 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
 
-  // ---- O/L ICT — Operating systems ---------------------------------------
+  // ---- A/L ICT — Operating systems ---------------------------------------
   q(
-    "ol-ict",
+    "al-ict",
     "Operating systems",
     "Which of the following is a core function of an operating system?",
     [
@@ -141,38 +141,10 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
 
-  // ---- O/L ICT — Spreadsheets ---------------------------------------------
+  // ---- A/L ICT — Database management ---------------------------------------
   q(
-    "ol-ict",
-    "Spreadsheets",
-    "Cell B2 contains the formula =SUM(B3:B5). If B3=10, B4=20 and B5=15, what does B2 display?",
-    ["30", "35", "45", "50"],
-    2,
-    "SUM adds every value in the given range: 10 + 20 + 15 = 45.",
-    {
-      0: "30 leaves out one of the three cells in the range.",
-      1: "35 leaves out B5 — the range B3:B5 includes all three cells, not just B3 and B4.",
-      3: "50 over-counts — re-add only the three cells actually in the range.",
-    },
-  ),
-  q(
-    "ol-ict",
-    "Spreadsheets",
-    "A formula in cell C1 is copied to cell C2. Which reference style keeps pointing at the exact same cell, e.g. $A$1?",
-    ["Relative reference", "Absolute reference", "Mixed reference", "Circular reference"],
-    1,
-    "The dollar signs in $A$1 lock both the column and row, so the reference does not change when the formula is copied elsewhere — that is an absolute reference.",
-    {
-      0: "A relative reference (e.g. A1) shifts automatically when copied — the opposite of what's described.",
-      2: "A mixed reference locks only the row OR only the column (e.g. A$1 or $A1), not both.",
-      3: "A circular reference is an error where a formula refers to its own cell, unrelated to this question.",
-    },
-  ),
-
-  // ---- O/L ICT — Databases -------------------------------------------------
-  q(
-    "ol-ict",
-    "Databases",
+    "al-ict",
+    "Database management",
     "What is a primary key in a database table?",
     [
       "Any field that contains numbers",
@@ -189,8 +161,8 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
-    "ol-ict",
-    "Databases",
+    "al-ict",
+    "Database management",
     "\"Distinguish between a primary key and a foreign key.\" Which answer earns the marks?",
     [
       "A primary key is a number and a foreign key is text.",
@@ -208,9 +180,9 @@ export const QUESTION_SEED: QuestionSeed[] = [
     { source: "command_word_drill", commandWord: "Distinguish" },
   ),
 
-  // ---- O/L ICT — Programming ------------------------------------------------
+  // ---- A/L ICT — Programming ------------------------------------------------
   q(
-    "ol-ict",
+    "al-ict",
     "Programming",
     "Which of these correctly describes a loop in programming?",
     [
@@ -228,7 +200,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
-    "ol-ict",
+    "al-ict",
     "Programming",
     "What is the key difference between a variable and a constant in a program?",
     [
@@ -246,9 +218,9 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
 
-  // ---- O/L ICT — Web development --------------------------------------------
+  // ---- A/L ICT — Web development --------------------------------------------
   q(
-    "ol-ict",
+    "al-ict",
     "Web development",
     "In HTML, what is the purpose of the <a> tag?",
     [
@@ -266,9 +238,9 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
 
-  // ---- O/L ICT — command word drill (general) --------------------------------
+  // ---- A/L ICT — command word drill (general) --------------------------------
   q(
-    "ol-ict",
+    "al-ict",
     "Operating systems",
     "\"Explain why a computer needs an operating system.\" Which answer would earn full marks?",
     [

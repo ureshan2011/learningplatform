@@ -10,7 +10,7 @@ import type { ContentItem, ContentKind, Subject } from "@/lib/types";
 export const metadata: Metadata = {
   title: "Free ICT notes & past papers",
   description:
-    "Free O/L and A/L ICT notes, past papers and marking schemes for Sri Lankan students, in Sinhala medium.",
+    "Free A/L ICT notes, past papers and marking schemes for Sri Lankan Grade 12 and 13 students, in Sinhala medium.",
 };
 
 // Cached for an hour: this is the SEO funnel, so it must render fast and

@@ -25,7 +25,7 @@ export function PseudocodeRunner() {
     <div>
       <p className="text-sm text-(--color-awaken-ink-soft)">
         SET/PRINT, IF-THEN-ELSE-ENDIF, FOR-TO-NEXT, WHILE-ENDWHILE — the pseudocode style
-        used in O/L and A/L ICT textbooks. INPUT asks for a value with a popup when the
+        used in A/L ICT textbooks. INPUT asks for a value with a popup when the
         program runs.
       </p>
 

@@ -94,7 +94,7 @@ export function buildCheckoutFields(params: {
     amount,
     first_name: firstName || "Student",
     last_name: rest.join(" ") || "-",
-    // PayHere requires a syntactically valid email. Most O/L students do not
+    // PayHere requires a syntactically valid email. Most A/L students do not
     // have one, so we synthesise a non-routable address from the phone number.
     email: params.email || `${params.phone.replace(/\D/g, "")}@students.invalid`,
     phone: params.phone,

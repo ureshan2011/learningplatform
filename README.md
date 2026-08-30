@@ -1,6 +1,6 @@
 # ICT Campus — online tuition platform by Dr. Yasas
 
-Interactive live-class platform for Sri Lankan **O/L and A/L ICT**, Sinhala medium.
+Interactive live-class platform for Sri Lankan **A/L ICT** (Grades 12 & 13), Sinhala medium.
 Zoom hosts the live room; everything around it — access control, payments, the
 timetable, notes and (from Phase 2) the in-class interactive layer — lives here.
 

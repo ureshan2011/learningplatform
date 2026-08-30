@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 /**
  * Creates a mock exam: picks `questionCount` active questions for the
  * subject (optionally narrowed to one topic or year) and freezes them as
- * the paper everyone sits. Real O/L and A/L MCQ papers use negative
+ * the paper everyone sits. Real A/L MCQ papers use negative
  * marking, so that field defaults to a fraction rather than off — leave it
  * at 0 for a paper that should not penalise a wrong guess.
  */
@@ -75,7 +75,7 @@ export function CreateMockExamForm({
       </Field>
 
       <Field label="Title">
-        <input name="title" required maxLength={140} placeholder="2023 O/L ICT — Paper I" className={inputClass} />
+        <input name="title" required maxLength={140} placeholder="2023 A/L ICT — Paper I" className={inputClass} />
       </Field>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -89,7 +89,7 @@ export function CreateMockExamForm({
 
       <Field
         label="Negative marking per wrong answer"
-        hint="Real O/L and A/L MCQ papers deduct marks for a wrong answer. Leave at 0 for none."
+        hint="Real A/L MCQ papers deduct marks for a wrong answer. Leave at 0 for none."
       >
         <input name="negativeMarking" type="number" min={0} max={1} step={0.01} defaultValue={0.33} className={inputClass} />
       </Field>

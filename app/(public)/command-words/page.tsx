@@ -7,7 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 export const metadata: Metadata = {
   title: "ICT exam command words explained",
   description:
-    "What 'state', 'explain', 'distinguish' and every other O/L and A/L ICT command word actually requires — free, in English and Sinhala.",
+    "What 'state', 'explain', 'distinguish' and every other A/L ICT command word actually requires — free, in English and Sinhala.",
 };
 
 // Fixed reference content — safe to cache like the free notes page.
@@ -16,7 +16,7 @@ export const revalidate = 86400;
 /**
  * The single highest-leverage, lowest-cost content page on the platform:
  * losing marks for misreading a command word is one of the most common and
- * most fixable mistakes in O/L and A/L ICT, and this list needs no teacher
+ * most fixable mistakes in A/L ICT, and this list needs no teacher
  * authoring or Firestore reads to exist.
  */
 export default function CommandWordsPage() {

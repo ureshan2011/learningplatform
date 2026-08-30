@@ -313,12 +313,23 @@ body {
   overflow-x: hidden;
 }
 
-.landing-ict a {
-  color: var(--lp-orange-500);
-  transition: color 120ms cubic-bezier(0.2, 0.8, 0.25, 1);
-}
-.landing-ict a:hover {
-  color: var(--lp-orange-600);
+/*
+ * Brand orange is only the *default* link colour, so it has to sit in a layer.
+ * Unlayered CSS beats every Tailwind utility no matter how specific the
+ * utility is, so the plain `.landing-ict a` this used to be repainted links
+ * that carry their own colour: the pill nav's links turned orange on a nearly
+ * black pill, and "Start free" turned orange on an orange button — invisible.
+ * In `@layer base` the utilities layer wins, and a link with no colour of its
+ * own still comes out orange.
+ */
+@layer base {
+  .landing-ict a {
+    color: var(--lp-orange-500);
+    transition: color 120ms cubic-bezier(0.2, 0.8, 0.25, 1);
+  }
+  .landing-ict a:hover {
+    color: var(--lp-orange-600);
+  }
 }
 .landing-ict ::selection {
   background: var(--lp-orange-200);

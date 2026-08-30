@@ -1,5 +1,5 @@
 /**
- * O/L and A/L ICT exam command words.
+ * A/L ICT exam command words.
  *
  * Static, not Firestore: this list is fixed reference content, not something
  * a teacher edits per class, so it ships in the repo and costs zero reads.
@@ -50,7 +50,7 @@ export const COMMAND_WORDS: CommandWord[] = [
     sinhala: "පැහැදිලි කරන්න",
     typicalMarks: "2–3 marks",
     meaning: "State a fact AND give the reason or mechanism behind it.",
-    tip: "The single most common mark loss in O/L ICT: students state the fact but never say *why*. Every \"explain\" answer needs a \"because\".",
+    tip: "The single most common mark loss in A/L ICT: students state the fact but never say *why*. Every \"explain\" answer needs a \"because\".",
     example: "\"Explain why RAM is volatile.\" → \"RAM loses its data when power is switched off, because it stores data using electrical charge that needs continuous power to be maintained.\"",
   },
   {

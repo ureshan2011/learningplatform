@@ -94,7 +94,7 @@ async function main() {
 
   // --- 5. Seed --------------------------------------------------------------
   if (serviceAccount) {
-    step(5, "Creating the O/L ICT and A/L ICT subjects");
+    step(5, "Creating the A/L ICT subject");
     execFileSync("node", ["scripts/admin.mjs", "seed"], { stdio: "inherit" });
   } else {
     step(5, c.yellow("Skipping subject seeding — no service account key given"));

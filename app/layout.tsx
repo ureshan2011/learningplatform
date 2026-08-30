@@ -13,11 +13,11 @@ const display = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "ICT Campus — O/L & A/L ICT Tuition, Sri Lanka",
+    default: "ICT Campus — A/L ICT Tuition, Sri Lanka",
     template: "%s | ICT Campus",
   },
   description:
-    "Live interactive O/L and A/L ICT tuition in Sinhala medium. Live classes, instant quizzes, past papers and a 24/7 doubt assistant.",
+    "Live interactive A/L ICT tuition (Grades 12 & 13) in Sinhala medium. Live classes, instant quizzes, past papers and a 24/7 doubt assistant.",
   manifest: "/manifest.webmanifest",
   applicationName: "ICT Campus",
   appleWebApp: { capable: true, title: "ICT Campus", statusBarStyle: "default" },

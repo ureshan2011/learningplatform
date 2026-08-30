@@ -1,6 +1,6 @@
 /**
  * A small interpreter for the structured-English pseudocode style used in
- * Sri Lankan O/L and A/L ICT textbooks: SET/PRINT/INPUT, IF-THEN-ELSE-ENDIF,
+ * Sri Lankan A/L ICT textbooks: SET/PRINT/INPUT, IF-THEN-ELSE-ENDIF,
  * FOR-TO-STEP-NEXT, WHILE-ENDWHILE.
  *
  * Pure and dependency-free on purpose — this whole file runs entirely in the

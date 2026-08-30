@@ -117,7 +117,7 @@ single most common thing to get stuck on.
 1. Open your site, sign in with your phone.
    **The first person to sign in becomes the teacher automatically** — that's
    you. Everyone after is a student.
-2. Go to `/teacher` and click **Create my two subjects** (O/L ICT and A/L ICT).
+2. Go to `/teacher` and click **Create my A/L ICT class**.
 
 Your site: **https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app**
 
@@ -189,4 +189,4 @@ Or paste `storage.rules` into the console under **Storage → Rules → Publish*
 | `SMS unable to be sent until this region enabled` | Sri Lanka not allowed in Authentication → Settings → SMS Region Policy |
 | Signed in but no teacher console | Someone else signed in first — use `make-teacher` |
 | Build fails in App Hosting | Check the build log; live branch must be `main` |
-| Site loads but no subjects | Click **Create my two subjects** on `/teacher` |
+| Site loads but no subjects | Click **Create my A/L ICT class** on `/teacher` |

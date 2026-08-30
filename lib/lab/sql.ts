@@ -1,7 +1,7 @@
 /**
  * A small SELECT-only SQL engine over two preloaded in-memory tables.
  *
- * Scoped deliberately to what O/L and A/L ICT database questions actually
+ * Scoped deliberately to what A/L ICT database questions actually
  * ask for — SELECT, WHERE, ORDER BY, LIMIT and the five common aggregates —
  * rather than a general SQL engine. Entirely client-side: there is no real
  * database to protect, so students can experiment freely and nothing here
@@ -19,12 +19,12 @@ export const SQL_TABLES: SqlTable[] = [
   {
     name: "students",
     rows: [
-      { id: 1, name: "Nimal Perera", grade: "O/L", subject: "ICT", marks: 78 },
-      { id: 2, name: "Kavindi Silva", grade: "O/L", subject: "ICT", marks: 92 },
-      { id: 3, name: "Ashan Fernando", grade: "A/L", subject: "ICT", marks: 65 },
-      { id: 4, name: "Dilani Jayawardena", grade: "A/L", subject: "ICT", marks: 88 },
-      { id: 5, name: "Ruwan Bandara", grade: "O/L", subject: "ICT", marks: 55 },
-      { id: 6, name: "Ishara Gunasekara", grade: "A/L", subject: "ICT", marks: 71 },
+      { id: 1, name: "Nimal Perera", grade: "Grade 12", subject: "ICT", marks: 78 },
+      { id: 2, name: "Kavindi Silva", grade: "Grade 12", subject: "ICT", marks: 92 },
+      { id: 3, name: "Ashan Fernando", grade: "Grade 13", subject: "ICT", marks: 65 },
+      { id: 4, name: "Dilani Jayawardena", grade: "Grade 13", subject: "ICT", marks: 88 },
+      { id: 5, name: "Ruwan Bandara", grade: "Grade 12", subject: "ICT", marks: 55 },
+      { id: 6, name: "Ishara Gunasekara", grade: "Grade 13", subject: "ICT", marks: 71 },
     ],
   },
   {
@@ -311,7 +311,7 @@ function runAggregate(fn: AggregateFn, colRaw: string, rows: Row[]): SqlResult {
 
 export const SQL_EXAMPLES: { title: string; query: string }[] = [
   { title: "All students", query: "SELECT * FROM students;" },
-  { title: "Filter with WHERE", query: "SELECT name, marks FROM students WHERE grade = 'A/L';" },
+  { title: "Filter with WHERE", query: "SELECT name, marks FROM students WHERE grade = 'Grade 13';" },
   { title: "Sort and limit", query: "SELECT name, marks FROM students ORDER BY marks DESC LIMIT 3;" },
   { title: "Aggregate", query: "SELECT AVG(marks) FROM students WHERE subject = 'ICT';" },
   { title: "Second table", query: "SELECT * FROM subjects WHERE teacher = 'Mr. Perera';" },

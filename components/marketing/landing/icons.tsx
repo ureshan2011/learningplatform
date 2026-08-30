@@ -138,6 +138,110 @@ export function DownloadIcon({ className }: IconProps) {
   );
 }
 
+export function NoteIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <path d="M6 3h8l4 4v14H6z" />
+      <path d="M14 3v4h4" />
+      <path d="M9 12h6M9 16h4" />
+    </svg>
+  );
+}
+
+export function QuestionIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.5 9.5a2.5 2.5 0 1 1 3.2 2.4c-.6.2-1 .8-1 1.5v.3" />
+      <path d="M11.7 17h.1" />
+    </svg>
+  );
+}
+
+export function PlayCircleIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M10.2 8.8l5.2 3.2-5.2 3.2z" />
+    </svg>
+  );
+}
+
+export function FlaskIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <path d="M10 3h4M10.5 3v6L5 18.2A2 2 0 0 0 6.7 21h10.6a2 2 0 0 0 1.7-2.8L13.5 9V3" />
+      <path d="M8 15h8" />
+    </svg>
+  );
+}
+
+export function ChatIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <path d="M20 15a2 2 0 0 1-2 2H8l-4 3V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z" />
+      <path d="M8.5 10h7M8.5 13h4" />
+    </svg>
+  );
+}
+
+export function TranslateIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <path d="M3 6h8M7 4.5V6c0 3.6-1.7 6.6-4 8.2" />
+      <path d="M5 10.5c1.2 2.3 3 3.9 5.2 4.6" />
+      <path d="M12.5 21l4-11 4 11M14 17.5h5" />
+    </svg>
+  );
+}
+
+export function MapIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <path d="M9 4.5L3.8 6.6v13L9 17.4l6 2.1 5.2-2.1v-13L15 6.6z" />
+      <path d="M9 4.5v12.9M15 6.6v12.9" />
+    </svg>
+  );
+}
+
+export function CertificateIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <rect x="3" y="4" width="18" height="12" rx="2" />
+      <path d="M7 8.5h6M7 11.5h4" />
+      <path d="M16.5 16v5l2-1.4 2 1.4v-5" />
+    </svg>
+  );
+}
+
+export function ClockIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7.2V12l3.2 2" />
+    </svg>
+  );
+}
+
+export function TargetIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <circle cx="12" cy="12" r="8.5" />
+      <circle cx="12" cy="12" r="4.5" />
+      <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function LayersIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <path d="M12 3l9 4.5-9 4.5-9-4.5z" />
+      <path d="M3.5 12L12 16.2 20.5 12M3.5 16.5L12 20.7l8.5-4.2" />
+    </svg>
+  );
+}
+
 export function BellIcon({ className }: IconProps) {
   return (
     <svg {...base} className={className} aria-hidden>

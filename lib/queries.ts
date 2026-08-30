@@ -42,18 +42,34 @@ import type {
 /** How many documents to pull before narrowing in memory. */
 const SCAN_WINDOW = 200;
 
+/**
+ * The subjects this platform teaches — A/L only.
+ *
+ * The grade filter is applied here rather than in every page because it is a
+ * product decision, not a display one: ICT Campus teaches A/L ICT (Grades 12
+ * and 13) and nothing else. Earlier builds seeded an O/L subject too, so a
+ * live project can still hold that document; filtering here keeps it out of
+ * the landing page, the syllabus, the dashboard and the teacher console
+ * without needing anyone to delete data by hand.
+ *
+ * To teach O/L again, drop the filter — the data model has always supported
+ * both grades.
+ */
 export async function listSubjects(): Promise<Subject[]> {
   const snap = await col
     .subjects()
     .where("tenantId", "==", publicEnv.tenantId)
     .where("active", "==", true)
     .get();
-  return snap.docs.map((d) => d.data() as Subject);
+  return snap.docs.map((d) => d.data() as Subject).filter((s) => s.grade === "AL");
 }
 
+/** Same A/L-only rule as `listSubjects` — an O/L id 404s rather than half-loading a page. */
 export async function getSubject(subjectId: string): Promise<Subject | null> {
   const snap = await col.subjects().doc(subjectId).get();
-  return snap.exists ? (snap.data() as Subject) : null;
+  if (!snap.exists) return null;
+  const subject = snap.data() as Subject;
+  return subject.grade === "AL" ? subject : null;
 }
 
 export async function listEnrollments(uid: string): Promise<Enrollment[]> {

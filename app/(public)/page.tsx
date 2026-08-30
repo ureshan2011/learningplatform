@@ -3,7 +3,14 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono, Manrope } from "next/font/google";
 import { getSessionUser } from "@/lib/auth/session";
-import { listSubjects, listUpcomingSessions } from "@/lib/queries";
+import { listSubjectSessions, listSubjects, listUnits } from "@/lib/queries";
+import { AL_ICT_UNITS } from "@/lib/content/al-ict-units";
+import { indexClassesBySyllabus } from "@/lib/content/topic-classes";
+import { syllabusTotals, toLandingUnits } from "@/lib/content/landing-syllabus";
+import {
+  SyllabusShowcase,
+  type SyllabusClassDates,
+} from "@/components/marketing/landing/SyllabusShowcase";
 import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { EmailCaptureForm } from "@/components/marketing/EmailCaptureForm";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
@@ -24,7 +31,7 @@ import {
   SearchIcon,
   VideoIcon,
 } from "@/components/marketing/landing/icons";
-import type { ClassSession, Subject } from "@/lib/types";
+import type { ClassSession, Subject, Unit } from "@/lib/types";
 
 type LandingIcon = (props: { className?: string }) => React.JSX.Element;
 
@@ -48,6 +55,14 @@ export const metadata: Metadata = {
 
 const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";
 const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
+
+const NAV_LINKS = [
+  { href: "#teach", label: "Classes" },
+  { href: "#syllabus", label: "Syllabus" },
+  { href: "#resources", label: "Free notes" },
+  { href: "#how", label: "How it works" },
+  { href: "#faq", label: "FAQ" },
+] as const;
 
 const STATS: Array<{ icon: LandingIcon; value: string; label: string }> = [
   { icon: PeopleIcon, value: "70,000+", label: "students · Udemy & open.uom.lk" },
@@ -90,8 +105,8 @@ const FAQS = [
     a: "Yes. Every subject includes a free 7-day trial with no card required, so you can sit in on a real class before deciding.",
   },
   {
-    q: "Is this only for O/L, or A/L too?",
-    a: "Both. Every subject is clearly tagged O/L or A/L so you always know which syllabus you're getting.",
+    q: "Which syllabus is this for?",
+    a: "A/L ICT only — Grades 12 and 13, Sinhala medium, following the NIE syllabus unit by unit. There is no O/L class here, so nothing you study is off-syllabus.",
   },
   {
     q: "What if I miss a live class?",
@@ -107,20 +122,41 @@ const FAQS = [
 // so it renders on the server with no auth requirement.
 export const revalidate = 300;
 
+/** The subject this platform teaches. Its syllabus is the landing page's centrepiece. */
+const SUBJECT_ID = "al-ict";
+
 export default async function LandingPage() {
-  const [user, subjects] = await Promise.all([
+  const [user, subjects, seededUnits, sessions] = await Promise.all([
     getSessionUser().catch(() => null),
     listSubjects().catch(() => [] as Subject[]),
+    listUnits(SUBJECT_ID).catch(() => [] as Unit[]),
+    // Already sorted soonest-first with cancelled classes dropped.
+    listSubjectSessions(SUBJECT_ID).catch(() => [] as ClassSession[]),
   ]);
+
+  // The syllabus section is the page's main selling argument, so it must never
+  // render empty — a project whose units have not been seeded yet still shows
+  // the real NIE breakdown from the same file the seed route writes.
+  const syllabusSource = seededUnits.length > 0 ? seededUnits : AL_ICT_UNITS;
+  const syllabusUnits = toLandingUnits(syllabusSource);
+  const totals = syllabusTotals(syllabusUnits);
+
+  // Pinning the timetable onto the syllabus is what makes "join the class for
+  // this topic" a real offer rather than a slogan: a unit or competency level
+  // with a class scheduled says so, and says when.
+  const classIndex = indexClassesBySyllabus(syllabusSource, sessions);
+  const classDates: SyllabusClassDates = {
+    byUnit: Object.fromEntries(
+      Object.entries(classIndex.byUnit).map(([unitId, list]) => [unitId, list[0].startsAtShort]),
+    ),
+    byLesson: Object.fromEntries(
+      Object.entries(classIndex.byLesson).map(([lessonId, list]) => [lessonId, list[0].startsAtShort]),
+    ),
+  };
 
   // Real, live-data proof the platform is actually running classes, not just
   // a brochure — shown only when a session genuinely exists.
-  const [nextSession] = await listUpcomingSessions(
-    subjects.map((s) => s.id),
-    5,
-  )
-    .then((sessions) => sessions.filter((s) => s.state !== "cancelled"))
-    .catch(() => [] as ClassSession[]);
+  const nextSession = sessions[0];
   const nextSessionSubject = nextSession ? subjects.find((s) => s.id === nextSession.subjectId) : undefined;
 
   const startHref = user ? "/dashboard" : "/signin";
@@ -139,30 +175,27 @@ export default async function LandingPage() {
           >
             <a
               href="#top"
-              className="font-[family-name:var(--lp-font-display)] text-lg font-extrabold tracking-[-0.02em] whitespace-nowrap text-(--lp-paper-50)"
+              className="font-[family-name:var(--lp-font-display)] text-lg font-extrabold tracking-[-0.02em] whitespace-nowrap text-white"
             >
               ICT<span className="text-(--lp-orange-500)">CAMPUS</span>
             </a>
             <nav className="hidden items-center gap-0.5 sm:flex">
-              <a href="#teach" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-paper-50) hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)">
-                Classes
-              </a>
-              <a href="#resources" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-paper-50) hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)">
-                Free notes
-              </a>
-              <a href="#how" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-paper-50) hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)">
-                How it works
-              </a>
-              <a href="#faq" className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-(--lp-paper-50) hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)">
-                FAQ
-              </a>
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-white hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)"
+                >
+                  {link.label}
+                </a>
+              ))}
             </nav>
             <a
               href="#cta"
-              className="flex items-center gap-2 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-4 text-xs font-semibold whitespace-nowrap text-(--lp-paper-0) shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600)"
+              className="flex items-center gap-2 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-4 text-xs font-semibold whitespace-nowrap text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
             >
               Start free
-              <span className="grid size-6 place-items-center overflow-hidden rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
+              <span className="grid size-6 place-items-center overflow-hidden rounded-full bg-white text-(--lp-orange-500)">
                 <ArrowRightIcon className="size-3.5" />
               </span>
             </a>
@@ -198,10 +231,10 @@ export default async function LandingPage() {
               <div className="flex flex-wrap items-center gap-[clamp(12px,1.6vw,18px)]">
                 <a
                   href="#cta"
-                  className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-6 text-base font-semibold text-(--lp-paper-0) shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600)"
+                  className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
                 >
                   Start free
-                  <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-paper-0) text-(--lp-orange-500)">
+                  <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-white text-(--lp-orange-500)">
                     <ArrowRightIcon className="size-4" />
                   </span>
                 </a>
@@ -340,6 +373,15 @@ export default async function LandingPage() {
           </div>
         </section>
 
+        {/* The syllabus, topic by topic */}
+        <SyllabusShowcase
+          units={syllabusUnits}
+          totals={totals}
+          classDates={classDates}
+          subjectId={SUBJECT_ID}
+          startHref={startHref}
+        />
+
         {/* Live classes — real subjects & pricing */}
         <section id="classes" className="w-full py-[clamp(32px,6vw,72px)]">
           <div className={CONTAINER}>
@@ -363,7 +405,7 @@ export default async function LandingPage() {
                     <div className="flex items-baseline justify-between gap-3">
                       <h3 className="text-lg font-bold text-(--lp-ink-900)">{subject.name}</h3>
                       <span className="shrink-0 rounded-full bg-(--lp-orange-50) px-2.5 py-0.5 text-xs font-semibold text-(--lp-orange-500)">
-                        {subject.grade === "AL" ? "A/L" : "O/L"}
+                        A/L
                       </span>
                     </div>
                     <p className="mt-2 text-sm text-(--lp-ink-400)">{subject.description}</p>
@@ -491,10 +533,10 @@ export default async function LandingPage() {
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href={startHref}
-                  className="flex h-12 items-center gap-3 rounded-full bg-(--lp-ink-900) py-2 pr-2 pl-6 text-base font-semibold text-(--lp-paper-50) hover:bg-(--lp-ink-700)"
+                  className="flex h-12 items-center gap-3 rounded-full bg-(--lp-ink-900) py-2 pr-2 pl-6 text-base font-semibold text-white hover:bg-(--lp-ink-700) hover:text-white"
                 >
                   {startLabel}
-                  <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                  <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-white">
                     <ArrowRightIcon className="size-4" />
                   </span>
                 </Link>
@@ -513,7 +555,7 @@ export default async function LandingPage() {
                 <span className="text-(--lp-orange-500)">.</span>
               </div>
               <p className="mt-3.5 max-w-[240px] text-xs text-(--lp-ink-300)">
-                O/L and A/L ICT in Sinhala medium, taught by Dr. Yasas Sri Wickramasinghe.
+                A/L ICT (Grades 12 &amp; 13) in Sinhala medium, taught by Dr. Yasas Sri Wickramasinghe.
               </p>
             </div>
             <div>
@@ -522,7 +564,7 @@ export default async function LandingPage() {
                 <a href="#resources" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Free notes</a>
                 <a href="#resources" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Past papers</a>
                 <a href="#teach" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Live classes</a>
-                <a href="#faq" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Syllabus</a>
+                <a href="#syllabus" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Syllabus</a>
               </div>
             </div>
             <div>

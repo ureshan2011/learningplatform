@@ -12,7 +12,7 @@ The repo `ureshan2011/learningplatform` is **empty** (no commits). This is a gre
 - **Monthly subscription per subject**, Rs ~1,000–2,500/month.
 - **Sinhala medium teaching, English UI.**
 - Start on free tiers (Firebase, free AI), upgrade as revenue grows.
-- Subject: O/L ICT and A/L ICT.
+- Subject: A/L ICT (Grades 12 and 13).
 
 ### The one hard truth to design around
 
@@ -161,7 +161,7 @@ XP, levels, streaks, badges, school/district leaderboards, weekly Hall of Fame s
 
 ```
 users/{uid}                  role, name, phone, medium, school, district, devices[], parentUid
-subjects/{subjectId}         O/L ICT | A/L ICT, medium, priceLKR, syllabus
+subjects/{subjectId}         A/L ICT, medium, priceLKR, syllabus
 enrollments/{uid}_{subject}  status, currentPeriodEnd, source
 sessions/{sessionId}         subjectId, startsAt, zoomMeetingId, hlsUrl, replayUrl, state
 attendance/{sessionId}/{uid} joinedAt, leftAt, minutes, pingsAnswered, score
