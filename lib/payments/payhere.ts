@@ -1,7 +1,8 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { publicEnv, requireServerEnv } from "@/lib/env";
+import { publicEnv } from "@/lib/env";
+import type { PayHereConfig } from "@/lib/payments/records";
 
 /**
  * PayHere integration — one-time monthly checkout.
@@ -21,8 +22,8 @@ export const PAYHERE_CHECKOUT_URL = {
   live: "https://www.payhere.lk/pay/checkout",
 } as const;
 
-export function checkoutUrl(): string {
-  return PAYHERE_CHECKOUT_URL[publicEnv.payhere.mode];
+export function checkoutUrl(mode: "sandbox" | "live"): string {
+  return PAYHERE_CHECKOUT_URL[mode];
 }
 
 function md5Upper(value: string): string {
@@ -62,6 +63,7 @@ export interface CheckoutFields {
  * only the resulting `hash` does, which is why this must stay on the server.
  */
 export function buildCheckoutFields(params: {
+  config: PayHereConfig;
   orderId: string;
   amountLKR: number;
   itemName: string;
@@ -72,8 +74,7 @@ export function buildCheckoutFields(params: {
   uid: string;
   subjectId: string;
 }): CheckoutFields {
-  const merchantId = requireServerEnv("NEXT_PUBLIC_PAYHERE_MERCHANT_ID");
-  const merchantSecret = requireServerEnv("PAYHERE_MERCHANT_SECRET");
+  const { merchantId, merchantSecret } = params.config;
   const amount = formatAmount(params.amountLKR);
   const base = publicEnv.appUrl;
 
@@ -137,10 +138,9 @@ export interface NotifyPayload {
  * anyone who can POST to the notify URL could grant themselves a free year.
  * Never trust `status_code` before this returns true.
  */
-export function verifyNotification(payload: NotifyPayload): boolean {
-  const merchantId = requireServerEnv("NEXT_PUBLIC_PAYHERE_MERCHANT_ID");
-  const merchantSecret = requireServerEnv("PAYHERE_MERCHANT_SECRET");
-
+export function verifyNotification(payload: NotifyPayload, config: PayHereConfig): boolean {
+  const { merchantId, merchantSecret } = config;
+  if (!merchantId || !merchantSecret) return false;
   if (payload.merchant_id !== merchantId) return false;
 
   const expected = md5Upper(
@@ -153,6 +153,32 @@ export function verifyNotification(payload: NotifyPayload): boolean {
   );
 
   return timingSafeEqualHex(expected, (payload.md5sig ?? "").toUpperCase());
+}
+
+/**
+ * The signature PayHere would put on a notification.
+ *
+ * Exported for the sandbox simulator, which builds a notification locally to
+ * prove the handler, the ledger and the unlock all work before PayHere itself
+ * is reachable. It signs with the same secret and goes through the same
+ * verification, so a simulated payment exercises the real path rather than a
+ * bypass of it.
+ */
+export function signNotification(
+  fields: Pick<
+    NotifyPayload,
+    "merchant_id" | "order_id" | "payhere_amount" | "payhere_currency" | "status_code"
+  >,
+  config: PayHereConfig,
+): string {
+  return md5Upper(
+    fields.merchant_id +
+      fields.order_id +
+      fields.payhere_amount +
+      fields.payhere_currency +
+      fields.status_code +
+      md5Upper(config.merchantSecret),
+  );
 }
 
 function timingSafeEqualHex(a: string, b: string): boolean {

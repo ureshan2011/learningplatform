@@ -4,12 +4,12 @@ import { adminDb, col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
-import { payhereConfigured } from "@/lib/features";
 import { formatLKR, formatSessionTime } from "@/lib/format";
 import { getLedger, type Ledger } from "@/lib/payments/ledger";
 import {
   bankDetailsReady,
   emptyPaymentSettings,
+  getPayHereConfig,
   getPaymentSettings,
   listPaymentEvents,
 } from "@/lib/payments/records";
@@ -17,6 +17,8 @@ import { PaymentLedger } from "@/components/teacher/PaymentLedger";
 import { ManualPaymentForm } from "@/components/teacher/ManualPaymentForm";
 import { PaymentSettingsForm } from "@/components/teacher/PaymentSettingsForm";
 import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
+import { SandboxTestPanel } from "@/components/teacher/SandboxTestPanel";
+import { ActivityBell } from "@/components/teacher/ActivityBell";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import { StatTile } from "@/components/ui/StatTile";
@@ -70,10 +72,13 @@ export default async function TeacherPaymentsPage() {
   ]);
 
   const { totals } = ledger;
-  const cardsOn = payhereConfigured();
-  const sandbox = publicEnv.payhere.mode === "sandbox";
+  const payhere = await getPayHereConfig();
+  const cardsOn = payhere.configured;
+  const sandbox = payhere.mode === "sandbox";
   const notifyUrl = `${publicEnv.appUrl}/api/payments/payhere/notify`;
   const bankReady = bankDetailsReady(settings);
+  // The secret never leaves the server — the form only learns that one exists.
+  const { payhereMerchantSecret, ...settingsForForm } = settings;
 
   return (
     <>
@@ -94,13 +99,16 @@ export default async function TeacherPaymentsPage() {
               Every rupee in, who paid it, and the file your accountant needs.
             </p>
           </div>
-          <a
-            href="/api/teacher/payments/export"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2.5 text-sm font-semibold text-white"
-          >
-            <Icon name="download" className="!text-base" />
-            Download CSV
-          </a>
+          <div className="flex flex-wrap items-center gap-2">
+            <ActivityBell />
+            <a
+              href="/api/teacher/payments/export"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2.5 text-sm font-semibold text-white"
+            >
+              <Icon name="download" className="!text-base" />
+              Download CSV
+            </a>
+          </div>
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -222,8 +230,8 @@ export default async function TeacherPaymentsPage() {
               label="Merchant credentials"
               value={
                 cardsOn
-                  ? `Merchant ${publicEnv.payhere.merchantId}`
-                  : "Not set — students can still pay by bank slip"
+                  ? `Merchant ${payhere.merchantId} · from ${payhere.source === "env" ? "this deployment's environment" : "the form below"}`
+                  : "Not set — enter them at the bottom of this page. Students can still pay by bank slip."
               }
             />
             <CheckRow
@@ -283,30 +291,57 @@ export default async function TeacherPaymentsPage() {
             </ul>
           ) : null}
 
+          {sandbox && cardsOn ? (
+            <div className="mt-4 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-5">
+              <p className="flex items-center gap-2 font-semibold text-(--color-awaken-accent)">
+                <Icon name="rule" className="!text-lg" />
+                Rehearse a payment without PayHere
+              </p>
+              <p className="mt-1 mb-4 text-sm text-(--color-awaken-ink-soft)">
+                Runs one notification through the real handler — signature check, ledger, receipt,
+                unlock and notification — so you can prove this side works before PayHere can reach
+                you. Sandbox only; it refuses in live mode.
+              </p>
+              <SandboxTestPanel subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
+            </div>
+          ) : null}
+
           <details className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 text-sm">
-            <summary className="cursor-pointer font-semibold">How to test a card payment safely</summary>
+            <summary className="cursor-pointer font-semibold">
+              Testing a real sandbox card, step by step
+            </summary>
             <ol className="mt-3 list-decimal space-y-2 pl-5 text-(--color-awaken-ink-soft)">
               <li>
-                Keep the mode on <strong>sandbox</strong>. Sandbox has its own merchant id and
-                secret from sandbox.payhere.lk — the live ones will not work there.
+                Create a <strong>sandbox account at sandbox.payhere.lk</strong>. Its merchant id and
+                secret are different from your live ones — live credentials never work in sandbox.
               </li>
               <li>
-                Sign in as a student account (a second phone number), open the dashboard and press
-                <strong> Pay monthly</strong>.
+                In the PayHere portal, add this site&apos;s domain under
+                <strong> Settings → Domains &amp; Credentials</strong> and wait for it to be
+                approved. Until then checkout is refused before a card is ever entered.
               </li>
               <li>
-                Pay with PayHere&apos;s published sandbox test card. Real cards are never charged in
-                sandbox mode.
+                Enter the merchant id and secret at the bottom of this page, mode
+                <strong> sandbox</strong>, and save.
               </li>
               <li>
-                Come back here. The payment should appear as <strong>Paid</strong> with a receipt
-                number, and a notification with outcome <strong>accepted</strong> should be listed
-                above.
+                Press <strong>Run a sandbox test payment</strong> above. If that works, everything on
+                our side is correct and anything still failing is at PayHere&apos;s end.
               </li>
               <li>
-                If the payment stays <strong>Pending</strong> and no notification arrives, the
-                notify URL above is not reachable from the internet — that is the one thing that
-                cannot be tested from a laptop.
+                Now the real thing: sign in as a student on another phone number, in a different
+                browser, and press <strong>Pay monthly</strong>. Pay with PayHere&apos;s published
+                sandbox test card — no real card is ever charged in sandbox.
+              </li>
+              <li>
+                Watch this page. The payment appears as <strong>Paid</strong> with a receipt number,
+                the notification is listed as <strong>accepted</strong>, and the Activity bell
+                counts it within twenty seconds.
+              </li>
+              <li>
+                Stuck on <strong>Pending</strong> with no notification listed? PayHere could not
+                reach the notify URL above. Check the URL is your real https domain and that the
+                domain is approved — nothing else can cause it.
               </li>
             </ol>
           </details>
@@ -322,7 +357,11 @@ export default async function TeacherPaymentsPage() {
             Shown to students paying by deposit, and printed on every receipt.
           </p>
           <div className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
-            <PaymentSettingsForm settings={settings} />
+            <PaymentSettingsForm
+              settings={settingsForForm}
+              hasStoredSecret={Boolean(payhereMerchantSecret)}
+              secretFromEnv={payhere.source === "env"}
+            />
           </div>
         </section>
       </main>

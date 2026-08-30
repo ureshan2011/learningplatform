@@ -4,7 +4,7 @@ import { col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/payhere";
 import { addMonths } from "@/lib/payments/entitlements";
-import { payhereConfigured } from "@/lib/features";
+import { getPayHereConfig } from "@/lib/payments/records";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -20,7 +20,8 @@ const bodySchema = z.object({ subjectId: z.string().min(1).max(64) });
  */
 export async function POST(req: NextRequest) {
   // Card payments not connected yet — students can still send a bank slip.
-  if (!payhereConfigured()) {
+  const config = await getPayHereConfig();
+  if (!config.configured) {
     return NextResponse.json(
       { error: "not_configured", feature: "payhere" },
       { status: 503 },
@@ -68,6 +69,7 @@ export async function POST(req: NextRequest) {
   await col.payments().doc(orderId).set(payment);
 
   const fields = buildCheckoutFields({
+    config,
     orderId,
     amountLKR: subject.priceLKR,
     itemName: `${subject.name} — 1 month`,
@@ -77,5 +79,5 @@ export async function POST(req: NextRequest) {
     subjectId,
   });
 
-  return NextResponse.json({ action: checkoutUrl(), fields });
+  return NextResponse.json({ action: checkoutUrl(config.mode), fields, mode: config.mode });
 }

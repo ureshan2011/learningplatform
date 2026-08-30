@@ -37,7 +37,14 @@ export function zoomConfigured(): boolean {
   );
 }
 
-/** Card payments. Bank-slip upload works without this. */
+/**
+ * Card payments, configured through the environment.
+ *
+ * Not the whole answer: credentials can also be entered in the teacher console
+ * (see `getPayHereConfig`), which is the only route available to an owner with
+ * no command line. Anything deciding whether to *offer* card payment must use
+ * that async check instead — this one stays for the sync feature listing.
+ */
 export function payhereConfigured(): boolean {
   return (
     Boolean(process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID) &&

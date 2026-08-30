@@ -116,6 +116,8 @@ export const col = {
   settings: () => adminDb().collection("settings"),
   /** Monotonic counters — currently just the receipt series. */
   counters: () => adminDb().collection("counters"),
+  /** The teacher's money notifications, one small document per event. */
+  teacherActivity: () => adminDb().collection("teacherActivity"),
 } as const;
 
 export function enrollmentId(uid: string, subjectId: string): string {

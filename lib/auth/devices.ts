@@ -18,6 +18,13 @@ import { MAX_DEVICES_PER_USER, type BoundDevice, type User } from "@/lib/types";
  * "my phone" from "my friend's phone" while collecting nothing sensitive.
  */
 
+/**
+ * How many device bindings a teacher or admin keeps before the oldest is
+ * dropped. Not a limit they can hit — it only stops the list growing forever
+ * as they test from new browsers.
+ */
+const STAFF_DEVICE_SOFT_CAP = 10;
+
 export interface DeviceSignals {
   /** Random id the client generates once and persists in localStorage. */
   clientId: string;
@@ -104,8 +111,31 @@ export async function registerDevice(
       return { ok: true as const, deviceHash, isNew: false };
     }
 
-    if (devices.length >= MAX_DEVICES_PER_USER) {
+    // Staff are never capped. The cap exists to stop one paid account being
+    // shared around a study group; the teacher owns the platform, has nothing
+    // to gain by sharing with themselves, and has to be able to open the
+    // console on a laptop, a phone and a second browser at once to test what
+    // students see. Locking the owner out of their own site protects nobody —
+    // and there is no one above them to ask for a device reset.
+    const isStaff = user.role === "teacher" || user.role === "admin";
+
+    if (!isStaff && devices.length >= MAX_DEVICES_PER_USER) {
       return { ok: false as const, reason: "device_limit" as const, devices };
+    }
+
+    // A teacher testing across many browsers would otherwise grow this array
+    // without limit, so their oldest binding is dropped rather than kept.
+    if (isStaff && devices.length >= STAFF_DEVICE_SOFT_CAP) {
+      const trimmed = [...devices]
+        .sort((a, b) => b.lastSeenAt - a.lastSeenAt)
+        .slice(0, STAFF_DEVICE_SOFT_CAP - 1);
+      tx.update(ref, {
+        devices: [
+          ...trimmed,
+          { deviceHash, label: describeDevice(signals), firstSeenAt: now, lastSeenAt: now },
+        ],
+      });
+      return { ok: true as const, deviceHash, isNew: true };
     }
 
     const device: BoundDevice = {

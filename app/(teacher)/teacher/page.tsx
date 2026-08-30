@@ -10,6 +10,8 @@ import {
   type UnitOption,
 } from "@/components/teacher/ScheduleSessionForm";
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
+import { DeviceResetPanel } from "@/components/teacher/DeviceResetPanel";
+import { ActivityBell } from "@/components/teacher/ActivityBell";
 import { SeedQuestionsButton } from "@/components/teacher/SeedQuestionsButton";
 import { SeedLessonsButton } from "@/components/teacher/SeedLessonsButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
@@ -76,7 +78,8 @@ export default async function TeacherConsolePage() {
             <h1 className="text-2xl font-bold tracking-tight">Teacher console</h1>
             <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Schedule classes and approve payments.</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <ActivityBell />
             <Link
               href="/teacher/payments"
               className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
@@ -181,6 +184,20 @@ export default async function TeacherConsolePage() {
               ))}
             </ul>
           )}
+        </section>
+
+        <section className="mt-10">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="smartphone" className="text-(--color-awaken-accent)" />
+            Device reset
+          </h2>
+          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+            A student who changed phone sees &quot;maximum number of devices&quot; and is told to ask
+            you. This is where you free a slot. Your own account is never capped.
+          </p>
+          <div className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
+            <DeviceResetPanel />
+          </div>
         </section>
 
         <section className="mt-10 pb-4">
