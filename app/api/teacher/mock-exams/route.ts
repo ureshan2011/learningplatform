@@ -9,7 +9,7 @@ const bodySchema = z.object({
   subjectId: z.string().min(1).max(64),
   title: z.string().trim().min(1).max(140),
   durationMinutes: z.number().int().min(5).max(240),
-  // Fraction deducted per wrong answer — real O/L and A/L MCQ papers use
+  // Fraction deducted per wrong answer — real A/L MCQ papers use
   // negative marking, so a mock that doesn't only trains the easier game.
   negativeMarking: z.number().min(0).max(1).default(0),
   questionCount: z.number().int().min(1).max(200),

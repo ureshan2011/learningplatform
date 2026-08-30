@@ -1,7 +1,7 @@
 {
   "name": "learningplatform",
   "version": "1.0.0",
-  "description": "Interactive online tuition platform for Sri Lankan O/L and A/L ICT",
+  "description": "Interactive online tuition platform for Sri Lankan A/L ICT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,6 +1,6 @@
 # ICT Campus — working notes for Claude
 
-Online tuition platform for Sri Lankan O/L and A/L ICT, Sinhala medium.
+Online tuition platform for Sri Lankan A/L ICT (Grades 12 & 13), Sinhala medium.
 The owner is a teacher, not a developer.
 
 ## How to respond in this project
@@ -80,7 +80,7 @@ multiplies the SMS bill.
 
 The first person to sign in on an empty project becomes the teacher
 automatically (`lib/auth/provision.ts`). The teacher console offers a "Create my
-two subjects" button while none exist. Both exist so the platform can be set up
+A/L ICT class" button while none exist. Both exist so the platform can be set up
 without a command line.
 
 ## Docs

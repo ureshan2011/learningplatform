@@ -7,11 +7,15 @@ import type { Subject } from "@/lib/types";
 export const runtime = "nodejs";
 
 /**
- * Creates the two default ICT subjects.
+ * Creates the default A/L ICT subject.
  *
  * The same thing `scripts/admin.mjs seed` does, exposed to the teacher console
  * so a brand-new platform can be set up entirely from the browser — no Node, no
  * service account key, no command line.
+ *
+ * A/L ICT is the only subject this platform teaches. `Grade` still carries
+ * "OL" because the data model is shared with a future O/L class; nothing seeds
+ * or advertises one today.
  *
  * Merges rather than overwrites, so re-running never clobbers a price or
  * description the teacher has since edited.
@@ -26,30 +30,6 @@ export async function POST() {
   }
 
   const subjects: Subject[] = [
-    {
-      id: "ol-ict",
-      tenantId,
-      name: "O/L ICT",
-      grade: "OL",
-      medium: "sinhala",
-      priceLKR: 1500,
-      description: "Grade 10-11 ICT, full syllabus with weekly past-paper practice.",
-      syllabusTopics: [
-        "Basic concepts of ICT",
-        "Computer systems",
-        "Data representation",
-        "Operating systems",
-        "Word processing",
-        "Spreadsheets",
-        "Presentations",
-        "Databases",
-        "Programming",
-        "Web development",
-        "ICT in business",
-        "New trends",
-      ],
-      active: true,
-    },
     {
       id: "al-ict",
       tenantId,

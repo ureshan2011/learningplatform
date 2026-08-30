@@ -1,7 +1,7 @@
 /**
  * A tiny formula engine for the Spreadsheet sandbox — cell references,
  * ranges, SUM/AVERAGE/MIN/MAX/COUNT/IF and basic arithmetic. Entirely
- * client-side and dependency-free: this is a teaching tool for the O/L ICT
+ * client-side and dependency-free: this is a teaching tool for the A/L ICT
  * spreadsheets unit, not a spreadsheet replacement, so it only needs to cover
  * what that unit actually tests.
  */

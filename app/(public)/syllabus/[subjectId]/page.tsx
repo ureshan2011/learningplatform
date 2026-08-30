@@ -72,7 +72,7 @@ export default async function SubjectSyllabusPage({
           <SyllabusHero
             subjectId={subjectId}
             subjectName={subject.name}
-            gradeLabel={`${subject.grade === "AL" ? "A/L" : "O/L"} · ${subject.medium[0].toUpperCase()}${subject.medium.slice(1)} medium`}
+            gradeLabel={`A/L · ${subject.medium[0].toUpperCase()}${subject.medium.slice(1)} medium`}
             unitCount={units.length}
             lessonCount={totalLessons}
             periodCount={totalPeriods}

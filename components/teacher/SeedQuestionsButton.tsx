@@ -30,7 +30,7 @@ export function SeedQuestionsButton() {
     <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
       <p className="font-semibold">Practice question bank</p>
       <p className="mt-1.5 text-sm text-(--color-awaken-ink-soft)">
-        Loads a starter set of O/L and A/L ICT practice questions — real content with
+        Loads a starter set of A/L ICT practice questions — real content with
         exam-style misconception notes, ready for students to start Practice with today. Safe
         to run again after editing <code className="text-xs">lib/content/question-seed.ts</code>.
       </p>

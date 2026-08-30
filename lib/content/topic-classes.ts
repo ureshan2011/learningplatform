@@ -62,6 +62,15 @@ export function toTopicClass(session: ClassSession, lessonId?: string): TopicCla
   };
 }
 
+/**
+ * The parts of a unit this module actually matches on.
+ *
+ * Widened from `Unit` so the landing page can index classes against the static
+ * syllabus in lib/content/al-ict-units.ts — which has no `tenantId` or
+ * `createdAt` yet — on a project whose units have never been seeded.
+ */
+export type MatchableUnit = Pick<Unit, "id" | "title" | "lessons">;
+
 /** Lowercased, punctuation-free, single-spaced — so "I/O devices" matches "io devices". */
 function normalize(text: string): string {
   return text
@@ -82,8 +91,8 @@ function normalize(text: string): string {
  */
 function locate(
   session: ClassSession,
-  units: Unit[],
-): { unit: Unit; lessonId?: string } | null {
+  units: readonly MatchableUnit[],
+): { unit: MatchableUnit; lessonId?: string } | null {
   if (session.lessonId) {
     const unit = units.find((u) => u.lessons.some((l) => l.id === session.lessonId));
     if (unit) return { unit, lessonId: session.lessonId };
@@ -128,7 +137,7 @@ function locate(
  * still has the full list and shows them in the subject-wide strip.
  */
 export function indexClassesBySyllabus(
-  units: Unit[],
+  units: readonly MatchableUnit[],
   sessions: ClassSession[],
 ): TopicClassIndex {
   const byUnit: Record<string, TopicClass[]> = {};

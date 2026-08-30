@@ -6,9 +6,9 @@ import { Icon } from "@/components/ui/Icon";
 import type { Subject, Unit } from "@/lib/types";
 
 export const metadata: Metadata = {
-  title: "O/L & A/L ICT syllabus, unit by unit",
+  title: "A/L ICT syllabus, unit by unit",
   description:
-    "The full O/L and A/L ICT syllabus broken into units and lessons, with exam-targeted objectives and where marks concentrate — free, no sign-up needed.",
+    "The full A/L ICT syllabus (Grades 12 and 13) broken into units and lessons, with exam-targeted objectives and where marks concentrate — free, no sign-up needed.",
 };
 
 // Same reasoning as /notes: this is public, crawlable content, so it renders
