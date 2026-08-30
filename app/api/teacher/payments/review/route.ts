@@ -3,6 +3,7 @@ import { z } from "zod";
 import { col } from "@/lib/firebase/admin";
 import { requireTeacher } from "@/lib/auth/session";
 import { grantAccess } from "@/lib/payments/entitlements";
+import { paidPatch } from "@/lib/payments/records";
 import { applyReferralBonus } from "@/lib/referrals";
 import type { Payment } from "@/lib/types";
 
@@ -12,6 +13,11 @@ const bodySchema = z.object({
   paymentId: z.string().min(1).max(128),
   decision: z.enum(["approve", "reject"]),
   months: z.number().int().min(1).max(12).default(1),
+  /** What actually landed in the account, when it differs from the list price. */
+  amountLKR: z.number().int().min(0).max(1_000_000).optional(),
+  /** Deposit reference off the slip, so the ledger reconciles against a bank statement. */
+  bankRef: z.string().trim().max(120).optional(),
+  note: z.string().trim().max(300).optional(),
   reason: z.string().trim().max(300).optional(),
 });
 
@@ -67,10 +73,15 @@ export async function POST(req: NextRequest) {
   await applyReferralBonus(payment);
 
   await ref.update({
-    status: "paid",
+    ...(await paidPatch(payment, now)),
+    // The banked amount is the accounting truth, not the list price the slip
+    // was created against — a student who deposited Rs 2,000 against a
+    // Rs 2,500 fee must show as Rs 2,000 in the books.
+    ...(body.amountLKR !== undefined ? { amountLKR: body.amountLKR } : {}),
+    ...(body.bankRef ? { bankRef: body.bankRef } : {}),
+    ...(body.note ? { note: body.note } : {}),
     reviewedBy: teacherUid,
     reviewedAt: now,
-    updatedAt: now,
   });
 
   return NextResponse.json({ ok: true, status: "paid" });

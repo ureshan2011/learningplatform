@@ -1,8 +1,9 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSessionUser } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
 import { listEnrollments, listSubjects } from "@/lib/queries";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import { publicEnv } from "@/lib/env";
 import { SignOutButton } from "@/components/auth/SignOutButton";
@@ -10,7 +11,7 @@ import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
 import { Icon } from "@/components/ui/Icon";
 import { StatusPill } from "@/components/ui/StatusPill";
-import { MAX_DEVICES_PER_USER, type User } from "@/lib/types";
+import { MAX_DEVICES_PER_USER, type Payment, type User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -25,10 +26,24 @@ export default async function AccountPage() {
   const session = await getSessionUser();
   if (!session) redirect("/signin");
 
-  const [snap, enrollments, subjects] = await Promise.all([
+  const [snap, enrollments, subjects, payments] = await Promise.all([
     col.users().doc(session.uid).get(),
     listEnrollments(session.uid),
     listSubjects(),
+    // The student's own payment history. One equality filter, narrowed and
+    // sorted in memory — same index-free rule as the rest of lib/queries.ts.
+    col
+      .payments()
+      .where("uid", "==", session.uid)
+      .limit(100)
+      .get()
+      .then((s) =>
+        (s.docs.map((d) => d.data() as Payment) as Payment[])
+          .filter((p) => p.status === "paid" || p.status === "refunded" || p.status === "pending")
+          .sort((a, b) => (b.paidAt ?? b.createdAt) - (a.paidAt ?? a.createdAt))
+          .slice(0, 24),
+      )
+      .catch(() => [] as Payment[]),
   ]);
   const user = snap.data() as User;
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
@@ -70,6 +85,48 @@ export default async function AccountPage() {
                 <StatusPill tone={e.status === "active" ? "success" : "neutral"}>
                   {e.status === "active" ? `until ${formatDate(e.currentPeriodEnd)}` : e.status}
                 </StatusPill>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="mt-8">
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
+          <Icon name="receipt_long" className="text-(--color-awaken-accent)" />
+          Payments &amp; receipts
+        </h2>
+        {payments.length === 0 ? (
+          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">No payments yet.</p>
+        ) : (
+          <ul className="mt-3 space-y-2 text-sm">
+            {payments.map((p) => (
+              <li
+                key={p.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) p-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+              >
+                <span className="min-w-0">
+                  <span className="block font-medium">
+                    {subjectById.get(p.subjectId)?.name ?? p.subjectId} · {formatLKR(p.amountLKR)}
+                  </span>
+                  <span className="block text-xs text-(--color-awaken-ink-soft)">
+                    {formatDate(p.paidAt ?? p.createdAt)}
+                    {p.receiptNo ? ` · ${p.receiptNo}` : ""}
+                  </span>
+                </span>
+                {p.status === "pending" ? (
+                  <StatusPill tone="neutral">waiting for approval</StatusPill>
+                ) : p.status === "refunded" ? (
+                  <StatusPill tone="neutral">refunded</StatusPill>
+                ) : (
+                  <Link
+                    href={`/receipt/${p.id}`}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-(--color-awaken-deep) underline"
+                  >
+                    <Icon name="receipt_long" className="!text-sm" />
+                    Receipt
+                  </Link>
+                )}
               </li>
             ))}
           </ul>

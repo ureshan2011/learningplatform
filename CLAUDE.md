@@ -55,6 +55,27 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind 4 · Firebase Auth
    `.firebaseio.com`; other regions use `.<region>.firebasedatabase.app`. A
    wrong host fails silently.
 
+## Money
+
+Three ways in, one ledger: PayHere cards, uploaded bank slips, and cash or
+transfers the teacher records by hand. All three land in `payments` and all
+three get a receipt number from the same yearly series (`ICT-2026-0001`),
+issued once, in a transaction, when a payment first becomes `paid`.
+
+- **Teacher → Payments** (`/teacher/payments`) is the only money screen: slips
+  to approve, the full ledger, month-by-month totals, CSV export, manual entry,
+  the PayHere self-test, and the bank details students deposit into.
+- Bank details and the identity printed on receipts live in Firestore
+  (`settings/payments`), not env vars — the owner edits them from a phone. The
+  public policy pages read the same document, so an unfilled field shows as a
+  visible `[blank]`.
+- Every PayHere notification is written to `paymentEvents` before it is acted
+  on, accepted or rejected. That log is the only evidence when a student says
+  they paid and nothing unlocked.
+- PayHere order ids are unique **per attempt**. Never key them by billing month
+  again: two payments in one month then collide, the second is dismissed as a
+  duplicate, and the student pays for nothing.
+
 ## Optional services
 
 Zoom, PayHere and R2 are each optional and detected at runtime by

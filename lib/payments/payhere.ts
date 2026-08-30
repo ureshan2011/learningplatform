@@ -124,6 +124,8 @@ export interface NotifyPayload {
   payhere_currency: string;
   status_code: string;
   md5sig: string;
+  /** "VISA", "MASTER", "AMEX", "EZCASH", ... — recorded for reconciliation. */
+  method?: string;
   custom_1?: string;
   custom_2?: string;
 }
@@ -160,8 +162,23 @@ function timingSafeEqualHex(a: string, b: string): boolean {
   return diff === 0;
 }
 
-/** Order ids embed the period so a duplicate notification is trivially idempotent. */
-export function buildOrderId(uid: string, subjectId: string, periodStart: number): string {
-  const month = new Date(periodStart).toISOString().slice(0, 7).replace("-", "");
-  return `${uid.slice(0, 8)}-${subjectId}-${month}`;
+/**
+ * A fresh order id for one checkout attempt.
+ *
+ * One id per *attempt*, not per month. An earlier version embedded the billing
+ * month, which read as neat idempotency and was in fact a way to lose money:
+ * a student paying twice in one calendar month — renewing early, or a card
+ * that failed and was retried after the first attempt had already succeeded —
+ * produced the same id, so the second notification matched an order already
+ * marked paid, was dismissed as a duplicate, and bought nothing. They were
+ * charged and got no month.
+ *
+ * Duplicate *notifications* stay harmless without that trick: PayHere sends
+ * the same order id when it retries, so the handler still finds a paid order
+ * and stops. Each attempt getting its own document is also what an accountant
+ * expects — one row per movement of money.
+ */
+export function buildOrderId(uid: string, subjectId: string, at: number = Date.now()): string {
+  const suffix = Math.random().toString(36).slice(2, 8);
+  return `${uid.slice(0, 8)}-${subjectId}-${at.toString(36)}${suffix}`;
 }

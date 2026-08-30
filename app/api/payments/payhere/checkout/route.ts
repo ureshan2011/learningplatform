@@ -47,6 +47,9 @@ export async function POST(req: NextRequest) {
   }
 
   const now = Date.now();
+  // Unique per attempt: an abandoned checkout leaves a pending row rather than
+  // overwriting a paid one, and a student paying twice in a month gets two
+  // orders, two receipts and two months.
   const orderId = buildOrderId(user.uid, subjectId, now);
 
   const payment: Payment = {
@@ -62,7 +65,7 @@ export async function POST(req: NextRequest) {
     createdAt: now,
     updatedAt: now,
   };
-  await col.payments().doc(orderId).set(payment, { merge: true });
+  await col.payments().doc(orderId).set(payment);
 
   const fields = buildCheckoutFields({
     orderId,

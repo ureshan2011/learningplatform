@@ -587,6 +587,19 @@ export default async function LandingPage() {
               <div className="flex flex-col gap-2.5">
                 <span className="text-xs text-(--lp-ink-300)">PayHere card payments</span>
                 <span className="text-xs text-(--lp-ink-300)">Bank deposit slip</span>
+                <Link href="/refund-policy" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">
+                  Refunds &amp; cancellation
+                </Link>
+              </div>
+            </div>
+            {/* A payment gateway's reviewer looks for these four in the footer,
+                and so does a parent deciding whether the site is real. */}
+            <div>
+              <div className="mb-3.5 text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">Legal</div>
+              <div className="flex flex-col gap-2.5">
+                <Link href="/terms" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Terms of service</Link>
+                <Link href="/privacy" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Privacy policy</Link>
+                <Link href="/contact" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Contact us</Link>
               </div>
             </div>
           </div>

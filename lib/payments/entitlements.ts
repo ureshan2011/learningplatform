@@ -145,6 +145,31 @@ export async function grantBonusDays(params: {
   return enrollment;
 }
 
+/**
+ * Takes back access bought by a payment that was refunded or charged back.
+ *
+ * Ends the period now rather than deleting the enrollment: the document is the
+ * record that this student was once enrolled, and `startFreeTrial` treats any
+ * existing enrollment as a used trial, so deleting it would hand the student a
+ * fresh free week every time they disputed a payment.
+ */
+export async function revokeAccess(params: {
+  uid: string;
+  subjectId: string;
+}): Promise<boolean> {
+  const ref = col.enrollments().doc(enrollmentId(params.uid, params.subjectId));
+  const snap = await ref.get();
+  if (!snap.exists) return false;
+
+  const now = Date.now();
+  await ref.update({
+    status: "expired",
+    currentPeriodEnd: Math.min((snap.data() as Enrollment).currentPeriodEnd, now),
+    updatedAt: now,
+  });
+  return true;
+}
+
 /** Long enough to reach at least one scheduled live class, however the timetable falls. */
 export const FREE_TRIAL_DAYS = 7;
 

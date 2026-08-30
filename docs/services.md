@@ -41,16 +41,65 @@ same class — not a lesser one.
 
 ## PayHere — card payments
 
-Register a business (sole proprietorship is enough) **and** a business bank
-account. PayHere will not approve a merchant account without one.
+### What PayHere asks for before approving you
+
+- A **bank account** the settlements are paid into.
+- **Business registration** for a business account. PayHere's own onboarding
+  also has an individual/personal route — ask their support which applies to
+  you before paying to register anything.
+- **The site itself**, with contact details, terms, a privacy policy and a
+  refund policy published and reachable without signing in. Those four pages
+  exist at `/terms`, `/privacy`, `/refund-policy` and `/contact`, and are
+  linked from the footer. They fill themselves in from
+  **Teacher → Payments → Bank details & receipt identity** — until you enter
+  your name, address and phone there, they render visible `[blanks]`.
+
+### Configuration
 
 - `NEXT_PUBLIC_PAYHERE_MERCHANT_ID`, `PAYHERE_MERCHANT_SECRET`
 - Notify URL: `https://<your-domain>/api/payments/payhere/notify`
 - Keep `NEXT_PUBLIC_PAYHERE_MODE=sandbox` until a full test payment has gone
   through end to end.
 
-**Bank deposit slips already work without this**, and are how most Sri Lankan
-parents pay tuition anyway. PayHere is an addition, not a prerequisite.
+Sandbox and live are **separate accounts with separate credentials**. The
+sandbox merchant id and secret come from sandbox.payhere.lk; the live ones
+from the real dashboard. Swapping the mode without swapping the credentials
+fails every signature check.
+
+### Testing it
+
+Everything is on **Teacher → Payments**, at the bottom: the mode it is running
+in, the notify URL, and every notification PayHere has sent, with the reason
+each was accepted or rejected.
+
+The one thing that cannot be tested from a laptop is the notification itself:
+PayHere calls the notify URL from their servers, so it has to be a real public
+`https` address. In practice that means testing on the deployed site with the
+mode still set to sandbox — the deployment is safe to test against, because in
+sandbox mode no real card is ever charged.
+
+A full pass looks like: sign in as a student on a second phone number → Pay
+monthly → pay with PayHere's published sandbox test card → the class unlocks
+and the payment shows as **Paid** with a receipt number → the notification is
+listed as `accepted`. If it stays **Pending** with no notification listed, the
+notify URL is not reachable and nothing else is wrong.
+
+**Watch out:** `NEXT_PUBLIC_APP_URL` must be your real domain before enabling
+this. PayHere's `notify_url` is built from it, and that notification is the only
+thing that activates a paid enrollment — point it at a placeholder and students
+pay but stay locked out.
+
+### The other two ways to get paid
+
+**Bank deposit slips work without PayHere at all**, and are how most Sri Lankan
+parents pay tuition. Enter your account details in
+**Teacher → Payments**, and students see them (with one-tap copy) on the
+deposit page, upload a photo of the slip, and you approve it — correcting the
+amount to whatever actually reached the account before you do.
+
+**Cash and direct transfers** are recorded from the same page, under *Record a
+payment you received*. They unlock the class and get a receipt number like any
+other payment, so the books stay complete.
 
 > **Auto-renewal is deliberately not wired up.** PayHere's Recurring API needs
 > their PLUS plan (~Rs 3,990/month), which is not worth paying before there is
@@ -58,11 +107,6 @@ parents pay tuition anyway. PayHere is an addition, not a prerequisite.
 > `grantAccess()` in `lib/payments/entitlements.ts` extends the period.
 > Switching later changes `lib/payments/payhere.ts` and nothing else. Verify
 > current fees before enabling live mode — PayHere changes them.
-
-**Watch out:** `NEXT_PUBLIC_APP_URL` must be your real domain before enabling
-this. PayHere's `notify_url` is built from it, and that notification is the only
-thing that activates a paid enrollment — point it at a placeholder and students
-pay but stay locked out.
 
 ---
 

@@ -194,17 +194,25 @@ export default async function DashboardPage() {
                       <Icon name="description" className="!text-base" />
                       Notes &amp; papers
                     </Link>
-                  ) : cardPaymentsOn ? (
-                    <SubscribeButton subjectId={subject.id} />
                   ) : (
-                    // No card payments yet — bank deposit is how most Sri Lankan
-                    // parents pay anyway, so this is a working path, not a stub.
-                    <Link
-                      href="/pay/slip"
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
-                    >
-                      Pay by bank slip
-                    </Link>
+                    // Both ways to pay, always, with the instant one first.
+                    // Card unlocks the class in seconds; bank deposit is how
+                    // most Sri Lankan parents actually pay, so neither is
+                    // hidden behind the other.
+                    <div className="flex flex-wrap items-center gap-3">
+                      {cardPaymentsOn ? <SubscribeButton subjectId={subject.id} /> : null}
+                      <Link
+                        href={`/pay/slip?subject=${subject.id}`}
+                        className={
+                          cardPaymentsOn
+                            ? "inline-flex items-center gap-1.5 text-sm font-medium text-(--color-awaken-deep) underline"
+                            : "inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
+                        }
+                      >
+                        <Icon name="account_balance" className="!text-base" />
+                        Pay by bank deposit
+                      </Link>
+                    </div>
                   )}
                 </div>
               </li>
