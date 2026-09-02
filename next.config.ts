@@ -18,6 +18,7 @@ interface FirebaseWebConfig {
   messagingSenderId?: string;
   appId?: string;
   databaseURL?: string;
+  measurementId?: string;
 }
 
 function injectedFirebaseConfig(): FirebaseWebConfig {
@@ -56,6 +57,12 @@ const firebasePublicEnv: Record<string, string> = {
   // Copy the real URL from the Firebase console when that time comes.
   NEXT_PUBLIC_FIREBASE_DATABASE_URL:
     process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL || injected.databaseURL || "",
+  // Present in FIREBASE_WEBAPP_CONFIG once Google Analytics is turned on for
+  // this Firebase project (console → Project settings → Integrations), so
+  // enabling it and redeploying is normally all this needs — nobody has to
+  // type a measurement ID in by hand.
+  NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID:
+    process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || injected.measurementId || "",
 };
 
 const nextConfig: NextConfig = {

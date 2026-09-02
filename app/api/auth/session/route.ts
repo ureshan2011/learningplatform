@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_token" }, { status: 401 });
   }
 
-  await provisionUser({ uid, phone, name: parsed.name, referredBy: parsed.referredBy });
+  const user = await provisionUser({ uid, phone, name: parsed.name, referredBy: parsed.referredBy });
 
   const device = await registerDevice(uid, parsed.device as DeviceSignals);
   if (!device.ok) {
@@ -69,7 +69,12 @@ export async function POST(req: NextRequest) {
     expiresIn: SESSION_MAX_AGE_MS,
   });
 
-  const res = NextResponse.json({ ok: true, isNewDevice: device.isNew });
+  const res = NextResponse.json({
+    ok: true,
+    isNewDevice: device.isNew,
+    isNewUser: user.isNewUser,
+    role: user.role,
+  });
   res.cookies.set(SESSION_COOKIE, sessionCookie, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

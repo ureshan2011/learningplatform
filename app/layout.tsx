@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Suspense } from "react";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import "./globals.css";
 
 // Self-hosted by Next at build time (no runtime request to Google). Loaded
@@ -52,7 +54,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <Suspense fallback={null}>
+          <PageViewTracker />
+        </Suspense>
+        {children}
+      </body>
     </html>
   );
 }
