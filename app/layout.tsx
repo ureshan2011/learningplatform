@@ -2,37 +2,26 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Suspense } from "react";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { graphJsonLd, organizationJsonLd, personJsonLd, webSiteJsonLd } from "@/lib/seo/json-ld";
 import { publicEnv } from "@/lib/env";
 import "./globals.css";
 
 /**
- * Organization structured data, on every page. This is what lets Google (and
- * an AI assistant reading the page) resolve "ICT Campus" to a real teaching
- * business rather than just a page title — who runs it, how to reach them,
- * what it teaches. Static and small enough to inline rather than fetch.
+ * Site-wide structured data, on every page.
+ *
+ * Three entities shipped as one `@graph` so their `@id` cross-references
+ * resolve: the business, the site, and the teacher. This is what lets Google
+ * (and an AI assistant reading the page) resolve "ICT Campus" to a real
+ * teaching business rather than a page title — who runs it, what they are
+ * qualified in, what it teaches, and to whom.
+ *
+ * The teacher node matters as much as the organisation one: for an exam
+ * preparation site, "who is teaching this and are they qualified" is the first
+ * question a search quality rater is instructed to ask, and the answer has to
+ * be machine-readable, not just written in the hero.
  */
-const ORGANIZATION_JSON_LD = {
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  name: "ICT Campus",
-  url: publicEnv.appUrl,
-  logo: `${publicEnv.appUrl}/logo.png`,
-  description:
-    "Live interactive A/L ICT tuition (Grades 12 & 13) for Sri Lankan students, Sinhala medium, plus free notes, past papers and video breakdowns.",
-  founder: {
-    "@type": "Person",
-    name: "Dr. Yasas Sri Wickramasinghe",
-    sameAs: ["https://www.linkedin.com/in/yasassri"],
-  },
-  areaServed: {
-    "@type": "Country",
-    name: "Sri Lanka",
-  },
-  audience: {
-    "@type": "EducationalAudience",
-    educationalRole: "student",
-  },
-};
+const SITE_JSON_LD = graphJsonLd([organizationJsonLd(), webSiteJsonLd(), personJsonLd()]);
 
 // Self-hosted by Next at build time (no runtime request to Google). Loaded
 // once here and applied to <body> so every page — not just the landing
@@ -43,31 +32,53 @@ const display = Plus_Jakarta_Sans({
   variable: "--font-display",
 });
 
+const SITE_DESCRIPTION =
+  "A/L ICT classes, past papers and free notes for Sri Lankan Grade 12 & 13 students, Sinhala medium. Live online classes following the full NIE syllabus, instant quizzes and downloadable notes — taught by Dr. Yasas Sri Wickramasinghe, PhD. Free 7-day trial.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.appUrl),
   title: {
-    default: "ICT Campus — A/L ICT Tuition, Sri Lanka",
+    // The default has to earn a click on its own for any page that doesn't set
+    // its own title, so it leads with the subject and the two words students
+    // actually type — "class" and "Sinhala medium" — not the brand.
+    default: "A/L ICT Classes & Past Papers, Sinhala Medium — ICT Campus Sri Lanka",
     template: "%s | ICT Campus",
   },
-  description:
-    "Live interactive A/L ICT tuition (Grades 12 & 13) in Sinhala medium. Live classes, instant quizzes, past papers and a 24/7 doubt assistant.",
+  description: SITE_DESCRIPTION,
   manifest: "/manifest.webmanifest",
   applicationName: "ICT Campus",
   appleWebApp: { capable: true, title: "ICT Campus", statusBarStyle: "default" },
   alternates: { canonical: "/" },
+  // Sinhala first: it is the medium of instruction and the language most of
+  // this audience searches in, even though the interface itself is English.
+  other: { "content-language": "si, en" },
+  category: "education",
   openGraph: {
     type: "website",
     siteName: "ICT Campus",
-    locale: "en_LK",
-    title: "ICT Campus — A/L ICT Tuition, Sri Lanka",
-    description:
-      "Live interactive A/L ICT tuition (Grades 12 & 13) in Sinhala medium. Live classes, instant quizzes, past papers and a 24/7 doubt assistant.",
+    locale: "si_LK",
+    alternateLocale: ["en_LK"],
+    title: "A/L ICT Classes & Past Papers, Sinhala Medium — ICT Campus Sri Lanka",
+    description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "ICT Campus — A/L ICT Tuition, Sri Lanka",
-    description:
-      "Live interactive A/L ICT tuition (Grades 12 & 13) in Sinhala medium. Live classes, instant quizzes, past papers and a 24/7 doubt assistant.",
+    title: "A/L ICT Classes & Past Papers, Sinhala Medium — ICT Campus Sri Lanka",
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    // Without these, Google truncates the snippet and suppresses the preview
+    // thumbnail on a site it doesn't know yet — both cost click-through on
+    // exactly the informational queries this site is trying to win.
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
   },
 };
 
@@ -101,10 +112,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
-        />
+        <JsonLd data={SITE_JSON_LD} />
         <Suspense fallback={null}>
           <PageViewTracker />
         </Suspense>
