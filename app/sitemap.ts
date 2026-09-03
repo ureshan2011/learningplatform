@@ -16,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/syllabus`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/notes`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/command-words`, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/papers/al-ict-2026-paper-1-mcq`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/contact`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/terms`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/privacy`, changeFrequency: "yearly", priority: 0.2 },
