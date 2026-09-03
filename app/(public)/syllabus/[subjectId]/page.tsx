@@ -7,7 +7,32 @@ import { Icon } from "@/components/ui/Icon";
 import { SyllabusHero } from "@/components/syllabus/SyllabusHero";
 import { SyllabusExplorer } from "@/components/syllabus/SyllabusExplorer";
 import { indexClassesBySyllabus, toTopicClass } from "@/lib/content/topic-classes";
-import type { ClassSession } from "@/lib/types";
+import { publicEnv } from "@/lib/env";
+import type { ClassSession, Subject } from "@/lib/types";
+
+/** Makes the subject eligible for Google's Course rich result — price, provider, mode, all real. */
+function courseJsonLd(subject: Subject) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: subject.name,
+    description: subject.description,
+    provider: { "@type": "EducationalOrganization", name: "ICT Campus", url: publicEnv.appUrl },
+    inLanguage: subject.medium === "sinhala" ? "si" : "en",
+    educationalLevel: "Advanced Level",
+    offers: {
+      "@type": "Offer",
+      price: subject.priceLKR,
+      priceCurrency: "LKR",
+      category: "subscription",
+    },
+    hasCourseInstance: {
+      "@type": "CourseInstance",
+      courseMode: "online",
+      courseWorkload: "P1M",
+    },
+  };
+}
 
 /**
  * Public, crawlable, and cached for everyone rather than rendered per visitor
@@ -29,6 +54,7 @@ export async function generateMetadata({
   return {
     title: `${subject.name} syllabus — every unit, lesson and live class`,
     description: `The full ${subject.name} syllabus as an interactive roadmap: every unit and competency level, exam-targeted objectives, where marks concentrate — and the live class for each topic. Free to browse.`,
+    alternates: { canonical: `/syllabus/${subjectId}` },
   };
 }
 
@@ -58,6 +84,10 @@ export default async function SubjectSyllabusPage({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd(subject)) }}
+      />
       <SiteHeader user={null} />
       <main className="mx-auto max-w-6xl px-5 py-8 md:px-8">
         <Link

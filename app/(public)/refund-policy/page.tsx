@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Refund & cancellation policy",
   description:
     "When ICT Campus refunds a class fee, how to ask for one, how long it takes, and how cancelling works — there is no automatic renewal.",
+  alternates: { canonical: "/refund-policy" },
 };
 
 export const revalidate = 300;

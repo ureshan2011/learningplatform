@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Terms of service",
   description:
     "The terms you agree to when you use ICT Campus — accounts, fees, class recordings, acceptable use and how disputes are handled.",
+  alternates: { canonical: "/terms" },
 };
 
 export const revalidate = 300;

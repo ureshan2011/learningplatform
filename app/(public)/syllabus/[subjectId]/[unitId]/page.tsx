@@ -16,12 +16,13 @@ export async function generateMetadata({
 }: {
   params: Promise<{ subjectId: string; unitId: string }>;
 }): Promise<Metadata> {
-  const { unitId } = await params;
+  const { subjectId, unitId } = await params;
   const unit = await getUnit(unitId);
   if (!unit) return {};
   return {
     title: `${unit.title} — exam objectives & focus areas`,
     description: `${unit.competencyStatement} ${unit.lessons.length} lessons with exam-targeted objectives and where marks concentrate.`,
+    alternates: { canonical: `/syllabus/${subjectId}/${unitId}` },
   };
 }
 

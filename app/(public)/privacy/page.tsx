@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Privacy policy",
   description:
     "What ICT Campus collects about a student, why, who it is shared with, how long it is kept, and how a parent can ask for it to be corrected or deleted.",
+  alternates: { canonical: "/privacy" },
 };
 
 export const revalidate = 300;

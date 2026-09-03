@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "How to reach ICT Campus — phone, WhatsApp and email, who runs it, and where to write about a payment or a refund.",
+  alternates: { canonical: "/contact" },
 };
 
 export const revalidate = 300;
