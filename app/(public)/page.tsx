@@ -92,8 +92,15 @@ const OFFERS: Array<{ icon: LandingIcon; title: string; body: string }> = [
   { icon: DownloadIcon, title: "Notes to keep", body: "Download class notes and past papers straight after." },
 ];
 
-const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: string; icon: LandingIcon }> = [
-  { delay: 0, badge: "Free", tag: "Past paper breakdown", title: "2024 A/L ICT Paper 1 — full walkthrough", icon: SearchIcon },
+const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: string; icon: LandingIcon; href?: string }> = [
+  {
+    delay: 0,
+    badge: "Free",
+    tag: "MCQ practice paper",
+    title: "A/L ICT 2026 Paper I — attempt free, with a timer",
+    icon: SearchIcon,
+    href: "/papers/al-ict-2026-paper-1-mcq",
+  },
   { delay: 90, badge: "Free", tag: "Exam technique", title: 'How to answer a "distinguish between" question', icon: PencilIcon },
   { delay: 180, badge: "Free", tag: "Syllabus", title: "A/L ICT syllabus — what changed and what didn't", icon: ChecklistIcon },
 ];
@@ -454,31 +461,40 @@ export default async function LandingPage() {
               Notes, papers, breakdowns<span className="text-(--lp-orange-500)">.</span>
             </h2>
             <div className="grid gap-[clamp(14px,2vw,20px)]" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(280px,100%), 1fr))" }}>
-              {RESOURCES.map((resource) => (
-                <div
-                  key={resource.title}
-                  className="lp-reveal lp-lift flex flex-col rounded-[var(--lp-radius-card)] border-[1.5px] border-(--lp-ink-900) bg-(--lp-ink-900) p-2.5"
-                  style={cssVars({ "--lp-reveal-delay": `${resource.delay}ms` })}
-                >
-                  <div className="relative grid h-[clamp(150px,17vw,190px)] place-items-center overflow-hidden rounded-[var(--lp-radius-md)] bg-(--lp-paper-200)">
-                    <span className="text-(--lp-ink-900) opacity-55">
-                      <resource.icon className="size-12" />
-                    </span>
-                    <span className="absolute top-3 right-3 rounded-full bg-(--lp-paper-0) px-3 py-1.5 text-[11px] font-bold tracking-[0.14em] text-(--lp-ink-900) uppercase">
-                      {resource.badge}
-                    </span>
-                  </div>
-                  <div className="flex items-end gap-3.5 px-2 pt-4 pb-2">
-                    <div className="flex-1">
-                      <div className="text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">{resource.tag}</div>
-                      <div className="mt-2 text-lg font-bold text-(--lp-paper-50) text-wrap-pretty">{resource.title}</div>
+              {RESOURCES.map((resource) => {
+                const cardClassName = "lp-reveal lp-lift flex flex-col rounded-[var(--lp-radius-card)] border-[1.5px] border-(--lp-ink-900) bg-(--lp-ink-900) p-2.5";
+                const cardStyle = cssVars({ "--lp-reveal-delay": `${resource.delay}ms` });
+                const content = (
+                  <>
+                    <div className="relative grid h-[clamp(150px,17vw,190px)] place-items-center overflow-hidden rounded-[var(--lp-radius-md)] bg-(--lp-paper-200)">
+                      <span className="text-(--lp-ink-900) opacity-55">
+                        <resource.icon className="size-12" />
+                      </span>
+                      <span className="absolute top-3 right-3 rounded-full bg-(--lp-paper-0) px-3 py-1.5 text-[11px] font-bold tracking-[0.14em] text-(--lp-ink-900) uppercase">
+                        {resource.badge}
+                      </span>
                     </div>
-                    <span className="grid size-[38px] shrink-0 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
-                      <ArrowRightIcon className="size-4" />
-                    </span>
+                    <div className="flex items-end gap-3.5 px-2 pt-4 pb-2">
+                      <div className="flex-1">
+                        <div className="text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">{resource.tag}</div>
+                        <div className="mt-2 text-lg font-bold text-(--lp-paper-50) text-wrap-pretty">{resource.title}</div>
+                      </div>
+                      <span className="grid size-[38px] shrink-0 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-(--lp-paper-0)">
+                        <ArrowRightIcon className="size-4" />
+                      </span>
+                    </div>
+                  </>
+                );
+                return resource.href ? (
+                  <Link key={resource.title} href={resource.href} className={cardClassName} style={cardStyle}>
+                    {content}
+                  </Link>
+                ) : (
+                  <div key={resource.title} className={cardClassName} style={cardStyle}>
+                    {content}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="mt-6 flex flex-col items-start gap-3 rounded-[var(--lp-radius-card)] border border-(--lp-orange-200) bg-(--lp-orange-50) p-5 sm:flex-row sm:items-center sm:justify-between">
