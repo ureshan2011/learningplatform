@@ -208,15 +208,15 @@ export default async function LandingPage() {
                 </a>
               ))}
             </nav>
-            <a
-              href="#cta"
+            <Link
+              href={startHref}
               className="flex items-center gap-2 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-4 text-xs font-semibold whitespace-nowrap text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
             >
               Start free
               <span className="grid size-6 place-items-center overflow-hidden rounded-full bg-white text-(--lp-orange-500)">
                 <ArrowRightIcon className="size-3.5" />
               </span>
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -247,15 +247,15 @@ export default async function LandingPage() {
               </p>
 
               <div className="flex flex-wrap items-center gap-[clamp(12px,1.6vw,18px)]">
-                <a
-                  href="#cta"
+                <Link
+                  href={startHref}
                   className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
                 >
                   Start free
                   <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-white text-(--lp-orange-500)">
                     <ArrowRightIcon className="size-4" />
                   </span>
-                </a>
+                </Link>
                 <a href="#resources" className="flex h-12 items-center gap-3 px-1 text-base font-semibold text-(--lp-ink-900) hover:text-(--lp-orange-600)">
                   Browse free notes
                   <span className="grid size-8 place-items-center overflow-hidden rounded-full border-[1.5px] border-(--lp-ink-900) text-(--lp-ink-900)">

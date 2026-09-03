@@ -152,7 +152,14 @@ export default function SignInPage() {
             />
           </Field>
           <button type="submit" disabled={busy} className={buttonClass}>
-            {busy ? "Sending…" : "Send code"}
+            {busy ? (
+              <span className="inline-flex w-full items-center justify-center gap-2">
+                <Spinner />
+                Sending…
+              </span>
+            ) : (
+              "Send code"
+            )}
           </button>
         </form>
       ) : (
@@ -169,7 +176,14 @@ export default function SignInPage() {
             />
           </Field>
           <button type="submit" disabled={busy} className={buttonClass}>
-            {busy ? "Verifying…" : "Verify and continue"}
+            {busy ? (
+              <span className="inline-flex w-full items-center justify-center gap-2">
+                <Spinner />
+                Verifying…
+              </span>
+            ) : (
+              "Verify and continue"
+            )}
           </button>
           <button
             type="button"
@@ -201,6 +215,16 @@ const inputClass =
   "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-3 text-base outline-none focus:border-(--color-awaken-accent)";
 const buttonClass =
   "w-full rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-3 font-semibold text-white disabled:opacity-50";
+
+/** Spins while a phone verification round trip (SMS send or code check) is in flight. */
+function Spinner() {
+  return (
+    <span
+      aria-hidden
+      className="size-4 shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
+    />
+  );
+}
 
 function Field({
   label,
