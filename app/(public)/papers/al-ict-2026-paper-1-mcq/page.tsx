@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { PaperAttempt } from "@/components/papers/PaperAttempt";
+import { DisclaimerNote } from "@/components/papers/DisclaimerNote";
 import { publicEnv } from "@/lib/env";
 import { AL_ICT_2026_PAPER1, PAPER_DURATION_MINUTES, PAPER_QUESTION_COUNT } from "@/lib/content/al-ict-2026-paper1";
+
+const REPLACED_COUNT = AL_ICT_2026_PAPER1.filter((q) => q.replaced).length;
 
 export const metadata: Metadata = {
   title: "A/L ICT 2026 Paper I MCQ — Attempt Free, Answers Included",
@@ -51,10 +54,18 @@ export default function AlIctPaper1Page() {
           </summary>
           <div className="border-t border-(--color-awaken-line) px-5 py-4">
             <h2 className="text-lg font-bold">A/L ICT 2026 Paper I (MCQ) — all {PAPER_QUESTION_COUNT} questions and answers</h2>
+            <div className="mt-3">
+              <DisclaimerNote lang="en" replacedCount={REPLACED_COUNT} />
+            </div>
             <ol className="mt-4 space-y-5 text-sm">
               {AL_ICT_2026_PAPER1.map((q, i) => (
                 <li key={q.id} id={`q${q.id}`}>
-                  <p className="font-semibold">{i + 1}. {q.en.stem}</p>
+                  <p className="font-semibold">
+                    {i + 1}. {q.en.stem}
+                    {q.replaced ? (
+                      <span className="ml-1.5 font-normal text-(--color-awaken-ink-soft) italic">(replacement question — see disclaimer)</span>
+                    ) : null}
+                  </p>
                   <ol className="mt-1.5 ml-4 list-decimal space-y-0.5 text-(--color-awaken-ink-soft)">
                     {q.en.options.map((opt, j) => (
                       <li key={j} className={j === q.correctIndex ? "font-semibold text-(--color-awaken-success)" : undefined}>

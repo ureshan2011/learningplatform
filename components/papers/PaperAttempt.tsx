@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
+import { DisclaimerNote } from "@/components/papers/DisclaimerNote";
 import { track } from "@/lib/analytics";
 import {
   AL_ICT_2026_PAPER1,
@@ -227,14 +228,7 @@ function IntroScreen({ lang, onStart }: { lang: Lang; onStart: () => void }) {
         </li>
       </ul>
 
-      <div className="mt-5 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-4 text-xs text-(--color-awaken-ink-soft)">
-        <p className="flex items-start gap-1.5">
-          <Icon name="info" className="!text-base shrink-0 text-(--color-awaken-accent)" />
-          {lang === "si"
-            ? `මෙම ප්‍රශ්න පත්‍රයේ සියලුම පිළිතුරු ස්වාධීනව පරීක්ෂා කරන ලදී — ක්‍රමලේඛන ප්‍රශ්න ක්‍රියාත්මක කර, තර්කනය සත්‍ය වගු මගින් සත්‍යාපනය කර. මුල් පිටපතේ පැහැදිලි නොවූ ප්‍රශ්න ${replacedCount}ක් සමාන දුෂ්කරතාවයකින් යුත් සමානක ප්‍රශ්නවලින් ප්‍රතිස්ථාපනය කර ඇත.`
-            : `Every answer here was independently verified — programming questions were actually run, logic questions checked against truth tables. ${replacedCount} questions that were unclear or missing in the original scan were replaced with equivalent-difficulty questions on related topics.`}
-        </p>
-      </div>
+      <DisclaimerNote lang={lang} replacedCount={replacedCount} />
 
       <button
         onClick={onStart}
