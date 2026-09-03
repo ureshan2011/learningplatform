@@ -101,8 +101,22 @@ const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: strin
     icon: SearchIcon,
     href: "/papers/al-ict-2026-paper-1-mcq",
   },
-  { delay: 90, badge: "Free", tag: "Exam technique", title: 'How to answer a "distinguish between" question', icon: PencilIcon },
-  { delay: 180, badge: "Free", tag: "Syllabus", title: "A/L ICT syllabus — what changed and what didn't", icon: ChecklistIcon },
+  {
+    delay: 90,
+    badge: "Free",
+    tag: "Exam technique",
+    title: '10 worked "distinguish between" answers',
+    icon: PencilIcon,
+    href: "/distinguish-between",
+  },
+  {
+    delay: 180,
+    badge: "Free",
+    tag: "Syllabus",
+    title: "A/L ICT syllabus, unit by unit — browse free",
+    icon: ChecklistIcon,
+    href: "/syllabus",
+  },
 ];
 
 const STEPS = [

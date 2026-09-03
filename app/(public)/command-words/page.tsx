@@ -65,7 +65,15 @@ export default function CommandWordsPage() {
         ))}
       </ul>
 
-      <section className="mt-14 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+      <p className="mt-8 text-sm text-(--color-awaken-ink-soft)">
+        Want to see &quot;distinguish&quot; done properly, worked example by worked example?{" "}
+        <Link href="/distinguish-between" className="text-(--color-awaken-accent) underline">
+          10 fully worked pairs, free
+        </Link>
+        .
+      </p>
+
+      <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
         <h2 className="text-lg font-bold">Drill these until they&apos;re automatic</h2>
         <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
           Every subject&apos;s Practice section includes command-word drill questions —
