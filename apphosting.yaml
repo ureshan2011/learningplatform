@@ -26,6 +26,14 @@ env:
     value: https://ictcampus.lk
     availability: [BUILD, RUNTIME]
 
+  # Google Analytics (GA4). Normally rides in automatically on
+  # FIREBASE_WEBAPP_CONFIG once Analytics is enabled for the project — set
+  # explicitly here so it's live on the very next deploy rather than waiting
+  # on that config to refresh.
+  - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    value: G-0RGWEF9F4W
+    availability: [BUILD, RUNTIME]
+
   # Realtime Database, Singapore. Set explicitly because it cannot be derived:
   # only us-central1 databases use `<name>.firebaseio.com`; every other region
   # uses `<name>.<region>.firebasedatabase.app`. A wrong host fails silently.
