@@ -83,7 +83,10 @@ export type IconName =
   | "account_balance"
   | "rule"
   | "print"
-  | "gavel";
+  | "gavel"
+  | "lock_open"
+  | "info"
+  | "play_arrow";
 
 export function Icon({
   name,
