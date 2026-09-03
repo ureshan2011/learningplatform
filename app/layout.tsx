@@ -2,7 +2,37 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Suspense } from "react";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
+import { publicEnv } from "@/lib/env";
 import "./globals.css";
+
+/**
+ * Organization structured data, on every page. This is what lets Google (and
+ * an AI assistant reading the page) resolve "ICT Campus" to a real teaching
+ * business rather than just a page title — who runs it, how to reach them,
+ * what it teaches. Static and small enough to inline rather than fetch.
+ */
+const ORGANIZATION_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  name: "ICT Campus",
+  url: publicEnv.appUrl,
+  logo: `${publicEnv.appUrl}/logo.png`,
+  description:
+    "Live interactive A/L ICT tuition (Grades 12 & 13) for Sri Lankan students, Sinhala medium, plus free notes, past papers and video breakdowns.",
+  founder: {
+    "@type": "Person",
+    name: "Dr. Yasas Sri Wickramasinghe",
+    sameAs: ["https://www.linkedin.com/in/yasassri"],
+  },
+  areaServed: {
+    "@type": "Country",
+    name: "Sri Lanka",
+  },
+  audience: {
+    "@type": "EducationalAudience",
+    educationalRole: "student",
+  },
+};
 
 // Self-hosted by Next at build time (no runtime request to Google). Loaded
 // once here and applied to <body> so every page — not just the landing
@@ -14,6 +44,7 @@ const display = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(publicEnv.appUrl),
   title: {
     default: "ICT Campus — A/L ICT Tuition, Sri Lanka",
     template: "%s | ICT Campus",
@@ -23,6 +54,21 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   applicationName: "ICT Campus",
   appleWebApp: { capable: true, title: "ICT Campus", statusBarStyle: "default" },
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "ICT Campus",
+    locale: "en_LK",
+    title: "ICT Campus — A/L ICT Tuition, Sri Lanka",
+    description:
+      "Live interactive A/L ICT tuition (Grades 12 & 13) in Sinhala medium. Live classes, instant quizzes, past papers and a 24/7 doubt assistant.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ICT Campus — A/L ICT Tuition, Sri Lanka",
+    description:
+      "Live interactive A/L ICT tuition (Grades 12 & 13) in Sinhala medium. Live classes, instant quizzes, past papers and a 24/7 doubt assistant.",
+  },
 };
 
 export const viewport: Viewport = {
@@ -55,6 +101,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
+        />
         <Suspense fallback={null}>
           <PageViewTracker />
         </Suspense>

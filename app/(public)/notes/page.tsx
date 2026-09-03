@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Free ICT notes & past papers",
   description:
     "Free A/L ICT notes, past papers and marking schemes for Sri Lankan Grade 12 and 13 students, in Sinhala medium.",
+  alternates: { canonical: "/notes" },
 };
 
 // Cached for an hour: this is the SEO funnel, so it must render fast and

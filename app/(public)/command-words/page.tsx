@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "ICT exam command words explained",
   description:
     "What 'state', 'explain', 'distinguish' and every other A/L ICT command word actually requires — free, in English and Sinhala.",
+  alternates: { canonical: "/command-words" },
 };
 
 // Fixed reference content — safe to cache like the free notes page.

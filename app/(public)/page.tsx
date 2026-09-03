@@ -51,7 +51,21 @@ export const metadata: Metadata = {
   title: "Free A/L ICT Notes, Articles & Video Lessons",
   description:
     "Free A/L ICT exam resources for Sri Lankan students — articles, video breakdowns of past papers and revision notes in Sinhala medium, taught by Dr. Yasas Sri Wickramasinghe. New content published regularly, no payment required. Live interactive classes optional, with a free 7-day trial.",
+  alternates: { canonical: "/" },
 };
+
+/** Same questions and answers as the FAQ section below — this just makes them eligible for a search-result rich snippet. */
+function faqJsonLd(faqs: ReadonlyArray<{ q: string; a: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+}
 
 const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";
 const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
@@ -164,6 +178,10 @@ export default async function LandingPage() {
 
   return (
     <div className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQS)) }}
+      />
       <ScrollEffects>
         <div data-lp-progress className="fixed top-0 left-0 z-[60] h-[3px] w-0 bg-(--lp-orange-500)" />
 
