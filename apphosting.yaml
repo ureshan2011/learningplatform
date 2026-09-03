@@ -23,7 +23,7 @@ env:
   # The live site. PayHere's notify_url and Zoom's simulcast page_url are both
   # built from this, so a wrong value means paid students never get unlocked.
   - variable: NEXT_PUBLIC_APP_URL
-    value: https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app
+    value: https://ictcampus.lk
     availability: [BUILD, RUNTIME]
 
   # Realtime Database, Singapore. Set explicitly because it cannot be derived:

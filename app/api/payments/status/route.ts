@@ -42,5 +42,7 @@ export async function GET(req: NextRequest) {
     receiptNo: payment.receiptNo ?? null,
     subjectId: payment.subjectId,
     unlocked: Boolean(access?.allowed),
+    amountLKR: payment.amountLKR,
+    provider: payment.provider,
   });
 }

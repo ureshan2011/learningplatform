@@ -11,6 +11,7 @@ import { clientAuth } from "@/lib/firebase/client";
 import { collectDeviceSignals } from "@/lib/auth/device-client";
 import { toE164 } from "@/lib/phone";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { track, identify } from "@/lib/analytics";
 
 type Step = "phone" | "code";
 
@@ -94,6 +95,16 @@ export default function SignInPage() {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.message ?? "Could not sign you in. Try again.");
       }
+
+      const data = (await res.json().catch(() => ({}))) as {
+        isNewUser?: boolean;
+        role?: "student" | "teacher" | "admin";
+      };
+      track(data.isNewUser ? "sign_up" : "login", {
+        method: "phone",
+        referred_by: referredBy,
+      });
+      if (credential.user.uid && data.role) identify(credential.user.uid, data.role);
 
       router.replace("/dashboard");
       router.refresh();

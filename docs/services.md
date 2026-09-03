@@ -151,6 +151,33 @@ link valid for ten minutes, long enough to download and useless to forward.
 
 ---
 
+## Google Analytics — traffic and conversion funnel
+
+No credentials to enter anywhere. Firebase console → **Project settings** →
+**Integrations** → **Google Analytics** → **Enable**. On the next deploy, the
+measurement ID rides in on `FIREBASE_WEBAPP_CONFIG` the same way the rest of
+the Firebase config already does — nothing to type into `apphosting.yaml`.
+
+This is separate from **Teacher → Insights**, which already reports the
+business numbers (revenue, at-risk students, weak topics) straight from
+Firestore/RTDB. Google Analytics adds what that page doesn't: where visitors
+come from, which pages they leave from, and device/browser/geography — plus
+a few funnel events instrumented in the code:
+
+- `page_view` — every route change
+- `sign_up` / `login` — phone OTP verification, split by whether the account
+  was just created
+- `begin_checkout` — "Pay monthly" clicked
+- `purchase` — a payment actually lands (`components/payments/PaymentStatusWatcher.tsx`),
+  carrying the amount and provider, deduplicated per order so a page refresh
+  can't double-count revenue
+
+All of it lives behind `lib/analytics.ts` — it never throws and never blocks
+a click if Analytics isn't enabled or the browser blocks it, so nothing about
+enabling or skipping this can break the app.
+
+---
+
 ## Where the values go
 
 **Locally:** `.env.local`.

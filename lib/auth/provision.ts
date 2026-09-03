@@ -26,7 +26,7 @@ export async function provisionUser(params: {
   phone: string;
   name?: string;
   referredBy?: string;
-}): Promise<User> {
+}): Promise<User & { isNewUser: boolean }> {
   const ref = col.users().doc(params.uid);
   const snap = await ref.get();
 
@@ -41,7 +41,7 @@ export async function provisionUser(params: {
     const role = claimed ?? existing.role;
 
     await ensureClaims(params.uid, role, existing.tenantId);
-    return { ...existing, role };
+    return { ...existing, role, isNewUser: false };
   }
 
   const role: Role = (await isFirstUser()) ? "teacher" : "student";
@@ -61,7 +61,7 @@ export async function provisionUser(params: {
 
   await ref.set(user);
   await ensureClaims(user.uid, user.role, user.tenantId);
-  return user;
+  return { ...user, isNewUser: true };
 }
 
 /**

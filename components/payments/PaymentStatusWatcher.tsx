@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { track } from "@/lib/analytics";
 
 type Phase = "waiting" | "unlocked" | "failed" | "slow";
 
@@ -40,12 +41,28 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
         unlocked: boolean;
         subjectId?: string;
         receiptNo?: string | null;
+        amountLKR?: number;
+        provider?: string;
       };
 
       if (data.unlocked || data.status === "paid") {
         setSubjectId(data.subjectId ?? null);
         setReceiptNo(data.receiptNo ?? null);
         setPhase("unlocked");
+
+        // sessionStorage, not a ref: a refresh of this same success page must
+        // not count the same payment twice, and this page can be reloaded.
+        const dedupeKey = `ga_purchase_${orderId}`;
+        if (!window.sessionStorage.getItem(dedupeKey)) {
+          window.sessionStorage.setItem(dedupeKey, "1");
+          track("purchase", {
+            transaction_id: orderId,
+            value: data.amountLKR,
+            currency: "LKR",
+            payment_type: data.provider,
+            items: [{ item_id: data.subjectId, item_name: data.subjectId }],
+          });
+        }
         return;
       }
       if (data.status === "failed" || data.status === "cancelled") {
