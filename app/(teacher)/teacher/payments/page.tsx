@@ -18,7 +18,6 @@ import { PaymentSettingsForm } from "@/components/teacher/PaymentSettingsForm";
 import { SlipReviewList, type PendingSlip } from "@/components/teacher/SlipReviewList";
 import { SandboxTestPanel } from "@/components/teacher/SandboxTestPanel";
 import { ActivityBell } from "@/components/teacher/ActivityBell";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import { StatTile } from "@/components/ui/StatTile";
 import type { Payment, PaymentEvent, PaymentSettings, Subject, User } from "@/lib/types";
@@ -45,7 +44,8 @@ async function section<T>(name: string, read: () => Promise<T>, empty: T): Promi
  * accountant, and the settings behind it.
  */
 export default async function TeacherPaymentsPage() {
-  const user = await requireStaffPage("/teacher/payments");
+  // Gate only — the app shell renders who is signed in.
+  await requireStaffPage("/teacher/payments");
 
   const subjects = await section("subjects", () => listSubjects(), [] as Subject[]);
 
@@ -78,9 +78,7 @@ export default async function TeacherPaymentsPage() {
   const { payhereMerchantSecret, ...settingsForForm } = settings;
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-4xl px-5 py-8">
+      <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
         <Link
           href="/teacher"
           className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline"
@@ -362,7 +360,6 @@ export default async function TeacherPaymentsPage() {
           </div>
         </section>
       </main>
-    </>
   );
 }
 

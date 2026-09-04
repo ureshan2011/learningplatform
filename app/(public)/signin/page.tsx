@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getSessionUser } from "@/lib/auth/session";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 import { SignInForm } from "@/components/auth/SignInForm";
 
 export const dynamic = "force-dynamic";
@@ -36,14 +35,17 @@ export default async function SignInPage({
   const user = await getSessionUser();
   if (user) redirect(next);
 
+  // Sign-in is the threshold, so it belongs to the product's dark world rather
+  // than the marketing one — the student crosses over here, not one screen
+  // later. `.ict-app` is also what keeps the legacy gradient buttons on this
+  // page resolving to flat orange.
   return (
-    <>
-      <SiteHeader user={null} />
+    <div className="ict-app min-h-dvh">
       <SignInForm
         next={next}
         referredBy={params.ref?.trim().toUpperCase() || undefined}
         reason={params.reason}
       />
-    </>
+    </div>
   );
 }

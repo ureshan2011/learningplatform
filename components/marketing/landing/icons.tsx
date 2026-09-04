@@ -1,13 +1,11 @@
 /**
  * Landing-page icon set as inline SVG.
  *
- * The rest of the app uses the Material Symbols web font (see
- * components/ui/Icon.tsx), but that font is fetched from Google Fonts at
- * runtime — on a slow connection, an ad blocker, or a network that blocks
- * fonts.googleapis.com, the glyph never arrives and the icon renders as
- * blank or as its raw ligature text overlapping whatever sits next to it.
- * That broke the landing page's CTA buttons in practice, so its icons are
- * plain SVG paths instead: zero network dependency, always render.
+ * Predates the move of components/ui/Icon.tsx onto Lucide, and stays because
+ * these are drawn to the landing page's own proportions. Both are now inline
+ * SVG with no network dependency, which is what this file originally existed to
+ * guarantee: the icon font it replaced was fetched from Google at runtime and
+ * rendered as raw ligature text whenever that request failed.
  */
 type IconProps = { className?: string };
 

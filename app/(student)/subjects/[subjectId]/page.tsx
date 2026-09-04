@@ -8,8 +8,20 @@ import { DownloadButton } from "@/components/content/DownloadButton";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
+import { SubjectTabs } from "@/components/subject/SubjectTabs";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { StatusPill } from "@/components/ui/StatusPill";
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  CardLink,
+  EmptyState,
+  Eyebrow,
+  IconBadge,
+  PageHeader,
+  SectionBar,
+  StatusChip,
+} from "@/components/ds";
 import { r2Configured } from "@/lib/features";
 import { getPayHereConfig } from "@/lib/payments/records";
 import type { ContentKind } from "@/lib/types";
@@ -30,143 +42,141 @@ const KIND_ICON: Record<ContentKind, IconName> = {
   replay: "videocam",
 };
 
+/**
+ * A subject's overview: what it is, what you get, and everything to download.
+ *
+ * The four study tools used to live in a right-hand "What's included" list that
+ * doubled as the only route to them. They are now tabs at the top — peers of
+ * this page rather than children of it — so this page can do the one job left:
+ * be the library, and, when the student has not paid, be the pitch.
+ */
 export default async function SubjectPage({
   params,
 }: {
   params: Promise<{ subjectId: string }>;
 }) {
   const { subjectId } = await params;
-
   const user = await requirePageUser(`/subjects/${subjectId}`);
 
   const subject = await getSubject(subjectId);
   if (!subject) notFound();
 
   const access = await hasAccess(user.uid, subjectId);
-  const items = await listContent(subjectId);
-  const units = await listUnits(subjectId);
+  const [items, units] = await Promise.all([listContent(subjectId), listUnits(subjectId)]);
 
   // Locked students still see the catalogue — knowing what they are missing is
   // the most effective renewal prompt there is.
   const visible = access.allowed ? items : items.filter((i) => i.isPublic);
+  const lockedCount = items.length - visible.length;
   const payhere = await getPayHereConfig();
   const cardPaymentsOn = payhere.configured;
 
-  const features: Array<{ icon: IconName; title: string; subtitle: string; href: string }> = [
-    { icon: "quiz", title: "Practice & revision", subtitle: "Spaced-repetition questions that adapt to weak topics", href: `/subjects/${subjectId}/practice` },
-    { icon: "schedule", title: "Mock exams", subtitle: "Timed papers, negative marking, ranked results", href: `/subjects/${subjectId}/mock-exams` },
-    { icon: "code", title: "Code Lab", subtitle: "Run pseudocode, spreadsheet formulas and SQL", href: `/subjects/${subjectId}/lab` },
-    { icon: "military_tech", title: "Certificate", subtitle: "Unlocks once you hit the mastery bar", href: `/subjects/${subjectId}/certificate` },
-  ];
-
   return (
-    <main className="mx-auto max-w-5xl px-5 py-8 md:px-8">
-      <Link href="/dashboard" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
-        <Icon name="arrow_back" className="!text-base" />
-        Dashboard
-      </Link>
+    <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
+      <PageHeader
+        eyebrow={`${subject.grade} · ${subject.medium} medium`}
+        title={subject.name}
+        subtitle={subject.description}
+        actions={
+          access.allowed ? (
+            <StatusChip tone="success">
+              {access.enrollment
+                ? `Active until ${formatDate(access.enrollment.currentPeriodEnd)}`
+                : "Full access"}
+            </StatusChip>
+          ) : (
+            <StatusChip tone="warning">Locked</StatusChip>
+          )
+        }
+      />
 
-      <div className="mt-4 lg:flex lg:items-start lg:gap-8">
-        <div className="min-w-0 flex-1">
-          <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sm:p-6">
-            <div className="flex flex-wrap gap-2">
-              <StatusPill tone="accent">{subject.grade}</StatusPill>
-              <StatusPill tone="neutral">
-                {subject.medium[0].toUpperCase() + subject.medium.slice(1)} medium
-              </StatusPill>
-              {access.allowed ? <StatusPill tone="success">Enrolled</StatusPill> : null}
-            </div>
-            <h1 className="mt-3 text-2xl font-bold tracking-tight">{subject.name}</h1>
-            <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">{subject.description}</p>
-          </div>
+      <div className="mt-5">
+        <SubjectTabs subjectId={subjectId} locked={!access.allowed} />
+      </div>
 
-          {!access.allowed ? (
-            <div className="mt-5 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-4 text-sm">
-              <p className="font-medium text-(--color-awaken-accent)">
-                {access.reason === "expired"
-                  ? "Your subscription has ended."
-                  : !access.enrollment
-                    ? "You are not enrolled in this subject yet."
-                    : "You are not enrolled in this subject."}
-              </p>
-              <p className="mt-1 text-(--color-awaken-ink-soft)">
-                {items.length - visible.length} more resources unlock when you subscribe.
-              </p>
-              <div className="mt-3 flex flex-wrap items-center gap-3">
-                {/*
-                  A trial is only offered where `hasAccess` found no enrollment
-                  document at all — see the reason comment on `startFreeTrial`.
-                  A lapsed or cancelled subscriber always has one, so they only
-                  ever see "Subscribe".
-                */}
-                {!access.enrollment ? <StartTrialButton subjectId={subjectId} /> : null}
-              </div>
-            </div>
-          ) : null}
-
-          {units.length > 0 ? (
-            <section className="mt-8">
-              <h2 className="flex items-center justify-between text-lg font-semibold">
-                <span>Syllabus</span>
-                <Link
-                  href={`/syllabus/${subjectId}`}
-                  className="flex items-center gap-1 text-sm font-normal text-(--color-awaken-accent) underline"
-                >
-                  Full breakdown by unit
-                  <Icon name="chevron_right" className="!text-base" />
-                </Link>
-              </h2>
-              <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-                {units.length} units · {units.reduce((n, u) => n + u.lessons.length, 0)} lessons, each with exam
-                objectives and exam-focus notes.
-              </p>
-            </section>
-          ) : subject.syllabusTopics.length > 0 ? (
-            <section className="mt-8">
-              <h2 className="flex items-center justify-between text-lg font-semibold">
-                <span>Syllabus</span>
-                <span className="text-sm font-normal text-(--color-awaken-ink-soft)">
-                  {subject.syllabusTopics.length} topics
-                </span>
-              </h2>
-              <ol className="mt-3 space-y-2">
-                {subject.syllabusTopics.map((topic, i) => (
-                  <li
-                    key={topic}
-                    className="flex items-center gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-3.5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-                  >
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-(--color-awaken-indigo-soft) text-xs font-bold text-(--color-awaken-indigo)">
-                      {i + 1}
-                    </span>
-                    <span className="text-sm font-medium">{topic}</span>
-                  </li>
-                ))}
-              </ol>
-            </section>
-          ) : null}
-
-          <section className="mt-8">
-            <h2 className="text-lg font-semibold">Notes &amp; past papers</h2>
-            {!r2Configured() ? (
-              <div className="mt-3">
-                <NotConfigured feature="r2" />
-              </div>
-            ) : visible.length === 0 ? (
-              <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">Nothing published yet.</p>
+      {!access.allowed ? (
+        <Card variant="feature" radius="panel" className="mt-4 p-6 sm:p-8">
+          <Eyebrow>
+            {access.reason === "expired" ? "Your subscription ended" : "Not subscribed yet"}
+          </Eyebrow>
+          <h2 className="mt-2.5 font-display text-[26px] font-extrabold leading-[1.1] tracking-[-0.03em] text-ict-paper-50">
+            {lockedCount > 0 ? (
+              <>
+                {lockedCount} more resource{lockedCount === 1 ? "" : "s"}
+                <br />
+                unlock when you subscribe
+              </>
             ) : (
-              <ul className="mt-3 space-y-3">
+              <>
+                Unlock live classes
+                <br />
+                and every paper
+              </>
+            )}
+          </h2>
+          <p className="mt-3 max-w-md text-sm text-ict-orange-200">
+            {formatLKR(subject.priceLKR)} per month — live classes, practice that targets your weak
+            topics, timed mock exams and the Code Lab.
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            {/*
+              A trial is only offered where `hasAccess` found no enrollment
+              document at all — see the reason comment on `startFreeTrial`. A
+              lapsed or cancelled subscriber always has one, so they only ever
+              see the paid routes.
+            */}
+            {!access.enrollment ? <StartTrialButton subjectId={subjectId} /> : null}
+            {cardPaymentsOn ? (
+              <SubscribeButton subjectId={subjectId} sandbox={payhere.mode === "sandbox"} />
+            ) : null}
+            <Link
+              href={`/pay/slip?subject=${subjectId}`}
+              className="text-sm font-semibold text-ict-paper-50 underline-offset-4 hover:underline"
+            >
+              Pay by bank deposit
+            </Link>
+          </div>
+        </Card>
+      ) : null}
+
+      <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_320px] lg:items-start">
+        <div className="min-w-0 space-y-5">
+          <section>
+            <SectionBar
+              title="Notes & past papers"
+              hint={
+                access.allowed
+                  ? `${visible.length} file${visible.length === 1 ? "" : "s"} to download`
+                  : `${visible.length} free · ${lockedCount} locked`
+              }
+            />
+            {!r2Configured() ? (
+              <NotConfigured feature="r2" />
+            ) : visible.length === 0 ? (
+              <EmptyState
+                icon="description"
+                title="Nothing published yet"
+                body="Your teacher has not uploaded notes for this subject. Free notes are available meanwhile."
+                action={
+                  <ButtonLink href="/notes" variant="outline" size="sm" arrow="right">
+                    Browse free notes
+                  </ButtonLink>
+                }
+              />
+            ) : (
+              <ul className="space-y-2">
                 {visible.map((item) => (
                   <li
                     key={item.id}
-                    className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-ict-md border border-ict-border-dark bg-ict-ink-850 p-3.5"
                   >
                     <div className="flex min-w-0 items-center gap-3">
-                      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)">
-                        <Icon name={KIND_ICON[item.kind]} className="!text-lg" />
-                      </span>
+                      <IconBadge icon={KIND_ICON[item.kind]} tone="dark" size={40} round />
                       <div className="min-w-0">
-                        <p className="truncate font-medium">{item.title}</p>
-                        <p className="mt-0.5 truncate text-xs text-(--color-awaken-ink-soft)">
+                        <p className="truncate text-[13px] font-semibold text-ict-paper-50">
+                          {item.title}
+                        </p>
+                        <p className="mt-0.5 truncate text-xs text-ict-ink-300">
                           {KIND_LABEL[item.kind]} · {formatDate(item.createdAt)}
                           {item.isPublic ? " · free" : ""}
                         </p>
@@ -178,71 +188,138 @@ export default async function SubjectPage({
               </ul>
             )}
           </section>
+
+          {units.length > 0 ? (
+            <section>
+              <SectionBar
+                title="Syllabus"
+                hint={`${units.length} units · ${units.reduce((n, u) => n + u.lessons.length, 0)} lessons`}
+                href={`/syllabus/${subjectId}`}
+                linkLabel="Full breakdown"
+              />
+              <div className="grid gap-2 sm:grid-cols-2">
+                {units.slice(0, 6).map((unit) => (
+                  <CardLink
+                    key={unit.id}
+                    href={`/syllabus/${subjectId}/${unit.id}`}
+                    radius="md"
+                    className="flex items-start gap-3 p-4"
+                  >
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ict-ink-700 font-mono text-xs font-semibold text-ict-orange-400">
+                      {unit.competencyNumber}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate text-[13px] font-semibold text-ict-paper-50">
+                        {unit.title}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-ict-ink-300">
+                        {unit.lessons.length} lessons · Grade {unit.gradeYear}
+                      </span>
+                    </span>
+                  </CardLink>
+                ))}
+              </div>
+            </section>
+          ) : subject.syllabusTopics.length > 0 ? (
+            <section>
+              <SectionBar title="Syllabus" hint={`${subject.syllabusTopics.length} topics`} />
+              <ol className="grid gap-2 sm:grid-cols-2">
+                {subject.syllabusTopics.map((topic, i) => (
+                  <li
+                    key={topic}
+                    className="flex items-center gap-3 rounded-ict-md border border-ict-border-dark bg-ict-ink-850 p-3.5"
+                  >
+                    <span className="grid size-7 shrink-0 place-items-center rounded-full bg-ict-ink-700 font-mono text-[11px] font-semibold text-ict-orange-400">
+                      {i + 1}
+                    </span>
+                    <span className="text-[13px] font-medium text-ict-paper-50">{topic}</span>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ) : null}
         </div>
 
-        <aside className="mt-8 space-y-4 lg:mt-0 lg:w-80 lg:shrink-0">
-          <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <aside className="space-y-3 lg:sticky lg:top-[76px]">
+          <Card radius="card" className="p-5">
             {access.allowed ? (
               <>
-                <p className="text-xs font-semibold uppercase tracking-wide text-(--color-awaken-ink-soft)">Status</p>
-                <p className="mt-1 text-lg font-bold text-(--color-awaken-success)">Active</p>
+                <Eyebrow>Your access</Eyebrow>
+                <p className="mt-2 font-display text-xl font-extrabold text-ict-paper-50">Active</p>
                 {access.enrollment ? (
-                  <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-                    Renews / expires {formatSessionTime(access.enrollment.currentPeriodEnd)}
+                  <p className="mt-1 text-sm text-ict-ink-300">
+                    Renews or expires {formatSessionTime(access.enrollment.currentPeriodEnd)}
                   </p>
                 ) : null}
+                <ButtonLink
+                  href="/account"
+                  variant="outline"
+                  size="sm"
+                  arrow="right"
+                  className="mt-4"
+                >
+                  Billing & receipts
+                </ButtonLink>
               </>
             ) : (
               <>
-                <p className="text-3xl font-bold tracking-tight">{formatLKR(subject.priceLKR)}</p>
-                <p className="text-sm text-(--color-awaken-ink-soft)">per month</p>
+                <Eyebrow>Monthly</Eyebrow>
+                <p className="mt-2 font-display text-3xl font-extrabold tracking-[-0.03em] text-ict-paper-50">
+                  {formatLKR(subject.priceLKR)}
+                </p>
+                <p className="mt-1 text-sm text-ict-ink-300">Cancel any time.</p>
                 <div className="mt-4 space-y-2">
                   {cardPaymentsOn ? (
-                    <div className="[&>div]:text-left [&_button]:w-full [&_button]:justify-center [&_button]:py-2.5">
-                      <SubscribeButton subjectId={subjectId} sandbox={payhere.mode === "sandbox"} />
-                    </div>
+                    <SubscribeButton subjectId={subjectId} sandbox={payhere.mode === "sandbox"} />
                   ) : null}
-                  <Link
-                    href="/pay/slip"
-                    className="block w-full rounded-lg border border-(--color-awaken-line) px-4 py-2.5 text-center text-sm font-semibold hover:border-(--color-awaken-accent)/40"
+                  <ButtonLink
+                    href={`/pay/slip?subject=${subjectId}`}
+                    variant="outline"
+                    size="sm"
+                    arrow="right"
                   >
-                    Pay by bank slip
-                  </Link>
+                    Pay by bank deposit
+                  </ButtonLink>
                 </div>
               </>
             )}
-          </div>
+          </Card>
 
-          <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-            <p className="text-xs font-semibold uppercase tracking-wide text-(--color-awaken-ink-soft)">
-              What&apos;s included
-            </p>
-            <ul className="mt-3 space-y-3.5">
-              {features.map((f) => (
-                <li key={f.href}>
-                  {access.allowed ? (
-                    <Link href={f.href} className="flex items-start gap-3 group">
-                      <Icon name={f.icon} className="mt-0.5 shrink-0 text-(--color-awaken-accent)" />
-                      <span>
-                        <span className="block text-sm font-semibold group-hover:underline">{f.title}</span>
-                        <span className="block text-xs text-(--color-awaken-ink-soft)">{f.subtitle}</span>
-                      </span>
-                    </Link>
-                  ) : (
-                    <div className="flex items-start gap-3 opacity-60">
-                      <Icon name="lock" className="mt-0.5 shrink-0" />
-                      <span>
-                        <span className="block text-sm font-semibold">{f.title}</span>
-                        <span className="block text-xs text-(--color-awaken-ink-soft)">{f.subtitle}</span>
-                      </span>
-                    </div>
-                  )}
+          <Card radius="card" className="p-5">
+            <Eyebrow>What&apos;s included</Eyebrow>
+            <ul className="mt-3 space-y-3">
+              {INCLUDED.map((f) => (
+                <li key={f.title} className="flex items-start gap-3">
+                  <Icon
+                    name={access.allowed ? f.icon : "lock"}
+                    className={access.allowed ? "!text-base text-ict-orange-400" : "!text-base text-ict-ink-500"}
+                  />
+                  <span>
+                    <span className="block text-[13px] font-semibold text-ict-paper-50">
+                      {f.title}
+                    </span>
+                    <span className="block text-xs text-ict-ink-300">{f.subtitle}</span>
+                  </span>
                 </li>
               ))}
             </ul>
-          </div>
+            {access.allowed ? null : (
+              <Badge tone="brand" className="mt-4">
+                Unlocks on subscribe
+              </Badge>
+            )}
+          </Card>
         </aside>
       </div>
     </main>
   );
 }
+
+const INCLUDED: Array<{ icon: IconName; title: string; subtitle: string }> = [
+  { icon: "videocam", title: "Live classes", subtitle: "Join on any device, replays after" },
+  { icon: "quiz", title: "Practice & revision", subtitle: "Questions that adapt to weak topics" },
+  { icon: "schedule", title: "Mock exams", subtitle: "Timed papers, negative marking, ranked" },
+  { icon: "code", title: "Code Lab", subtitle: "Pseudocode, spreadsheet formulas and SQL" },
+  { icon: "description", title: "Notes & papers", subtitle: "Every file, free to download" },
+  { icon: "military_tech", title: "Certificate", subtitle: "Unlocks at the mastery bar" },
+];

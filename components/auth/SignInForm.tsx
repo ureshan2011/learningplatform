@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   RecaptchaVerifier,
@@ -351,7 +352,7 @@ export function SignInForm({
 
   if (step === "restoring") {
     return (
-      <main className="mx-auto flex min-h-[calc(100dvh-73px)] max-w-md flex-col items-center justify-center gap-3 px-5 py-10">
+      <main className="mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center gap-3 px-5 py-10">
         <Spinner className="size-6 border-(--color-awaken-accent)/30 border-t-(--color-awaken-accent)" />
         <p className="text-sm text-(--color-awaken-ink-soft)">පිවිසෙමින්… · Signing you in…</p>
       </main>
@@ -359,7 +360,16 @@ export function SignInForm({
   }
 
   return (
-    <main className="mx-auto flex min-h-[calc(100dvh-73px)] max-w-md flex-col justify-center px-5 py-10">
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-5 py-10">
+      <Link href="/" className="mb-8 flex items-center gap-2 self-start">
+        <span className="grid size-8 place-items-center rounded-ict-sm bg-ict-orange-500 text-white">
+          <Icon name="school" className="!text-lg" />
+        </span>
+        <span className="font-display text-base font-extrabold tracking-[-0.02em] text-ict-paper-50">
+          ICT<span className="text-ict-orange-500">CAMPUS</span>
+        </span>
+      </Link>
+
       <h1 className="text-2xl font-bold">පිවිසෙන්න · Sign in</h1>
       <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
         SMS මගින් එක් වරක් භාවිත කළ හැකි කේතයක් එවනවා. ඔබේ දුරකථන අංකයම ඔබේ ගිණුමයි.
@@ -369,7 +379,7 @@ export function SignInForm({
       </p>
 
       {banner ? (
-        <p className="mt-4 flex gap-2 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-3 text-sm">
+        <p className="mt-4 flex gap-2 rounded-ict-md border border-ict-border-dark bg-ict-ink-850 p-3 text-sm">
           <Icon name="info" className="!text-base shrink-0 text-(--color-awaken-ink-soft)" />
           <span>
             {banner.si}
@@ -379,7 +389,7 @@ export function SignInForm({
       ) : null}
 
       {referredBy ? (
-        <p className="mt-4 rounded-lg border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
+        <p className="mt-4 rounded-ict-md border border-ict-orange-500/30 bg-ict-orange-500/10 p-3 text-sm text-ict-orange-300">
           You were invited with code {referredBy} — sign up and you&apos;ll both get 3 free days.
         </p>
       ) : null}
@@ -394,8 +404,8 @@ export function SignInForm({
       ) : step === "phone" ? (
         <form onSubmit={sendCode} className="mt-8 space-y-4" noValidate>
           <Field label="ජංගම දුරකථන අංකය · Mobile number">
-            <div className="flex items-center rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) focus-within:border-(--color-awaken-accent)">
-              <span className="select-none border-r border-(--color-awaken-line) px-3 py-3 text-base text-(--color-awaken-ink-soft)">
+            <div className="flex items-center rounded-ict-sm border border-ict-border-dark bg-ict-ink-800 focus-within:border-ict-orange-500">
+              <span className="select-none border-r border-ict-border-dark px-3 py-3 text-base text-ict-ink-300">
                 +94
               </span>
               <input
@@ -407,7 +417,7 @@ export function SignInForm({
                 enterKeyHint="send"
                 placeholder="077 123 4567"
                 aria-label="Mobile number"
-                className="w-full bg-transparent px-3 py-3 text-base outline-none"
+                className="w-full bg-transparent px-3 py-3 text-base text-ict-paper-50 placeholder:text-ict-ink-400 outline-none"
               />
             </div>
           </Field>
@@ -461,7 +471,7 @@ export function SignInForm({
             )}
           </button>
 
-          <div className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-3 text-sm">
+          <div className="rounded-ict-md border border-ict-border-dark bg-ict-ink-850 p-3 text-sm">
             {resends >= MAX_RESENDS ? (
               <p className="text-(--color-awaken-ink-soft)">
                 SMS ලැබුණේ නැද්ද? සංඥාව ඇති තැනකට ගොස් පිටුව නැවත විවෘත කරන්න.
@@ -632,9 +642,10 @@ function DeviceLimitPanel({
 }
 
 const inputClass =
-  "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-3 text-base outline-none focus:border-(--color-awaken-accent)";
+  "w-full rounded-ict-sm border border-ict-border-dark bg-ict-ink-800 px-4 py-3 text-base text-ict-paper-50 placeholder:text-ict-ink-400 outline-none focus:border-ict-orange-500";
+// A full-width pill, per the system: flat orange, never a gradient.
 const buttonClass =
-  "w-full rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-3 font-semibold text-white disabled:opacity-50";
+  "ict-press w-full rounded-full bg-ict-orange-500 px-4 py-3 font-semibold text-white shadow-ict-brand transition-colors duration-[120ms] hover:bg-ict-orange-600 disabled:opacity-45";
 
 /** Spins while a phone verification round trip (SMS send or code check) is in flight. */
 function Spinner({ className }: { className?: string }) {

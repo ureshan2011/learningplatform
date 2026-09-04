@@ -1,10 +1,9 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { requireStaffPage } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 import { UserDirectory } from "@/components/teacher/UserDirectory";
 import { Icon } from "@/components/ui/Icon";
+import { PageHeader } from "@/components/ds";
 
 export const dynamic = "force-dynamic";
 
@@ -35,24 +34,12 @@ export default async function PeoplePage() {
     .catch(() => false);
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-3xl px-5 py-8">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight">People</h1>
-            <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-              Everyone who has signed in, what they pay for, and the devices they use.
-            </p>
-          </div>
-          <Link
-            href="/teacher"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
-          >
-            <Icon name="chevron_left" className="!text-base" />
-            Console
-          </Link>
-        </div>
+      <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
+        <PageHeader
+          eyebrow="Teacher console"
+          title="People"
+          subtitle="Everyone who has signed in, what they pay for, and the devices they use."
+        />
 
         {user.role === "admin" ? null : noAdminYet ? (
           <p className="mt-5 flex gap-2 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-4 text-sm">
@@ -81,6 +68,5 @@ export default async function PeoplePage() {
           <UserDirectory viewerRole={user.role} viewerUid={user.uid} noAdminYet={noAdminYet} />
         </div>
       </main>
-    </>
   );
 }

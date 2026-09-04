@@ -355,9 +355,6 @@ function Segmented<T extends string | number>({
                 : "text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)"
             }`}
           >
-            {/* The wrapper does the hiding: `.material-symbols-outlined` in
-                globals.css is unlayered, so its `display` beats Tailwind's
-                `hidden` utility and an icon cannot hide itself. */}
             {option.icon ? (
               <span className="hidden sm:inline-block">
                 <Icon name={option.icon} className="!text-base" />
