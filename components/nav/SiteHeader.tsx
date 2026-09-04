@@ -31,9 +31,13 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
         <nav className="flex flex-wrap items-center gap-1 text-sm">
           {!user ? (
             <>
+              {/* Guest nav doubles as the site's internal link graph: every
+                  public page links to the two pages that carry the commercial
+                  and the highest-volume informational query. */}
+              <NavLink href="/al-ict-classes">Classes</NavLink>
               <NavLink href="/syllabus">Syllabus</NavLink>
+              <NavLink href="/past-papers">Past papers</NavLink>
               <NavLink href="/notes">Free notes</NavLink>
-              <NavLink href="/command-words">Command words</NavLink>
               <Link
                 href="/signin"
                 className="ml-1 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white shadow-[0_4px_14px_rgba(234,88,12,0.25)] transition-transform hover:scale-[1.02] active:scale-[0.98]"

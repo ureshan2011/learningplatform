@@ -48,10 +48,26 @@ const bodyFont = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], va
 const monoFont = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-lp-mono" });
 
 export const metadata: Metadata = {
-  title: "Free A/L ICT Notes, Articles & Video Lessons",
+  // Leads with the subject and grade a student searches for, then the free
+  // material that earns the links, then the class that earns the money — in
+  // that order, because the free resources are what a stranger clicks.
+  title: "A/L ICT Classes & Free Notes — Sinhala Medium, Grades 12 & 13",
   description:
-    "Free A/L ICT exam resources for Sri Lankan students — articles, video breakdowns of past papers and revision notes in Sinhala medium, taught by Dr. Yasas Sri Wickramasinghe. New content published regularly, no payment required. Live interactive classes optional, with a free 7-day trial.",
+    "A/L ICT for Sri Lankan Grade 12 and 13 students in Sinhala medium: free notes, past paper breakdowns and the full NIE syllabus unit by unit, plus live online classes with instant quizzes and mock exams. Taught by Dr. Yasas Sri Wickramasinghe, PhD. Free 7-day trial, no card required.",
   alternates: { canonical: "/" },
+  keywords: [
+    "A/L ICT",
+    "A/L ICT class",
+    "A/L ICT online classes Sinhala medium",
+    "AL ICT tuition Sri Lanka",
+    "A/L ICT past papers",
+    "A/L ICT notes",
+    "A/L ICT syllabus",
+    "grade 12 ICT",
+    "grade 13 ICT",
+    "උසස් පෙළ ICT පන්ති",
+    "තොරතුරු හා සන්නිවේදන තාක්ෂණය",
+  ],
 };
 
 /** Same questions and answers as the FAQ section below — this just makes them eligible for a search-result rich snippet. */
@@ -71,10 +87,10 @@ const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";
 const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
 
 const NAV_LINKS = [
-  { href: "#teach", label: "Classes" },
+  { href: "/al-ict-classes", label: "Classes" },
   { href: "#syllabus", label: "Syllabus" },
+  { href: "/past-papers", label: "Past papers" },
   { href: "#resources", label: "Free notes" },
-  { href: "#how", label: "How it works" },
   { href: "#faq", label: "FAQ" },
 ] as const;
 
@@ -104,13 +120,21 @@ const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: strin
   {
     delay: 90,
     badge: "Free",
+    tag: "Past papers",
+    title: "A/L ICT past papers — what gets asked, unit by unit",
+    icon: DownloadIcon,
+    href: "/past-papers",
+  },
+  {
+    delay: 180,
+    badge: "Free",
     tag: "Exam technique",
     title: '10 worked "distinguish between" answers',
     icon: PencilIcon,
     href: "/distinguish-between",
   },
   {
-    delay: 180,
+    delay: 270,
     badge: "Free",
     tag: "Syllabus",
     title: "A/L ICT syllabus, unit by unit — browse free",
@@ -127,6 +151,17 @@ const STEPS = [
 ] as const;
 
 const FAQS = [
+  // The first three answer the questions a student types into Google verbatim
+  // — medium, grade, format — so they are also the three most likely to be
+  // lifted into a featured snippet or an AI assistant's answer.
+  {
+    q: "Are these A/L ICT classes in Sinhala medium?",
+    a: "Yes. Every class is taught in Sinhala medium, following the NIE A/L ICT syllabus for Grades 12 and 13. Technical terms are given in English too, because that is how they appear in the exam paper and the marking scheme.",
+  },
+  {
+    q: "Are the classes online or physical?",
+    a: "Online and live. You join from a browser on any phone, tablet or laptop — nothing to install — and you can ask questions during the class. Recordings stay available afterwards for catch-up.",
+  },
   {
     q: "Do I have to pay to read the articles or watch the videos?",
     a: "No. Every article, video discussion and downloadable note is free, permanently. Live classes are the only paid part, and those start with a free 7-day trial.",
@@ -218,16 +253,24 @@ export default async function LandingPage() {
             >
               ICT<span className="text-(--lp-orange-500)">CAMPUS</span>
             </a>
+            {/* The list mixes in-page anchors with real routes, so each entry
+                renders as whichever the href calls for — Link would break a
+                "#syllabus" jump, a plain anchor would drop prefetching on the
+                two pages this nav exists to promote. */}
             <nav className="hidden items-center gap-0.5 sm:flex">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-white hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {NAV_LINKS.map((link) => {
+                const className =
+                  "rounded-full px-3 py-2 text-xs font-semibold whitespace-nowrap text-white hover:bg-(--lp-ink-700) hover:text-(--lp-orange-300)";
+                return link.href.startsWith("#") ? (
+                  <a key={link.href} href={link.href} className={className}>
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link key={link.href} href={link.href} className={className}>
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
             <Link
               href={startHref}
@@ -252,10 +295,22 @@ export default async function LandingPage() {
 
           <div className={`${CONTAINER} relative grid items-center gap-[clamp(32px,5vw,56px)]`} style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(430px,100%), 1fr))" }}>
             <div className="lp-reveal">
-              <p className="mb-2 text-xs font-semibold text-(--lp-ink-400)">ICT Campus — by Dr. Yasas Sri Wickramasinghe</p>
+              {/* The eyebrow carries the four qualifiers that decide whether a
+                  student searching for a class has landed on the right one:
+                  level, grades, medium, country. */}
+              <p className="mb-2 text-xs font-semibold text-(--lp-ink-400)">
+                A/L ICT · Grades 12 &amp; 13 · Sinhala medium · Sri Lanka
+              </p>
 
+              {/*
+                The H1 is the single strongest on-page ranking signal, and it
+                has to contain the phrase people search. "A/L ICT" costs the
+                headline nothing — the line break, the rhythm and the accent
+                word are unchanged — and turns a slogan that matched no query
+                into one that matches the site's primary one.
+              */}
               <h1 className="m-0 text-[clamp(40px,6.4vw,68px)] leading-[1.02] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) text-wrap-balance font-[family-name:var(--lp-font-display)]">
-                ICT taught by
+                A/L ICT taught by
                 <br />
                 someone who <span className="text-(--lp-orange-500)">built it</span>
                 <span className="text-(--lp-orange-500)">.</span>
@@ -265,6 +320,19 @@ export default async function LandingPage() {
                 I&apos;m <strong className="font-bold text-(--lp-ink-900)">Dr. Yasas Sri Wickramasinghe</strong> — PhD in
                 Human Interface Technology, senior lecturer, and a postdoctoral researcher with industry experience at
                 Sony, 99X and Niantic. Every note, video and live class here comes from me.
+              </p>
+
+              {/* Spells out the offer in the words a student searches with.
+                  The paragraph above sells the teacher; this one answers "is
+                  this the class I was looking for", which is the question that
+                  actually needs answering above the fold. */}
+              <p className="mb-[clamp(18px,2.4vw,26px)] max-w-[520px] text-[clamp(14px,1.3vw,16px)] text-(--lp-ink-500) text-wrap-pretty">
+                Live <strong className="font-semibold text-(--lp-ink-900)">online A/L ICT classes</strong> in Sinhala
+                medium covering all 14 units of the NIE syllabus, plus free{" "}
+                <Link href="/past-papers" className="underline decoration-(--lp-orange-500) underline-offset-2">
+                  past paper guides
+                </Link>{" "}
+                and notes for Grade 12 and Grade 13.
               </p>
 
               <div className="flex flex-wrap items-center gap-[clamp(12px,1.6vw,18px)]">
@@ -521,6 +589,57 @@ export default async function LandingPage() {
           </div>
         </section>
 
+        {/*
+          Sinhala.
+
+          The medium of instruction is Sinhala and a large share of this
+          audience searches in Sinhala script — "උසස් පෙළ ICT පන්ති",
+          "තොරතුරු තාක්ෂණය පසුගිය ප්‍රශ්න පත්‍ර". With no Sinhala string
+          anywhere on the site those queries cannot match it at all, however
+          well the English pages rank. This is a real summary of the offer in
+          the language the classes are taught in, not a keyword block, and
+          `lang="si"` is set so crawlers and screen readers both handle the
+          script correctly.
+        */}
+        <section id="sinhala" className="w-full py-[clamp(32px,6vw,72px)]">
+          <div className={CONTAINER}>
+            <div
+              lang="si"
+              className="si lp-reveal rounded-[var(--lp-radius-panel)] border border-(--lp-border-subtle) bg-(--lp-paper-0) p-[clamp(24px,4vw,44px)] shadow-[var(--lp-shadow-sm)]"
+            >
+              <div className={EYEBROW}>සිංහල මාධ්‍යය</div>
+              <h2 className="mt-3 text-[clamp(24px,3.4vw,36px)] leading-[1.15] font-extrabold tracking-[-0.02em] text-(--lp-ink-900) font-[family-name:var(--lp-font-display)]">
+                උසස් පෙළ තොරතුරු හා සන්නිවේදන තාක්ෂණය (ICT) — 12 සහ 13 ශ්‍රේණි
+              </h2>
+              <p className="mt-4 max-w-[640px] text-[15px] text-(--lp-ink-500)">
+                සිංහල මාධ්‍යයෙන් පවත්වන සජීවී මාර්ගගත ICT පන්ති. ජාතික අධ්‍යාපන ආයතනයේ (NIE) විෂය
+                නිර්දේශයේ ඒකක 14ම ආවරණය කරයි. පසුගිය විභාග ප්‍රශ්න පත්‍ර සාකච්ඡා, ක්ෂණික ප්‍රශ්නාවලි,
+                ආදර්ශ විභාග සහ බාගත කළ හැකි සටහන් ඇතුළත් වේ.
+              </p>
+              <ul className="mt-5 grid gap-2.5 text-sm text-(--lp-ink-500)" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(260px,100%), 1fr))" }}>
+                <li>· ඔබේ දුරකථනයෙන්ම පන්තියට සම්බන්ධ විය හැක — යෙදුමක් අවශ්‍ය නොවේ.</li>
+                <li>· ලියාපදිංචිය ජංගම දුරකථන අංකයෙන් සහ SMS කේතයකින්. මුරපදයක් අවශ්‍ය නොවේ.</li>
+                <li>· පළමු දින 7 නොමිලේ. ණයපත් අවශ්‍ය නොවේ.</li>
+                <li>· සටහන්, ලිපි සහ වීඩියෝ සදාකාලිකවම නොමිලේ.</li>
+              </ul>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/al-ict-classes"
+                  className="flex h-11 items-center rounded-full bg-(--lp-orange-500) px-5 text-sm font-semibold text-white hover:bg-(--lp-orange-600) hover:text-white"
+                >
+                  ICT පන්ති පිළිබඳ විස්තර
+                </Link>
+                <Link
+                  href="/past-papers"
+                  className="flex h-11 items-center rounded-full border-[1.5px] border-(--lp-ink-900) px-5 text-sm font-semibold text-(--lp-ink-900) hover:text-(--lp-orange-600)"
+                >
+                  පසුගිය විභාග ප්‍රශ්න පත්‍ර
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* How it works */}
         <section id="how" className="w-full py-[clamp(32px,6vw,72px)]">
           <div className={CONTAINER}>
@@ -608,11 +727,15 @@ export default async function LandingPage() {
             </div>
             <div>
               <div className="mb-3.5 text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">Learn</div>
+              {/* Real page links, not in-page anchors. The footer appears on
+                  the site's most-linked page, so these are the strongest
+                  internal links the new pages can get. */}
               <div className="flex flex-col gap-2.5">
-                <a href="#resources" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Free notes</a>
-                <a href="#resources" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Past papers</a>
-                <a href="#teach" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Live classes</a>
-                <a href="#syllabus" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Syllabus</a>
+                <Link href="/notes" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Free A/L ICT notes</Link>
+                <Link href="/past-papers" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">A/L ICT past papers</Link>
+                <Link href="/al-ict-classes" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">A/L ICT classes</Link>
+                <Link href="/syllabus" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">A/L ICT syllabus</Link>
+                <Link href="/command-words" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Exam command words</Link>
               </div>
             </div>
             <div>
