@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /**
  * First-run helper: creates the A/L ICT subject.
@@ -18,7 +19,7 @@ export function SeedSubjectsButton() {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/teacher/subjects/seed", { method: "POST" });
+      const res = await fetchWithSession("/api/teacher/subjects/seed", { method: "POST" });
       if (!res.ok) throw new Error("Could not create the subjects. Try again.");
       router.refresh();
     } catch (err) {

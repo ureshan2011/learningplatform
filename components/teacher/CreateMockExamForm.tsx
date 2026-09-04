@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /**
  * Creates a mock exam: picks `questionCount` active questions for the
@@ -29,7 +30,7 @@ export function CreateMockExamForm({
     const year = String(form.get("year") ?? "").trim();
 
     try {
-      const res = await fetch("/api/teacher/mock-exams", {
+      const res = await fetchWithSession("/api/teacher/mock-exams", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({

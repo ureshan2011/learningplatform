@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /**
  * Fetches a short-lived download URL and opens it.
@@ -16,7 +17,7 @@ export function DownloadButton({ contentId, label }: { contentId: string; label:
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`/api/content/${contentId}/download`);
+      const res = await fetchWithSession(`/api/content/${contentId}/download`);
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(

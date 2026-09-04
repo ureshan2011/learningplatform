@@ -2,6 +2,41 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { fetchWithSession, signInHref } from "@/lib/auth/session-client";
+
+/**
+ * A submitted paper, held locally until the server has actually taken it.
+ *
+ * The only case this covers is a session that lapsed between starting the
+ * paper and submitting it — rare, but the cost is an hour of a student's exam
+ * practice, so it is worth twenty lines.
+ */
+const DRAFT_PREFIX = "ictclass.mockDraft.";
+
+function saveDraft(mockExamId: string, answers: Record<string, number>): void {
+  try {
+    sessionStorage.setItem(DRAFT_PREFIX + mockExamId, JSON.stringify(answers));
+  } catch {
+    // Storage blocked. The in-memory answers are still on screen.
+  }
+}
+
+function readDraft(mockExamId: string): Record<string, number> | null {
+  try {
+    const raw = sessionStorage.getItem(DRAFT_PREFIX + mockExamId);
+    return raw ? (JSON.parse(raw) as Record<string, number>) : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearDraft(mockExamId: string): void {
+  try {
+    sessionStorage.removeItem(DRAFT_PREFIX + mockExamId);
+  } catch {
+    // Nothing to clean up.
+  }
+}
 
 interface MockExamQuestion {
   id: string;
@@ -44,6 +79,8 @@ export function MockExamRunner({
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [remainingMs, setRemainingMs] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  /** Set only when the session is genuinely gone, so the error can offer a way back. */
+  const [signInLink, setSignInHref] = useState<string | null>(null);
   const submittingRef = useRef(false);
   // The countdown effect below intentionally does not depend on `answers` —
   // restarting a 1s interval on every option click would jitter the clock.
@@ -59,7 +96,7 @@ export function MockExamRunner({
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch(`/api/mock-exams/${mockExamId}/start`, {
+        const res = await fetchWithSession(`/api/mock-exams/${mockExamId}/start`, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ subjectId }),
@@ -75,6 +112,10 @@ export function MockExamRunner({
         const data = (await res.json()) as StartResponse;
         if (cancelled) return;
         setExam(data);
+        // Answers rescued from a submit that hit a lapsed session. The server
+        // reissues the same `questionOrder` on restart, so these still line up.
+        const draft = readDraft(mockExamId);
+        if (draft) setAnswers(draft);
         setPhase("running");
       } catch {
         if (!cancelled) setPhase("error");
@@ -97,19 +138,32 @@ export function MockExamRunner({
       submittingRef.current = true;
       setPhase("submitting");
       try {
-        const res = await fetch(`/api/mock-exams/${mockExamId}/submit`, {
+        const res = await fetchWithSession(`/api/mock-exams/${mockExamId}/submit`, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ subjectId, answers: finalAnswers }),
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
+          // A finished paper is the worst possible thing to lose. If the
+          // session could not be recovered, park the answers where a reload
+          // will find them and say what actually happened, rather than
+          // blaming the student's connection and letting them retry into the
+          // same 401 until they give up.
+          if (res.status === 401 || res.status === 403) {
+            saveDraft(mockExamId, finalAnswers);
+            setSignInHref(signInHref());
+            throw new Error(
+              "Your sign-in expired before this could be submitted. Your answers are saved — sign in again and they will be sent.",
+            );
+          }
           throw new Error(
             data.error === "time_expired"
               ? "Time was already up when this reached the server."
               : "Could not submit. Check your connection and try again.",
           );
         }
+        clearDraft(mockExamId);
         router.refresh();
       } catch (err) {
         submittingRef.current = false;
@@ -271,7 +325,16 @@ export function MockExamRunner({
         </button>
       </div>
 
-      {errorMessage ? <p className="mt-3 text-sm text-(--color-awaken-danger)">{errorMessage}</p> : null}
+      {errorMessage ? (
+        <p className="mt-3 text-sm text-(--color-awaken-danger)">
+          {errorMessage}
+          {signInLink ? (
+            <a href={signInLink} className="ml-1 font-semibold underline">
+              Sign in again
+            </a>
+          ) : null}
+        </p>
+      ) : null}
     </div>
   );
 }

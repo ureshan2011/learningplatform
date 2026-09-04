@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth/session";
+import { requirePageUser } from "@/lib/auth/session";
 import { getSubject } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { getCertificateEligibility } from "@/lib/practice/engine";
@@ -18,8 +18,7 @@ export default async function CertificatePage({
 }) {
   const { subjectId } = await params;
 
-  const user = await getSessionUser();
-  if (!user) redirect(`/signin?next=/subjects/${subjectId}/certificate`);
+  const user = await requirePageUser(`/subjects/${subjectId}/certificate`);
 
   const subject = await getSubject(subjectId);
   if (!subject) notFound();

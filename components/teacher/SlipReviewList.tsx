@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 export interface PendingSlip {
   id: string;
@@ -38,7 +39,7 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
     setBusyId(paymentId);
     setError(null);
     try {
-      const res = await fetch("/api/teacher/payments/review", {
+      const res = await fetchWithSession("/api/teacher/payments/review", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({

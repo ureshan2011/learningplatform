@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { formatDate } from "@/lib/format";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 interface FoundDevice {
   deviceHash: string;
@@ -12,12 +13,16 @@ interface FoundDevice {
 }
 
 /**
- * "This account is already signed in on the maximum number of devices. Ask
- * your teacher to remove an old device." — this is the teacher doing that.
+ * Quick device lookup by phone number.
  *
- * Look a student up by phone, see what is bound, and free a slot. Releasing
- * also signs that account out everywhere, which is the point when the reason
- * is a lost or borrowed phone.
+ * Students can now free their own least-recently-used slot once a week, so this
+ * is the backstop: a lost phone, or a second swap inside the same week. For
+ * browsing everyone rather than looking one number up, People (/teacher/users)
+ * does the same job with search.
+ *
+ * Releasing signs out only the browser that held that slot — the student's
+ * other devices keep their sessions, which matters when the reason is "my old
+ * phone broke" and they are standing in front of the new one.
  */
 export function DeviceResetPanel() {
   const [phone, setPhone] = useState("");
@@ -35,7 +40,7 @@ export function DeviceResetPanel() {
     setMessage(null);
     setFound(null);
     try {
-      const res = await fetch(`/api/teacher/devices?phone=${encodeURIComponent(phone)}`);
+      const res = await fetchWithSession(`/api/teacher/devices?phone=${encodeURIComponent(phone)}`);
       const data = await res.json();
       if (!res.ok) {
         throw new Error(
@@ -58,7 +63,7 @@ export function DeviceResetPanel() {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/teacher/devices", {
+      const res = await fetchWithSession("/api/teacher/devices", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ phone, ...(deviceHash ? { deviceHash } : {}) }),

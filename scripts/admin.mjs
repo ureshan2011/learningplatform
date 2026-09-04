@@ -5,6 +5,7 @@
  * Plain Node + firebase-admin so it needs no extra toolchain:
  *   node scripts/admin.mjs seed
  *   node scripts/admin.mjs make-teacher +94771234567
+ *   node scripts/admin.mjs make-admin +94771234567
  *   node scripts/admin.mjs release-devices +94771234567
  *
  * Reads credentials from .env.local.
@@ -35,13 +36,18 @@ switch (command) {
     await seed();
     break;
   case "make-teacher":
-    await makeTeacher(arg);
+    await setRole(arg, "teacher");
+    break;
+  case "make-admin":
+    await setRole(arg, "admin");
     break;
   case "release-devices":
     await releaseDevices(arg);
     break;
   default:
-    console.log("Usage: node scripts/admin.mjs <seed|make-teacher|release-devices> [phone]");
+    console.log(
+      "Usage: node scripts/admin.mjs <seed|make-teacher|make-admin|release-devices> [phone]",
+    );
     process.exit(1);
 }
 process.exit(0);
@@ -82,8 +88,15 @@ async function seed() {
   console.log(`Seeded ${subjects.length} subjects into tenant "${TENANT}".`);
 }
 
-async function makeTeacher(phone) {
-  if (!phone) throw new Error("Pass the teacher's phone in E.164, e.g. +94771234567");
+/**
+ * Promotes an account to teacher or admin.
+ *
+ * Only needed when the browser route cannot be used — normally the owner does
+ * this from Teacher console -> People, or by listing the number in ADMIN_PHONES
+ * in the App Hosting console, neither of which needs a terminal.
+ */
+async function setRole(phone, role) {
+  if (!phone) throw new Error(`Pass the phone in E.164, e.g. +94771234567`);
 
   const record = await auth.getUserByPhoneNumber(phone);
   const ref = db.collection("users").doc(record.uid);
@@ -92,20 +105,25 @@ async function makeTeacher(phone) {
     throw new Error("That user has not signed in yet. Sign in once, then re-run this.");
   }
 
-  await ref.update({ role: "teacher" });
+  await ref.update({ role, sessionsValidFrom: Date.now(), roleUpdatedAt: Date.now() });
   const claims = record.customClaims ?? {};
-  await auth.setCustomUserClaims(record.uid, { ...claims, role: "teacher", tenantId: TENANT });
-  // Force a fresh token so the new role takes effect on the next sign-in.
+  await auth.setCustomUserClaims(record.uid, { ...claims, role, tenantId: TENANT });
+  // Both halves are needed to end the current sessions: sessionsValidFrom is
+  // what the app checks, revokeRefreshTokens is what stops the browser quietly
+  // minting a replacement cookie. See revokeAllSessions in lib/auth/devices.ts.
   await auth.revokeRefreshTokens(record.uid);
 
-  console.log(`${phone} (${record.uid}) is now a teacher. Sign in again to pick up the role.`);
+  console.log(`${phone} (${record.uid}) is now ${role === "admin" ? "an" : "a"} ${role}. Sign in again to pick up the role.`);
 }
 
 async function releaseDevices(phone) {
   if (!phone) throw new Error("Pass the student's phone in E.164, e.g. +94771234567");
 
   const record = await auth.getUserByPhoneNumber(phone);
-  await db.collection("users").doc(record.uid).update({ devices: [] });
+  await db
+    .collection("users")
+    .doc(record.uid)
+    .update({ devices: [], sessionsValidFrom: Date.now() });
   await auth.revokeRefreshTokens(record.uid);
   console.log(`Cleared all bound devices for ${phone}. They can sign in fresh.`);
 }

@@ -89,14 +89,75 @@ Zoom, PayHere and R2 are each optional and detected at runtime by
 `503 not_configured` and pages render a "not set up yet" card. Keep this
 property — the app must always run with Firebase alone.
 
+## Roles and admin
+
+Four roles: `student`, `parent`, `teacher`, `admin`. There are **no passwords
+anywhere** — the phone number is the account and the SMS code is the credential
+— so "admin credentials" means a phone number, not a login.
+
+- **`ADMIN_PHONES`** (env, comma-separated) is the recovery path: anyone listed
+  becomes an admin on their next sign-in, whatever their stored role says. It
+  is set in `apphosting.yaml` / the App Hosting console so admin access is
+  always recoverable without a terminal. Not a secret — signing in as that
+  number still needs the code sent to the SIM.
+- The first person ever to sign in becomes the teacher (`lib/auth/provision.ts`).
+- Everything else is done from **Teacher console → People** (`/teacher/users`):
+  the full roll, searchable, with each person's subscriptions, payments,
+  devices and history. Teachers may free devices and sign people out; **only an
+  admin may change a role or switch an account off**, and the API enforces it.
+  Nobody can demote themselves, and the last admin cannot be demoted.
+- Any role change signs that account out (`revokeAllSessions`) — access rules
+  read the role from token claims, so the change has to take effect now, not
+  eventually.
+
+## Sessions
+
+Read `lib/auth/session.ts` before touching any of this.
+
+1. **Session verification never makes a network call.** `verifySessionCookie` is
+   called with `checkRevoked: false` — signature and expiry only. It used to be
+   `true`, which asked Google's Auth backend on every page render and treated
+   any transient failure as "signed out". That was the cause of constant
+   spurious logouts.
+2. **Revocation is `sessionsValidFrom` on the user document**, compared against
+   the cookie's `auth_time`. It rides along with a read we already do.
+3. **Revoking means both halves.** Always use `revokeAllSessions()` — it sets
+   `sessionsValidFrom` *and* revokes refresh tokens. Setting only the first is a
+   revocation that undoes itself, because `SessionKeeper` mints a new cookie
+   from the still-valid refresh token seconds later.
+4. **A Firestore failure must not sign anyone out.** `resolveSession` falls back
+   to the role and tenant in the cookie's own claims.
+5. **Cookies are 14 days (Firebase's maximum) and renewed silently.**
+   `SessionKeeper` posts a fresh ID token to `PUT /api/auth/session` about once
+   a day, so a student who keeps using the site never re-OTPs. Shortening the
+   cookie does *not* save SMS money — it costs it, which is why it was raised
+   from 5 days.
+6. **Gated pages call `requirePageUser(next)` / `requireStaffPage(next)`**, never
+   a hand-written `redirect("/signin")`. That is what returns a student to the
+   class they tapped through to instead of dumping them on the dashboard.
+7. **Client calls to gated routes use `fetchWithSession`**, which repairs a
+   lapsed session and retries once. Never plain `fetch` — a raw 401 mid-action
+   is how a finished mock exam gets thrown away.
+
 ## Devices
 
-`MAX_DEVICES_PER_USER` caps students at 2 bound devices. **Teachers and admins
+`MAX_DEVICES_PER_USER` caps students at 3 bound devices. **Teachers and admins
 are exempt** — the owner has to open the console on a laptop, a phone and a
 second browser to test what students see, and there is nobody above them to ask
-for a reset. A student who is capped is freed from Teacher console → Device
-reset (`/api/teacher/devices`), which is the browser equivalent of
-`scripts/admin.mjs release-devices`.
+for a reset.
+
+**The device hash is `sha256(uid + clientId)` and nothing else.** It must never
+mix in the user agent, platform or screen size again: all three change under a
+student who has not touched anything (Chrome ships a new UA roughly monthly,
+`screen.width` flips on rotation), each change minted a bogus "new device", and
+the student was locked out behind a message telling them to find their teacher.
+
+A capped student can free their own least-recently-used slot once a week
+(`swapOldestDevice`). The teacher's backstop is Teacher console → People, or
+Device reset (`/api/teacher/devices`) — the browser equivalent of
+`scripts/admin.mjs release-devices`. Releasing one device signs out only that
+browser, via the `ictclass_device` cookie; it must not revoke refresh tokens, or
+freeing a broken phone's slot also kicks the student off the phone in their hand.
 
 ## Phone auth gotchas
 
@@ -108,9 +169,9 @@ Two separate settings, both under Authentication, both fail confusingly:
   `auth/operation-not-allowed`. Keep the allowlist to Sri Lanka only: an open
   list invites SMS-pumping fraud against the billing account.
 
-SMS is billed per verification on Blaze. Session cookies last 5 days
-(`lib/auth/session.ts`) partly to keep that cost down — shortening them
-multiplies the SMS bill.
+SMS is billed per verification on Blaze, which is why sessions are long and
+renew themselves — see **Sessions** above. Every avoidable trip to the sign-in
+screen is a real invoice line.
 
 ## Bootstrapping
 

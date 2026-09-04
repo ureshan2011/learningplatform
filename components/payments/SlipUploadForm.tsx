@@ -6,6 +6,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { getApp } from "firebase/app";
 import { clientAuth } from "@/lib/firebase/client";
 import { Icon } from "@/components/ui/Icon";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 
@@ -33,6 +34,7 @@ export function SlipUploadForm({
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [needsSignIn, setNeedsSignIn] = useState(false);
 
   const selected = subjects.find((s) => s.id === subjectId) ?? subjects[0];
 
@@ -59,8 +61,16 @@ export function SlipUploadForm({
     setBusy(true);
     setError(null);
     try {
+      // Two separate sessions have to agree here: our httpOnly cookie, and the
+      // Firebase client sign-in that the upload is authorised by. They can
+      // disagree — a shared family laptop, a cleared site data, a private tab —
+      // and the student then met a bare "Please sign in again" with no link,
+      // mid-payment, holding a bank slip. Send them somewhere instead.
       const uid = clientAuth().currentUser?.uid;
-      if (!uid) throw new Error("Please sign in again.");
+      if (!uid) {
+        setNeedsSignIn(true);
+        throw new Error("Your sign-in expired before the upload started.");
+      }
 
       const storage = getStorage(getApp());
       const extension = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
@@ -71,7 +81,7 @@ export function SlipUploadForm({
       });
       const slipUrl = await getDownloadURL(snapshot.ref);
 
-      const res = await fetch("/api/payments/slip", {
+      const res = await fetchWithSession("/api/payments/slip", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ subjectId, slipUrl }),
@@ -184,7 +194,16 @@ export function SlipUploadForm({
         {busy ? "Uploading…" : "Submit payment slip"}
       </button>
 
-      {error ? <p className="mt-2 text-sm text-(--color-awaken-danger)">{error}</p> : null}
+      {error ? (
+        <p className="mt-2 text-sm text-(--color-awaken-danger)">
+          {error}
+          {needsSignIn ? (
+            <a href="/signin?next=/pay/slip&reason=expired" className="ml-1 font-semibold underline">
+              Sign in again
+            </a>
+          ) : null}
+        </p>
+      ) : null}
     </form>
   );
 }

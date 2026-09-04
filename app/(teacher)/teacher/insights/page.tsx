@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth/session";
+import { requireStaffPage } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
@@ -36,9 +35,7 @@ async function section<T>(name: string, read: () => Promise<T>, empty: T): Promi
 }
 
 export default async function TeacherInsightsPage() {
-  const user = await getSessionUser();
-  if (!user) redirect("/signin");
-  if (user.role !== "teacher" && user.role !== "admin") redirect("/dashboard");
+  const user = await requireStaffPage("/teacher/insights");
 
   const subjects = await section("subjects", () => listSubjects(), []);
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /**
  * Lets a student generate a read-only link for a parent — no second login,
@@ -17,7 +18,7 @@ export function ParentLinkPanel() {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/account/parent-link", {
+      const res = await fetchWithSession("/api/account/parent-link", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ action }),

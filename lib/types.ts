@@ -12,8 +12,25 @@ export type Role = "student" | "teacher" | "parent" | "admin";
 export type Medium = "sinhala" | "english" | "tamil";
 export type Grade = "OL" | "AL";
 
-/** Max devices one account may be bound to. Raising this raises piracy. */
-export const MAX_DEVICES_PER_USER = 2;
+/**
+ * Max devices one account may be bound to. Raising this raises piracy.
+ *
+ * Three, not two: a student realistically has a phone, the family laptop, and
+ * the phone they replace mid-year. At two, a normal student hits the wall and
+ * has to chase the teacher — which is a support burden the teacher pays for in
+ * WhatsApp messages, not a piracy control. Casual sharing is still blocked.
+ */
+export const MAX_DEVICES_PER_USER = 3;
+
+/**
+ * How long a student must wait between self-service device swaps.
+ *
+ * A swap frees the least-recently-used slot without the teacher's help, which
+ * is what turns "my phone broke" from a dead end into two taps. Rate-limiting
+ * it is what stops the same feature becoming a way to pass one account around a
+ * study group all evening.
+ */
+export const DEVICE_SWAP_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000;
 
 export interface BoundDevice {
   /** Stable hash of coarse device characteristics — never raw fingerprint data. */
@@ -46,6 +63,38 @@ export interface User {
   parentLinkVersion?: number;
   createdAt: number;
   disabled?: boolean;
+  /** Why the account was disabled, shown to the staff member who reads it back. */
+  disabledReason?: string;
+  /** Who disabled or re-enabled the account last, and when. */
+  disabledBy?: string;
+  disabledAt?: number;
+
+  /**
+   * Sessions that authenticated before this instant are rejected.
+   *
+   * This is our own revocation clock, and it exists to keep the hot path
+   * offline. Firebase's own `checkRevoked` option answers the same question but
+   * costs a network round trip to Google on every single page render — and when
+   * that call fails transiently, the only sane reading of the failure is "we
+   * don't know", which the old code turned into "signed out". Storing the
+   * instant here means the check rides along with the user document we already
+   * read, never fails independently, and stays exact.
+   *
+   * Always set it together with `revokeRefreshTokens`, or the browser silently
+   * mints a fresh cookie from its still-valid refresh token — see
+   * `revokeAllSessions`.
+   */
+  sessionsValidFrom?: number;
+
+  /** Last self-service device swap. Gates the next one — see DEVICE_SWAP_COOLDOWN_MS. */
+  lastDeviceSwapAt?: number;
+
+  /** Last time any request of theirs resolved a session. Powers "active this week" in the directory. */
+  lastSeenAt?: number;
+
+  /** Set when a staff member changed the role, so the directory can show who did it. */
+  roleUpdatedBy?: string;
+  roleUpdatedAt?: number;
 }
 
 export interface Subject {

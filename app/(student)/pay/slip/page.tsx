@@ -1,6 +1,5 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getSessionUser } from "@/lib/auth/session";
+import { requirePageUser } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
@@ -25,8 +24,7 @@ export default async function SlipPage({
 }: {
   searchParams: Promise<{ subject?: string }>;
 }) {
-  const user = await getSessionUser();
-  if (!user) redirect("/signin?next=/pay/slip");
+  const user = await requirePageUser("/pay/slip");
 
   const { subject: preferredSubject } = await searchParams;
   const [subjects, settings] = await Promise.all([listSubjects(), getPaymentSettings()]);

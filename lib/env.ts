@@ -46,6 +46,30 @@ export function optionalServerEnv(name: string): string | undefined {
   return process.env[name] || undefined;
 }
 
+/**
+ * Phone numbers that hold the admin role, from `ADMIN_PHONES`.
+ *
+ * This is the platform's answer to "what are the admin credentials". There is
+ * no admin password, because there are no passwords anywhere — a phone number
+ * *is* the account, and the one-time code sent to it is the credential. So
+ * being an admin is a property of a number, not a second login.
+ *
+ * It lives in an environment variable rather than only in Firestore so the
+ * owner can always recover the role from the Firebase App Hosting console
+ * without a command line, even if they demoted their own account by accident.
+ * The list is re-applied on every sign-in: put a number here and that person is
+ * an admin the next time they sign in; take it out and their stored role stands
+ * unchanged, so removing someone is still a deliberate act in the console.
+ *
+ * Comma-separated, any format `toE164` accepts: "0771234567, +94719876543".
+ */
+export function adminPhones(): string[] {
+  return (process.env.ADMIN_PHONES ?? "")
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+}
+
 /** True once Firebase client config is present — lets pages degrade instead of crashing. */
 export function isFirebaseConfigured(): boolean {
   return Boolean(publicEnv.firebase.apiKey && publicEnv.firebase.projectId);

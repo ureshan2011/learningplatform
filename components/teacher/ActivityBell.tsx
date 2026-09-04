@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import type { TeacherActivity } from "@/lib/payments/activity";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /** Slow enough to be free, fast enough that a payment shows up while you watch. */
 const POLL_MS = 20_000;
@@ -28,7 +29,7 @@ export function ActivityBell() {
 
   const load = useCallback(async () => {
     try {
-      const res = await fetch("/api/teacher/activity", { cache: "no-store" });
+      const res = await fetchWithSession("/api/teacher/activity", { cache: "no-store" });
       if (!res.ok) return;
       const data = (await res.json()) as { activity: TeacherActivity[]; unseen: number };
       setItems(data.activity);
@@ -64,7 +65,7 @@ export function ActivityBell() {
     setOpen(next);
     if (next && unseen > 0) {
       setUnseen(0);
-      await fetch("/api/teacher/activity", {
+      await fetchWithSession("/api/teacher/activity", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ upTo: Date.now() }),

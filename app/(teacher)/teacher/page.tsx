@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { adminDb, col } from "@/lib/firebase/admin";
-import { getSessionUser } from "@/lib/auth/session";
+import { requireStaffPage } from "@/lib/auth/session";
 import { listSubjects, listUnits } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
 import { formatSessionTime } from "@/lib/format";
@@ -40,9 +39,7 @@ async function section<T>(name: string, read: () => Promise<T>, empty: T): Promi
 }
 
 export default async function TeacherConsolePage() {
-  const user = await getSessionUser();
-  if (!user) redirect("/signin");
-  if (user.role !== "teacher" && user.role !== "admin") redirect("/dashboard");
+  const user = await requireStaffPage("/teacher");
 
   // Each section is fetched independently so one failing read degrades that
   // section instead of blanking the whole console. The teacher losing access to
@@ -80,6 +77,13 @@ export default async function TeacherConsolePage() {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ActivityBell />
+            <Link
+              href="/teacher/users"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+            >
+              <Icon name="group" className="!text-base" />
+              People
+            </Link>
             <Link
               href="/teacher/payments"
               className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
@@ -192,8 +196,13 @@ export default async function TeacherConsolePage() {
             Device reset
           </h2>
           <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-            A student who changed phone sees &quot;maximum number of devices&quot; and is told to ask
-            you. This is where you free a slot. Your own account is never capped.
+            Students can now free their own stale device once a week, so this is the backstop for
+            the cases they cannot — a lost phone, or a second swap in the same week. Your own
+            account is never capped. To browse everyone instead of looking up one number, use{" "}
+            <Link href="/teacher/users" className="font-medium underline">
+              People
+            </Link>
+            .
           </p>
           <div className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
             <DeviceResetPanel />

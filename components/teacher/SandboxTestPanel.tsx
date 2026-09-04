@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /**
  * The rehearsal button: run one PayHere notification through this platform
@@ -31,7 +32,7 @@ export function SandboxTestPanel({
     setError(null);
     setResult(null);
     try {
-      const res = await fetch("/api/teacher/payments/simulate", {
+      const res = await fetchWithSession("/api/teacher/payments/simulate", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({

@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth/session";
+import { requirePageUser } from "@/lib/auth/session";
 import { listEnrollments, listSubjects, listUpcomingSessions, getProgress } from "@/lib/queries";
 import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
@@ -12,8 +11,7 @@ import { StatusPill } from "@/components/ui/StatusPill";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const user = await getSessionUser();
-  if (!user) redirect("/signin");
+  const user = await requirePageUser("/dashboard");
 
   const [enrollments, subjects] = await Promise.all([
     listEnrollments(user.uid),

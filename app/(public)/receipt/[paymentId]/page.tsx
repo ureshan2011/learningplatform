@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { col } from "@/lib/firebase/admin";
-import { getSessionUser } from "@/lib/auth/session";
+import { requirePageUser } from "@/lib/auth/session";
 import { getPaymentSettings } from "@/lib/payments/records";
 import { METHOD_LABEL, STATUS_LABEL } from "@/lib/payments/ledger";
 import { formatDate, formatLKR } from "@/lib/format";
@@ -29,8 +29,7 @@ export default async function ReceiptPage({
   params: Promise<{ paymentId: string }>;
 }) {
   const { paymentId } = await params;
-  const user = await getSessionUser();
-  if (!user) redirect(`/signin?next=/receipt/${paymentId}`);
+  const user = await requirePageUser(`/receipt/${paymentId}`);
 
   const snap = await col.payments().doc(paymentId).get();
   if (!snap.exists) notFound();

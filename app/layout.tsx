@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Suspense } from "react";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
+import { SessionKeeper } from "@/components/auth/SessionKeeper";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { graphJsonLd, organizationJsonLd, personJsonLd, webSiteJsonLd } from "@/lib/seo/json-ld";
 import { publicEnv } from "@/lib/env";
@@ -116,6 +117,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Suspense fallback={null}>
           <PageViewTracker />
         </Suspense>
+        {/*
+          Renders nothing. It keeps the session cookie renewed from the
+          browser's Firebase refresh token, which is what stops students being
+          sent back to the SMS gate on a fixed clock. It has to be here, in the
+          root layout, rather than inside the signed-in area: the renewal that
+          matters most happens on a public page a student opened from a
+          WhatsApp link.
+        */}
+        <SessionKeeper />
         {children}
       </body>
     </html>

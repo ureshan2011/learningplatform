@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth/session";
+import { notFound } from "next/navigation";
+import { requirePageUser } from "@/lib/auth/session";
 import { getSubject, getMockExam, getMockExamAttempt } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { getMockExamResult } from "@/lib/mockexams/engine";
@@ -19,8 +19,7 @@ export default async function MockExamPage({
 }) {
   const { subjectId, mockExamId } = await params;
 
-  const user = await getSessionUser();
-  if (!user) redirect(`/signin?next=/subjects/${subjectId}/mock-exams/${mockExamId}`);
+  const user = await requirePageUser(`/subjects/${subjectId}/mock-exams/${mockExamId}`);
 
   const [subject, exam] = await Promise.all([getSubject(subjectId), getMockExam(mockExamId)]);
   if (!subject || !exam || exam.subjectId !== subjectId) notFound();

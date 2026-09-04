@@ -1,254 +1,49 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  type ConfirmationResult,
-} from "firebase/auth";
-import { clientAuth } from "@/lib/firebase/client";
-import { collectDeviceSignals } from "@/lib/auth/device-client";
-import { toE164 } from "@/lib/phone";
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { getSessionUser } from "@/lib/auth/session";
 import { SiteHeader } from "@/components/nav/SiteHeader";
-import { track, identify } from "@/lib/analytics";
+import { SignInForm } from "@/components/auth/SignInForm";
 
-type Step = "phone" | "code";
+export const dynamic = "force-dynamic";
 
-export default function SignInPage() {
-  const router = useRouter();
-  const [step, setStep] = useState<Step>("phone");
-  const [phone, setPhone] = useState("");
-  const [name, setName] = useState("");
-  const [code, setCode] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [referredBy, setReferredBy] = useState<string | undefined>(undefined);
-  const confirmationRef = useRef<ConfirmationResult | null>(null);
-  const verifierRef = useRef<RecaptchaVerifier | null>(null);
+export const metadata: Metadata = {
+  title: "Sign in",
+  robots: { index: false, follow: true },
+};
 
-  // Read from window.location rather than useSearchParams: this page is
-  // entirely client-rendered, and useSearchParams would force a Suspense
-  // boundary just to read a one-off referral code.
-  useEffect(() => {
-    const ref = new URLSearchParams(window.location.search).get("ref")?.trim().toUpperCase();
-    // One-off read of the URL on mount, not a sync loop — window is unavailable
-    // during server render, so this can't move into the initial state without
-    // causing a hydration mismatch.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (ref) setReferredBy(ref);
-  }, []);
+/** Only same-origin paths. An open redirect on a sign-in page is a phishing primitive. */
+function safeNext(raw?: string): string {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/dashboard";
+  return raw;
+}
 
-  async function sendCode(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
+/**
+ * The sign-in gate.
+ *
+ * Server component on purpose. A student who is already signed in and taps a
+ * shared `/signin?ref=...` link used to be shown the form again and burned a
+ * billed SMS proving something the cookie already knew; now they are simply
+ * sent where they were going. The typing part lives in `SignInForm`.
+ */
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string; ref?: string; reason?: string }>;
+}) {
+  const params = await searchParams;
+  const next = safeNext(params.next);
 
-    const e164 = toE164(phone);
-    if (!e164) {
-      setError("Enter a valid Sri Lankan mobile number, e.g. 077 123 4567.");
-      return;
-    }
-
-    setBusy(true);
-    try {
-      const auth = clientAuth();
-      // The verifier must survive re-renders; recreating it invalidates the
-      // pending challenge and the OTP silently never arrives.
-      verifierRef.current ??= new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
-      });
-      confirmationRef.current = await signInWithPhoneNumber(auth, e164, verifierRef.current);
-      setStep("code");
-    } catch (err) {
-      setError(messageFor(err));
-      // A failed attempt burns the reCAPTCHA token; force a fresh one.
-      verifierRef.current?.clear();
-      verifierRef.current = null;
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function verifyCode(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setBusy(true);
-    try {
-      const confirmation = confirmationRef.current;
-      if (!confirmation) throw new Error("Session expired. Request a new code.");
-
-      const credential = await confirmation.confirm(code.trim());
-      const idToken = await credential.user.getIdToken();
-
-      const res = await fetch("/api/auth/session", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          idToken,
-          name: name.trim() || undefined,
-          referredBy,
-          device: collectDeviceSignals(),
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.message ?? "Could not sign you in. Try again.");
-      }
-
-      const data = (await res.json().catch(() => ({}))) as {
-        isNewUser?: boolean;
-        role?: "student" | "teacher" | "admin";
-      };
-      track(data.isNewUser ? "sign_up" : "login", {
-        method: "phone",
-        referred_by: referredBy,
-      });
-      if (credential.user.uid && data.role) identify(credential.user.uid, data.role);
-
-      router.replace("/dashboard");
-      router.refresh();
-    } catch (err) {
-      setError(messageFor(err));
-    } finally {
-      setBusy(false);
-    }
-  }
+  const user = await getSessionUser();
+  if (user) redirect(next);
 
   return (
     <>
       <SiteHeader user={null} />
-      <main className="mx-auto flex min-h-[calc(100dvh-73px)] max-w-md flex-col justify-center px-5 py-10">
-      <h1 className="text-2xl font-bold">Sign in</h1>
-      <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-        We send a one-time code by SMS. Your phone number is your account.
-      </p>
-
-      {referredBy ? (
-        <p className="mt-4 rounded-lg border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
-          You were invited with code {referredBy} — sign up and you&apos;ll both get 3 free days.
-        </p>
-      ) : null}
-
-      {step === "phone" ? (
-        <form onSubmit={sendCode} className="mt-8 space-y-4">
-          <Field label="Mobile number">
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="077 123 4567"
-              className={inputClass}
-            />
-          </Field>
-          <Field label="Your name" hint="Shown on the class leaderboard.">
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              autoComplete="name"
-              placeholder="Nimal Perera"
-              className={inputClass}
-            />
-          </Field>
-          <button type="submit" disabled={busy} className={buttonClass}>
-            {busy ? (
-              <span className="inline-flex w-full items-center justify-center gap-2">
-                <Spinner />
-                Sending…
-              </span>
-            ) : (
-              "Send code"
-            )}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={verifyCode} className="mt-8 space-y-4">
-          <Field label="Verification code" hint={`Sent to ${phone}`}>
-            <input
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={6}
-              placeholder="123456"
-              className={`${inputClass} tracking-[0.4em]`}
-            />
-          </Field>
-          <button type="submit" disabled={busy} className={buttonClass}>
-            {busy ? (
-              <span className="inline-flex w-full items-center justify-center gap-2">
-                <Spinner />
-                Verifying…
-              </span>
-            ) : (
-              "Verify and continue"
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setStep("phone");
-              setCode("");
-              setError(null);
-            }}
-            className="w-full text-sm text-(--color-awaken-ink-soft) underline"
-          >
-            Change number
-          </button>
-        </form>
-      )}
-
-      {error ? (
-        <p role="alert" className="mt-4 rounded-lg bg-(--color-awaken-danger-soft) p-3 text-sm text-(--color-awaken-danger)">
-          {error}
-        </p>
-      ) : null}
-
-      <div id="recaptcha-container" />
-      </main>
+      <SignInForm
+        next={next}
+        referredBy={params.ref?.trim().toUpperCase() || undefined}
+        reason={params.reason}
+      />
     </>
   );
-}
-
-const inputClass =
-  "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-3 text-base outline-none focus:border-(--color-awaken-accent)";
-const buttonClass =
-  "w-full rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-3 font-semibold text-white disabled:opacity-50";
-
-/** Spins while a phone verification round trip (SMS send or code check) is in flight. */
-function Spinner() {
-  return (
-    <span
-      aria-hidden
-      className="size-4 shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
-    />
-  );
-}
-
-function Field({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-(--color-awaken-ink-soft)">{label}</span>
-      {children}
-      {hint ? <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">{hint}</span> : null}
-    </label>
-  );
-}
-
-function messageFor(err: unknown): string {
-  const code = (err as { code?: string })?.code ?? "";
-  if (code.includes("invalid-verification-code")) return "That code is not correct.";
-  if (code.includes("code-expired")) return "That code expired. Request a new one.";
-  if (code.includes("too-many-requests")) return "Too many attempts. Try again in a few minutes.";
-  if (code.includes("invalid-phone-number")) return "That phone number is not valid.";
-  return err instanceof Error ? err.message : "Something went wrong. Try again.";
 }

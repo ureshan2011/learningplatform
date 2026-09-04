@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { track } from "@/lib/analytics";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /**
  * Starts a PayHere checkout.
@@ -26,7 +27,7 @@ export function SubscribeButton({
     setError(null);
     track("begin_checkout", { subjectId, payment_type: "payhere" });
     try {
-      const res = await fetch("/api/payments/payhere/checkout", {
+      const res = await fetchWithSession("/api/payments/payhere/checkout", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ subjectId }),

@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
   });
 }
 
-/** Free one device slot, or all of them. Signs that account out everywhere. */
+/** Free one device slot, or all of them. Only the freed browsers are signed out. */
 export async function POST(req: NextRequest) {
   try {
     await requireTeacher();

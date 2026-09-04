@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 const inputClass =
   "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-base outline-none focus:border-(--color-awaken-accent)";
@@ -38,7 +39,7 @@ export function ManualPaymentForm({
     setError(null);
     setDone(null);
     try {
-      const res = await fetch("/api/teacher/payments/record", {
+      const res = await fetchWithSession("/api/teacher/payments/record", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
