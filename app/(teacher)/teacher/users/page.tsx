@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { requireStaffPage } from "@/lib/auth/session";
-import { adminPhones } from "@/lib/env";
+import { col } from "@/lib/firebase/admin";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { UserDirectory } from "@/components/teacher/UserDirectory";
 import { Icon } from "@/components/ui/Icon";
@@ -22,7 +22,17 @@ export const metadata: Metadata = {
  */
 export default async function PeoplePage() {
   const user = await requireStaffPage("/teacher/users");
-  const adminsConfigured = adminPhones().length > 0;
+
+  // Single equality filter, so no composite index — see lib/queries.ts. A read
+  // failure must not hide the People screen, so an error is treated as "an
+  // admin probably exists" and simply leaves the bootstrap prompt off.
+  const noAdminYet = await col
+    .users()
+    .where("role", "==", "admin")
+    .limit(1)
+    .get()
+    .then((snap) => snap.empty)
+    .catch(() => false);
 
   return (
     <>
@@ -44,25 +54,31 @@ export default async function PeoplePage() {
           </Link>
         </div>
 
-        {user.role === "admin" ? null : (
+        {user.role === "admin" ? null : noAdminYet ? (
+          <p className="mt-5 flex gap-2 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-4 text-sm">
+            <Icon name="info" className="!text-base shrink-0 text-(--color-awaken-accent)" />
+            <span>
+              <strong>Nobody is an admin yet.</strong> Find yourself in the list below, open your
+              row, and set <strong>Role</strong> to <strong>admin</strong>. You will be signed out
+              — sign back in and you will have the full set of controls.
+              <span className="mt-1 block text-(--color-awaken-ink-soft)">
+                A teacher can only do this while the admin seat is empty. After that, only an admin
+                can change roles.
+              </span>
+            </span>
+          </p>
+        ) : (
           <p className="mt-5 flex gap-2 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 text-sm">
             <Icon name="info" className="!text-base shrink-0 text-(--color-awaken-ink-soft)" />
             <span>
               You are signed in as a <strong>teacher</strong>. You can free devices and sign people
               out. Changing someone&apos;s role or switching an account off is admin-only.
-              {adminsConfigured ? null : (
-                <span className="mt-1 block text-(--color-awaken-ink-soft)">
-                  No admin has been set up yet. Add your phone number to the{" "}
-                  <code className="rounded bg-(--color-awaken-bg) px-1">ADMIN_PHONES</code> variable
-                  in the Firebase App Hosting console, then sign in again — see SETUP.md.
-                </span>
-              )}
             </span>
           </p>
         )}
 
         <div className="mt-6">
-          <UserDirectory viewerRole={user.role} viewerUid={user.uid} />
+          <UserDirectory viewerRole={user.role} viewerUid={user.uid} noAdminYet={noAdminYet} />
         </div>
       </main>
     </>

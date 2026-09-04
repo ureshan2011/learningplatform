@@ -134,26 +134,26 @@ anywhere on this site: your phone number *is* your account, and the code texted
 to it is your credential. So "being an admin" is a property of a number.
 
 A teacher can run classes, take payments and free devices. An **admin** can also
-change anyone's role and switch an account off. Give yourself the admin role:
+change anyone's role and switch an account off.
 
-**https://console.firebase.google.com/project/srizone-1fc76/apphosting**
+Three taps, all in the browser:
 
-→ your backend → **Settings** → **Environment variables** → find `ADMIN_PHONES`
-→ set it to your own number, then redeploy:
+1. **Teacher console → People**
+2. Find yourself in the list and tap your row to open it.
+3. Set **Role** to **admin**.
 
-```
-+94771234567
-```
+You will be signed out immediately — that is the role change taking effect. Sign
+back in and you have the full set of controls.
 
-More than one is fine — separate them with commas. `077...`, `0094...` and
-`+9477...` are all understood.
+While nobody is an admin, any teacher can appoint the first one. **Once an admin
+exists, only an admin can change roles**, so this is a one-time door and it
+closes behind you. Promote anyone else the same way afterwards.
 
-Sign out and sign in again, and you are an admin. From then on you can promote
-anyone else from **Teacher console → People** without touching this variable
-again — it stays as your way back in if you ever lock yourself out.
-
-This is safe to leave in plain settings. On its own the number grants nothing:
-signing in as it still requires the SMS code sent to that SIM.
+If you ever lock yourself out completely — every admin demoted — the way back is
+the `ADMIN_PHONES` block in `apphosting.yaml`, which is commented out with
+instructions in the file. Anyone whose number is listed there becomes an admin on
+their next sign-in. It is safe in plain settings: on its own the number grants
+nothing, because signing in as it still needs the SMS code sent to that SIM.
 
 ### 3.4 See everyone who has signed up
 

@@ -64,7 +64,16 @@ const ROLES: Role[] = ["student", "parent", "teacher", "admin"];
  * Role changes and switching an account off are admin-only and the buttons are
  * simply absent for a teacher, rather than present and failing.
  */
-export function UserDirectory({ viewerRole, viewerUid }: { viewerRole: Role; viewerUid: string }) {
+export function UserDirectory({
+  viewerRole,
+  viewerUid,
+  noAdminYet,
+}: {
+  viewerRole: Role;
+  viewerUid: string;
+  /** True while nobody holds the admin role — the window in which a teacher may appoint the first one. */
+  noAdminYet: boolean;
+}) {
   const [query, setQuery] = useState("");
   const [role, setRole] = useState<"all" | Role>("all");
   const [users, setUsers] = useState<DirectoryUser[]>([]);
@@ -74,6 +83,10 @@ export function UserDirectory({ viewerRole, viewerUid }: { viewerRole: Role; vie
   const [openUid, setOpenUid] = useState<string | null>(null);
 
   const isAdmin = viewerRole === "admin";
+  // While the admin seat is empty a teacher may fill it, and only that: the
+  // API allows set_role -> admin and nothing else. Switching accounts off
+  // stays admin-only throughout.
+  const canSetRole = isAdmin || noAdminYet;
 
   const load = useCallback(async (q: string, filter: string) => {
     setLoading(true);
@@ -204,6 +217,7 @@ export function UserDirectory({ viewerRole, viewerUid }: { viewerRole: Role; vie
               <UserPanel
                 uid={user.uid}
                 isAdmin={isAdmin}
+                canSetRole={canSetRole}
                 isSelf={user.uid === viewerUid}
                 onChanged={() => void load(query, role)}
               />
@@ -219,11 +233,13 @@ export function UserDirectory({ viewerRole, viewerUid }: { viewerRole: Role; vie
 function UserPanel({
   uid,
   isAdmin,
+  canSetRole,
   isSelf,
   onChanged,
 }: {
   uid: string;
   isAdmin: boolean;
+  canSetRole: boolean;
   isSelf: boolean;
   onChanged: () => void;
 }) {
@@ -395,24 +411,26 @@ function UserPanel({
           Sign out everywhere
         </button>
 
+        {canSetRole ? (
+          <label className="inline-flex items-center gap-2">
+            <span className="text-(--color-awaken-ink-soft)">Role</span>
+            <select
+              value={user.role}
+              disabled={busy || isSelf}
+              onChange={(e) => act({ action: "set_role", role: e.target.value }, "Role changed.")}
+              className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-2 py-1.5 text-sm disabled:opacity-50"
+            >
+              {ROLES.map((r) => (
+                <option key={r} value={r} disabled={!isAdmin && r !== "admin" && r !== user.role}>
+                  {r}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : null}
+
         {isAdmin ? (
           <>
-            <label className="inline-flex items-center gap-2">
-              <span className="text-(--color-awaken-ink-soft)">Role</span>
-              <select
-                value={user.role}
-                disabled={busy || isSelf}
-                onChange={(e) => act({ action: "set_role", role: e.target.value }, "Role changed.")}
-                className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-2 py-1.5 text-sm disabled:opacity-50"
-              >
-                {ROLES.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </label>
-
             {user.disabled ? (
               <button
                 onClick={() => act({ action: "enable" }, "Account switched back on.")}
@@ -440,7 +458,7 @@ function UserPanel({
           </>
         ) : (
           <span className="self-center text-xs text-(--color-awaken-ink-soft)">
-            Changing roles and switching accounts off is admin-only.
+            Switching accounts off is admin-only.
           </span>
         )}
       </div>

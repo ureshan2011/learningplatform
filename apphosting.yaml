@@ -34,22 +34,6 @@ env:
     value: G-RMXRJRKE1Y
     availability: [BUILD, RUNTIME]
 
-  # Who the platform's admins are.
-  #
-  # This is the answer to "what are the admin credentials": there is no admin
-  # password anywhere on this platform, because the phone number IS the account
-  # and the SMS code is the credential. Listing a number here makes that person
-  # an admin the next time they sign in, whatever their stored role says — which
-  # is the recovery path if the owner ever demotes their own account by mistake.
-  #
-  # Not a secret, so it belongs here rather than in Secret Manager: on its own it
-  # grants nothing, since signing in as that number still needs the code sent to
-  # the SIM. Comma-separated; 077..., 0094... and +9477... are all accepted.
-  # Runtime only — nothing at build time reads it.
-  - variable: ADMIN_PHONES
-    value: ""
-    availability: [RUNTIME]
-
   # Realtime Database, Singapore. Set explicitly because it cannot be derived:
   # only us-central1 databases use `<name>.firebaseio.com`; every other region
   # uses `<name>.<region>.firebasedatabase.app`. A wrong host fails silently.
@@ -57,6 +41,28 @@ env:
   - variable: NEXT_PUBLIC_FIREBASE_DATABASE_URL
     value: https://srizone-1fc76-default-rtdb.asia-southeast1.firebasedatabase.app
     availability: [BUILD, RUNTIME]
+
+# ---------------------------------------------------------------------------
+# Optional: pin who the platform's admins are.
+#
+# Normally you do NOT need this. The owner's account is already staff, and while
+# the platform has no admin at all a teacher can appoint the first one from
+# Teacher console -> People. This block only exists as the way back in if that
+# ever becomes impossible — every admin demoted, say.
+#
+# There is no admin password, because there are no passwords here: the phone
+# number is the account and the SMS code is the credential. Anyone listed below
+# becomes an admin on their next sign-in, whatever their stored role says.
+#
+# To use it, uncomment both lines and put a real number in. App Hosting rejects
+# an env var with an empty value, so it cannot sit here blank waiting to be
+# filled — leave it commented out until you need it. Comma-separated;
+# 077..., 0094... and +9477... are all accepted.
+#
+#  - variable: ADMIN_PHONES
+#    value: "+94771234567"
+#    availability: [RUNTIME]
+# ---------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
 # Live classes (Zoom). On the Basic plan for now — no Custom Live Streaming

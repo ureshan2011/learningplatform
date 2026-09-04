@@ -95,12 +95,18 @@ Four roles: `student`, `parent`, `teacher`, `admin`. There are **no passwords
 anywhere** — the phone number is the account and the SMS code is the credential
 — so "admin credentials" means a phone number, not a login.
 
-- **`ADMIN_PHONES`** (env, comma-separated) is the recovery path: anyone listed
-  becomes an admin on their next sign-in, whatever their stored role says. It
-  is set in `apphosting.yaml` / the App Hosting console so admin access is
-  always recoverable without a terminal. Not a secret — signing in as that
-  number still needs the code sent to the SIM.
 - The first person ever to sign in becomes the teacher (`lib/auth/provision.ts`).
+- **While no admin exists, a teacher may appoint the first one** — `set_role` to
+  `admin` and nothing else, in `app/api/teacher/users/[uid]/route.ts`. Same
+  self-heal as `claimTeacherIfVacant`, and for the same reason: otherwise a
+  platform with no admin can never get one, and there is no terminal to fix it
+  from. The door closes the moment an admin exists.
+- **`ADMIN_PHONES`** (env, comma-separated) is the last-resort recovery path if
+  every admin is somehow demoted: anyone listed becomes an admin on their next
+  sign-in, whatever their stored role says. It lives **commented out** in
+  `apphosting.yaml` — App Hosting rejects an env var with an empty value, so it
+  cannot sit there blank waiting to be filled. Not a secret: signing in as that
+  number still needs the code sent to the SIM.
 - Everything else is done from **Teacher console → People** (`/teacher/users`):
   the full roll, searchable, with each person's subscriptions, payments,
   devices and history. Teachers may free devices and sign people out; **only an
