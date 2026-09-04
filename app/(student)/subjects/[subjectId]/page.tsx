@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth/session";
+import { notFound } from "next/navigation";
+import { requirePageUser } from "@/lib/auth/session";
 import { getSubject, listContent, listUnits } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { formatDate, formatLKR, formatSessionTime } from "@/lib/format";
@@ -37,8 +37,7 @@ export default async function SubjectPage({
 }) {
   const { subjectId } = await params;
 
-  const user = await getSessionUser();
-  if (!user) redirect(`/signin?next=/subjects/${subjectId}`);
+  const user = await requirePageUser(`/subjects/${subjectId}`);
 
   const subject = await getSubject(subjectId);
   if (!subject) notFound();

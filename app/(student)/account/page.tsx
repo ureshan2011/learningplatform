@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth/session";
+import { requirePageUser } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
 import { listEnrollments, listSubjects } from "@/lib/queries";
 import { formatDate, formatLKR } from "@/lib/format";
@@ -23,8 +22,7 @@ const ROLE_LABEL: Record<string, string> = {
 };
 
 export default async function AccountPage() {
-  const session = await getSessionUser();
-  if (!session) redirect("/signin");
+  const session = await requirePageUser("/account");
 
   const [snap, enrollments, subjects, payments] = await Promise.all([
     col.users().doc(session.uid).get(),

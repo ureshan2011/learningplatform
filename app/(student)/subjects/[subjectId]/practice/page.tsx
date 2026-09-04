@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth/session";
+import { notFound } from "next/navigation";
+import { requirePageUser } from "@/lib/auth/session";
 import { getSubject } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { PracticeSession } from "@/components/practice/PracticeSession";
@@ -15,8 +15,7 @@ export default async function PracticePage({
 }) {
   const { subjectId } = await params;
 
-  const user = await getSessionUser();
-  if (!user) redirect(`/signin?next=/subjects/${subjectId}/practice`);
+  const user = await requirePageUser(`/subjects/${subjectId}/practice`);
 
   const subject = await getSubject(subjectId);
   if (!subject) notFound();

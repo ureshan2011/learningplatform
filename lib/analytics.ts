@@ -2,6 +2,7 @@
 
 import { logEvent, setUserId, setUserProperties } from "firebase/analytics";
 import { clientAnalytics } from "@/lib/firebase/client";
+import type { Role } from "@/lib/types";
 
 /**
  * Fire-and-forget GA4 event. No-ops until Analytics is configured and ready
@@ -20,7 +21,7 @@ export function track(name: string, params?: Record<string, unknown>): void {
 }
 
 /** Ties events to a signed-in user so GA can report per-role, not just per-session. */
-export function identify(uid: string, role: "student" | "teacher" | "admin"): void {
+export function identify(uid: string, role: Role): void {
   clientAnalytics().then((analytics) => {
     if (!analytics) return;
     try {

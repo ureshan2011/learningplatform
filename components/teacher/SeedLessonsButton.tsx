@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /** Loads the full A/L ICT unit and lesson breakdown so the syllabus page has real content on day one. */
 export function SeedLessonsButton() {
@@ -14,7 +15,7 @@ export function SeedLessonsButton() {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/teacher/subjects/units/seed", { method: "POST" });
+      const res = await fetchWithSession("/api/teacher/subjects/units/seed", { method: "POST" });
       if (!res.ok) throw new Error("Could not load the syllabus. Try again.");
       const data = (await res.json()) as { created: number };
       setDone(data.created);

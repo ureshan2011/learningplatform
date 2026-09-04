@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /** Just enough of a unit to fill the pickers — the console never needs the lesson bodies. */
 export interface UnitOption {
@@ -60,7 +61,7 @@ export function ScheduleSessionForm({
     const streamKey = String(form.get("streamKey") ?? "").trim();
 
     try {
-      const res = await fetch("/api/teacher/sessions", {
+      const res = await fetchWithSession("/api/teacher/sessions", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({

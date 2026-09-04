@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { formatLKR } from "@/lib/format";
 import type { LedgerRow } from "@/lib/payments/ledger";
 import type { PaymentStatus } from "@/lib/types";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 const STATUS_TONE: Record<PaymentStatus, string> = {
   paid: "bg-(--color-awaken-success-soft) text-(--color-awaken-success)",
@@ -77,7 +78,7 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
     setBusyId(row.id);
     setError(null);
     try {
-      const res = await fetch("/api/teacher/payments/refund", {
+      const res = await fetchWithSession("/api/teacher/payments/refund", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ paymentId: row.id, action, revoke: true }),

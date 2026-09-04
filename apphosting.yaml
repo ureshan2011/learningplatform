@@ -34,6 +34,22 @@ env:
     value: G-RMXRJRKE1Y
     availability: [BUILD, RUNTIME]
 
+  # Who the platform's admins are.
+  #
+  # This is the answer to "what are the admin credentials": there is no admin
+  # password anywhere on this platform, because the phone number IS the account
+  # and the SMS code is the credential. Listing a number here makes that person
+  # an admin the next time they sign in, whatever their stored role says — which
+  # is the recovery path if the owner ever demotes their own account by mistake.
+  #
+  # Not a secret, so it belongs here rather than in Secret Manager: on its own it
+  # grants nothing, since signing in as that number still needs the code sent to
+  # the SIM. Comma-separated; 077..., 0094... and +9477... are all accepted.
+  # Runtime only — nothing at build time reads it.
+  - variable: ADMIN_PHONES
+    value: ""
+    availability: [RUNTIME]
+
   # Realtime Database, Singapore. Set explicitly because it cannot be derived:
   # only us-central1 databases use `<name>.firebaseio.com`; every other region
   # uses `<name>.<region>.firebasedatabase.app`. A wrong host fails silently.

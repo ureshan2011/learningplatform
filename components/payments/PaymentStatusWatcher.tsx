@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { track } from "@/lib/analytics";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 type Phase = "waiting" | "unlocked" | "failed" | "slow";
 
@@ -32,7 +33,7 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
   const check = useCallback(async () => {
     if (startedAt.current === 0) startedAt.current = Date.now();
     try {
-      const res = await fetch(`/api/payments/status?order=${encodeURIComponent(orderId)}`, {
+      const res = await fetchWithSession(`/api/payments/status?order=${encodeURIComponent(orderId)}`, {
         cache: "no-store",
       });
       if (!res.ok) return;

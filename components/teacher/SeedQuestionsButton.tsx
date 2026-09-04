@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /** Loads the starter practice question bank so Practice has real content to test on day one. */
 export function SeedQuestionsButton() {
@@ -14,7 +15,7 @@ export function SeedQuestionsButton() {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/teacher/questions/seed", { method: "POST" });
+      const res = await fetchWithSession("/api/teacher/questions/seed", { method: "POST" });
       if (!res.ok) throw new Error("Could not load the question bank. Try again.");
       const data = (await res.json()) as { created: number };
       setDone(data.created);

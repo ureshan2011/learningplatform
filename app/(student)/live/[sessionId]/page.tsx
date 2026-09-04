@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { getSessionUser } from "@/lib/auth/session";
+import { notFound } from "next/navigation";
+import { requirePageUser } from "@/lib/auth/session";
 import { getSession, getSubject } from "@/lib/queries";
 import { formatSessionTime, relativeToNow } from "@/lib/format";
 import { JoinClass } from "@/components/live/JoinClass";
@@ -16,8 +16,8 @@ export default async function LiveSessionPage({
 }) {
   const { sessionId } = await params;
 
-  const user = await getSessionUser();
-  if (!user) redirect(`/signin?next=/live/${sessionId}`);
+  // Gate only — the page renders the same for every signed-in student.
+  await requirePageUser(`/live/${sessionId}`);
 
   const session = await getSession(sessionId);
   if (!session) notFound();

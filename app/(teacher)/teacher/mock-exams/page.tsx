@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { col } from "@/lib/firebase/admin";
-import { getSessionUser } from "@/lib/auth/session";
+import { requireStaffPage } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
 import { CreateMockExamForm } from "@/components/teacher/CreateMockExamForm";
@@ -15,9 +14,7 @@ export const dynamic = "force-dynamic";
 const SCAN_WINDOW = 500;
 
 export default async function TeacherMockExamsPage() {
-  const user = await getSessionUser();
-  if (!user) redirect("/signin");
-  if (user.role !== "teacher" && user.role !== "admin") redirect("/dashboard");
+  const user = await requireStaffPage("/teacher/mock-exams");
 
   const subjects = await listSubjects();
   const exams = await allMockExams();

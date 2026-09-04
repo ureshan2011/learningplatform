@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 interface PracticeQuestion {
   id: string;
@@ -55,7 +56,7 @@ export function PracticeSession({
     setCorrectCount(0);
     setXpEarned(0);
     try {
-      const res = await fetch(`/api/practice/${subjectId}/session`);
+      const res = await fetchWithSession(`/api/practice/${subjectId}/session`);
       if (!res.ok) throw new Error();
       const data = (await res.json()) as { questions: PracticeQuestion[] };
       if (data.questions.length === 0) {
@@ -75,7 +76,7 @@ export function PracticeSession({
     setSubmitting(true);
     try {
       const question = questions[index];
-      const res = await fetch(`/api/practice/${subjectId}/answer`, {
+      const res = await fetchWithSession(`/api/practice/${subjectId}/answer`, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ questionId: question.id, choiceIndex }),

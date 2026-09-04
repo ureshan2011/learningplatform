@@ -127,6 +127,43 @@ You can take money from day one this way — bank deposits and cash both work
 with no payment gateway at all. See `docs/services.md` for adding PayHere card
 payments on top.
 
+### 3.3 Make yourself the admin
+
+There is **no admin username and no admin password**. There are no passwords
+anywhere on this site: your phone number *is* your account, and the code texted
+to it is your credential. So "being an admin" is a property of a number.
+
+A teacher can run classes, take payments and free devices. An **admin** can also
+change anyone's role and switch an account off. Give yourself the admin role:
+
+**https://console.firebase.google.com/project/srizone-1fc76/apphosting**
+
+→ your backend → **Settings** → **Environment variables** → find `ADMIN_PHONES`
+→ set it to your own number, then redeploy:
+
+```
++94771234567
+```
+
+More than one is fine — separate them with commas. `077...`, `0094...` and
+`+9477...` are all understood.
+
+Sign out and sign in again, and you are an admin. From then on you can promote
+anyone else from **Teacher console → People** without touching this variable
+again — it stays as your way back in if you ever lock yourself out.
+
+This is safe to leave in plain settings. On its own the number grants nothing:
+signing in as it still requires the SMS code sent to that SIM.
+
+### 3.4 See everyone who has signed up
+
+**Teacher console → People** is the roll: every account, searchable by name,
+phone, school or referral code. Open a row for the full record — when they
+joined, when they were last on, what they are subscribed to, everything they
+have paid, and which devices they are using. From there you can free a device
+slot, sign someone out everywhere, and (as an admin) change their role or switch
+the account off.
+
 Your site: **https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app**
 
 ---

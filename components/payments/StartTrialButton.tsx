@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 /**
  * Grants the free trial then reloads the page so the server re-checks
@@ -17,7 +18,7 @@ export function StartTrialButton({ subjectId }: { subjectId: string }) {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/trial/start", {
+      const res = await fetchWithSession("/api/trial/start", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ subjectId }),

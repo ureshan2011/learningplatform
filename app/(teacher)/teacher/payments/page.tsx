@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { adminDb, col } from "@/lib/firebase/admin";
-import { getSessionUser } from "@/lib/auth/session";
+import { requireStaffPage } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
 import { formatLKR, formatSessionTime } from "@/lib/format";
@@ -46,9 +45,7 @@ async function section<T>(name: string, read: () => Promise<T>, empty: T): Promi
  * accountant, and the settings behind it.
  */
 export default async function TeacherPaymentsPage() {
-  const user = await getSessionUser();
-  if (!user) redirect("/signin");
-  if (user.role !== "teacher" && user.role !== "admin") redirect("/dashboard");
+  const user = await requireStaffPage("/teacher/payments");
 
   const subjects = await section("subjects", () => listSubjects(), [] as Subject[]);
 

@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { col } from "@/lib/firebase/admin";
-import { getSessionUser } from "@/lib/auth/session";
+import { requireStaffPage } from "@/lib/auth/session";
 import { publicEnv } from "@/lib/env";
 import { formatDate } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
@@ -17,9 +16,7 @@ const SCAN_WINDOW = 2000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export default async function TeacherLeadsPage() {
-  const user = await getSessionUser();
-  if (!user) redirect("/signin");
-  if (user.role !== "teacher" && user.role !== "admin") redirect("/dashboard");
+  const user = await requireStaffPage("/teacher/leads");
 
   const leads = await allLeads();
 

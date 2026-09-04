@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ZoomEmbed, type ZoomJoinConfig } from "@/components/player/ZoomEmbed";
 import { HlsPlayer } from "@/components/player/HlsPlayer";
+import { fetchWithSession } from "@/lib/auth/session-client";
 
 type JoinResponse =
   | ({ mode: "zoom" } & ZoomJoinConfig & { joinUrl: string })
@@ -28,7 +29,7 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
 
     void (async () => {
       try {
-        const res = await fetch(`/api/sessions/${sessionId}/join`, {
+        const res = await fetchWithSession(`/api/sessions/${sessionId}/join`, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ preferHls: prefersHls() }),
@@ -37,11 +38,15 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
         if (cancelled) return;
 
         if (!res.ok) {
-          setState({
-            kind: "error",
-            message: messageForJoinError(data.reason ?? data.error),
-            reason: data.reason ?? data.error,
-          });
+          // A lapsed session that could not be renewed reads as "you have not
+          // paid" through the default message below — during a live class,
+          // which is exactly when a student cannot afford to be confused about
+          // why they are locked out.
+          const reason =
+            res.status === 401 || res.status === 403
+              ? "session_expired"
+              : (data.reason ?? data.error);
+          setState({ kind: "error", message: messageForJoinError(reason), reason });
           return;
         }
         setState({ kind: "ready", data: data as JoinResponse });
@@ -111,6 +116,8 @@ function prefersHls(): boolean {
 
 function messageForJoinError(reason?: string): string {
   switch (reason) {
+    case "session_expired":
+      return "Your sign-in expired. Sign in again and this class will open straight away.";
     // Zoom has not been connected yet. Not an error the student caused, so do
     // not word it as one.
     case "not_configured":
