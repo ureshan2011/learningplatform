@@ -114,7 +114,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ uid
   }
 
   if (requiresAdmin(body.action) && staff.role !== "admin") {
-    return NextResponse.json({ error: "admin_only" }, { status: 403 });
+    // Bootstrap, and the same self-heal as `claimTeacherIfVacant`: a platform
+    // with no admin at all cannot appoint one, and the owner has no terminal to
+    // do it from. While that seat is empty a teacher may fill it — nothing
+    // else, and only with the admin role. Once any admin exists this never
+    // fires again and role changes are admin-only as normal.
+    const bootstrapping =
+      body.action === "set_role" && body.role === "admin" && (await noAdminExists());
+    if (!bootstrapping) {
+      return NextResponse.json({ error: "admin_only" }, { status: 403 });
+    }
   }
 
   const { uid } = await params;
@@ -186,13 +195,22 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ uid
   }
 }
 
+/** Every admin on this tenant, excluding one uid. Single equality filter — no composite index. */
+async function otherAdmins(excludeUid?: string): Promise<User[]> {
+  const snap = await col.users().where("role", "==", "admin").limit(5).get();
+  return snap.docs
+    .map((d) => d.data() as User)
+    .filter((u) => u.tenantId === publicEnv.tenantId && u.uid !== excludeUid);
+}
+
 /** Guards the platform against ending up with no admin and no browser route back to one. */
 async function isLastAdmin(uid: string): Promise<boolean> {
-  const snap = await col.users().where("role", "==", "admin").limit(5).get();
-  const admins = snap.docs
-    .map((d) => d.data() as User)
-    .filter((u) => u.tenantId === publicEnv.tenantId && u.uid !== uid);
-  return admins.length === 0;
+  return (await otherAdmins(uid)).length === 0;
+}
+
+/** True while the admin seat is vacant — the only window in which a teacher may fill it. */
+async function noAdminExists(): Promise<boolean> {
+  return (await otherAdmins()).length === 0;
 }
 
 async function setClaims(uid: string, role: Role, tenantId: string): Promise<void> {
