@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono, Manrope } from "next/font/google";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
 import { Icon } from "@/components/ui/Icon";
@@ -10,9 +9,6 @@ import { ALSO_WORTH_KNOWING } from "@/lib/content/university-pathways";
 // Same three self-hosted fonts as the main landing page, scoped to this page
 // only — this page is built to feel like an extension of it, not a plain
 // reference article.
-const displayFont = Manrope({ subsets: ["latin"], weight: ["700", "800"], variable: "--font-lp-display" });
-const bodyFont = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-lp-body" });
-const monoFont = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-lp-mono" });
 
 export const metadata: Metadata = {
   title: "A/L ICT University Degrees Sri Lanka — Z-Score Cutoffs & Eligibility",
@@ -41,7 +37,7 @@ function jsonLd() {
 
 export default function UniversityPathwaysPage() {
   return (
-    <div className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
+    <div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
       <SiteHeader user={null} />
       <ScrollEffects>

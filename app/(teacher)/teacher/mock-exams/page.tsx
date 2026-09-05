@@ -4,7 +4,6 @@ import { requireStaffPage } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
 import { CreateMockExamForm } from "@/components/teacher/CreateMockExamForm";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import type { MockExam, MockExamAttempt } from "@/lib/types";
 
@@ -14,7 +13,8 @@ export const dynamic = "force-dynamic";
 const SCAN_WINDOW = 500;
 
 export default async function TeacherMockExamsPage() {
-  const user = await requireStaffPage("/teacher/mock-exams");
+  // Gate only — the app shell renders who is signed in.
+  await requireStaffPage("/teacher/mock-exams");
 
   const subjects = await listSubjects();
   const exams = await allMockExams();
@@ -22,9 +22,7 @@ export default async function TeacherMockExamsPage() {
   const subjectName = new Map(subjects.map((s) => [s.id, s.name]));
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-3xl px-5 py-8">
+      <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
       <Link href="/teacher" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
         <Icon name="arrow_back" className="!text-base" />
         Teacher console
@@ -88,7 +86,6 @@ export default async function TeacherMockExamsPage() {
         )}
       </section>
       </main>
-    </>
   );
 }
 

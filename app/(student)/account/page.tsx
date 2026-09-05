@@ -5,11 +5,19 @@ import { listEnrollments, listSubjects } from "@/lib/queries";
 import { formatDate, formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import { publicEnv } from "@/lib/env";
-import { SignOutButton } from "@/components/auth/SignOutButton";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
 import { Icon } from "@/components/ui/Icon";
-import { StatusPill } from "@/components/ui/StatusPill";
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  Eyebrow,
+  IconBadge,
+  PageHeader,
+  SectionBar,
+  StatusChip,
+} from "@/components/ds";
 import { MAX_DEVICES_PER_USER, type Payment, type User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +29,14 @@ const ROLE_LABEL: Record<string, string> = {
   parent: "Parent",
 };
 
+/**
+ * Account and billing.
+ *
+ * One page answering the four questions a student or their parent actually
+ * arrives with: who am I signed in as, what am I paying for, where are my
+ * receipts, and which devices am I using. Everything else — the referral code,
+ * the parent link — sits below that.
+ */
 export default async function AccountPage() {
   const session = await requirePageUser("/account");
 
@@ -43,159 +59,179 @@ export default async function AccountPage() {
       )
       .catch(() => [] as Payment[]),
   ]);
+
   const user = snap.data() as User;
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
-  const initial = user.name.trim().charAt(0).toUpperCase() || "?";
+  const devices = user.devices ?? [];
+  const referralLink = `${publicEnv.appUrl}/signin?ref=${user.referralCode}`;
+  const totalPaid = payments
+    .filter((p) => p.status === "paid")
+    .reduce((sum, p) => sum + p.amountLKR, 0);
 
   return (
-    <main className="mx-auto max-w-lg px-5 py-8">
-      <div className="flex items-center gap-3">
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-(--color-awaken-accent-soft) text-lg font-bold text-(--color-awaken-accent)">
-          {initial}
-        </span>
-        <div>
-          <h1 className="text-2xl font-bold">{user.name}</h1>
-          <p className="text-sm text-(--color-awaken-ink-soft)">{ROLE_LABEL[user.role] ?? user.role}</p>
-        </div>
-      </div>
+    <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
+      <PageHeader
+        eyebrow="Your account"
+        title={user.name}
+        subtitle={`${ROLE_LABEL[user.role] ?? user.role} · ${formatLocal(user.phone)}`}
+      />
 
-      <dl className="mt-6 space-y-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm">
-        <Row label="Phone" value={formatLocal(user.phone)} />
-        {user.school ? <Row label="School" value={user.school} /> : null}
-        <Row label="Referral code" value={user.referralCode} />
-      </dl>
+      <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_320px] lg:items-start">
+        <div className="min-w-0 space-y-5">
+          <section>
+            <SectionBar title="Subscriptions" hint="What you currently have access to" />
+            {enrollments.length === 0 ? (
+              <Card radius="card" className="p-5">
+                <p className="text-sm text-ict-ink-300">
+                  No subscriptions yet. Pick a class from your dashboard to get started.
+                </p>
+                <ButtonLink href="/dashboard" variant="outline" size="sm" arrow="right" className="mt-4">
+                  Browse classes
+                </ButtonLink>
+              </Card>
+            ) : (
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {enrollments.map((e) => (
+                  <li key={e.id}>
+                    <Card radius="md" className="flex items-center justify-between gap-3 p-4">
+                      <div className="min-w-0">
+                        <p className="truncate text-[13px] font-semibold text-ict-paper-50">
+                          {subjectById.get(e.subjectId)?.name ?? e.subjectId}
+                        </p>
+                        <p className="mt-0.5 text-xs text-ict-ink-300">via {e.source}</p>
+                      </div>
+                      <StatusChip tone={e.status === "active" ? "success" : "neutral"}>
+                        {e.status === "active" ? `until ${formatDate(e.currentPeriodEnd)}` : e.status}
+                      </StatusChip>
+                    </Card>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
 
-      <section className="mt-8">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Icon name="auto_stories" className="text-(--color-awaken-accent)" />
-          Subscriptions
-        </h2>
-        {enrollments.length === 0 ? (
-          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">No subscriptions yet.</p>
-        ) : (
-          <ul className="mt-3 space-y-2 text-sm">
-            {enrollments.map((e) => (
-              <li
-                key={e.id}
-                className="flex items-center justify-between rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3"
-              >
-                <span>{subjectById.get(e.subjectId)?.name ?? e.subjectId}</span>
-                <StatusPill tone={e.status === "active" ? "success" : "neutral"}>
-                  {e.status === "active" ? `until ${formatDate(e.currentPeriodEnd)}` : e.status}
-                </StatusPill>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section className="mt-8">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Icon name="receipt_long" className="text-(--color-awaken-accent)" />
-          Payments &amp; receipts
-        </h2>
-        {payments.length === 0 ? (
-          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">No payments yet.</p>
-        ) : (
-          <ul className="mt-3 space-y-2 text-sm">
-            {payments.map((p) => (
-              <li
-                key={p.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) p-3 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-              >
-                <span className="min-w-0">
-                  <span className="block font-medium">
-                    {subjectById.get(p.subjectId)?.name ?? p.subjectId} · {formatLKR(p.amountLKR)}
-                  </span>
-                  <span className="block text-xs text-(--color-awaken-ink-soft)">
-                    {formatDate(p.paidAt ?? p.createdAt)}
-                    {p.receiptNo ? ` · ${p.receiptNo}` : ""}
-                  </span>
-                </span>
-                {p.status === "pending" ? (
-                  <StatusPill tone="neutral">waiting for approval</StatusPill>
-                ) : p.status === "refunded" ? (
-                  <StatusPill tone="neutral">refunded</StatusPill>
-                ) : (
-                  <Link
-                    href={`/receipt/${p.id}`}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-(--color-awaken-deep) underline"
-                  >
-                    <Icon name="receipt_long" className="!text-sm" />
-                    Receipt
-                  </Link>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section className="mt-8">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Icon name="group" className="text-(--color-awaken-accent)" />
-          Invite a friend
-        </h2>
-        <div className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 text-sm">
-          <p className="text-(--color-awaken-ink-soft)">
-            Share your code — when your friend subscribes, <strong>you both get 3 free days</strong>.
-          </p>
-          <p className="mt-3 truncate rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) px-3 py-2 font-mono text-xs text-(--color-awaken-ink-soft)">
-            {`${publicEnv.appUrl}/signin?ref=${user.referralCode}`}
-          </p>
-          <div className="mt-3">
-            <WhatsAppShareButton
-              text={`Join me on ICT Campus for A/L ICT tuition — sign up with my code and we both get 3 free days!\n${publicEnv.appUrl}/signin?ref=${user.referralCode}`}
+          <section>
+            <SectionBar
+              title="Payments & receipts"
+              hint={totalPaid > 0 ? `${formatLKR(totalPaid)} paid in total` : "Nothing paid yet"}
             />
-          </div>
+            {payments.length === 0 ? (
+              <Card radius="card" className="p-5">
+                <p className="text-sm text-ict-ink-300">No payments yet.</p>
+              </Card>
+            ) : (
+              <ul className="space-y-2">
+                {payments.map((p) => (
+                  <li
+                    key={p.id}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-ict-md border border-ict-border-dark bg-ict-ink-850 p-4"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-[13px] font-semibold text-ict-paper-50">
+                        {subjectById.get(p.subjectId)?.name ?? p.subjectId} · {formatLKR(p.amountLKR)}
+                      </p>
+                      <p className="mt-0.5 font-mono text-xs text-ict-ink-300">
+                        {formatDate(p.paidAt ?? p.createdAt)}
+                        {p.receiptNo ? ` · ${p.receiptNo}` : ""}
+                      </p>
+                    </div>
+                    {p.status === "pending" ? (
+                      <StatusChip tone="warning">Waiting for approval</StatusChip>
+                    ) : p.status === "refunded" ? (
+                      <StatusChip tone="neutral">Refunded</StatusChip>
+                    ) : (
+                      <Link
+                        href={`/receipt/${p.id}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-ict-orange-400 underline-offset-4 hover:underline"
+                      >
+                        <Icon name="receipt_long" className="!text-sm" />
+                        Receipt
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section>
+            <SectionBar title="Parent view" hint="Let a parent follow your progress" />
+            <Card radius="card" className="p-5">
+              <ParentLinkPanel />
+            </Card>
+          </section>
         </div>
-      </section>
 
-      <section className="mt-8">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Icon name="family_restroom" className="text-(--color-awaken-accent)" />
-          Parent view
-        </h2>
-        <ParentLinkPanel />
-      </section>
+        <aside className="space-y-3">
+          <Card radius="card" className="p-5">
+            <Eyebrow>Invite a friend</Eyebrow>
+            <p className="mt-2 text-sm text-ict-ink-300">
+              Share your code — when they subscribe, you both get{" "}
+              <strong className="text-ict-paper-50">3 free days</strong>.
+            </p>
+            <p className="mt-3 truncate rounded-ict-sm border border-ict-border-dark bg-ict-ink-900 px-3 py-2 font-mono text-xs text-ict-ink-300">
+              {referralLink}
+            </p>
+            <div className="mt-3">
+              <WhatsAppShareButton
+                text={`Join me on ICT Campus for A/L ICT tuition — sign up with my code and we both get 3 free days.\n${referralLink}`}
+              />
+            </div>
+          </Card>
 
-      <section className="mt-8">
-        <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Icon name="smartphone" className="text-(--color-awaken-accent)" />
-          Devices
-        </h2>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-          Your account works on up to {MAX_DEVICES_PER_USER} devices. To swap one, ask
-          your teacher to remove an old device.
-        </p>
-        <ul className="mt-3 space-y-2 text-sm">
-          {(user.devices ?? []).map((device) => (
-            <li
-              key={device.deviceHash}
-              className="flex items-center justify-between rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3"
-            >
-              <span className="flex items-center gap-2">
-                <Icon name="smartphone" className="!text-base text-(--color-awaken-ink-soft)" />
-                {device.label}
-              </span>
-              <span className="text-(--color-awaken-ink-soft)">last used {formatDate(device.lastSeenAt)}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+          <Card radius="card" className="p-5">
+            <div className="flex items-center justify-between">
+              <Eyebrow>Devices</Eyebrow>
+              <Badge tone={devices.length >= MAX_DEVICES_PER_USER ? "warning" : "neutral"}>
+                {devices.length}/{MAX_DEVICES_PER_USER}
+              </Badge>
+            </div>
+            <p className="mt-2 text-sm text-ict-ink-300">
+              Your account works on up to {MAX_DEVICES_PER_USER} devices. If you run out, signing in
+              on a new one lets you drop the oldest.
+            </p>
+            <ul className="mt-3 space-y-2">
+              {devices.length === 0 ? (
+                <li className="text-sm text-ict-ink-300">None bound yet.</li>
+              ) : (
+                devices.map((device) => (
+                  <li key={device.deviceHash} className="flex items-center gap-3">
+                    <IconBadge icon="smartphone" tone="dark" size={34} round />
+                    <span className="min-w-0">
+                      <span className="block truncate text-[13px] font-semibold text-ict-paper-50">
+                        {device.label}
+                      </span>
+                      <span className="block text-xs text-ict-ink-300">
+                        last used {formatDate(device.lastSeenAt)}
+                      </span>
+                    </span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </Card>
 
-      <div className="mt-10">
-        <SignOutButton className="flex w-full items-center justify-center gap-2 rounded-lg border border-(--color-awaken-line) px-4 py-3 text-sm font-medium hover:border-(--color-awaken-danger)/40 hover:text-(--color-awaken-danger)" />
+          {user.school || user.district ? (
+            <Card radius="card" className="p-5">
+              <Eyebrow>Details</Eyebrow>
+              <dl className="mt-3 space-y-2 text-sm">
+                {user.school ? (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-ict-ink-300">School</dt>
+                    <dd className="truncate font-medium text-ict-paper-50">{user.school}</dd>
+                  </div>
+                ) : null}
+                {user.district ? (
+                  <div className="flex justify-between gap-3">
+                    <dt className="text-ict-ink-300">District</dt>
+                    <dd className="truncate font-medium text-ict-paper-50">{user.district}</dd>
+                  </div>
+                ) : null}
+              </dl>
+            </Card>
+          ) : null}
+        </aside>
       </div>
     </main>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <dt className="text-(--color-awaken-ink-soft)">{label}</dt>
-      <dd className="truncate font-medium">{value}</dd>
-    </div>
   );
 }

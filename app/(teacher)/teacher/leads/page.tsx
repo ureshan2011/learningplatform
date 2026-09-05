@@ -1,11 +1,8 @@
-import Link from "next/link";
 import { col } from "@/lib/firebase/admin";
 import { requireStaffPage } from "@/lib/auth/session";
 import { publicEnv } from "@/lib/env";
 import { formatDate } from "@/lib/format";
-import { SiteHeader } from "@/components/nav/SiteHeader";
-import { Icon } from "@/components/ui/Icon";
-import { StatTile } from "@/components/ui/StatTile";
+import { PageHeader, StatCard } from "@/components/ds";
 import { LeadsTable, type LeadRow } from "@/components/teacher/LeadsTable";
 import type { Lead } from "@/lib/types";
 
@@ -16,7 +13,8 @@ const SCAN_WINDOW = 2000;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export default async function TeacherLeadsPage() {
-  const user = await requireStaffPage("/teacher/leads");
+  // Gate only — the app shell renders who is signed in.
+  await requireStaffPage("/teacher/leads");
 
   const leads = await allLeads();
 
@@ -35,31 +33,26 @@ export default async function TeacherLeadsPage() {
   }));
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-3xl px-5 py-8">
-        <Link href="/teacher" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
-          <Icon name="arrow_back" className="!text-base" />
-          Teacher console
-        </Link>
+      <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
+        <PageHeader
+          eyebrow="Teacher console"
+          title="Subscribers"
+          subtitle="Emails captured from the free content hub on the landing page."
+        />
 
-        <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
-          <Icon name="mail" className="text-(--color-awaken-accent)" />
-          Subscribers
-        </h1>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-          Emails captured from the free content hub on the landing page.
-        </p>
-
-        <div className="mt-6 grid grid-cols-3 gap-3">
-          <StatTile icon="group" label="Total subscribers" value={leads.length} tone="accent" />
-          <StatTile icon="bolt" label="New this week" value={newThisWeek} tone={newThisWeek > 0 ? "success" : "default"} />
-          <StatTile icon="notifications_active" label="New today" value={newToday} />
+        <div className="mt-5 grid grid-cols-3 gap-2">
+          <StatCard icon="group" label="Total" value={leads.length} />
+          <StatCard
+            icon="bolt"
+            label="This week"
+            value={newThisWeek}
+            tone={newThisWeek > 0 ? "success" : "neutral"}
+          />
+          <StatCard icon="notifications_active" label="Today" value={newToday} />
         </div>
 
         <LeadsTable leads={rows} />
       </main>
-    </>
   );
 }
 

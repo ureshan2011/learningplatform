@@ -1,11 +1,9 @@
-import Link from "next/link";
 import { requireStaffPage } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
-import { SiteHeader } from "@/components/nav/SiteHeader";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { Icon } from "@/components/ui/Icon";
-import { StatTile } from "@/components/ui/StatTile";
+import { PageHeader, StatCard } from "@/components/ds";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import {
   getAtRiskStudents,
@@ -35,7 +33,8 @@ async function section<T>(name: string, read: () => Promise<T>, empty: T): Promi
 }
 
 export default async function TeacherInsightsPage() {
-  const user = await requireStaffPage("/teacher/insights");
+  // Gate only — the app shell renders who is signed in.
+  await requireStaffPage("/teacher/insights");
 
   const subjects = await section("subjects", () => listSubjects(), []);
 
@@ -51,33 +50,23 @@ export default async function TeacherInsightsPage() {
   ]);
 
   return (
-    <>
-      <SiteHeader user={user} />
-      <main className="mx-auto max-w-3xl px-5 py-8">
-        <Link href="/teacher" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
-          <Icon name="arrow_back" className="!text-base" />
-          Teacher console
-        </Link>
+      <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
+        <PageHeader
+          eyebrow="Teacher console"
+          title="Insights"
+          subtitle="What's working, who needs a nudge, and what to teach next — from data students are already generating."
+        />
 
-        <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
-          <Icon name="insights" className="text-(--color-awaken-accent)" />
-          Insights
-        </h1>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-          What&apos;s working, who needs a nudge, and what to teach next — all from data
-          students are already generating.
-        </p>
-
-        <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatTile icon="group" label="Active students" value={overview.activeStudents} />
-          <StatTile icon="credit_card" label="Monthly revenue" value={formatLKR(overview.mrrLKR)} tone="success" />
-          <StatTile icon="bolt" label="New this month" value={overview.newStudentsThisMonth} tone="accent" />
-          <StatTile
+        <section className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <StatCard icon="group" label="Active students" value={overview.activeStudents} />
+          <StatCard icon="payments" label="Monthly revenue" value={formatLKR(overview.mrrLKR)} tone="success" />
+          <StatCard icon="bolt" label="New this month" value={overview.newStudentsThisMonth} tone="brand" />
+          <StatCard
             icon="receipt_long"
             label="Awaiting approval"
             value={formatLKR(overview.pendingRevenueLKR)}
             hint={overview.pendingSlipCount > 0 ? `${overview.pendingSlipCount} slip${overview.pendingSlipCount === 1 ? "" : "s"}` : undefined}
-            tone={overview.pendingSlipCount > 0 ? "warn" : "default"}
+            tone={overview.pendingSlipCount > 0 ? "warning" : "neutral"}
           />
         </section>
 
@@ -201,7 +190,6 @@ export default async function TeacherInsightsPage() {
           )}
         </section>
       </main>
-    </>
   );
 }
 

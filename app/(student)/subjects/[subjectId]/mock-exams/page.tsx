@@ -1,10 +1,16 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePageUser } from "@/lib/auth/session";
 import { getSubject, listMockExams, getMockExamAttempt } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
-import { Icon } from "@/components/ui/Icon";
-import { StatusPill } from "@/components/ui/StatusPill";
+import { SubjectPageShell } from "@/components/subject/SubjectShell";
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  EmptyState,
+  IconBadge,
+  StatusChip,
+} from "@/components/ds";
 import type { MockExam, MockExamAttempt } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -23,48 +29,59 @@ export default async function MockExamsPage({
 
   const access = await hasAccess(user.uid, subjectId);
   const exams = access.allowed ? await listMockExams(subjectId) : [];
-  const attemptByExam = access.allowed ? await attemptsFor(user.uid, exams) : new Map<string, MockExamAttempt>();
+  const attemptByExam = access.allowed
+    ? await attemptsFor(user.uid, exams)
+    : new Map<string, MockExamAttempt>();
+
+  const sat = exams.filter((e) => attemptByExam.get(e.id)?.submittedAt).length;
 
   return (
-    <main className="mx-auto max-w-2xl px-5 py-8">
-      <Link href={`/subjects/${subjectId}`} className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
-        <Icon name="arrow_back" className="!text-base" />
-        {subject.name}
-      </Link>
-
-      <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
-        <Icon name="schedule" className="text-(--color-awaken-accent)" />
-        Mock exams
-      </h1>
-      <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-        Full timed papers with negative marking, just like the real thing — not self-paced practice.
-      </p>
-
-      {!access.allowed ? (
-        <div className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-5 text-sm">
-          <p className="font-medium text-(--color-awaken-accent)">
-            {access.reason === "expired" ? "Your subscription has ended." : "You are not enrolled in this subject."}
-          </p>
-          <p className="mt-1 text-(--color-awaken-ink-soft)">Subscribe to unlock mock exams.</p>
-          <Link
-            href="/dashboard"
-            className="mt-3 inline-block rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white"
-          >
-            Subscribe
-          </Link>
-        </div>
-      ) : exams.length === 0 ? (
-        <p className="mt-8 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
-          No mock exams are ready yet for {subject.name}. Check back once your teacher has added one.
-        </p>
+    <SubjectPageShell
+      subjectId={subjectId}
+      subjectName={subject.name}
+      title="Mock exams"
+      subtitle="Full timed papers with negative marking, just like the real thing — not self-paced practice."
+      access={access}
+      lockedBody="Timed papers scored the way the real one is, with negative marking and your rank against everyone else who sat it."
+    >
+      {exams.length === 0 ? (
+        <EmptyState
+          icon="schedule"
+          title="No papers yet"
+          body={`Nothing is ready for ${subject.name} yet. Your teacher publishes a paper here when it is set.`}
+          action={
+            <ButtonLink
+              href={`/subjects/${subjectId}/practice`}
+              variant="outline"
+              size="sm"
+              arrow="right"
+            >
+              Practise instead
+            </ButtonLink>
+          }
+        />
       ) : (
-        <ul className="mt-6 space-y-3">
-          {exams.map((exam) => (
-            <MockExamRow key={exam.id} subjectId={subjectId} exam={exam} attempt={attemptByExam.get(exam.id)} />
-          ))}
-        </ul>
+        <>
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <Badge tone="neutral">
+              {exams.length} paper{exams.length === 1 ? "" : "s"}
+            </Badge>
+            {sat > 0 ? <Badge tone="success">{sat} sat</Badge> : null}
+          </div>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {exams.map((exam) => (
+              <li key={exam.id}>
+                <MockExamCard
+                  subjectId={subjectId}
+                  exam={exam}
+                  attempt={attemptByExam.get(exam.id)}
+                />
+              </li>
+            ))}
+          </ul>
+        </>
       )}
-    </main>
+    </SubjectPageShell>
   );
 }
 
@@ -75,7 +92,7 @@ async function attemptsFor(uid: string, exams: MockExam[]): Promise<Map<string, 
   return new Map(entries.filter((e): e is [string, MockExamAttempt] => e[1] !== null));
 }
 
-function MockExamRow({
+function MockExamCard({
   subjectId,
   exam,
   attempt,
@@ -84,30 +101,47 @@ function MockExamRow({
   exam: MockExam;
   attempt?: MockExamAttempt;
 }) {
-  const href = `/subjects/${subjectId}/mock-exams/${exam.id}`;
+  const done = Boolean(attempt?.submittedAt);
   return (
-    <li className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 className="font-semibold">{exam.title}</h2>
-        {attempt?.submittedAt ? (
-          <StatusPill tone="success">
-            {attempt.score} pts · rank {attempt.rank}/{attempt.totalAttempts}
-          </StatusPill>
-        ) : attempt ? (
-          <StatusPill tone="accent">In progress</StatusPill>
-        ) : null}
+    <Card radius="card" className="flex h-full flex-col p-5">
+      <div className="flex items-start gap-3">
+        <IconBadge icon={done ? "military_tech" : "timer"} tone={done ? "soft" : "dark"} size={40} round />
+        <div className="min-w-0 flex-1">
+          <h2 className="font-display text-base font-extrabold text-ict-paper-50">{exam.title}</h2>
+          <p className="mt-1 text-xs text-ict-ink-300">
+            {exam.questionIds.length} questions · {exam.durationMinutes} min
+            {exam.negativeMarking > 0
+              ? ` · −${exam.negativeMarking} per wrong answer`
+              : " · no negative marking"}
+          </p>
+        </div>
       </div>
-      <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-        {exam.questionIds.length} questions · {exam.durationMinutes} min
-        {exam.negativeMarking > 0 ? ` · -${exam.negativeMarking} per wrong answer` : " · no negative marking"}
-      </p>
-      <Link
-        href={href}
-        className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
-      >
-        <Icon name={attempt?.submittedAt ? "military_tech" : "timer"} className="!text-base" />
-        {attempt?.submittedAt ? "View results" : attempt ? "Resume" : "Start"}
-      </Link>
-    </li>
+
+      {done && attempt ? (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <StatusChip tone="success">{attempt.score} pts</StatusChip>
+          {attempt.rank && attempt.totalAttempts ? (
+            <span className="text-xs text-ict-ink-300">
+              Rank {attempt.rank} of {attempt.totalAttempts}
+            </span>
+          ) : null}
+        </div>
+      ) : attempt ? (
+        <div className="mt-4">
+          <StatusChip tone="warning">In progress</StatusChip>
+        </div>
+      ) : null}
+
+      <div className="mt-auto pt-4">
+        <ButtonLink
+          href={`/subjects/${subjectId}/mock-exams/${exam.id}`}
+          variant={done ? "outline" : "primary"}
+          size="sm"
+          arrow="right"
+        >
+          {done ? "View results" : attempt ? "Resume" : "Start paper"}
+        </ButtonLink>
+      </div>
+    </Card>
   );
 }

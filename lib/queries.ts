@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { col, mockExamAttemptId, progressId } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
 import type {
@@ -55,14 +56,14 @@ const SCAN_WINDOW = 200;
  * To teach O/L again, drop the filter — the data model has always supported
  * both grades.
  */
-export async function listSubjects(): Promise<Subject[]> {
+export const listSubjects = cache(async (): Promise<Subject[]> => {
   const snap = await col
     .subjects()
     .where("tenantId", "==", publicEnv.tenantId)
     .where("active", "==", true)
     .get();
   return snap.docs.map((d) => d.data() as Subject).filter((s) => s.grade === "AL");
-}
+});
 
 /** Same A/L-only rule as `listSubjects` — an O/L id 404s rather than half-loading a page. */
 export async function getSubject(subjectId: string): Promise<Subject | null> {
@@ -72,10 +73,10 @@ export async function getSubject(subjectId: string): Promise<Subject | null> {
   return subject.grade === "AL" ? subject : null;
 }
 
-export async function listEnrollments(uid: string): Promise<Enrollment[]> {
+export const listEnrollments = cache(async (uid: string): Promise<Enrollment[]> => {
   const snap = await col.enrollments().where("uid", "==", uid).get();
   return snap.docs.map((d) => d.data() as Enrollment);
-}
+});
 
 /** Two equality filters — automatically indexed, same reasoning as `listSubjects`. */
 export async function listMockExams(subjectId: string): Promise<MockExam[]> {

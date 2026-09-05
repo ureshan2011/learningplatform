@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
 import { Suspense } from "react";
+import { fontVariables } from "@/lib/fonts";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { SessionKeeper } from "@/components/auth/SessionKeeper";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -24,14 +24,10 @@ import "./globals.css";
  */
 const SITE_JSON_LD = graphJsonLd([organizationJsonLd(), webSiteJsonLd(), personJsonLd()]);
 
-// Self-hosted by Next at build time (no runtime request to Google). Loaded
-// once here and applied to <body> so every page — not just the landing
-// page — can use it for headings, keeping one consistent typographic voice.
-const display = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["700", "800"],
-  variable: "--font-display",
-});
+// The three ICTCAMPUS faces, self-hosted by Next at build time (no runtime
+// request to Google). Loaded once here so the display face reaches every page
+// rather than only the two marketing pages that used to instantiate it — see
+// lib/fonts.ts.
 
 const SITE_DESCRIPTION =
   "A/L ICT classes, past papers and free notes for Sri Lankan Grade 12 & 13 students, Sinhala medium. Live online classes following the full NIE syllabus, instant quizzes and downloadable notes — taught by Dr. Yasas Sri Wickramasinghe, PhD. Free 7-day trial.";
@@ -93,25 +89,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={display.variable}>
-      {/*
-        Icon font for the whole app — see the .material-symbols-outlined rule
-        in globals.css. `display=block` (not `swap`) is Google's own
-        recommendation for icon fonts: an icon rendering as its literal glyph
-        name for a moment is worse than a brief blank space. The two ESLint
-        rules below are pages-router-era checks that don't apply to a root
-        layout in the App Router, where this is the correct way to add a link
-        tag that isn't covered by next/font.
-      */}
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font, @next/next/google-font-display */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={fontVariables}>
       <body>
         <JsonLd data={SITE_JSON_LD} />
         <Suspense fallback={null}>

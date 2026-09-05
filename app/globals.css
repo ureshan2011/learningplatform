@@ -13,7 +13,105 @@
  * language from the marketing page through to the student dashboard, the
  * teacher console and every feature page.
  */
+/*
+ * ============================================================================
+ * ICTCAMPUS design system — the single source of truth for the whole site.
+ * ============================================================================
+ *
+ * Two worlds, one palette. The **cream world** is marketing (`.landing-ict`,
+ * the syllabus and every other public page). The **dark world** is the product
+ * — everything behind sign-in — and it is scoped to `.ict-app` further down.
+ *
+ * These values used to exist only inside `.landing-ict` as `--lp-*`, which
+ * meant the design system stopped at the sign-in page. They are hoisted here so
+ * both worlds are drawn from one set of numbers; `.landing-ict` now aliases
+ * them, so nothing on the marketing side had to change.
+ *
+ * Rules that are easy to break and expensive to fix, from the system's readme:
+ *
+ *   - Orange is the ONLY accent, and it is rationed: one orange thing per
+ *     region of a screen. Neutrals do the structural work.
+ *   - NO gradient backgrounds. The only permitted gradients are the black
+ *     protection gradient over imagery and the radial spotlight behind a
+ *     cut-out portrait. Never a brand-to-brand gradient on a button.
+ *   - Two radius families, deliberately far apart: pills for anything
+ *     actionable, soft-squares (14/20/28px) for containers. A 4px "slightly
+ *     rounded" corner is off-brand.
+ *   - Semantic hues (green/amber/red/blue/violet) are 6px status dots and thin
+ *     badges only — never a fill for a large area.
+ *   - Line icons only, uniform stroke. No emoji, anywhere, ever.
+ */
 @theme {
+  /* Brand orange ramp — the only accent in the system. */
+  --color-ict-orange-50: #fff1ea;
+  --color-ict-orange-100: #ffdccb;
+  --color-ict-orange-200: #ffb894;
+  --color-ict-orange-300: #ff8f5c;
+  --color-ict-orange-400: #fb6a2e;
+  --color-ict-orange-500: #f4551e;
+  --color-ict-orange-600: #d8410f;
+  --color-ict-orange-700: #a5300a;
+
+  /* Warm near-black neutrals. Never a cool grey — that is the tell of an
+     off-brand surface. */
+  --color-ict-ink-900: #0e0c0b;
+  --color-ict-ink-850: #141110;
+  --color-ict-ink-800: #1a1615;
+  --color-ict-ink-700: #231e1c;
+  --color-ict-ink-600: #2e2826;
+  --color-ict-ink-500: #403936;
+  --color-ict-ink-400: #6b615d;
+  --color-ict-ink-300: #9b918d;
+  --color-ict-ink-200: #c8c0bc;
+
+  /* Cream / paper. */
+  --color-ict-paper-0: #ffffff;
+  --color-ict-paper-50: #fefaf7;
+  --color-ict-paper-100: #fdf4ee;
+  --color-ict-paper-200: #f8e9df;
+  --color-ict-paper-300: #efd8c9;
+
+  /* The one permitted third tone on dark: a single feature banner per screen. */
+  --color-ict-cocoa-700: #3b211a;
+  --color-ict-cocoa-600: #4a2a20;
+
+  /* Semantic hues. Dots and thin badges only. */
+  --color-ict-green-500: #2fa36b;
+  --color-ict-green-50: #e7f6ee;
+  --color-ict-amber-500: #e8a317;
+  --color-ict-amber-50: #fdf3df;
+  --color-ict-red-500: #d93a2b;
+  --color-ict-red-50: #fbe9e6;
+  --color-ict-violet-500: #7c5cff;
+  --color-ict-violet-50: #efebff;
+  --color-ict-blue-500: #2f6fe0;
+  --color-ict-blue-50: #e8f0fd;
+
+  --color-ict-border-dark: #2a2321;
+
+  /* Two families, far apart. Pills for actions, soft-squares for containers. */
+  --radius-ict-sm: 10px;
+  --radius-ict-md: 14px;
+  --radius-ict-card: 20px;
+  --radius-ict-panel: 28px;
+
+  /* Warm and soft, never a hard offset. On dark surfaces use the inset
+     highlight instead — a drop shadow does not read on near-black. */
+  --shadow-ict-xs: 0 1px 2px rgba(20, 17, 16, 0.06);
+  --shadow-ict-sm: 0 2px 6px rgba(20, 17, 16, 0.07);
+  --shadow-ict-md: 0 8px 20px -6px rgba(20, 17, 16, 0.12);
+  --shadow-ict-lg: 0 20px 44px -16px rgba(20, 17, 16, 0.18);
+  --shadow-ict-brand: 0 10px 24px -8px rgba(244, 85, 30, 0.45);
+  --shadow-ict-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* Fast and calm. No bounce, no spring overshoot, no infinite loops. */
+  --ease-ict: cubic-bezier(0.2, 0.8, 0.25, 1);
+  --ease-ict-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font-display: var(--font-display-face), "Helvetica Neue", Arial, sans-serif;
+  --font-body: var(--font-body-face), "Noto Sans Sinhala", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, Menlo, monospace;
+
   --color-ink: #0b1020;
   --color-ink-soft: #141b33;
   --color-ink-line: #232c4d;
@@ -30,10 +128,16 @@
   --color-awaken-line: #ecedf1;
   --color-awaken-ink: #15171f;
   --color-awaken-ink-soft: #5b5f6b;
-  --color-awaken-accent: #ea580c;
-  --color-awaken-accent-soft: #fff1e8;
-  --color-awaken-deep: #1e2340;
-  --color-awaken-rose: #e11d8f;
+  /* Retuned onto the ICTCAMPUS brand orange. `rose` was a magenta from the
+     earlier palette and is not in this system at all; every legacy
+     `bg-gradient-to-r from-accent to-rose` therefore now resolves to a flat
+     orange, which is what the system asks for — it forbids gradient fills
+     outright. Collapsing the stop is a one-line way to make ~50 call sites
+     across the public pages correct without touching any of them. */
+  --color-awaken-accent: #f4551e;
+  --color-awaken-accent-soft: #fff1ea;
+  --color-awaken-deep: #d8410f;
+  --color-awaken-rose: #f4551e;
   --color-awaken-success: #16a34a;
   --color-awaken-success-soft: #f0fdf4;
   --color-awaken-danger: #dc2626;
@@ -206,8 +310,134 @@ html,
 body {
   background: var(--color-awaken-bg);
   color: var(--color-awaken-ink);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * ============================================================================
+ * The dark world — everything behind sign-in.
+ * ============================================================================
+ *
+ * The design system runs the learning product on warm near-black. Rather than
+ * rewrite several hundred `bg-(--color-awaken-card)` utilities across forty
+ * screens, this scope **redefines those variables underneath them**. Tailwind
+ * compiles `bg-(--color-awaken-card)` to `background-color: var(...)`, which
+ * resolves at runtime against the nearest ancestor — so every existing surface
+ * inside `.ict-app` re-renders in the dark palette, correctly, with no churn.
+ *
+ * Two consequences worth knowing before you edit anything here:
+ *
+ *  1. `--color-awaken-rose` is aliased to the brand orange on purpose. The old
+ *     look leaned on `bg-gradient-to-r from-accent to-rose` for every primary
+ *     button, and the design system forbids gradient fills outright. Collapsing
+ *     the two stops means those gradients resolve to flat orange instead, so
+ *     even a button nobody has migrated yet lands on-brand.
+ *  2. `--color-awaken-accent-soft` becomes a raised ink surface, not a tint.
+ *     A pale orange wash that reads as "gently highlighted" on cream reads as
+ *     a glowing slab on near-black.
+ *
+ * New work should use the tokens directly (`bg-ict-ink-850`) and the `ds/`
+ * primitives. This mapping is what keeps the un-migrated screens honest in the
+ * meantime — it is a floor, not a licence to skip the redesign.
+ */
+.ict-app {
+  --color-awaken-bg: var(--color-ict-ink-900);
+  --color-awaken-card: var(--color-ict-ink-850);
+  --color-awaken-line: var(--color-ict-border-dark);
+  --color-awaken-ink: var(--color-ict-paper-50);
+  --color-awaken-ink-soft: var(--color-ict-ink-300);
+  --color-awaken-accent: var(--color-ict-orange-500);
+  --color-awaken-accent-soft: var(--color-ict-ink-800);
+  --color-awaken-deep: var(--color-ict-orange-400);
+  --color-awaken-rose: var(--color-ict-orange-500);
+  --color-awaken-success: var(--color-ict-green-500);
+  --color-awaken-success-soft: rgba(47, 163, 107, 0.14);
+  --color-awaken-danger: #f0685a;
+  --color-awaken-danger-soft: rgba(217, 58, 43, 0.16);
+  --color-awaken-warn: var(--color-ict-amber-500);
+  --color-awaken-warn-soft: rgba(232, 163, 23, 0.15);
+  --color-awaken-indigo: var(--color-ict-ink-200);
+  --color-awaken-indigo-soft: var(--color-ict-ink-700);
+
+  background: var(--color-ict-ink-900);
+  color: var(--color-ict-paper-50);
+  color-scheme: dark;
+  font-family: var(--font-body);
+}
+
+/* Headings carry the display face at its heaviest, with the tight tracking
+   that is the system's primary typographic gesture. */
+.ict-app h1,
+.ict-app h2,
+.ict-app h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* The caps kicker above a section heading. Orange, tiny, widely tracked. */
+.ict-eyebrow {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ict-orange-500);
+}
+
+/* Focus is a 2px orange ring at 2px offset, on :focus-visible only. */
+.ict-app :focus-visible {
+  outline: 2px solid var(--color-ict-orange-400);
+  outline-offset: 2px;
+}
+
+/* Cards lift 2px on hover and press to 0.97. Both are transform-only, so the
+   compositor handles them and a cheap Android phone still holds 60fps. */
+.ict-lift {
+  transition:
+    transform 200ms var(--ease-ict),
+    background-color 120ms var(--ease-ict),
+    border-color 120ms var(--ease-ict);
+}
+.ict-lift:hover {
+  transform: translateY(-2px);
+}
+.ict-press:active {
+  transform: scale(0.97);
+}
+
+/* Entrances are an 8-12px translate plus fade. Never scale-from-zero. */
+@keyframes ict-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ict-enter {
+  animation: ict-enter 340ms var(--ease-ict-out) both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ict-lift:hover,
+  .ict-press:active {
+    transform: none;
+  }
+  .ict-enter {
+    animation: none;
+  }
+}
+
+/* Thin, warm scrollbars — the default light ones are a bright seam on black. */
+.ict-app * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-ict-ink-600) transparent;
 }
 
 /* Sinhala renders with taller glyphs than Latin; give lines room to breathe. */
@@ -223,30 +453,6 @@ body {
   scrollbar-width: thin;
 }
 
-/*
- * Material Symbols (icon font, linked in app/layout.tsx). Google's own
- * recommended settings — see https://fonts.google.com/icons — loaded as a
- * webfont rather than bundled SVGs so the icon set can grow without a
- * dependency, matching the "browser-only setup" ethos elsewhere in this repo.
- */
-.material-symbols-outlined {
-  font-family: "Material Symbols Outlined";
-  font-weight: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  font-variation-settings:
-    "FILL" 0,
-    "wght" 400,
-    "GRAD" 0,
-    "opsz" 24;
-}
-
 /* Sidebar collapse on mobile — a plain checkbox toggle, no client JS needed. */
 .sidebar-toggle:checked ~ .sidebar-panel {
   transform: translateX(0);
@@ -260,52 +466,59 @@ body {
  * See app/(public)/page.tsx and components/marketing/landing/*.
  */
 .landing-ict {
-  --lp-orange-50: #fff1ea;
-  --lp-orange-100: #ffdccb;
-  --lp-orange-200: #ffb894;
-  --lp-orange-300: #ff8f5c;
-  --lp-orange-400: #fb6a2e;
-  --lp-orange-500: #f4551e;
-  --lp-orange-600: #d8410f;
-  --lp-orange-700: #a5300a;
+  /*
+   * The cream world. Every value below is an alias onto the shared ICTCAMPUS
+   * tokens at the top of this file — the palette used to be defined here, which
+   * meant the design system stopped at the sign-in page. Aliasing keeps every
+   * `--lp-*` reference in the marketing components working unchanged while
+   * there is now exactly one place a colour is decided.
+   */
+  --lp-orange-50: var(--color-ict-orange-50);
+  --lp-orange-100: var(--color-ict-orange-100);
+  --lp-orange-200: var(--color-ict-orange-200);
+  --lp-orange-300: var(--color-ict-orange-300);
+  --lp-orange-400: var(--color-ict-orange-400);
+  --lp-orange-500: var(--color-ict-orange-500);
+  --lp-orange-600: var(--color-ict-orange-600);
+  --lp-orange-700: var(--color-ict-orange-700);
 
-  --lp-ink-900: #0e0c0b;
-  --lp-ink-850: #141110;
-  --lp-ink-800: #1a1615;
-  --lp-ink-700: #231e1c;
-  --lp-ink-600: #2e2826;
-  --lp-ink-500: #403936;
-  --lp-ink-400: #6b615d;
-  --lp-ink-300: #9b918d;
-  --lp-ink-200: #c8c0bc;
+  --lp-ink-900: var(--color-ict-ink-900);
+  --lp-ink-850: var(--color-ict-ink-850);
+  --lp-ink-800: var(--color-ict-ink-800);
+  --lp-ink-700: var(--color-ict-ink-700);
+  --lp-ink-600: var(--color-ict-ink-600);
+  --lp-ink-500: var(--color-ict-ink-500);
+  --lp-ink-400: var(--color-ict-ink-400);
+  --lp-ink-300: var(--color-ict-ink-300);
+  --lp-ink-200: var(--color-ict-ink-200);
 
-  --lp-paper-0: #ffffff;
-  --lp-paper-50: #fefaf7;
-  --lp-paper-100: #fdf4ee;
-  --lp-paper-200: #f8e9df;
-  --lp-paper-300: #efd8c9;
+  --lp-paper-0: var(--color-ict-paper-0);
+  --lp-paper-50: var(--color-ict-paper-50);
+  --lp-paper-100: var(--color-ict-paper-100);
+  --lp-paper-200: var(--color-ict-paper-200);
+  --lp-paper-300: var(--color-ict-paper-300);
 
-  --lp-green-500: #2fa36b;
-  --lp-green-50: #e7f6ee;
+  --lp-green-500: var(--color-ict-green-500);
+  --lp-green-50: var(--color-ict-green-50);
 
-  --lp-border-subtle: var(--lp-paper-300);
-  --lp-border-dark: #2a2321;
+  --lp-border-subtle: var(--color-ict-paper-300);
+  --lp-border-dark: var(--color-ict-border-dark);
 
-  --lp-radius-md: 14px;
-  --lp-radius-card: 20px;
-  --lp-radius-panel: 28px;
+  --lp-radius-md: var(--radius-ict-md);
+  --lp-radius-card: var(--radius-ict-card);
+  --lp-radius-panel: var(--radius-ict-panel);
 
-  --lp-shadow-xs: 0 1px 2px rgba(20, 17, 16, 0.06);
-  --lp-shadow-sm: 0 2px 6px rgba(20, 17, 16, 0.07);
-  --lp-shadow-md: 0 8px 20px -6px rgba(20, 17, 16, 0.12);
-  --lp-shadow-lg: 0 20px 44px -16px rgba(20, 17, 16, 0.18);
-  --lp-shadow-brand: 0 10px 24px -8px rgba(244, 85, 30, 0.45);
+  --lp-shadow-xs: var(--shadow-ict-xs);
+  --lp-shadow-sm: var(--shadow-ict-sm);
+  --lp-shadow-md: var(--shadow-ict-md);
+  --lp-shadow-lg: var(--shadow-ict-lg);
+  --lp-shadow-brand: var(--shadow-ict-brand);
   --lp-shadow-nav-scrolled: 0 18px 40px rgba(14, 12, 11, 0.3);
-  --lp-shadow-inset-dark: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --lp-shadow-inset-dark: var(--shadow-ict-inset);
 
-  --lp-font-display: var(--font-lp-display), "Helvetica Neue", Arial, sans-serif;
-  --lp-font-body: var(--font-lp-body), "Helvetica Neue", Arial, sans-serif;
-  --lp-font-mono: var(--font-lp-mono), ui-monospace, Menlo, monospace;
+  --lp-font-display: var(--font-display);
+  --lp-font-body: var(--font-body);
+  --lp-font-mono: var(--font-mono);
 
   background: var(--lp-paper-100);
   color: var(--lp-ink-900);

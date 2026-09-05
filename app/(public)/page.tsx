@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { DM_Sans, JetBrains_Mono, Manrope } from "next/font/google";
 import { getSessionUser } from "@/lib/auth/session";
 import { listSubjectSessions, listSubjects, listUnits } from "@/lib/queries";
 import { AL_ICT_UNITS } from "@/lib/content/al-ict-units";
@@ -43,9 +42,6 @@ function cssVars(vars: Record<string, string>): React.CSSProperties {
 
 // Self-hosted at build time, scoped to this page only (via the .variable
 // classes below) so the rest of the app keeps its own type system.
-const displayFont = Manrope({ subsets: ["latin"], weight: ["700", "800"], variable: "--font-lp-display" });
-const bodyFont = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "700"], variable: "--font-lp-body" });
-const monoFont = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-lp-mono" });
 
 export const metadata: Metadata = {
   // Leads with the subject and grade a student searches for, then the free
@@ -233,7 +229,7 @@ export default async function LandingPage() {
   const startLabel = user ? "Go to dashboard" : "Sign up with your phone";
 
   return (
-    <div className={`${displayFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
+    <div>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQS)) }}

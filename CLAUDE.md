@@ -34,6 +34,64 @@ quotas.
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind 4 · Firebase Auth
 (phone OTP) · Firestore · Realtime Database · Cloudflare R2 · Zoom · PayHere.
 
+## Design system
+
+The ICTCAMPUS system runs **two worlds from one palette**, and which one a
+screen belongs to is decided by whether the visitor has signed in.
+
+- **Cream world** — every public page. `.landing-ict` and the marketing
+  components. Already built to the system.
+- **Dark world** — everything behind sign-in, plus the sign-in page itself,
+  scoped by `.ict-app` (see `app/globals.css`). Warm near-black surfaces,
+  orange accent, cocoa for one feature banner per screen.
+
+Tokens live once, at the top of `app/globals.css`, as `--color-ict-*`,
+`--radius-ict-*`, `--shadow-ict-*`, `--ease-ict*`. `.landing-ict` aliases them,
+so a colour is decided in exactly one place.
+
+**Build signed-in screens from `components/ds/`** — `Button`/`ButtonLink`,
+`Card`, `CardLink`, `Chip`, `Badge`, `StatusDot`, `StatusChip`, `IconBadge`,
+`ProgressBar`, `StatCard`, `Avatar`, `Eyebrow`, `SectionHeading`, `PageHeader`,
+`SectionBar`, `EmptyState`. Reach for a raw `<div className="rounded-xl border">`
+only when the thing genuinely is not there, then add it there.
+
+Rules that are easy to break:
+
+1. **No gradient fills.** Flat orange, flat ink. The only permitted gradients
+   are a protection scrim over imagery and the radial spotlight on a brand
+   surface. `--color-awaken-rose` is aliased to the brand orange precisely so
+   the ~50 legacy `from-accent to-rose` buttons resolve flat.
+2. **Pills for actions, soft-squares for containers.** Buttons, chips, tabs,
+   avatars, inputs are `rounded-full`; cards are 14/20/28px. A 4px "slightly
+   rounded" corner is off-brand.
+3. **Orange is rationed** — one orange thing per region of the screen. Neutrals
+   do the structural work.
+4. **Semantic colour is a 6px dot or a thin badge**, never a large fill. Use
+   `StatusDot`/`StatusChip`/`Badge`.
+5. **One `Card variant="feature"` (cocoa) per screen**, carrying the single most
+   important thing on it.
+6. **Line icons only** — `components/ui/Icon.tsx` is backed by Lucide. Never a
+   filled icon set, never mixed weights. **No emoji anywhere**, in UI or copy.
+7. **Sentence case** for headings and buttons. The only uppercase is `Eyebrow`.
+   The orange full stop closes at most one headline per screen.
+8. Motion is a 8-12px translate plus fade, 120/200/340ms, `--ease-ict`. No
+   bounce, no spring, no infinite loops, never scale-from-zero.
+
+The `.ict-app` scope also remaps the legacy `--color-awaken-*` variables to
+their dark equivalents, so a screen nobody has migrated yet still renders
+correctly on near-black. That is a floor, not a licence to skip the redesign.
+
+**Navigation is `components/nav/AppShell.tsx`** for both roles: a 232px dark
+rail on desktop, a bottom tab bar plus a "More" sheet on mobile. Route-group
+layouts (`app/(student)/layout.tsx`, `app/(teacher)/layout.tsx`) build the nav;
+pages render only their own content. Never add a per-page header or a "back to
+console" link — the rail is the way back.
+
+The supplied system is written for a New Zealand provider and its copy examples
+use NZ register ("Kia ora", "programme"). **Ignore that half** — this is a Sri
+Lankan platform. The visual system, casing and voice rules apply; the locale
+does not.
+
 ## Rules that must not be broken
 
 1. **`hasAccess()` in `lib/payments/entitlements.ts` is the single access
