@@ -65,6 +65,27 @@ const firebasePublicEnv: Record<string, string> = {
     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || injected.measurementId || "",
 };
 
+/**
+ * The one hostname phone sign-in works on.
+ *
+ * Firebase registers the reCAPTCHA keys behind phone auth against an explicit
+ * list of hosts. A visitor who arrives on any other spelling of the site — the
+ * `www.` alias most of all — gets a page that looks perfectly normal and a
+ * sign-in that dies with INVALID_APP_CREDENTIAL: no SMS, no useful error. The
+ * redirect below is the only place that can be fixed for everybody at once.
+ *
+ * Derived from NEXT_PUBLIC_APP_URL so there is still exactly one place the live
+ * address is written down. Empty for local development, which redirects nothing.
+ */
+const canonicalHost = (() => {
+  try {
+    const host = new URL(process.env.NEXT_PUBLIC_APP_URL ?? "").host;
+    return host.startsWith("www.") || host.startsWith("localhost") ? "" : host;
+  } catch {
+    return "";
+  }
+})();
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   env: firebasePublicEnv,
@@ -76,6 +97,17 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.r2.cloudflarestorage.com" },
       { protocol: "https", hostname: "i.ytimg.com" },
     ],
+  },
+  async redirects() {
+    if (!canonicalHost) return [];
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host" as const, value: `www.${canonicalHost}` }],
+        destination: `https://${canonicalHost}/:path*`,
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [
