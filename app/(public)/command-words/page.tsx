@@ -84,6 +84,14 @@ export default function CommandWordsPage() {
         <Link href="/distinguish-between" className="text-(--color-awaken-accent) underline">
           10 fully worked pairs, free
         </Link>
+        . Also free:{" "}
+        <Link href="/number-systems" className="text-(--color-awaken-accent) underline">
+          number system conversions
+        </Link>{" "}
+        and{" "}
+        <Link href="/logic-gates" className="text-(--color-awaken-accent) underline">
+          logic gate truth tables
+        </Link>
         .
       </p>
 

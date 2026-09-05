@@ -49,6 +49,14 @@ export default function DistinguishBetweenPage() {
           <Link href="/command-words" className="text-(--color-awaken-accent) underline">
             Start with what each one requires
           </Link>
+          . Also free:{" "}
+          <Link href="/number-systems" className="text-(--color-awaken-accent) underline">
+            number system conversions
+          </Link>{" "}
+          and{" "}
+          <Link href="/logic-gates" className="text-(--color-awaken-accent) underline">
+            logic gate truth tables
+          </Link>
           .
         </p>
 

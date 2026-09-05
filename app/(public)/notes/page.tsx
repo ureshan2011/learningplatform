@@ -60,6 +60,14 @@ export default async function PublicNotesPage() {
         <Link href="/command-words" className="underline">
           exam command words explained
         </Link>
+        ,{" "}
+        <Link href="/number-systems" className="underline">
+          number system conversions
+        </Link>{" "}
+        and{" "}
+        <Link href="/logic-gates" className="underline">
+          logic gate truth tables
+        </Link>
         .
       </p>
 
