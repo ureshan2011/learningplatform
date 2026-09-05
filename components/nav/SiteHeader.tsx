@@ -39,7 +39,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               <NavLink href="/syllabus">Syllabus</NavLink>
               <NavLink href="/past-papers">Past papers</NavLink>
               <NavLink href="/notes">Notes</NavLink>
-              <NavLink href="/dr-yasas">Instructor</NavLink>
+              <NavLink href="/dr-yasas">Lecturer</NavLink>
               <ButtonLink href="/signin" variant="primary" size="sm" className="ml-1">
                 Sign in
               </ButtonLink>

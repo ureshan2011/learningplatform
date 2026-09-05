@@ -43,21 +43,30 @@ const ACADEMIC = [
 
 const TEACHING = [
   `Teaches the complete NIE ${SUBJECT_EN} syllabus (${GRADES}) at ICT Campus, live and online, in Sinhala and English medium`,
-  "Former Lecturer, University of Moratuwa",
+  "Senior Lecturer, Yoobee College of Creative Innovation, New Zealand — teaches on the Master of Business Informatics programme, Auckland and Christchurch",
+  "Former Lecturer, Faculty of Information Technology, University of Moratuwa",
   "70,000+ students taught on Udemy and open.uom.lk",
 ];
 
 const PROFESSIONAL = [
-  "Senior Lecturer, New Zealand",
+  "Postdoctoral researcher, HIT Lab NZ, University of Canterbury",
   "Postdoctoral researcher and industry tech lead — Sony",
   "Industry experience — 99X",
   "Industry experience — Niantic",
+  "Peer-reviewed research published in Entertainment Computing (Elsevier) and other HCI venues",
+];
+
+const SPEAKING = [
+  "Invited speaker, NZGDC (New Zealand Game Developers Conference) — on multiplayer, location-based AR game design",
+  "Workshop speaker, ICITR, University of Moratuwa",
+  "Workshop speaker, IEEE WIE Sri Lanka",
+  "Speaker, Falling Walls Lab Aotearoa New Zealand",
 ];
 
 const FAQS = [
   {
     q: "Who is Dr. Yasas Sri Wickramasinghe?",
-    a: `${TEACHER_NAME} is the instructor behind ICT Campus, a Sri Lankan online tuition platform for GCE Advanced Level ICT. He holds a PhD in Human Interface Technology from the University of Canterbury, New Zealand, and works as a Senior Lecturer in New Zealand.`,
+    a: `${TEACHER_NAME} is the lecturer behind ICT Campus, a Sri Lankan online tuition platform for GCE Advanced Level ICT. He holds a PhD in Human Interface Technology from the University of Canterbury, New Zealand, and is a Senior Lecturer in New Zealand, teaching on a master's programme.`,
   },
   {
     q: "What is Dr. Yasas Sri Wickramasinghe's academic qualification?",
@@ -69,11 +78,15 @@ const FAQS = [
   },
   {
     q: "What is Dr. Yasas Sri Wickramasinghe's professional background?",
-    a: "Before and alongside teaching, he worked as a postdoctoral researcher and industry tech lead at Sony, and has industry experience at 99X and Niantic. He was previously a lecturer at the University of Moratuwa and has taught over 70,000 students on Udemy and open.uom.lk.",
+    a: "Before and alongside teaching, he worked as a postdoctoral researcher at HIT Lab NZ and as an industry tech lead at Sony, with further industry experience at 99X and Niantic. He was previously a lecturer at the University of Moratuwa and is currently a Senior Lecturer in New Zealand, teaching on a Master of Business Informatics programme. He has taught over 70,000 students on Udemy and open.uom.lk.",
+  },
+  {
+    q: "Has Dr. Yasas Sri Wickramasinghe spoken at any conferences?",
+    a: "Yes. He has been an invited speaker at NZGDC (New Zealand Game Developers Conference) on AR game design, and has spoken at ICITR (University of Moratuwa), IEEE WIE Sri Lanka and Falling Walls Lab Aotearoa New Zealand.",
   },
 ] as const;
 
-export default function InstructorPage() {
+export default function LecturerPage() {
   return (
     <>
       <JsonLd data={faqJsonLd(FAQS)} />
@@ -99,7 +112,7 @@ export default function InstructorPage() {
             {/* One H1, the person's own name — this page's entire purpose. */}
             <h1 className="text-3xl font-bold sm:text-4xl">{TEACHER_NAME}</h1>
             <p className="mt-2 text-lg text-(--color-awaken-ink-soft)">
-              PhD in Human Interface Technology, University of Canterbury — instructor, {SUBJECT_EN}{" "}
+              PhD in Human Interface Technology, University of Canterbury — lecturer, {SUBJECT_EN}{" "}
               ({GRADES}), ICT Campus
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
@@ -165,6 +178,18 @@ export default function InstructorPage() {
             {PROFESSIONAL.map((item) => (
               <li key={item} className="flex items-start gap-2 text-(--color-awaken-ink-soft)">
                 <Icon name="workspace_premium" className="mt-0.5 shrink-0 !text-base text-(--color-awaken-accent)" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mt-8">
+          <h2 className="text-xl font-bold">Public talks &amp; speaking</h2>
+          <ul className="mt-3 space-y-2">
+            {SPEAKING.map((item) => (
+              <li key={item} className="flex items-start gap-2 text-(--color-awaken-ink-soft)">
+                <Icon name="co_present" className="mt-0.5 shrink-0 !text-base text-(--color-awaken-accent)" />
                 {item}
               </li>
             ))}

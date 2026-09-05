@@ -76,7 +76,7 @@ const NAV_LINKS = [
   { href: "#syllabus", label: "Syllabus" },
   { href: "/past-papers", label: "Past papers" },
   { href: "#resources", label: "Notes" },
-  { href: "/dr-yasas", label: "Instructor" },
+  { href: "/dr-yasas", label: "Lecturer" },
   { href: "#faq", label: "FAQ" },
 ] as const;
 

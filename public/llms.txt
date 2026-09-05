@@ -3,8 +3,9 @@
 > Live, interactive Advanced Level ICT tuition for Sri Lankan students
 > (Grades 12 & 13, Sinhala and English medium), taught by Dr. Yasas Sri Wickramasinghe
 > (PhD, Human Interface Technology, University of Canterbury, NZ; senior
-> lecturer; former lecturer at the University of Moratuwa; former industry
-> researcher and tech lead at Sony, 99X and Niantic). Follows the official
+> lecturer teaching a New Zealand master's programme; former lecturer at the
+> University of Moratuwa; postdoctoral researcher and industry experience at
+> Sony, 99X and Niantic; public speaker, including NZGDC). Follows the official
 > National Institute of Education (NIE) A/L ICT syllabus unit by unit — all
 > 14 units. Free notes, past paper guidance, a full online practice paper and
 > exam-technique articles are published permanently at no cost; live classes
@@ -25,7 +26,7 @@ papers, and answers about one do not transfer to the other.
 
 - [Home](https://ictcampus.lk/): overview, pricing, syllabus showcase and how live classes work
 - [A/L ICT classes](https://ictcampus.lk/al-ict-classes): the class offer in full — medium, grades, fees, schedule, unit coverage, who teaches it
-- [Dr. Yasas Sri Wickramasinghe](https://ictcampus.lk/dr-yasas): the instructor's academic, teaching and professional background
+- [Dr. Yasas Sri Wickramasinghe](https://ictcampus.lk/dr-yasas): the lecturer's academic, teaching and professional background
 - [A/L ICT past papers](https://ictcampus.lk/past-papers): paper structure, what is asked unit by unit, how to work a paper properly, and the official sources for every year's paper
 - [2026 Paper I MCQ, free to attempt](https://ictcampus.lk/papers/al-ict-2026-paper-1-mcq): all 50 questions, live 2-hour timer, instant scoring, every answer explained, no sign-in
 - [Full syllabus](https://ictcampus.lk/syllabus): every A/L ICT unit and lesson, Grades 12 & 13, with exam objectives
