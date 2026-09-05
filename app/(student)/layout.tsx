@@ -1,6 +1,8 @@
 import { resolveSession } from "@/lib/auth/session";
 import { listEnrollments, listSubjects } from "@/lib/queries";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
+import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { Chip } from "@/components/ds";
 
 /**
@@ -27,7 +29,13 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const { user } = await resolveSession();
   if (!user) return <>{children}</>;
 
-  const [enrollments, subjects] = await Promise.all([listEnrollments(user.uid), listSubjects()]);
+  const [enrollments, subjects, t, locale] = await Promise.all([
+    listEnrollments(user.uid),
+    listSubjects(),
+    getT(),
+    getLocale(),
+  ]);
+
   // Server Component: renders once per request, so reading the clock here is
   // deterministic for that render. The purity rule targets client renders.
   // eslint-disable-next-line react-hooks/purity
@@ -42,57 +50,77 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const primary = subjects.find((s) => activeIds.has(s.id)) ?? (isStaff ? subjects[0] : undefined);
 
   const groups: NavGroup[] = [];
-  const mobileTabs: NavItem[] = [{ href: "/dashboard", label: "Home", icon: "home" }];
+  const mobileTabs: NavItem[] = [{ href: "/dashboard", label: t("nav.home"), icon: "home" }];
 
-  groups.push({ items: [{ href: "/dashboard", label: "Dashboard", icon: "home" }] });
+  groups.push({ items: [{ href: "/dashboard", label: t("nav.dashboard"), icon: "home" }] });
 
   if (primary) {
     const study: NavItem[] = [
-      { href: `/subjects/${primary.id}/practice`, label: "Practice", icon: "quiz" },
-      { href: `/subjects/${primary.id}/mock-exams`, label: "Mock exams", icon: "schedule", matchPrefix: true },
-      { href: `/subjects/${primary.id}/lab`, label: "Code Lab", icon: "code" },
-      { href: `/subjects/${primary.id}`, label: "Notes & papers", icon: "description" },
-      { href: `/syllabus/${primary.id}`, label: "Syllabus", icon: "auto_stories" },
-      { href: `/subjects/${primary.id}/certificate`, label: "Certificate", icon: "military_tech" },
+      { href: `/subjects/${primary.id}/practice`, label: t("nav.practice"), icon: "quiz" },
+      {
+        href: `/subjects/${primary.id}/mock-exams`,
+        label: t("nav.mockExams"),
+        icon: "schedule",
+        matchPrefix: true,
+      },
+      { href: `/subjects/${primary.id}/lab`, label: t("nav.codeLab"), icon: "code" },
+      { href: `/subjects/${primary.id}`, label: t("nav.notesPapers"), icon: "description" },
+      { href: `/syllabus/${primary.id}`, label: t("nav.syllabus"), icon: "auto_stories" },
+      {
+        href: `/subjects/${primary.id}/certificate`,
+        label: t("nav.certificate"),
+        icon: "military_tech",
+      },
     ];
     groups.push({ label: primary.name, items: study });
-    mobileTabs.push(study[0], study[1], study[3]);
+    mobileTabs.push(
+      { href: study[0].href, label: t("nav.practice"), icon: "quiz" },
+      { href: study[1].href, label: t("nav.mocks"), icon: "schedule", matchPrefix: true },
+      { href: study[3].href, label: t("nav.notes"), icon: "description" },
+    );
   } else {
     mobileTabs.push(
-      { href: "/notes", label: "Notes", icon: "description" },
-      { href: "/syllabus", label: "Syllabus", icon: "auto_stories" },
-      { href: "/account", label: "Account", icon: "account_circle" },
+      { href: "/notes", label: t("nav.notes"), icon: "description" },
+      { href: "/syllabus", label: t("nav.syllabus"), icon: "auto_stories" },
+      { href: "/account", label: t("nav.account"), icon: "account_circle" },
     );
   }
 
   groups.push({
-    label: "Free resources",
+    label: t("nav.groupFree"),
     items: [
-      { href: "/notes", label: "Free notes", icon: "description" },
-      { href: "/past-papers", label: "Past papers", icon: "receipt_long" },
-      { href: "/command-words", label: "Command words", icon: "fact_check" },
+      { href: "/notes", label: t("nav.freeNotes"), icon: "description" },
+      { href: "/past-papers", label: t("nav.pastPapers"), icon: "receipt_long" },
+      { href: "/command-words", label: t("nav.commandWords"), icon: "fact_check" },
     ],
   });
 
   groups.push({
-    label: "You",
-    items: [{ href: "/account", label: "Account & billing", icon: "account_circle" }],
+    label: t("nav.groupYou"),
+    items: [{ href: "/account", label: t("nav.account"), icon: "account_circle" }],
   });
 
   if (isStaff) {
     groups.push({
-      label: "Staff",
-      items: [{ href: "/teacher", label: "Teacher console", icon: "workspace_premium", matchPrefix: true }],
+      label: t("nav.groupStaff"),
+      items: [
+        {
+          href: "/teacher",
+          label: t("nav.teacherConsole"),
+          icon: "workspace_premium",
+          matchPrefix: true,
+        },
+      ],
     });
   }
 
   const promo: ShellPromo | undefined =
     activeIds.size === 0 && !isStaff && primary
       ? {
-          title: "Unlock the full class",
-          body: "Live classes, practice, mock exams and every paper.",
+          title: t("promo.title"),
+          body: t("promo.body"),
           href: `/subjects/${primary.id}`,
-          cta: "See details",
+          cta: t("promo.cta"),
         }
       : undefined;
 
@@ -102,11 +130,18 @@ export default async function StudentLayout({ children }: { children: React.Reac
       mobileTabs={mobileTabs}
       user={{ name: user.name, role: user.role }}
       promo={promo}
+      languageToggle={<LanguageToggle current={locale} className="w-full justify-center" />}
+      labels={{
+        menu: t("nav.menu"),
+        more: t("nav.more"),
+        yourAccount: t("nav.yourAccount"),
+        signOut: t("nav.signOut"),
+      }}
       topbarRight={
         activeIds.size > 0 ? (
-          <Chip icon="check_circle">Subscribed</Chip>
+          <Chip icon="check_circle">{t("status.subscribed")}</Chip>
         ) : (
-          <Chip icon="lock">Not subscribed</Chip>
+          <Chip icon="lock">{t("status.notSubscribed")}</Chip>
         )
       }
     >

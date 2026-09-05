@@ -112,6 +112,35 @@
   --font-body: var(--font-body-face), "Noto Sans Sinhala", "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-mono-face), ui-monospace, Menlo, monospace;
 
+  /*
+   * The type scale, enlarged.
+   *
+   * Tailwind's defaults are tuned for dense desktop software: 12px `text-xs`,
+   * 14px `text-sm`. This is a study site read by 16-year-olds on cheap Android
+   * phones, often in Sinhala, whose glyphs carry more detail per character than
+   * Latin and fall apart first when the size drops. Half this app was written
+   * in `text-sm` and `text-xs`, so the fastest honest fix is to move the scale
+   * itself rather than to hunt down a thousand class names — every existing
+   * `text-sm` gets bigger, everywhere, at once.
+   *
+   * Nothing is below 13px now, body sits at 17px, and the line heights are
+   * looser than Tailwind's defaults because long-form Sinhala needs the room.
+   * Sizes above `text-2xl` are display type and keep their tight leading —
+   * headlines are set in the display face and should stay tight per the system.
+   */
+  --text-xs: 0.8125rem; /* 13px */
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.9375rem; /* 15px */
+  --text-sm--line-height: 1.55;
+  --text-base: 1.0625rem; /* 17px */
+  --text-base--line-height: 1.6;
+  --text-lg: 1.1875rem; /* 19px */
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.375rem; /* 22px */
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.625rem; /* 26px */
+  --text-2xl--line-height: 1.25;
+
   --color-ink: #0b1020;
   --color-ink-soft: #141b33;
   --color-ink-line: #232c4d;
@@ -136,7 +165,16 @@
      across the public pages correct without touching any of them. */
   --color-awaken-accent: #f4551e;
   --color-awaken-accent-soft: #fff1ea;
-  --color-awaken-deep: #d8410f;
+  /*
+   * `deep` is EMPHASIS INK, not an accent — despite the name it carries dark
+   * headings, bold runs inside paragraphs, the Sinhala gloss on
+   * /command-words, and a couple of dark buttons. It was a cool navy; pointing
+   * it at orange turned all of that orange on the public pages, which is not a
+   * restyle, it is a bug. It is a warm near-black now: on-palette, and doing
+   * the job the name never described. Inside `.ict-app` it flips to orange,
+   * because there the same token is only ever an inline link on near-black.
+   */
+  --color-awaken-deep: #1a1615;
   --color-awaken-rose: #f4551e;
   --color-awaken-success: #16a34a;
   --color-awaken-success-soft: #f0fdf4;
@@ -311,7 +349,11 @@ body {
   background: var(--color-awaken-bg);
   color: var(--color-awaken-ink);
   font-family: var(--font-body);
+  /* 17px/1.6 is the readable default; utilities override where they must. */
+  font-size: var(--text-base);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /*
@@ -440,10 +482,16 @@ body {
   scrollbar-color: var(--color-ict-ink-600) transparent;
 }
 
-/* Sinhala renders with taller glyphs than Latin; give lines room to breathe. */
+/*
+ * Sinhala renders with taller glyphs and more strokes per character than Latin,
+ * so it needs more leading and a fraction more tracking to hold together at the
+ * same optical size. Keyed off `lang`, so any Sinhala string gets it whether or
+ * not the author remembered a class.
+ */
 .si,
 [lang="si"] {
-  line-height: 1.85;
+  line-height: 1.9;
+  letter-spacing: 0.01em;
 }
 
 /* Live Arena and chat panes scroll internally, never the page body. */

@@ -66,6 +66,8 @@ export function AppShell({
   user,
   promo,
   topbarRight,
+  languageToggle,
+  labels,
   children,
 }: {
   groups: NavGroup[];
@@ -74,6 +76,9 @@ export function AppShell({
   user: { name: string; role: string };
   promo?: ShellPromo;
   topbarRight?: React.ReactNode;
+  /** Rendered above the account block, in the rail — so it is reachable from every screen. */
+  languageToggle?: React.ReactNode;
+  labels: { menu: string; more: string; yourAccount: string; signOut: string };
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -126,7 +131,7 @@ export function AppShell({
           <span className="hidden md:block">
             <Wordmark />
           </span>
-          <span className="font-display text-base font-extrabold text-ict-paper-50 md:hidden">Menu</span>
+          <span className="font-display text-base font-extrabold text-ict-paper-50 md:hidden">{labels.menu}</span>
           <button
             type="button"
             onClick={() => setMenuOpen(false)}
@@ -141,7 +146,7 @@ export function AppShell({
           {groups.map((group, i) => (
             <div key={group.label ?? i} className={i === 0 ? "" : "mt-5"}>
               {group.label ? (
-                <p className="mb-1.5 px-3.5 text-[11px] font-bold uppercase tracking-[0.14em] text-ict-ink-400">
+                <p className="mb-1.5 px-3.5 text-xs font-bold uppercase tracking-[0.14em] text-ict-ink-400">
                   {group.label}
                 </p>
               ) : null}
@@ -169,13 +174,17 @@ export function AppShell({
               />
               <div className="relative">
                 <p className="font-display text-base font-extrabold leading-tight text-white">{promo.title}</p>
-                <p className="mt-1 text-[13px] leading-snug text-white/80">{promo.body}</p>
+                <p className="mt-1 text-sm leading-snug text-white/80">{promo.body}</p>
                 <ButtonLink href={promo.href} variant="secondary" size="sm" arrow="right" className="mt-3">
                   {promo.cta}
                 </ButtonLink>
               </div>
             </div>
           </div>
+        ) : null}
+
+        {languageToggle ? (
+          <div className="border-t border-ict-border-dark px-3 py-3">{languageToggle}</div>
         ) : null}
 
         <div className="border-t border-ict-border-dark p-3">
@@ -185,13 +194,16 @@ export function AppShell({
           >
             <Avatar name={user.name} size={34} />
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-[13px] font-semibold text-ict-paper-50">
-                {user.name || "Your account"}
+              <span className="block truncate text-sm font-semibold text-ict-paper-50">
+                {user.name || labels.yourAccount}
               </span>
-              <span className="block truncate text-[11px] capitalize text-ict-ink-400">{user.role}</span>
+              <span className="block truncate text-xs capitalize text-ict-ink-400">{user.role}</span>
             </span>
           </Link>
-          <SignOutButton className="mt-1 flex w-full items-center gap-3 rounded-full px-3.5 py-2 text-[13px] font-semibold text-ict-ink-300 transition-colors duration-[120ms] hover:bg-ict-ink-800 hover:text-ict-paper-50" />
+          <SignOutButton
+            label={labels.signOut}
+            className="mt-1 flex w-full items-center gap-3 rounded-full px-3.5 py-2 text-sm font-semibold text-ict-ink-300 transition-colors duration-[120ms] hover:bg-ict-ink-800 hover:text-ict-paper-50"
+          />
         </div>
       </aside>
 
@@ -220,7 +232,7 @@ export function AppShell({
           className="flex flex-1 flex-col items-center gap-1 px-1 py-2.5 text-ict-ink-300"
         >
           <Icon name="menu" className="!text-xl" />
-          <span className="text-[10px] font-semibold">More</span>
+          <span className="text-[11px] font-semibold">{labels.more}</span>
         </button>
       </nav>
     </div>
@@ -233,7 +245,7 @@ function RailLink({ item, active }: { item: NavItem; active: boolean }) {
       href={item.href}
       aria-current={active ? "page" : undefined}
       className={clsx(
-        "flex h-10 items-center gap-3 rounded-full px-3.5 text-[13px] font-semibold transition-colors duration-[120ms] ease-ict",
+        "flex h-10 items-center gap-3 rounded-full px-3.5 text-sm font-semibold transition-colors duration-[120ms] ease-ict",
         active
           ? "bg-ict-ink-700 text-ict-paper-50"
           : "text-ict-ink-300 hover:bg-ict-ink-800 hover:text-ict-paper-50",
@@ -242,7 +254,7 @@ function RailLink({ item, active }: { item: NavItem; active: boolean }) {
       <Icon name={item.icon} className={clsx("!text-lg", active ? "text-ict-orange-400" : "")} />
       <span className="flex-1 truncate">{item.label}</span>
       {item.count ? (
-        <span className="text-[11px] font-bold text-ict-orange-400">{item.count}</span>
+        <span className="text-xs font-bold text-ict-orange-400">{item.count}</span>
       ) : null}
     </Link>
   );
@@ -266,7 +278,7 @@ function TabLink({ item, active }: { item: NavItem; active: boolean }) {
           </span>
         ) : null}
       </span>
-      <span className="max-w-full truncate text-[10px] font-semibold">{item.label}</span>
+      <span className="max-w-full truncate text-[11px] font-semibold">{item.label}</span>
     </Link>
   );
 }

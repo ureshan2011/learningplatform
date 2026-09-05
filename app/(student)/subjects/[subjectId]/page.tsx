@@ -24,6 +24,7 @@ import {
 } from "@/components/ds";
 import { r2Configured } from "@/lib/features";
 import { getPayHereConfig } from "@/lib/payments/records";
+import { getT, localeAttrs } from "@/lib/i18n/server";
 import type { ContentKind } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -62,7 +63,12 @@ export default async function SubjectPage({
   if (!subject) notFound();
 
   const access = await hasAccess(user.uid, subjectId);
-  const [items, units] = await Promise.all([listContent(subjectId), listUnits(subjectId)]);
+  const [items, units, t, loc] = await Promise.all([
+    listContent(subjectId),
+    listUnits(subjectId),
+    getT(),
+    localeAttrs(),
+  ]);
 
   // Locked students still see the catalogue — knowing what they are missing is
   // the most effective renewal prompt there is.
@@ -72,7 +78,7 @@ export default async function SubjectPage({
   const cardPaymentsOn = payhere.configured;
 
   return (
-    <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
+    <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
       <PageHeader
         eyebrow={`${subject.grade} · ${subject.medium} medium`}
         title={subject.name}
@@ -81,17 +87,27 @@ export default async function SubjectPage({
           access.allowed ? (
             <StatusChip tone="success">
               {access.enrollment
-                ? `Active until ${formatDate(access.enrollment.currentPeriodEnd)}`
-                : "Full access"}
+                ? t("subject.activeUntil", { date: formatDate(access.enrollment.currentPeriodEnd) })
+                : t("subject.fullAccess")}
             </StatusChip>
           ) : (
-            <StatusChip tone="warning">Locked</StatusChip>
+            <StatusChip tone="warning">{t("subject.locked")}</StatusChip>
           )
         }
       />
 
       <div className="mt-5">
-        <SubjectTabs subjectId={subjectId} locked={!access.allowed} />
+        <SubjectTabs
+          subjectId={subjectId}
+          locked={!access.allowed}
+          labels={{
+            overview: t("subject.overview"),
+            practice: t("nav.practice"),
+            mockExams: t("nav.mockExams"),
+            codeLab: t("nav.codeLab"),
+            certificate: t("nav.certificate"),
+          }}
+        />
       </div>
 
       {!access.allowed ? (
@@ -143,7 +159,7 @@ export default async function SubjectPage({
         <div className="min-w-0 space-y-5">
           <section>
             <SectionBar
-              title="Notes & past papers"
+              title={t("subject.notesPapers")}
               hint={
                 access.allowed
                   ? `${visible.length} file${visible.length === 1 ? "" : "s"} to download`
@@ -155,7 +171,7 @@ export default async function SubjectPage({
             ) : visible.length === 0 ? (
               <EmptyState
                 icon="description"
-                title="Nothing published yet"
+                title={t("subject.nothingPublished")}
                 body="Your teacher has not uploaded notes for this subject. Free notes are available meanwhile."
                 action={
                   <ButtonLink href="/notes" variant="outline" size="sm" arrow="right">
@@ -182,7 +198,7 @@ export default async function SubjectPage({
                         </p>
                       </div>
                     </div>
-                    <DownloadButton contentId={item.id} label="Download" />
+                    <DownloadButton contentId={item.id} label={t("subject.download")} />
                   </li>
                 ))}
               </ul>
@@ -244,7 +260,7 @@ export default async function SubjectPage({
           <Card radius="card" className="p-5">
             {access.allowed ? (
               <>
-                <Eyebrow>Your access</Eyebrow>
+                <Eyebrow>{t("subject.yourAccess")}</Eyebrow>
                 <p className="mt-2 font-display text-xl font-extrabold text-ict-paper-50">Active</p>
                 {access.enrollment ? (
                   <p className="mt-1 text-sm text-ict-ink-300">
@@ -263,11 +279,11 @@ export default async function SubjectPage({
               </>
             ) : (
               <>
-                <Eyebrow>Monthly</Eyebrow>
+                <Eyebrow>{t("subject.monthly")}</Eyebrow>
                 <p className="mt-2 font-display text-3xl font-extrabold tracking-[-0.03em] text-ict-paper-50">
                   {formatLKR(subject.priceLKR)}
                 </p>
-                <p className="mt-1 text-sm text-ict-ink-300">Cancel any time.</p>
+                <p className="mt-1 text-sm text-ict-ink-300">{t("subject.cancelAnyTime")}</p>
                 <div className="mt-4 space-y-2">
                   {cardPaymentsOn ? (
                     <SubscribeButton subjectId={subjectId} sandbox={payhere.mode === "sandbox"} />
@@ -278,7 +294,7 @@ export default async function SubjectPage({
                     size="sm"
                     arrow="right"
                   >
-                    Pay by bank deposit
+                    {t("dash.payByBank")}
                   </ButtonLink>
                 </div>
               </>
@@ -286,7 +302,7 @@ export default async function SubjectPage({
           </Card>
 
           <Card radius="card" className="p-5">
-            <Eyebrow>What&apos;s included</Eyebrow>
+            <Eyebrow>{t("subject.whatsIncluded")}</Eyebrow>
             <ul className="mt-3 space-y-3">
               {INCLUDED.map((f) => (
                 <li key={f.title} className="flex items-start gap-3">

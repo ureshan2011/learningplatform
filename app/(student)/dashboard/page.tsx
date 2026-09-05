@@ -3,6 +3,7 @@ import { requirePageUser } from "@/lib/auth/session";
 import { listEnrollments, listSubjects, listUpcomingSessions, getProgress } from "@/lib/queries";
 import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { getPayHereConfig } from "@/lib/payments/records";
+import { getT, localeAttrs, type Translator } from "@/lib/i18n/server";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import {
@@ -18,6 +19,7 @@ import {
   StatusChip,
   StatusDot,
 } from "@/components/ds";
+import type { MessageKey } from "@/lib/i18n/dictionary";
 import type { ClassSession, Subject } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -38,7 +40,12 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const user = await requirePageUser("/dashboard");
 
-  const [enrollments, subjects] = await Promise.all([listEnrollments(user.uid), listSubjects()]);
+  const [enrollments, subjects, t, loc] = await Promise.all([
+    listEnrollments(user.uid),
+    listSubjects(),
+    getT(),
+    localeAttrs(),
+  ]);
 
   // Server Component: this renders once per request, so reading the clock here
   // is deterministic for that render. The purity rule targets client renders.
@@ -65,7 +72,7 @@ export default async function DashboardPage() {
   const firstName = user.name.trim().split(/\s+/)[0] || "there";
 
   return (
-    <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
+    <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
       {/* ------------------------------------------------------------------ */}
       {/* Feature banner — the system permits exactly one cocoa surface per    */}
       {/* screen, so it carries the single thing that matters most right now.  */}
@@ -73,15 +80,11 @@ export default async function DashboardPage() {
       <Card variant="feature" radius="panel" className="ict-enter overflow-hidden p-6 sm:p-8">
         <div className="lg:flex lg:items-center lg:gap-10">
           <div className="min-w-0 lg:flex-1">
-            <p className="text-sm text-ict-orange-200">Hi {firstName},</p>
+            <p className="text-sm text-ict-orange-200">{t("dash.greeting", { name: firstName })}</p>
             <h1 className="mt-3 font-display text-[28px] font-extrabold leading-[1.1] tracking-[-0.03em] text-ict-paper-50 sm:text-[34px]">
               {nextSession ? (
                 nextSession.state === "live" ? (
-                  <>
-                    Your class is
-                    <br />
-                    live right now
-                  </>
+<Lines text={t("dash.liveNow")} />
                 ) : (
                   <>
                     {nextSession.title}
@@ -90,38 +93,26 @@ export default async function DashboardPage() {
                   </>
                 )
               ) : activeSubjectIds.length === 0 ? (
-                <>
-                  Start your
-                  <br />
-                  A/L ICT class
-                </>
+                <Lines text={t("dash.startClass")} />
               ) : streakDays > 0 ? (
-                <>
-                  {streakDays} day streak
-                  <br />
-                  keep it going
-                </>
+                <Lines text={t("dash.streakHead", { days: streakDays })} />
               ) : (
-                <>
-                  Ready when
-                  <br />
-                  you are
-                </>
+                <Lines text={t("dash.ready")} />
               )}
             </h1>
 
             <div className="mt-5 flex flex-wrap items-center gap-2">
               {nextSession ? (
                 <ButtonLink href={`/live/${nextSession.id}`} arrow="right">
-                  {nextSession.state === "live" ? "Join now" : "Open class"}
+                  {nextSession.state === "live" ? t("dash.joinNow") : t("dash.openClass")}
                 </ButtonLink>
               ) : primary ? (
                 <ButtonLink href={`/subjects/${primary.id}/practice`} arrow="right">
-                  Practise now
+                  {t("dash.practiseNow")}
                 </ButtonLink>
               ) : subjects[0] ? (
                 <ButtonLink href={`/subjects/${subjects[0].id}`} arrow="right">
-                  See what&apos;s included
+                  {t("dash.seeIncluded")}
                 </ButtonLink>
               ) : null}
 
@@ -136,13 +127,9 @@ export default async function DashboardPage() {
           {/* The counters. Dark pill chips with a small orange glyph, per the
               system — not four boxes competing with the headline. */}
           <div className="mt-6 flex flex-wrap gap-2 lg:mt-0 lg:shrink-0 lg:flex-col lg:items-end">
-            <Chip icon="local_fire_department">
-              {streakDays} day{streakDays === 1 ? "" : "s"} streak
-            </Chip>
-            <Chip icon="bolt">{totalXp.toLocaleString("en-LK")} XP</Chip>
-            <Chip icon="event">
-              {sessions.length} class{sessions.length === 1 ? "" : "es"} ahead
-            </Chip>
+            <Chip icon="local_fire_department">{t("dash.streakChip", { days: streakDays })}</Chip>
+            <Chip icon="bolt">{t("dash.xpChip", { xp: totalXp.toLocaleString("en-LK") })}</Chip>
+            <Chip icon="event">{t("dash.classesAhead", { count: sessions.length })}</Chip>
           </div>
         </div>
       </Card>
@@ -156,7 +143,7 @@ export default async function DashboardPage() {
             <Card radius="card" className="p-5 sm:p-6">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <Eyebrow>Continue studying</Eyebrow>
+                  <Eyebrow>{t("dash.continueStudying")}</Eyebrow>
                   <p className="mt-1.5 font-display text-lg font-extrabold text-ict-paper-50">
                     {primary.name}
                   </p>
@@ -179,9 +166,9 @@ export default async function DashboardPage() {
                     <IconBadge icon={tool.icon} tone="soft" size={40} round />
                     <span className="min-w-0">
                       <span className="block text-[13px] font-semibold text-ict-paper-50">
-                        {tool.title}
+                        {t(tool.title)}
                       </span>
-                      <span className="block truncate text-xs text-ict-ink-300">{tool.blurb}</span>
+                      <span className="block truncate text-xs text-ict-ink-300">{t(tool.blurb)}</span>
                     </span>
                     <Icon name="chevron_right" className="ml-auto !text-base text-ict-ink-400" />
                   </CardLink>
@@ -192,11 +179,9 @@ export default async function DashboardPage() {
 
           <section>
             <SectionBar
-              title="Your classes"
+              title={t("dash.yourClasses")}
               hint={
-                activeSubjectIds.length > 0
-                  ? "Everything you are subscribed to"
-                  : "Subscribe to unlock live classes, practice and papers"
+                activeSubjectIds.length > 0 ? t("dash.yourClassesHint") : t("dash.subscribeHint")
               }
             />
             <div className="grid gap-2 sm:grid-cols-2">
@@ -210,23 +195,12 @@ export default async function DashboardPage() {
                   }
                   cardPaymentsOn={cardPaymentsOn}
                   sandbox={payhere.mode === "sandbox"}
+                  t={t}
                 />
               ))}
             </div>
           </section>
 
-          <section>
-            <SectionBar title="Free for everyone" hint="No subscription needed" />
-            <div className="grid gap-2 sm:grid-cols-3">
-              {FREE_RESOURCES.map((r) => (
-                <CardLink key={r.href} href={r.href} radius="md" className="p-4">
-                  <IconBadge icon={r.icon} tone="dark" size={40} round />
-                  <p className="mt-3 text-[13px] font-semibold text-ict-paper-50">{r.title}</p>
-                  <p className="mt-0.5 text-xs text-ict-ink-300">{r.blurb}</p>
-                </CardLink>
-              ))}
-            </div>
-          </section>
         </div>
 
         {/* ---------------------------------------------------------------- */}
@@ -235,23 +209,21 @@ export default async function DashboardPage() {
         <aside className="lg:sticky lg:top-[76px]">
           <Card radius="card" className="p-5">
             <div className="flex items-center justify-between">
-              <p className="font-display text-base font-extrabold text-ict-paper-50">Timetable</p>
+              <p className="font-display text-base font-extrabold text-ict-paper-50">{t("dash.timetable")}</p>
               {sessions.length > 0 ? (
-                <span className="text-xs text-ict-ink-300">Next {sessions.length}</span>
+                <span className="text-xs text-ict-ink-300">{t("dash.timetableNext", { count: sessions.length })}</span>
               ) : null}
             </div>
 
             {sessions.length === 0 ? (
               <p className="mt-4 text-sm text-ict-ink-300">
-                {activeSubjectIds.length === 0
-                  ? "Subscribe and your class timetable appears here."
-                  : "Nothing scheduled yet. Your teacher will add the next class soon."}
+                {activeSubjectIds.length === 0 ? t("dash.noTimetableLocked") : t("dash.noTimetable")}
               </p>
             ) : (
               <ul className="mt-4 space-y-2">
                 {[nextSession, ...laterSessions].map((session) => (
                   <li key={session.id}>
-                    <ScheduleRow session={session} subject={subjectById.get(session.subjectId)} />
+                    <ScheduleRow session={session} subject={subjectById.get(session.subjectId)} t={t} />
                   </li>
                 ))}
               </ul>
@@ -261,13 +233,11 @@ export default async function DashboardPage() {
           {activeSubjectIds.length > 0 ? (
             <Card radius="card" className="mt-3 p-5">
               <p className="font-display text-base font-extrabold text-ict-paper-50">
-                Invite a friend
+                {t("dash.inviteTitle")}
               </p>
-              <p className="mt-1 text-sm text-ict-ink-300">
-                When they subscribe you both get 3 free days.
-              </p>
+              <p className="mt-1 text-sm text-ict-ink-300">{t("dash.inviteBody")}</p>
               <ButtonLink href="/account" variant="outline" size="sm" arrow="right" className="mt-4">
-                Get your code
+                {t("dash.inviteCta")}
               </ButtonLink>
             </Card>
           ) : null}
@@ -279,17 +249,26 @@ export default async function DashboardPage() {
 
 /* -------------------------------------------------------------------------- */
 
-const STUDY_TOOLS: Array<{ href: string; title: string; blurb: string; icon: IconName }> = [
-  { href: "/practice", title: "Practice", blurb: "Questions that target your weak topics", icon: "quiz" },
-  { href: "/mock-exams", title: "Mock exams", blurb: "Timed papers, ranked results", icon: "schedule" },
-  { href: "/lab", title: "Code Lab", blurb: "Pseudocode, spreadsheets and SQL", icon: "code" },
-  { href: "", title: "Notes & papers", blurb: "Everything to download", icon: "description" },
-];
+/** Renders a headline whose line breaks are authored in the dictionary, not wrapped. */
+function Lines({ text }: { text: string }) {
+  const parts = text.split("\n");
+  return (
+    <>
+      {parts.map((line, i) => (
+        <span key={line + i}>
+          {line}
+          {i < parts.length - 1 ? <br /> : null}
+        </span>
+      ))}
+    </>
+  );
+}
 
-const FREE_RESOURCES: Array<{ href: string; title: string; blurb: string; icon: IconName }> = [
-  { href: "/notes", title: "Free notes", blurb: "Open notes and papers", icon: "description" },
-  { href: "/past-papers", title: "Past papers", blurb: "Every year, with schemes", icon: "receipt_long" },
-  { href: "/command-words", title: "Command words", blurb: "What each question wants", icon: "fact_check" },
+const STUDY_TOOLS: Array<{ href: string; title: MessageKey; blurb: MessageKey; icon: IconName }> = [
+  { href: "/practice", title: "tool.practice", blurb: "tool.practiceBlurb", icon: "quiz" },
+  { href: "/mock-exams", title: "tool.mockExams", blurb: "tool.mockExamsBlurb", icon: "schedule" },
+  { href: "/lab", title: "tool.codeLab", blurb: "tool.codeLabBlurb", icon: "code" },
+  { href: "", title: "tool.notes", blurb: "tool.notesBlurb", icon: "description" },
 ];
 
 /**
@@ -309,12 +288,14 @@ function SubjectCard({
   periodEnd,
   cardPaymentsOn,
   sandbox,
+  t,
 }: {
   subject: Subject;
   active: boolean;
   periodEnd?: number;
   cardPaymentsOn: boolean;
   sandbox: boolean;
+  t: Translator;
 }) {
   return (
     <Card radius="card" className="flex flex-col p-5">
@@ -323,17 +304,17 @@ function SubjectCard({
           <p className="font-display text-base font-extrabold text-ict-paper-50">{subject.name}</p>
           <p className="mt-1 text-sm text-ict-ink-300">
             {active && periodEnd
-              ? `Paid until ${formatDate(periodEnd)}`
-              : `${formatLKR(subject.priceLKR)} per month`}
+              ? t("dash.paidUntil", { date: formatDate(periodEnd) })
+              : t("dash.perMonth", { price: formatLKR(subject.priceLKR) })}
           </p>
         </div>
-        <Badge tone={active ? "success" : "neutral"}>{active ? "Active" : subject.grade}</Badge>
+        <Badge tone={active ? "success" : "neutral"}>{active ? t("dash.active") : subject.grade}</Badge>
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {active ? (
           <ButtonLink href={`/subjects/${subject.id}`} variant="outline" size="sm" arrow="right">
-            Open
+            {t("dash.open")}
           </ButtonLink>
         ) : (
           // Both ways to pay, always, with the instant one first. Card unlocks
@@ -345,7 +326,7 @@ function SubjectCard({
               href={`/pay/slip?subject=${subject.id}`}
               className="text-sm font-semibold text-ict-orange-400 underline-offset-4 hover:underline"
             >
-              Pay by bank deposit
+              {t("dash.payByBank")}
             </Link>
           </>
         )}
@@ -354,7 +335,15 @@ function SubjectCard({
   );
 }
 
-function ScheduleRow({ session, subject }: { session: ClassSession; subject?: Subject }) {
+function ScheduleRow({
+  session,
+  subject,
+  t,
+}: {
+  session: ClassSession;
+  subject?: Subject;
+  t: Translator;
+}) {
   const live = session.state === "live";
   return (
     <Link
@@ -369,7 +358,7 @@ function ScheduleRow({ session, subject }: { session: ClassSession; subject?: Su
       <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-ict-ink-300">{formatSessionTime(session.startsAt)}</span>
         {live ? (
-          <StatusChip tone="success">Live now</StatusChip>
+          <StatusChip tone="success">{t("dash.liveBadge")}</StatusChip>
         ) : (
           <span className="inline-flex items-center gap-1.5 text-xs text-ict-ink-300">
             <StatusDot tone="info" />
