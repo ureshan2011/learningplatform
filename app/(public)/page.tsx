@@ -14,6 +14,8 @@ import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { EmailCaptureForm } from "@/components/marketing/EmailCaptureForm";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
 import { FaqAccordion } from "@/components/marketing/landing/FaqAccordion";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { faqJsonLd } from "@/lib/seo/json-ld";
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -65,19 +67,6 @@ export const metadata: Metadata = {
     "තොරතුරු හා සන්නිවේදන තාක්ෂණය",
   ],
 };
-
-/** Same questions and answers as the FAQ section below — this just makes them eligible for a search-result rich snippet. */
-function faqJsonLd(faqs: ReadonlyArray<{ q: string; a: string }>) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  };
-}
 
 const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";
 const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
@@ -230,10 +219,7 @@ export default async function LandingPage() {
 
   return (
     <div>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQS)) }}
-      />
+      <JsonLd data={faqJsonLd(FAQS)} />
       <ScrollEffects>
         <div data-lp-progress className="fixed top-0 left-0 z-[60] h-[3px] w-0 bg-(--lp-orange-500)" />
 

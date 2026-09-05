@@ -7,32 +7,9 @@ import { Icon } from "@/components/ui/Icon";
 import { SyllabusHero } from "@/components/syllabus/SyllabusHero";
 import { SyllabusExplorer } from "@/components/syllabus/SyllabusExplorer";
 import { indexClassesBySyllabus, toTopicClass } from "@/lib/content/topic-classes";
-import { publicEnv } from "@/lib/env";
-import type { ClassSession, Subject } from "@/lib/types";
-
-/** Makes the subject eligible for Google's Course rich result — price, provider, mode, all real. */
-function courseJsonLd(subject: Subject) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    name: subject.name,
-    description: subject.description,
-    provider: { "@type": "EducationalOrganization", name: "ICT Campus", url: publicEnv.appUrl },
-    inLanguage: subject.medium === "sinhala" ? "si" : "en",
-    educationalLevel: "Advanced Level",
-    offers: {
-      "@type": "Offer",
-      price: subject.priceLKR,
-      priceCurrency: "LKR",
-      category: "subscription",
-    },
-    hasCourseInstance: {
-      "@type": "CourseInstance",
-      courseMode: "online",
-      courseWorkload: "P1M",
-    },
-  };
-}
+import { JsonLd } from "@/components/seo/JsonLd";
+import { courseJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
+import type { ClassSession } from "@/lib/types";
 
 /**
  * Public, crawlable, and cached for everyone rather than rendered per visitor
@@ -84,9 +61,15 @@ export default async function SubjectSyllabusPage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseJsonLd(subject)) }}
+      <JsonLd
+        data={graphJsonLd([
+          courseJsonLd({
+            name: subject.name,
+            description: subject.description,
+            priceLKR: subject.priceLKR,
+            path: `/syllabus/${subjectId}`,
+          }),
+        ])}
       />
       <SiteHeader user={null} />
       <main className="mx-auto max-w-6xl px-5 py-8 md:px-8">
