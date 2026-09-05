@@ -1,6 +1,6 @@
 # ICT Campus — working notes for Claude
 
-Online tuition platform for Sri Lankan A/L ICT (Grades 12 & 13), Sinhala medium.
+Online tuition platform for Sri Lankan A/L ICT (Grades 12 & 13), Sinhala and English medium.
 The owner is a teacher, not a developer.
 
 ## How to respond in this project

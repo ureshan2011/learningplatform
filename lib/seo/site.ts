@@ -11,6 +11,7 @@
 export const TEACHER_NAME = "Dr. Yasas Sri Wickramasinghe";
 
 export const TEACHER_LINKEDIN = "https://www.linkedin.com/in/yasassri";
+export const TEACHER_WEBSITE = "https://www.yasassri.me/";
 
 /**
  * The subject as students, parents and the Department of Examinations name it.
@@ -24,8 +25,9 @@ export const SUBJECT_SI = "උසස් පෙළ තොරතුරු හා �
 export const SUBJECT_SI_SHORT = "උසස් පෙළ ICT";
 
 export const GRADES = "Grades 12 & 13";
-export const MEDIUM_EN = "Sinhala medium";
-export const MEDIUM_SI = "සිංහල මාධ්‍යය";
+/** Classes run in both mediums — never describe this as Sinhala-only. */
+export const MEDIUM_EN = "Sinhala and English medium";
+export const MEDIUM_SI = "සිංහල සහ ඉංග්‍රීසි මාධ්‍ය";
 
 /** The country whose syllabus and exam this teaches to. Every page says so; ambiguity here loses the local search. */
 export const COUNTRY = "Sri Lanka";

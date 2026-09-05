@@ -9,6 +9,7 @@ import {
   TEACHER_CREDENTIALS,
   TEACHER_LINKEDIN,
   TEACHER_NAME,
+  TEACHER_WEBSITE,
 } from "@/lib/seo/site";
 
 /**
@@ -43,7 +44,8 @@ export function personJsonLd() {
     "@type": "Person",
     "@id": TEACHER_ID(),
     name: TEACHER_NAME,
-    url: base(),
+    url: `${base()}/dr-yasas`,
+    image: `${base()}/images/dr-yasas.png`,
     jobTitle: "Senior Lecturer",
     description: `${TEACHER_NAME} teaches ${SUBJECT_EN} (${GRADES}, ${MEDIUM_EN}) to Sri Lankan students. ${TEACHER_CREDENTIALS.join(". ")}.`,
     knowsAbout: [
@@ -61,7 +63,7 @@ export function personJsonLd() {
       name: "University of Canterbury",
       address: { "@type": "PostalAddress", addressCountry: "NZ" },
     },
-    sameAs: [TEACHER_LINKEDIN],
+    sameAs: [TEACHER_WEBSITE, TEACHER_LINKEDIN],
     worksFor: { "@id": ORG_ID() },
   };
 }

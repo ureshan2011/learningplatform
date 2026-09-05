@@ -30,9 +30,9 @@ import type { ClassSession, Subject } from "@/lib/types";
  * result.
  */
 
-const TITLE = "A/L ICT Classes Online — Sinhala Medium, Grades 12 & 13";
+const TITLE = "A/L ICT Classes Online — Sinhala & English, Grades 12 & 13";
 const DESCRIPTION =
-  "Live online A/L ICT classes for Sri Lankan Grade 12 and 13 students in Sinhala medium, following the full NIE syllabus (all 14 units). Past paper discussions, instant quizzes, downloadable notes, and a free 7-day trial with no card required. Taught by Dr. Yasas Sri Wickramasinghe, PhD.";
+  "Live online A/L ICT classes for Sri Lankan Grade 12 and 13 students, in Sinhala and English medium, following the full NIE syllabus (all 14 units). Past paper discussions, instant quizzes, downloadable notes, and a free 7-day trial with no card required. Taught by Dr. Yasas Sri Wickramasinghe, PhD.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     "A/L ICT class",
     "A/L ICT classes online",
     "AL ICT tuition",
-    "A/L ICT online class Sinhala medium",
+    "A/L ICT online class Sinhala and English medium",
     "ICT tuition Sri Lanka",
     "Advanced Level ICT class",
     "grade 12 ICT class",
@@ -73,7 +73,7 @@ const SUBJECT_ID = "al-ict";
 const FAQS = [
   {
     q: "Are the A/L ICT classes in Sinhala medium or English medium?",
-    a: "Classes are taught in Sinhala medium, following the NIE A/L ICT syllabus. Technical terms are given in English as well, because the exam paper and the marking scheme use them — so you are never guessing at a term you will meet in the paper.",
+    a: "Both. ICT Campus runs A/L ICT classes in Sinhala medium and in English medium, following the same NIE A/L ICT syllabus — pick the medium you're most comfortable studying in.",
   },
   {
     q: "Which grades are covered?",
@@ -161,7 +161,7 @@ export default async function AlIctClassesPage() {
   // here would just be the same three entities twice on the wire.
   const schema = graphJsonLd([
     courseJsonLd({
-      name: "A/L ICT — Live Online Classes (Grades 12 & 13, Sinhala Medium)",
+      name: "A/L ICT — Live Online Classes (Grades 12 & 13, Sinhala & English Medium)",
       description: DESCRIPTION,
       priceLKR,
       path: "/al-ict-classes",
@@ -184,14 +184,17 @@ export default async function AlIctClassesPage() {
         {/* The H1 carries the query verbatim. Everything else on the page is
             downstream of getting this one line right. */}
         <h1 className="mt-4 text-3xl font-bold sm:text-4xl">
-          A/L ICT classes online — Sinhala medium, Grades 12 &amp; 13
+          A/L ICT classes online — Sinhala &amp; English, Grades 12 &amp; 13
         </h1>
 
         <p className="mt-4 text-lg text-(--color-awaken-ink-soft)">
           Live A/L ICT tuition for Sri Lankan Advanced Level students, covering the complete{" "}
           {SYLLABUS_AUTHORITY} syllabus — all {AL_ICT_UNITS.length} units across Grade 12 and Grade 13.
-          Taught in Sinhala medium by <strong className="text-(--color-awaken-deep)">{TEACHER_NAME}</strong>.
-          The first 7 days are free and no card is needed to start.
+          Taught in Sinhala and English medium by{" "}
+          <Link href="/dr-yasas" className="font-semibold text-(--color-awaken-deep) underline">
+            {TEACHER_NAME}
+          </Link>
+          . The first 7 days are free and no card is needed to start.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -212,7 +215,7 @@ export default async function AlIctClassesPage() {
           {[
             { term: "Subject", value: "A/L ICT (local syllabus)" },
             { term: "Grades", value: "12 and 13" },
-            { term: "Medium", value: "Sinhala (English terms given)" },
+            { term: "Medium", value: "Sinhala and English" },
             { term: "Format", value: "Live online, join from a phone" },
             { term: "Syllabus", value: `${AL_ICT_UNITS.length} units · ${totalPeriods} periods` },
             { term: "Fee", value: priceLKR ? `From ${formatLKR(priceLKR)} / month` : "See the class list below" },
@@ -243,6 +246,7 @@ export default async function AlIctClassesPage() {
             <li>· NIE විෂය නිර්දේශයේ ඒකක {AL_ICT_UNITS.length}ම සම්පූර්ණයෙන් ආවරණය කරයි.</li>
             <li>· පසුගිය විභාග ප්‍රශ්න පත්‍ර සාකච්ඡා, ක්ෂණික ප්‍රශ්නාවලි සහ බාගත කළ හැකි සටහන්.</li>
             <li>· ඔබේ දුරකථනයෙන්ම පන්තියට සම්බන්ධ විය හැක. යෙදුමක් ස්ථාපනය කිරීම අවශ්‍ය නොවේ.</li>
+            <li>· ඉංග්‍රීසි මාධ්‍යයෙන් ද පන්ති පවත්වනු ලැබේ.</li>
             <li>· පළමු දින 7 නොමිලේ. ණයපත් (credit card) අවශ්‍ය නොවේ.</li>
             <li>· උගන්වන්නේ ආචාර්ය යසස් ශ්‍රී වික්‍රමසිංහ — නවසීලන්තයේ Canterbury විශ්වවිද්‍යාලයෙන් ආචාර්ය උපාධිය ලැබූ, ජ්‍යෙෂ්ඨ කථිකාචාර්යවරයෙකි.</li>
           </ul>
@@ -411,9 +415,11 @@ export default async function AlIctClassesPage() {
         <section className="mt-12 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
           <h2 className="text-2xl font-bold">Who teaches these classes</h2>
           <p className="mt-3 text-(--color-awaken-ink-soft)">
-            <strong className="text-(--color-awaken-deep)">{TEACHER_NAME}</strong> teaches every class,
-            writes every note and records every video on this site personally — there is no panel of
-            assistant tutors.
+            <Link href="/dr-yasas" className="font-semibold text-(--color-awaken-deep) underline">
+              {TEACHER_NAME}
+            </Link>{" "}
+            teaches every class, writes every note and records every video on this site personally —
+            there is no panel of assistant tutors.
           </p>
           <ul className="mt-4 space-y-1.5 text-sm text-(--color-awaken-ink-soft)">
             {TEACHER_CREDENTIALS.map((c) => (

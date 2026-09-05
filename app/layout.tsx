@@ -30,15 +30,15 @@ const SITE_JSON_LD = graphJsonLd([organizationJsonLd(), webSiteJsonLd(), personJ
 // lib/fonts.ts.
 
 const SITE_DESCRIPTION =
-  "A/L ICT classes, past papers and free notes for Sri Lankan Grade 12 & 13 students, Sinhala medium. Live online classes following the full NIE syllabus, instant quizzes and downloadable notes — taught by Dr. Yasas Sri Wickramasinghe, PhD. Free 7-day trial.";
+  "A/L ICT classes, past papers and free notes for Sri Lankan Grade 12 & 13 students, in Sinhala and English medium. Live online classes following the full NIE syllabus, instant quizzes and downloadable notes — taught by Dr. Yasas Sri Wickramasinghe, PhD. Free 7-day trial.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(publicEnv.appUrl),
   title: {
     // The default has to earn a click on its own for any page that doesn't set
-    // its own title, so it leads with the subject and the two words students
-    // actually type — "class" and "Sinhala medium" — not the brand.
-    default: "A/L ICT Classes & Past Papers, Sinhala Medium — ICT Campus Sri Lanka",
+    // its own title, so it leads with the subject and the words students
+    // actually type — "class", "Sinhala", "English" — not the brand.
+    default: "A/L ICT Classes & Past Papers, Sinhala & English — ICT Campus Sri Lanka",
     template: "%s | ICT Campus",
   },
   description: SITE_DESCRIPTION,
@@ -55,12 +55,12 @@ export const metadata: Metadata = {
     siteName: "ICT Campus",
     locale: "si_LK",
     alternateLocale: ["en_LK"],
-    title: "A/L ICT Classes & Past Papers, Sinhala Medium — ICT Campus Sri Lanka",
+    title: "A/L ICT Classes & Past Papers, Sinhala & English — ICT Campus Sri Lanka",
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "A/L ICT Classes & Past Papers, Sinhala Medium — ICT Campus Sri Lanka",
+    title: "A/L ICT Classes & Past Papers, Sinhala & English — ICT Campus Sri Lanka",
     description: SITE_DESCRIPTION,
   },
   robots: {
