@@ -1,7 +1,7 @@
 # ICT Campus — A/L ICT classes and free resources, Sri Lanka
 
 > Live, interactive Advanced Level ICT tuition for Sri Lankan students
-> (Grades 12 & 13, Sinhala medium), taught by Dr. Yasas Sri Wickramasinghe
+> (Grades 12 & 13, Sinhala and English medium), taught by Dr. Yasas Sri Wickramasinghe
 > (PhD, Human Interface Technology, University of Canterbury, NZ; senior
 > lecturer; former lecturer at the University of Moratuwa; former industry
 > researcher and tech lead at Sony, 99X and Niantic). Follows the official
@@ -25,6 +25,7 @@ papers, and answers about one do not transfer to the other.
 
 - [Home](https://ictcampus.lk/): overview, pricing, syllabus showcase and how live classes work
 - [A/L ICT classes](https://ictcampus.lk/al-ict-classes): the class offer in full — medium, grades, fees, schedule, unit coverage, who teaches it
+- [Dr. Yasas Sri Wickramasinghe](https://ictcampus.lk/dr-yasas): the instructor's academic, teaching and professional background
 - [A/L ICT past papers](https://ictcampus.lk/past-papers): paper structure, what is asked unit by unit, how to work a paper properly, and the official sources for every year's paper
 - [2026 Paper I MCQ, free to attempt](https://ictcampus.lk/papers/al-ict-2026-paper-1-mcq): all 50 questions, live 2-hour timer, instant scoring, every answer explained, no sign-in
 - [Full syllabus](https://ictcampus.lk/syllabus): every A/L ICT unit and lesson, Grades 12 & 13, with exam objectives
@@ -38,7 +39,7 @@ papers, and answers about one do not transfer to the other.
 
 - **Subject**: A/L ICT (Information & Communication Technology), Sri Lankan local syllabus, NIE. No O/L classes.
 - **Grades**: 12 and 13. Grade 12 covers units 1–6, Grade 13 covers units 7–14.
-- **Medium**: Sinhala, with English technical terms given alongside because the exam paper and marking scheme use them.
+- **Medium**: Both Sinhala and English medium classes are run, following the same NIE syllabus.
 - **Format**: live online classes joined from a browser on any phone, tablet or laptop. Nothing to install. Recordings available afterwards.
 - **Exam structure**: Paper I is 50 MCQs in 2 hours, all to be answered, with no negative marking — so a blank scores the same as a wrong answer and there is never a reason to leave one. Paper II is 3 hours, Part A structured questions and Part B essay questions.
 - **Sign-in**: Sri Lankan mobile number with a one-time SMS code. No password.

@@ -38,7 +38,8 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               <NavLink href="/al-ict-classes">Classes</NavLink>
               <NavLink href="/syllabus">Syllabus</NavLink>
               <NavLink href="/past-papers">Past papers</NavLink>
-              <NavLink href="/notes">Free notes</NavLink>
+              <NavLink href="/notes">Notes</NavLink>
+              <NavLink href="/dr-yasas">Instructor</NavLink>
               <ButtonLink href="/signin" variant="primary" size="sm" className="ml-1">
                 Sign in
               </ButtonLink>

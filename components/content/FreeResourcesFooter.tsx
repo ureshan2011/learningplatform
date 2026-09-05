@@ -26,6 +26,7 @@ const RESOURCES: ResourceLink[] = [
   { href: "/number-systems", label: "Number systems & two's complement", icon: "memory" },
   { href: "/logic-gates", label: "Logic gates, symbols & truth tables", icon: "hub" },
   { href: "/university-pathways", label: "Where A/L ICT can take you", icon: "school" },
+  { href: "/dr-yasas", label: "Dr. Yasas Sri Wickramasinghe — instructor profile", icon: "account_circle" },
 ];
 
 /** Pass the current page's own path so it doesn't link to itself. */

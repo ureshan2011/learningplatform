@@ -46,17 +46,16 @@ function cssVars(vars: Record<string, string>): React.CSSProperties {
 // classes below) so the rest of the app keeps its own type system.
 
 export const metadata: Metadata = {
-  // Leads with the subject and grade a student searches for, then the free
-  // material that earns the links, then the class that earns the money — in
-  // that order, because the free resources are what a stranger clicks.
-  title: "A/L ICT Classes & Free Notes — Sinhala Medium, Grades 12 & 13",
+  // Leads with the subject, grade and the two mediums a student searches for
+  // — "class", "Sinhala", "English" — not the brand.
+  title: "A/L ICT Classes, Sinhala & English Medium — Grades 12 & 13",
   description:
-    "A/L ICT for Sri Lankan Grade 12 and 13 students in Sinhala medium: free notes, past paper breakdowns and the full NIE syllabus unit by unit, plus live online classes with instant quizzes and mock exams. Taught by Dr. Yasas Sri Wickramasinghe, PhD. Free 7-day trial, no card required.",
+    "A/L ICT for Sri Lankan Grade 12 and 13 students, in Sinhala and English medium: free notes, past paper breakdowns and the full NIE syllabus unit by unit, plus live online classes with instant quizzes and mock exams. Taught by Dr. Yasas Sri Wickramasinghe, PhD in Human Interface Technology, University of Canterbury.",
   alternates: { canonical: "/" },
   keywords: [
     "A/L ICT",
     "A/L ICT class",
-    "A/L ICT online classes Sinhala medium",
+    "A/L ICT online classes Sinhala and English medium",
     "AL ICT tuition Sri Lanka",
     "A/L ICT past papers",
     "A/L ICT notes",
@@ -75,7 +74,8 @@ const NAV_LINKS = [
   { href: "/al-ict-classes", label: "Classes" },
   { href: "#syllabus", label: "Syllabus" },
   { href: "/past-papers", label: "Past papers" },
-  { href: "#resources", label: "Free notes" },
+  { href: "#resources", label: "Notes" },
+  { href: "/dr-yasas", label: "Instructor" },
   { href: "#faq", label: "FAQ" },
 ] as const;
 
@@ -140,8 +140,8 @@ const FAQS = [
   // — medium, grade, format — so they are also the three most likely to be
   // lifted into a featured snippet or an AI assistant's answer.
   {
-    q: "Are these A/L ICT classes in Sinhala medium?",
-    a: "Yes. Every class is taught in Sinhala medium, following the NIE A/L ICT syllabus for Grades 12 and 13. Technical terms are given in English too, because that is how they appear in the exam paper and the marking scheme.",
+    q: "Are these A/L ICT classes in Sinhala or English medium?",
+    a: "Both. ICT Campus runs live A/L ICT classes in Sinhala medium and in English medium, following the same NIE A/L ICT syllabus for Grades 12 and 13 — choose whichever you're most comfortable studying in.",
   },
   {
     q: "Are the classes online or physical?",
@@ -161,7 +161,7 @@ const FAQS = [
   },
   {
     q: "Which syllabus is this for?",
-    a: "A/L ICT only — Grades 12 and 13, Sinhala medium, following the NIE syllabus unit by unit. There is no O/L class here, so nothing you study is off-syllabus.",
+    a: "A/L ICT only — Grades 12 and 13, available in Sinhala and English medium, following the NIE syllabus unit by unit. There is no O/L class here, so nothing you study is off-syllabus.",
   },
   {
     q: "What if I miss a live class?",
@@ -281,7 +281,7 @@ export default async function LandingPage() {
                   student searching for a class has landed on the right one:
                   level, grades, medium, country. */}
               <p className="mb-2 text-xs font-semibold text-(--lp-ink-400)">
-                A/L ICT · Grades 12 &amp; 13 · Sinhala medium · Sri Lanka
+                A/L ICT · Grades 12 &amp; 13 · Sinhala &amp; English · Sri Lanka
               </p>
 
               {/*
@@ -299,9 +299,13 @@ export default async function LandingPage() {
               </h1>
 
               <p className="my-[clamp(18px,2.4vw,26px)] max-w-[520px] text-[clamp(15px,1.4vw,18px)] text-(--lp-ink-500) text-wrap-pretty">
-                I&apos;m <strong className="font-bold text-(--lp-ink-900)">Dr. Yasas Sri Wickramasinghe</strong> — PhD in
-                Human Interface Technology, senior lecturer, and a postdoctoral researcher with industry experience at
-                Sony, 99X and Niantic. Every note, video and live class here comes from me.
+                I&apos;m{" "}
+                <Link href="/dr-yasas" className="font-bold text-(--lp-ink-900) underline decoration-(--lp-orange-500) underline-offset-2">
+                  Dr. Yasas Sri Wickramasinghe
+                </Link>{" "}
+                — PhD in Human Interface Technology from the University of Canterbury, senior lecturer, and a
+                postdoctoral researcher with industry experience at Sony, 99X and Niantic. Every note, video and
+                live class here comes from me.
               </p>
 
               {/* Spells out the offer in the words a student searches with.
@@ -310,7 +314,7 @@ export default async function LandingPage() {
                   actually needs answering above the fold. */}
               <p className="mb-[clamp(18px,2.4vw,26px)] max-w-[520px] text-[clamp(14px,1.3vw,16px)] text-(--lp-ink-500) text-wrap-pretty">
                 Live <strong className="font-semibold text-(--lp-ink-900)">online A/L ICT classes</strong> in Sinhala
-                medium covering all 14 units of the NIE syllabus, plus free{" "}
+                and English medium, covering all 14 units of the NIE syllabus, plus free{" "}
                 <Link href="/past-papers" className="underline decoration-(--lp-orange-500) underline-offset-2">
                   past paper guides
                 </Link>{" "}
@@ -603,6 +607,7 @@ export default async function LandingPage() {
                 <li>· ලියාපදිංචිය ජංගම දුරකථන අංකයෙන් සහ SMS කේතයකින්. මුරපදයක් අවශ්‍ය නොවේ.</li>
                 <li>· පළමු දින 7 නොමිලේ. ණයපත් අවශ්‍ය නොවේ.</li>
                 <li>· සටහන්, ලිපි සහ වීඩියෝ සදාකාලිකවම නොමිලේ.</li>
+                <li>· ඉංග්‍රීසි මාධ්‍යයෙන් පන්ති ද තිබේ.</li>
               </ul>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
@@ -704,7 +709,7 @@ export default async function LandingPage() {
                 <span className="text-(--lp-orange-500)">.</span>
               </div>
               <p className="mt-3.5 max-w-[240px] text-xs text-(--lp-ink-300)">
-                A/L ICT (Grades 12 &amp; 13) in Sinhala medium, taught by Dr. Yasas Sri Wickramasinghe.
+                A/L ICT (Grades 12 &amp; 13) in Sinhala and English medium, taught by Dr. Yasas Sri Wickramasinghe.
               </p>
             </div>
             <div>
@@ -728,6 +733,9 @@ export default async function LandingPage() {
             <div>
               <div className="mb-3.5 text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">Teacher</div>
               <div className="flex flex-col gap-2.5">
+                <Link href="/dr-yasas" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">
+                  Dr. Yasas Sri Wickramasinghe — full profile
+                </Link>
                 <span className="text-xs text-(--lp-ink-300)">PhD — Univ. of Canterbury</span>
                 <span className="text-xs text-(--lp-ink-300)">Senior Lecturer — NZ</span>
                 <a

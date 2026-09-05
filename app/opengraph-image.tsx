@@ -42,7 +42,7 @@ export default function OpengraphImage() {
           A/L ICT tuition, taught by someone who built it.
         </div>
         <div style={{ display: "flex", marginTop: 32, fontSize: 30, color: "rgba(255,255,255,0.88)" }}>
-          Live classes · free notes &amp; past papers · Sinhala medium
+          Live classes · free notes &amp; past papers · Sinhala &amp; English
         </div>
       </div>
     ),
