@@ -39,6 +39,7 @@ export const revalidate = 86400;
 
 const ACADEMIC = [
   "PhD, Human Interface Technology — University of Canterbury, New Zealand",
+  "Certificate in Teaching in Higher Education (CTHE), UGC-approved — top of the staff development programme cohort",
 ];
 
 const TEACHING = [
@@ -84,6 +85,10 @@ const FAQS = [
     q: "Has Dr. Yasas Sri Wickramasinghe spoken at any conferences?",
     a: "Yes. He has been an invited speaker at NZGDC (New Zealand Game Developers Conference) on AR game design, and has spoken at ICITR (University of Moratuwa), IEEE WIE Sri Lanka and Falling Walls Lab Aotearoa New Zealand.",
   },
+  {
+    q: "Is Dr. Yasas Sri Wickramasinghe a certified teacher?",
+    a: "Yes. Alongside his PhD, he holds a UGC-approved Certificate in Teaching in Higher Education (CTHE), finishing the staff development programme at the top of his cohort.",
+  },
 ] as const;
 
 export default function LecturerPage() {
@@ -115,6 +120,19 @@ export default function LecturerPage() {
               PhD in Human Interface Technology, University of Canterbury — lecturer, {SUBJECT_EN}{" "}
               ({GRADES}), ICT Campus
             </p>
+
+            <div className="mt-4 inline-flex items-start gap-3 rounded-ict-card border border-(--color-awaken-accent)/25 bg-(--color-awaken-accent-soft) px-4 py-3">
+              <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-full bg-(--color-awaken-accent) text-white">
+                <Icon name="fact_check" className="!text-base" />
+              </span>
+              <div>
+                <p className="text-sm font-bold text-(--color-awaken-ink)">UGC-certified lecturer</p>
+                <p className="text-xs text-(--color-awaken-ink-soft)">
+                  Certificate in Teaching in Higher Education (CTHE) — top of cohort
+                </p>
+              </div>
+            </div>
+
             <div className="mt-4 flex flex-wrap gap-3">
               <ButtonLink href="/al-ict-classes" variant="primary">
                 See A/L ICT classes
