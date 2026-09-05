@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { COMMAND_WORDS } from "@/lib/content/command-words";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 
 export const metadata: Metadata = {
   title: "ICT exam command words explained",
@@ -13,6 +16,11 @@ export const metadata: Metadata = {
 
 // Fixed reference content — safe to cache like the free notes page.
 export const revalidate = 86400;
+
+const FAQS = COMMAND_WORDS.map((cw) => ({
+  q: `What does the command word "${cw.word}" require in an A/L ICT exam answer?`,
+  a: cw.meaning,
+}));
 
 /**
  * The single highest-leverage, lowest-cost content page on the platform:
@@ -29,6 +37,13 @@ export default function CommandWordsPage() {
         session would force it to render dynamically per-visitor for no
         real benefit.
       */}
+      <JsonLd data={faqJsonLd(FAQS)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Command words", path: "/command-words" },
+        ])}
+      />
       <SiteHeader user={null} />
       <main className="mx-auto max-w-3xl px-5 py-12">
       <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
@@ -72,6 +87,8 @@ export default function CommandWordsPage() {
         </Link>
         .
       </p>
+
+      <FreeResourcesFooter exclude={["/command-words"]} />
 
       <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
         <h2 className="text-lg font-bold">Drill these until they&apos;re automatic</h2>

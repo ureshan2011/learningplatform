@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import { DISTINGUISH_PAIRS } from "@/lib/content/distinguish-between";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 
 export const metadata: Metadata = {
   title: `"Distinguish Between" Questions — 10 Worked A/L ICT Examples`,
@@ -14,17 +17,10 @@ export const metadata: Metadata = {
 // Fixed reference content — safe to cache like the command-words page.
 export const revalidate = 86400;
 
-function faqJsonLd() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: DISTINGUISH_PAIRS.map((p) => ({
-      "@type": "Question",
-      name: `Distinguish between ${p.termA} and ${p.termB}.`,
-      acceptedAnswer: { "@type": "Answer", text: p.strongAnswer },
-    })),
-  };
-}
+const FAQS = DISTINGUISH_PAIRS.map((p) => ({
+  q: `Distinguish between ${p.termA} and ${p.termB}.`,
+  a: p.strongAnswer,
+}));
 
 /**
  * The direct continuation of /command-words: that page explains WHAT
@@ -36,7 +32,13 @@ function faqJsonLd() {
 export default function DistinguishBetweenPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }} />
+      <JsonLd data={faqJsonLd(FAQS)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Distinguish between", path: "/distinguish-between" },
+        ])}
+      />
       <SiteHeader user={null} />
       <main className="mx-auto max-w-3xl px-5 py-12">
         <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
@@ -102,7 +104,9 @@ export default function DistinguishBetweenPage() {
           ))}
         </ul>
 
-        <section className="mt-14 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+        <FreeResourcesFooter exclude={["/distinguish-between"]} />
+
+        <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
           <h2 className="text-lg font-bold">Get this checked in a live class</h2>
           <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
             Every subject&apos;s Practice section drills command words like this one under

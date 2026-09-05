@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { PaperAttempt } from "@/components/papers/PaperAttempt";
 import { DisclaimerNote } from "@/components/papers/DisclaimerNote";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { publicEnv } from "@/lib/env";
+import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { AL_ICT_2026_PAPER1, PAPER_DURATION_MINUTES, PAPER_QUESTION_COUNT } from "@/lib/content/al-ict-2026-paper1";
 
 const REPLACED_COUNT = AL_ICT_2026_PAPER1.filter((q) => q.replaced).length;
@@ -35,7 +38,13 @@ function jsonLd() {
 export default function AlIctPaper1Page() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
+      <JsonLd data={jsonLd()} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "2026 Paper I MCQ", path: "/papers/al-ict-2026-paper-1-mcq" },
+        ])}
+      />
       <SiteHeader user={null} />
       <PaperAttempt />
 
@@ -79,6 +88,8 @@ export default function AlIctPaper1Page() {
             </ol>
           </div>
         </details>
+
+        <FreeResourcesFooter exclude={["/papers/al-ict-2026-paper-1-mcq"]} />
       </section>
     </>
   );
