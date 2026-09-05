@@ -24,7 +24,8 @@ The owner is a teacher, not a developer.
 | Hosting | Firebase App Hosting backend `learningplatform`, asia-southeast1, auto-deploys on push to `main` |
 | Firestore region | asia-south1 (Mumbai) |
 | Realtime Database region | asia-southeast1 (Singapore) |
-| Live URL | `learningplatform--srizone-1fc76.asia-southeast1.hosted.app` |
+| Live URL | `https://ictcampus.lk` — the canonical host. `www.` redirects to it (`next.config.ts`) |
+| App Hosting URL | `learningplatform--srizone-1fc76.asia-southeast1.hosted.app` — still serves the site |
 
 Firebase must stay on the **Blaze** plan — App Hosting requires it. Free within
 quotas.
@@ -263,8 +264,20 @@ freeing a broken phone's slot also kicks the student off the phone in their hand
 
 Two separate settings, both under Authentication, both fail confusingly:
 
-- **Authorized domains** — the live hostname must be listed, or sign-in fails
-  silently with no SMS and no error.
+- **Authorized domains** — *every* hostname the site answers on must be listed,
+  or sign-in on the missing one fails with `INVALID_APP_CREDENTIAL` (400) and
+  then a 503 from the reCAPTCHA v2 fallback. Firebase copies this list onto the
+  reCAPTCHA keys that phone auth verifies against, so a host that is absent has
+  its reCAPTCHA token rejected before any SMS is sent. Keep all of these
+  listed: `ictcampus.lk`, `www.ictcampus.lk`,
+  `learningplatform--srizone-1fc76.asia-southeast1.hosted.app`,
+  `srizone-1fc76.firebaseapp.com` (the `authDomain` — removing it breaks the
+  fallback flow), `srizone-1fc76.web.app` and `localhost`. Never prune this
+  list down to the custom domain: that is what broke sign-in once already.
+  The copy onto the reCAPTCHA keys is not instant — allow a few minutes, and
+  verify with
+  `curl "https://identitytoolkit.googleapis.com/v1/projects?key=<web API key>"`,
+  which returns the live `authorizedDomains`.
 - **SMS Region Policy** — must allow Sri Lanka, or you get
   `auth/operation-not-allowed`. Keep the allowlist to Sri Lanka only: an open
   list invites SMS-pumping fraud against the billing account.

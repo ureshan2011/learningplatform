@@ -10,7 +10,7 @@ import {
   type User as FirebaseUser,
 } from "firebase/auth";
 import { clientAuth } from "@/lib/firebase/client";
-import { isFirebaseConfigured } from "@/lib/env";
+import { isFirebaseConfigured, publicEnv } from "@/lib/env";
 import { collectDeviceSignals } from "@/lib/auth/device-client";
 import { toE164, formatLocal } from "@/lib/phone";
 import { formatDate } from "@/lib/format";
@@ -702,6 +702,17 @@ function messageFor(err: unknown): string {
     return "දුරකථන අංකය වලංගු නැත · That phone number is not valid.";
   if (code.includes("operation-not-allowed") || code.includes("quota-exceeded"))
     return "SMS එවීම දැන් කළ නොහැක · SMS sign-in is unavailable right now. Please tell your teacher.";
+  // INVALID_APP_CREDENTIAL, and the backend error the SDK falls back into after
+  // it. Both mean the same thing in practice: the page is being served from a
+  // hostname Firebase has not authorised for phone auth, so the reCAPTCHA token
+  // is rejected and no SMS is ever sent. It is a configuration fault, not
+  // anything the student did, and the one thing they can act on is the address.
+  if (
+    code.includes("invalid-app-credential") ||
+    code.includes("captcha-check-failed") ||
+    code.includes("internal-error")
+  )
+    return `මෙම ලිපිනයෙන් පිවිසිය නොහැක · Sign-in does not work on this web address. Open ${publicEnv.appUrl} and try again. If it still fails, tell your teacher.`;
   if (name === "no_confirmation")
     return "කේතයේ කාලය ඉකුත් වී ඇත · That code request expired. Enter your number again.";
   if (err instanceof TypeError)

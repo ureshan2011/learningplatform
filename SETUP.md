@@ -101,16 +101,28 @@ rebuilds itself.
 
 **https://console.firebase.google.com/project/srizone-1fc76/authentication/settings**
 
-→ **Authorized domains** → **Add domain** → paste exactly:
+→ **Authorized domains** → **Add domain** → every hostname the site answers on
+must be in this list:
 
 ```
+ictcampus.lk
+www.ictcampus.lk
 learningplatform--srizone-1fc76.asia-southeast1.hosted.app
+srizone-1fc76.firebaseapp.com
+srizone-1fc76.web.app
+localhost
 ```
 
 No `https://`, no trailing slash — just the hostname.
 
 Without this, phone sign-in fails **silently** — no error, no SMS. It is the
 single most common thing to get stuck on.
+
+**Never delete an entry to tidy the list up.** Firebase copies these domains
+onto the reCAPTCHA keys that phone sign-in checks against, so a hostname that is
+missing gets its sign-in rejected with `INVALID_APP_CREDENTIAL` before any SMS
+is sent. `srizone-1fc76.firebaseapp.com` matters even though nobody visits it —
+it is the address the sign-in check itself runs through.
 
 ### 3.2 Sign in and set up your classes
 
@@ -164,7 +176,7 @@ have paid, and which devices they are using. From there you can free a device
 slot, sign someone out everywhere, and (as an admin) change their role or switch
 the account off.
 
-Your site: **https://learningplatform--srizone-1fc76.asia-southeast1.hosted.app**
+Your site: **https://ictcampus.lk**
 
 ---
 
@@ -232,6 +244,7 @@ Or paste `storage.rules` into the console under **Storage → Rules → Publish*
 | Problem | Cause |
 | --- | --- |
 | No SMS, no error at all | Domain missing from Authentication → Authorized domains |
+| `INVALID_APP_CREDENTIAL`, then a 503, in the browser console | You are on a hostname that is not in Authorized domains. Open `https://ictcampus.lk` exactly, and add the missing hostname (see 3.1) |
 | `SMS unable to be sent until this region enabled` | Sri Lanka not allowed in Authentication → Settings → SMS Region Policy |
 | Signed in but no teacher console | Someone else signed in first — use `make-teacher` |
 | Build fails in App Hosting | Check the build log; live branch must be `main` |
