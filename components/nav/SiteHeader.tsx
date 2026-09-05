@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { SessionUser } from "@/lib/auth/session";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { Icon } from "@/components/ui/Icon";
+import { ButtonLink } from "@/components/ds";
 
 /**
  * The one navigation bar every page (other than the landing hero, which has
@@ -38,12 +39,9 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               <NavLink href="/syllabus">Syllabus</NavLink>
               <NavLink href="/past-papers">Past papers</NavLink>
               <NavLink href="/notes">Free notes</NavLink>
-              <Link
-                href="/signin"
-                className="ml-1 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white shadow-[0_4px_14px_rgba(234,88,12,0.25)] transition-transform hover:scale-[1.02] active:scale-[0.98]"
-              >
+              <ButtonLink href="/signin" variant="primary" size="sm" className="ml-1">
                 Sign in
-              </Link>
+              </ButtonLink>
             </>
           ) : (
             <>
@@ -52,7 +50,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               {isStaff ? <NavLink href="/teacher">Teacher console</NavLink> : null}
               <NavLink href="/account">Account</NavLink>
               <div className="ml-1">
-                <SignOutButton className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium transition-colors hover:border-(--color-awaken-accent)/40" />
+                <SignOutButton className="rounded-full border border-(--color-awaken-line) px-4 py-2 text-sm font-medium transition-colors hover:border-(--color-awaken-accent)/40" />
               </div>
             </>
           )}
@@ -66,7 +64,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="rounded-lg px-3 py-2 font-medium text-(--color-awaken-ink-soft) transition-colors hover:bg-(--color-awaken-bg) hover:text-(--color-awaken-ink)"
+      className="rounded-full px-3 py-2 font-medium text-(--color-awaken-ink-soft) transition-colors hover:bg-(--color-awaken-bg) hover:text-(--color-awaken-ink)"
     >
       {children}
     </Link>

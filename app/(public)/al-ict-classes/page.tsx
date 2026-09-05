@@ -6,6 +6,7 @@ import { formatLKR, formatSessionTime } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ButtonLink } from "@/components/ds";
 import { breadcrumbJsonLd, courseJsonLd, faqJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
 import {
   EXAM_STRUCTURE,
@@ -193,16 +194,13 @@ export default async function AlIctClassesPage() {
           The first 7 days are free and no card is needed to start.
         </p>
 
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/signin"
-            className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(234,88,12,0.25)] transition-transform hover:scale-[1.02] active:scale-[0.98]"
-          >
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <ButtonLink href="/signin" variant="primary">
             Start the free 7-day trial
-          </Link>
+          </ButtonLink>
           <Link
             href="/syllabus"
-            className="rounded-lg border border-(--color-awaken-line) px-5 py-3 font-semibold transition-colors hover:border-(--color-awaken-accent)/40"
+            className="rounded-full border border-(--color-awaken-line) px-5 py-3 font-semibold transition-colors hover:border-(--color-awaken-accent)/40"
           >
             Browse the syllabus first
           </Link>
@@ -210,7 +208,7 @@ export default async function AlIctClassesPage() {
 
         {/* At-a-glance facts. A student comparing three tuition classes reads
             exactly this and nothing else, so it goes above every other section. */}
-        <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-line) sm:grid-cols-3">
+        <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-line) sm:grid-cols-3">
           {[
             { term: "Subject", value: "A/L ICT (local syllabus)" },
             { term: "Grades", value: "12 and 13" },
@@ -235,7 +233,7 @@ export default async function AlIctClassesPage() {
             screen reader both handle the script correctly. */}
         <section
           lang="si"
-          className="si mt-10 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6"
+          className="si mt-10 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6"
         >
           <h2 className="text-xl font-bold text-(--color-awaken-deep)">
             උසස් පෙළ තොරතුරු හා සන්නිවේදන තාක්ෂණය (ICT) පන්ති — සිංහල මාධ්‍යයෙන්
@@ -273,7 +271,7 @@ export default async function AlIctClassesPage() {
               {subjects.map((subject) => (
                 <li
                   key={subject.id}
-                  className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
+                  className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <h3 className="text-lg font-bold">{subject.name}</h3>
@@ -292,7 +290,7 @@ export default async function AlIctClassesPage() {
           )}
 
           {upcoming.length > 0 ? (
-            <div className="mt-5 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
+            <div className="mt-5 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
               <h3 className="flex items-center gap-2 font-bold">
                 <Icon name="calendar_month" className="!text-base text-(--color-awaken-accent)" />
                 Next live classes
@@ -315,7 +313,7 @@ export default async function AlIctClassesPage() {
             {WHY.map((item) => (
               <div
                 key={item.title}
-                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
+                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
               >
                 <h3 className="flex items-center gap-2 font-bold">
                   <Icon name={item.icon} className="!text-base text-(--color-awaken-accent)" />
@@ -352,7 +350,7 @@ export default async function AlIctClassesPage() {
                 {units.map((u) => (
                   <li
                     key={u.id}
-                    className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-3"
+                    className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-3"
                   >
                     <Link
                       href={`/syllabus/${SUBJECT_ID}/${u.id}`}
@@ -380,7 +378,7 @@ export default async function AlIctClassesPage() {
             {[EXAM_STRUCTURE.paper1, EXAM_STRUCTURE.paper2].map((paper) => (
               <div
                 key={paper.name}
-                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
+                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
               >
                 <h3 className="font-bold">{paper.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-(--color-awaken-accent)">
@@ -410,7 +408,7 @@ export default async function AlIctClassesPage() {
 
         {/* Who is teaching. For an exam-prep site this is the single strongest
             trust signal a search engine and a parent both look for. */}
-        <section className="mt-12 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
+        <section className="mt-12 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
           <h2 className="text-2xl font-bold">Who teaches these classes</h2>
           <p className="mt-3 text-(--color-awaken-ink-soft)">
             <strong className="text-(--color-awaken-deep)">{TEACHER_NAME}</strong> teaches every class,
@@ -433,7 +431,7 @@ export default async function AlIctClassesPage() {
             {FAQS.map((faq) => (
               <details
                 key={faq.q}
-                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card)"
+                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)"
               >
                 <summary className="cursor-pointer list-none px-5 py-4 font-semibold">{faq.q}</summary>
                 <p className="border-t border-(--color-awaken-line) px-5 py-4 text-sm text-(--color-awaken-ink-soft)">
@@ -444,14 +442,14 @@ export default async function AlIctClassesPage() {
           </div>
         </section>
 
-        <section className="mt-12 rounded-xl bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) p-6 text-white">
+        <section className="mt-12 rounded-ict-panel bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) p-6 text-white">
           <h2 className="text-2xl font-bold">Sit in on a real class before you pay</h2>
           <p className="mt-2 text-white/90">
             Seven days free, no card, no auto-renewal. Sign in with your mobile number and one SMS code.
           </p>
           <Link
             href="/signin"
-            className="mt-4 inline-block rounded-lg bg-white px-5 py-3 font-semibold text-(--color-awaken-accent)"
+            className="mt-4 inline-block rounded-full bg-white px-5 py-3 font-semibold text-(--color-awaken-accent)"
           >
             Start free
           </Link>

@@ -14,21 +14,21 @@ export function NibbleGrouping({ bits }: { bits: string }) {
 
   return (
     <div className="not-prose overflow-x-auto">
-      <div className="inline-flex min-w-full flex-wrap items-start justify-center gap-3 rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+      <div className="inline-flex min-w-full flex-wrap items-start justify-center gap-3 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
         {nibbles.map((nibble, i) => (
           <div key={i} className="flex flex-col items-center gap-1.5">
             <div className="flex gap-1">
               {nibble.split("").map((d, j) => (
                 <div
                   key={j}
-                  className="flex size-9 items-center justify-center rounded-md border-2 border-(--color-awaken-line) text-base font-bold sm:size-10"
+                  className="flex size-9 items-center justify-center rounded-ict-md border-2 border-(--color-awaken-line) text-base font-bold sm:size-10"
                 >
                   {d}
                 </div>
               ))}
             </div>
             <span className="text-(--color-awaken-ink-soft)">↓</span>
-            <div className="flex size-9 items-center justify-center rounded-md border-2 border-(--color-awaken-accent) bg-(--color-awaken-accent-soft) text-base font-bold text-(--color-awaken-accent) sm:size-10">
+            <div className="flex size-9 items-center justify-center rounded-ict-md border-2 border-(--color-awaken-accent) bg-(--color-awaken-accent-soft) text-base font-bold text-(--color-awaken-accent) sm:size-10">
               {parseInt(nibble, 2).toString(16).toUpperCase()}
             </div>
           </div>

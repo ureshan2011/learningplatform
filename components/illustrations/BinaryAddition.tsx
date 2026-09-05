@@ -18,7 +18,7 @@ function Row({
           <div
             key={i}
             className={
-              "flex size-8 items-center justify-center rounded-md text-sm font-bold sm:size-9 " +
+              "flex size-8 items-center justify-center rounded-ict-md text-sm font-bold sm:size-9 " +
               (muted
                 ? "text-(--color-awaken-ink-soft)"
                 : "border-2 border-(--color-awaken-accent) bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)")
@@ -57,7 +57,7 @@ export function BinaryAddition({ a, b }: { a: string; b: string }) {
 
   return (
     <div className="not-prose overflow-x-auto">
-      <div className="inline-flex min-w-full flex-col gap-2 rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+      <div className="inline-flex min-w-full flex-col gap-2 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
         <Row label="carry" bits={carryIn} muted leadingSpacer={carriedOut} />
         <Row label="" bits={aBits} muted leadingSpacer={carriedOut} />
         <div className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export function BinaryAddition({ a, b }: { a: string; b: string }) {
           <div className="flex gap-1">
             {carriedOut ? <div className="size-8 sm:size-9" aria-hidden /> : null}
             {bBits.map((d, i) => (
-              <div key={i} className="flex size-8 items-center justify-center rounded-md text-sm font-bold text-(--color-awaken-ink-soft) sm:size-9">
+              <div key={i} className="flex size-8 items-center justify-center rounded-ict-md text-sm font-bold text-(--color-awaken-ink-soft) sm:size-9">
                 {d}
               </div>
             ))}

@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ButtonLink } from "@/components/ds";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { publicEnv } from "@/lib/env";
 import { breadcrumbJsonLd, faqJsonLd, graphJsonLd, ORG_ID } from "@/lib/seo/json-ld";
@@ -198,7 +199,7 @@ export default async function PastPapersPage() {
           mark. Plus a full 2026 Paper I MCQ you can sit online right now, free and without signing in.
         </p>
 
-        <p className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-4 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 text-sm text-(--color-awaken-ink-soft)">
           <Icon name="info" className="mr-1.5 -mb-0.5 !text-base text-(--color-awaken-accent)" />
           We do not re-host the official papers. Every year&apos;s paper is published free by the
           Department of Examinations and the Ministry of Education —{" "}
@@ -212,7 +213,7 @@ export default async function PastPapersPage() {
             of these searches are typed in Sinhala script. */}
         <section
           lang="si"
-          className="si mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6"
+          className="si mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6"
         >
           <h2 className="text-xl font-bold text-(--color-awaken-deep)">
             උසස් පෙළ ICT පසුගිය විභාග ප්‍රශ්න පත්‍ර — සිංහල මාධ්‍යය
@@ -246,7 +247,7 @@ export default async function PastPapersPage() {
           <h2 className="text-2xl font-bold">Attempt a full paper online, free</h2>
           <Link
             href="/papers/al-ict-2026-paper-1-mcq"
-            className="mt-4 block rounded-xl border border-(--color-awaken-accent)/40 bg-(--color-awaken-card) p-5 transition-colors hover:border-(--color-awaken-accent)"
+            className="mt-4 block rounded-ict-card border border-(--color-awaken-accent)/40 bg-(--color-awaken-card) p-5 transition-colors hover:border-(--color-awaken-accent)"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h3 className="text-lg font-bold">A/L ICT 2026 Paper I (MCQ)</h3>
@@ -279,7 +280,7 @@ export default async function PastPapersPage() {
                 <li key={item.id}>
                   <a
                     href={publicContentUrl(item.r2Key)}
-                    className="flex items-center gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-colors hover:border-(--color-awaken-accent)/40"
+                    className="flex items-center gap-3 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-colors hover:border-(--color-awaken-accent)/40"
                   >
                     <Icon
                       name={item.kind === "marking_scheme" ? "check_circle" : "receipt_long"}
@@ -305,7 +306,7 @@ export default async function PastPapersPage() {
             {[EXAM_STRUCTURE.paper1, EXAM_STRUCTURE.paper2].map((paper) => (
               <div
                 key={paper.name}
-                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
+                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
               >
                 <h3 className="font-bold">{paper.name}</h3>
                 <p className="mt-1 text-sm font-semibold text-(--color-awaken-accent)">
@@ -328,7 +329,7 @@ export default async function PastPapersPage() {
             {METHOD.map((m) => (
               <li
                 key={m.step}
-                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
+                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
               >
                 <h3 className="font-bold">
                   <span className="mr-2 font-mono text-sm text-(--color-awaken-accent)">{m.step}</span>
@@ -371,7 +372,7 @@ export default async function PastPapersPage() {
               return (
                 <details
                   key={unit.id}
-                  className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card)"
+                  className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)"
                 >
                   <summary className="flex cursor-pointer list-none flex-wrap items-baseline justify-between gap-2 px-5 py-4">
                     <span className="font-semibold">
@@ -429,7 +430,7 @@ export default async function PastPapersPage() {
                   href={src.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-colors hover:border-(--color-awaken-accent)/40"
+                  className="block rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-colors hover:border-(--color-awaken-accent)/40"
                 >
                   <span className="flex items-center gap-1.5 font-semibold">
                     {src.name}
@@ -448,7 +449,7 @@ export default async function PastPapersPage() {
             {FAQS.map((faq) => (
               <details
                 key={faq.q}
-                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card)"
+                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)"
               >
                 <summary className="cursor-pointer list-none px-5 py-4 font-semibold">{faq.q}</summary>
                 <p className="border-t border-(--color-awaken-line) px-5 py-4 text-sm text-(--color-awaken-ink-soft)">
@@ -461,22 +462,19 @@ export default async function PastPapersPage() {
 
         <FreeResourcesFooter exclude={["/past-papers"]} />
 
-        <section className="mt-8 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
+        <section className="mt-8 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
           <h2 className="text-xl font-bold">Want the papers worked through with you?</h2>
           <p className="mt-2 text-(--color-awaken-ink-soft)">
             Past paper questions are worked through live in class, with the marking scheme open and the
             reasoning shown. Seven days free, no card.
           </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Link
-              href="/al-ict-classes"
-              className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-3 font-semibold text-white"
-            >
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <ButtonLink href="/al-ict-classes" variant="primary">
               See the A/L ICT classes
-            </Link>
+            </ButtonLink>
             <Link
               href="/notes"
-              className="rounded-lg border border-(--color-awaken-line) px-5 py-3 font-semibold transition-colors hover:border-(--color-awaken-accent)/40"
+              className="rounded-full border border-(--color-awaken-line) px-5 py-3 font-semibold transition-colors hover:border-(--color-awaken-accent)/40"
             >
               Free notes library
             </Link>

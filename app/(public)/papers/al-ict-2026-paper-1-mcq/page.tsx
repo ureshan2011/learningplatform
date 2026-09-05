@@ -57,7 +57,7 @@ export default function AlIctPaper1Page() {
         one answer without starting a timed attempt.
       */}
       <section className="mx-auto max-w-3xl px-5 pb-16">
-        <details className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card)">
+        <details className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)">
           <summary className="cursor-pointer list-none px-5 py-4 font-semibold">
             Read the full paper as text, with every answer (no timer)
           </summary>

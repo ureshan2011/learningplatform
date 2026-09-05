@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { DISTINGUISH_PAIRS } from "@/lib/content/distinguish-between";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { ButtonLink } from "@/components/ds";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
@@ -76,7 +77,7 @@ export default function DistinguishBetweenPage() {
             <li
               key={p.slug}
               id={p.slug}
-              className="scroll-mt-20 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+              className="scroll-mt-20 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h2 className="text-lg font-bold">
@@ -85,7 +86,7 @@ export default function DistinguishBetweenPage() {
                 <span className="text-xs text-(--color-awaken-ink-soft)">{p.topic}</span>
               </div>
 
-              <div className="mt-3 flex items-start gap-2 rounded-lg bg-(--color-awaken-danger-soft) p-3 text-sm text-(--color-awaken-danger)">
+              <div className="mt-3 flex items-start gap-2 rounded-ict-md bg-(--color-awaken-danger-soft) p-3 text-sm text-(--color-awaken-danger)">
                 <Icon name="cancel" className="mt-0.5 shrink-0 !text-base" />
                 <span>
                   <span className="font-semibold">Weak (~0–1 mark): </span>
@@ -93,7 +94,7 @@ export default function DistinguishBetweenPage() {
                 </span>
               </div>
 
-              <div className="mt-2 flex items-start gap-2 rounded-lg bg-(--color-awaken-success-soft) p-3 text-sm text-(--color-awaken-success)">
+              <div className="mt-2 flex items-start gap-2 rounded-ict-md bg-(--color-awaken-success-soft) p-3 text-sm text-(--color-awaken-success)">
                 <Icon name="check_circle" className="mt-0.5 shrink-0 !text-base" />
                 <span>
                   <span className="font-semibold">Full marks: </span>
@@ -106,20 +107,16 @@ export default function DistinguishBetweenPage() {
 
         <FreeResourcesFooter exclude={["/distinguish-between"]} />
 
-        <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+        <section className="mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
           <h2 className="text-lg font-bold">Get this checked in a live class</h2>
           <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
             Every subject&apos;s Practice section drills command words like this one under
             real exam pressure, with instant feedback on whether your contrast actually
             earns the mark.
           </p>
-          <Link
-            href="/signin"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white"
-          >
-            <Icon name="videocam" className="!text-base" />
-            Join a class
-          </Link>
+          <ButtonLink href="/signin" variant="primary">
+          Join a class
+        </ButtonLink>
         </section>
       </main>
     </>

@@ -34,14 +34,14 @@ export function FreeResourcesFooter({ exclude = [] }: { exclude?: string[] }) {
   if (items.length === 0) return null;
 
   return (
-    <section className="mt-14 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
+    <section className="mt-14 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
       <h2 className="text-lg font-bold">More free A/L ICT resources</h2>
       <ul className="mt-4 grid gap-1.5 sm:grid-cols-2">
         {items.map((r) => (
           <li key={r.href}>
             <Link
               href={r.href}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-(--color-awaken-ink-soft) transition-colors hover:bg-(--color-awaken-bg) hover:text-(--color-awaken-accent)"
+              className="flex items-center gap-2 rounded-ict-md px-3 py-2 text-sm text-(--color-awaken-ink-soft) transition-colors hover:bg-(--color-awaken-bg) hover:text-(--color-awaken-accent)"
             >
               <Icon name={r.icon} className="!text-base text-(--color-awaken-accent)" />
               {r.label}
