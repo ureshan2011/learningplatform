@@ -429,8 +429,16 @@ body {
   color: var(--color-ict-orange-500);
 }
 
-/* Focus is a 2px orange ring at 2px offset, on :focus-visible only. */
-.ict-app :focus-visible {
+/* Focus is a 2px orange ring at 2px offset, on :focus-visible only — every
+   page, not only `.ict-app`. Most public content pages (command-words,
+   distinguish-between, the free notes/past-papers/reference pages) render
+   plain server components with no `.landing-ict` wrapper at all, since that
+   class only arrives via the client-side `ScrollEffects` component used by
+   the homepage and a couple of other animated landing pages — wrapping a
+   static page in that just for its CSS scope would mean shipping scroll-
+   listener JS it doesn't need. A global rule is what actually reaches every
+   page uniformly. */
+:focus-visible {
   outline: 2px solid var(--color-ict-orange-400);
   outline-offset: 2px;
 }
