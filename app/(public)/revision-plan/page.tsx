@@ -60,7 +60,7 @@ export default function RevisionPlanPage() {
 
         <section
           lang="si"
-          className="si mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6"
+          className="si mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6"
         >
           <h2 className="text-xl font-bold text-(--color-awaken-deep)">
             A/L ICT නැවත කරන අය සඳහා — සිංහලෙන්
@@ -98,7 +98,7 @@ export default function RevisionPlanPage() {
             A plan built on a guess about your weak areas wastes the time it took to make it.
           </p>
           <ul className="mt-4 space-y-3">
-            <li className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+            <li className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
               <p className="font-semibold">Have a recent paper or mark?</p>
               <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
                 Trace every lost mark back to its syllabus unit —{" "}
@@ -109,7 +109,7 @@ export default function RevisionPlanPage() {
                 answers from the same unit is a diagnosis.
               </p>
             </li>
-            <li className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+            <li className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
               <p className="font-semibold">Don&apos;t have one, or it&apos;s old?</p>
               <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
                 Sit{" "}
@@ -135,7 +135,7 @@ export default function RevisionPlanPage() {
               <li key={unit.id}>
                 <Link
                   href={`/syllabus/al-ict/${unit.id}`}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-colors hover:border-(--color-awaken-accent)/40"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-colors hover:border-(--color-awaken-accent)/40"
                 >
                   <span className="flex items-baseline gap-3">
                     <span className="font-mono text-sm text-(--color-awaken-ink-soft)">{i + 1}</span>
@@ -166,7 +166,7 @@ export default function RevisionPlanPage() {
           </p>
           <div className="mt-4 space-y-4">
             {STAGES.map((stage) => (
-              <div key={stage.window} className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
+              <div key={stage.window} className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h3 className="font-bold">{stage.headline}</h3>
                   <span className="rounded-full bg-(--color-awaken-accent-soft) px-2.5 py-0.5 text-xs font-bold text-(--color-awaken-accent) uppercase">
@@ -206,7 +206,7 @@ export default function RevisionPlanPage() {
           <h2 className="text-2xl font-bold">Questions students ask</h2>
           <div className="mt-4 space-y-3">
             {FAQ.map((faq) => (
-              <details key={faq.q} className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card)">
+              <details key={faq.q} className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)">
                 <summary className="cursor-pointer list-none px-5 py-4 font-semibold">{faq.q}</summary>
                 <p className="border-t border-(--color-awaken-line) px-5 py-4 text-sm text-(--color-awaken-ink-soft)">
                   {faq.a}
@@ -218,12 +218,12 @@ export default function RevisionPlanPage() {
 
         <FreeResourcesFooter exclude={["/revision-plan"]} />
 
-        <section className="mt-8 rounded-xl bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) p-6 text-white">
+        <section className="mt-8 rounded-ict-panel bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) p-6 text-white">
           <h2 className="text-lg font-bold">Want the structure of a live class behind this plan?</h2>
           <p className="mt-2 text-white/90">
             Seven days free, no card, no auto-renewal. Sign in with your mobile number and one SMS code.
           </p>
-          <Link href="/signin" className="mt-4 inline-block rounded-lg bg-white px-5 py-3 font-semibold text-(--color-awaken-accent)">
+          <Link href="/signin" className="mt-4 inline-block rounded-full bg-white px-5 py-3 font-semibold text-(--color-awaken-accent)">
             Start free
           </Link>
         </section>

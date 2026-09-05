@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { ButtonLink } from "@/components/ds";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
@@ -75,7 +76,7 @@ export default function LogicGatesPage() {
             <li
               key={gate.type}
               id={gate.type}
-              className="scroll-mt-20 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+              className="scroll-mt-20 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
             >
               <div className="flex flex-wrap items-baseline justify-between gap-2">
                 <h2 className="text-lg font-bold">{gate.type} gate</h2>
@@ -121,7 +122,7 @@ export default function LogicGatesPage() {
               </div>
 
               <p className="mt-4 text-sm text-(--color-awaken-ink-soft)">{gate.meaning}</p>
-              <p className="mt-2 flex items-start gap-2 rounded-lg bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
+              <p className="mt-2 flex items-start gap-2 rounded-ict-md bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
                 <Icon name="bolt" className="mt-0.5 shrink-0 !text-base" />
                 {gate.examNote}
               </p>
@@ -177,7 +178,7 @@ export default function LogicGatesPage() {
             {FAQ.map((faq) => (
               <details
                 key={faq.q}
-                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card)"
+                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)"
               >
                 <summary className="cursor-pointer list-none px-5 py-4 font-semibold">{faq.q}</summary>
                 <p className="border-t border-(--color-awaken-line) px-5 py-4 text-sm text-(--color-awaken-ink-soft)">
@@ -190,19 +191,15 @@ export default function LogicGatesPage() {
 
         <FreeResourcesFooter exclude={["/logic-gates"]} />
 
-        <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+        <section className="mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
           <h2 className="text-lg font-bold">Drill this under real exam pressure</h2>
           <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
             Every subject&apos;s Practice section includes gate-identification and truth-table
             questions with instant marking, plus the full digital circuits unit taught live.
           </p>
-          <Link
-            href="/signin"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white"
-          >
-            <Icon name="videocam" className="!text-base" />
-            Join a class
-          </Link>
+          <ButtonLink href="/signin" variant="primary">
+          Join a class
+        </ButtonLink>
         </section>
       </main>
     </>

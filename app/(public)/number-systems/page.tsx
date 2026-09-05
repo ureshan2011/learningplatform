@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { ButtonLink } from "@/components/ds";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
@@ -169,7 +170,7 @@ export default function NumberSystemsPage() {
           <h2 className="text-2xl font-bold">Practice questions</h2>
           <ul className="mt-4 space-y-3">
             {PRACTICE.map((p) => (
-              <li key={p.q} className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+              <li key={p.q} className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
                 <p className="font-semibold">{p.q}</p>
                 <p className="mt-2 flex items-start gap-2 text-sm text-(--color-awaken-ink-soft)">
                   <Icon name="check_circle" className="mt-0.5 shrink-0 !text-base text-(--color-awaken-success)" />
@@ -186,7 +187,7 @@ export default function NumberSystemsPage() {
             {FAQ.map((faq) => (
               <details
                 key={faq.q}
-                className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card)"
+                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)"
               >
                 <summary className="cursor-pointer list-none px-5 py-4 font-semibold">{faq.q}</summary>
                 <p className="border-t border-(--color-awaken-line) px-5 py-4 text-sm text-(--color-awaken-ink-soft)">
@@ -199,19 +200,15 @@ export default function NumberSystemsPage() {
 
         <FreeResourcesFooter exclude={["/number-systems"]} />
 
-        <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+        <section className="mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
           <h2 className="text-lg font-bold">Get every conversion drilled until it&apos;s automatic</h2>
           <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
             Every subject&apos;s Practice section includes number-system conversion questions with
             instant marking, plus the full data representation unit taught live.
           </p>
-          <Link
-            href="/signin"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white"
-          >
-            <Icon name="videocam" className="!text-base" />
-            Join a class
-          </Link>
+          <ButtonLink href="/signin" variant="primary">
+          Join a class
+        </ButtonLink>
         </section>
       </main>
     </>

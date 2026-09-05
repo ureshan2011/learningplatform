@@ -11,7 +11,7 @@ export function PlaceValueChart({ bits }: { bits: string }) {
 
   return (
     <div className="not-prose overflow-x-auto">
-      <div className="inline-flex min-w-full items-end justify-center gap-1.5 rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+      <div className="inline-flex min-w-full items-end justify-center gap-1.5 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
         {digits.map((d, i) => {
           const place = 2 ** (width - 1 - i);
           return (
@@ -19,7 +19,7 @@ export function PlaceValueChart({ bits }: { bits: string }) {
               <span className="text-[11px] font-semibold text-(--color-awaken-ink-soft)">{place}</span>
               <div
                 className={
-                  "flex size-10 items-center justify-center rounded-lg border-2 text-lg font-bold sm:size-12 " +
+                  "flex size-10 items-center justify-center rounded-ict-md border-2 text-lg font-bold sm:size-12 " +
                   (d === 1
                     ? "border-(--color-awaken-accent) bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)"
                     : "border-(--color-awaken-line) text-(--color-awaken-ink-soft)")

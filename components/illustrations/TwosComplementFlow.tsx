@@ -5,7 +5,7 @@ function Bits({ digits, tone }: { digits: number[]; tone: "neutral" | "accent" }
         <div
           key={i}
           className={
-            "flex size-8 items-center justify-center rounded-md border-2 text-sm font-bold sm:size-9 " +
+            "flex size-8 items-center justify-center rounded-ict-md border-2 text-sm font-bold sm:size-9 " +
             (tone === "accent"
               ? "border-(--color-awaken-accent) bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)"
               : "border-(--color-awaken-line) text-(--color-awaken-ink)")
@@ -49,7 +49,7 @@ export function TwosComplementFlow({ bits }: { bits: string }) {
 
   return (
     <div className="not-prose">
-      <div className="flex flex-col items-center gap-2 rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+      <div className="flex flex-col items-center gap-2 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
         {steps.map((step, i) => (
           <div key={step.label} className="flex w-full flex-col items-center">
             <div className="flex flex-col items-center gap-1.5">

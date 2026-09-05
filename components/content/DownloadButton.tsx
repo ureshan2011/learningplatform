@@ -40,7 +40,7 @@ export function DownloadButton({ contentId, label }: { contentId: string; label:
       <button
         onClick={open}
         disabled={busy}
-        className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm disabled:opacity-50"
+        className="rounded-full border border-(--color-awaken-line) px-4 py-2 text-sm disabled:opacity-50"
       >
         {busy ? "Preparing…" : label}
       </button>

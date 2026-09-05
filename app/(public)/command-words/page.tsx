@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { COMMAND_WORDS } from "@/lib/content/command-words";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { ButtonLink } from "@/components/ds";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
@@ -59,7 +60,7 @@ export default function CommandWordsPage() {
 
       <ul className="mt-10 space-y-4">
         {COMMAND_WORDS.map((cw) => (
-          <li key={cw.word} className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
+          <li key={cw.word} className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h2 className="text-lg font-bold">{cw.word}</h2>
               <span className="text-xs text-(--color-awaken-ink-soft)">{cw.typicalMarks}</span>
@@ -68,7 +69,7 @@ export default function CommandWordsPage() {
               {cw.sinhala}
             </p>
             <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">{cw.meaning}</p>
-            <p className="mt-2 flex items-start gap-2 rounded-lg bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
+            <p className="mt-2 flex items-start gap-2 rounded-ict-md bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
               <Icon name="bolt" className="mt-0.5 shrink-0 !text-base" />
               {cw.tip}
             </p>
@@ -90,20 +91,16 @@ export default function CommandWordsPage() {
 
       <FreeResourcesFooter exclude={["/command-words"]} />
 
-      <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+      <section className="mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
         <h2 className="text-lg font-bold">Drill these until they&apos;re automatic</h2>
         <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
           Every subject&apos;s Practice section includes command-word drill questions —
           short scenarios that check whether you&apos;d actually answer a &quot;distinguish&quot;
           or a &quot;justify&quot; correctly under exam conditions.
         </p>
-        <Link
-          href="/signin"
-          className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white"
-        >
-          <Icon name="videocam" className="!text-base" />
+        <ButtonLink href="/signin" variant="primary">
           Join a class
-        </Link>
+        </ButtonLink>
       </section>
       </main>
     </>

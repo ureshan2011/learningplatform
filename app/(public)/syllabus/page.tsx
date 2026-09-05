@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { listSubjects, listUnits } from "@/lib/queries";
 import { SiteHeader } from "@/components/nav/SiteHeader";
+import { ButtonLink } from "@/components/ds";
 import { Icon } from "@/components/ui/Icon";
 import type { Subject, Unit } from "@/lib/types";
 
@@ -44,7 +45,7 @@ export default async function SyllabusIndexPage() {
               <li key={subject.id}>
                 <Link
                   href={`/syllabus/${subject.id}`}
-                  className="block rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)]"
+                  className="block rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)]"
                 >
                   <p className="font-bold">{subject.name}</p>
                   <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
@@ -60,19 +61,15 @@ export default async function SyllabusIndexPage() {
           </ul>
         )}
 
-        <section className="mt-14 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+        <section className="mt-14 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
           <h2 className="text-lg font-bold">Want the live class?</h2>
           <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
             Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and every
             past paper worked through step by step.
           </p>
-          <Link
-            href="/signin"
-            className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white"
-          >
-            <Icon name="videocam" className="!text-base" />
-            Join a class
-          </Link>
+          <ButtonLink href="/signin" variant="primary">
+          Join a class
+        </ButtonLink>
         </section>
       </main>
     </>
