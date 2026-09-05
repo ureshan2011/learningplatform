@@ -14,6 +14,7 @@ import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { EmailCaptureForm } from "@/components/marketing/EmailCaptureForm";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
 import { FaqAccordion } from "@/components/marketing/landing/FaqAccordion";
+import { HowItWorksShowcase } from "@/components/marketing/landing/HowItWorksShowcase";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqJsonLd } from "@/lib/seo/json-ld";
 import {
@@ -637,18 +638,11 @@ export default async function LandingPage() {
             >
               Four steps to your first class<span className="text-(--lp-orange-500)">.</span>
             </h2>
-            <div className="grid gap-[clamp(14px,2vw,20px)]" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(230px,100%), 1fr))" }}>
-              {STEPS.map((step) => (
-                <div
-                  key={step.step}
-                  className="lp-reveal lp-lift rounded-[var(--lp-radius-card)] border border-(--lp-border-subtle) bg-(--lp-paper-0) p-6 shadow-[var(--lp-shadow-sm)]"
-                  style={cssVars({ "--lp-reveal-delay": `${step.delay}ms` })}
-                >
-                  <div className="font-[family-name:var(--lp-font-mono)] text-xs text-(--lp-orange-500)">{step.step}</div>
-                  <div className="mt-3 mb-2 text-lg font-bold text-(--lp-ink-900)">{step.title}</div>
-                  <p className="m-0 text-sm text-(--lp-ink-400) text-wrap-pretty">{step.body}</p>
-                </div>
-              ))}
+            <div
+              className="lp-reveal"
+              style={cssVars({ "--lp-reveal-delay": "120ms" })}
+            >
+              <HowItWorksShowcase steps={STEPS} />
             </div>
           </div>
         </section>
