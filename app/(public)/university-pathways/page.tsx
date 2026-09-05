@@ -5,6 +5,7 @@ import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
 import { Icon } from "@/components/ui/Icon";
 import { EligibilityExplorer } from "@/components/university-pathways/EligibilityExplorer";
 import { ALSO_WORTH_KNOWING } from "@/lib/content/university-pathways";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 // Same three self-hosted fonts as the main landing page, scoped to this page
 // only — this page is built to feel like an extension of it, not a plain
@@ -38,7 +39,7 @@ function jsonLd() {
 export default function UniversityPathwaysPage() {
   return (
     <div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
+      <JsonLd data={jsonLd()} />
       <SiteHeader user={null} />
       <ScrollEffects>
         <div className="font-[family-name:var(--lp-font-body)]">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { PaperAttempt } from "@/components/papers/PaperAttempt";
 import { DisclaimerNote } from "@/components/papers/DisclaimerNote";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { publicEnv } from "@/lib/env";
 import { AL_ICT_2026_PAPER1, PAPER_DURATION_MINUTES, PAPER_QUESTION_COUNT } from "@/lib/content/al-ict-2026-paper1";
 
@@ -35,7 +36,7 @@ function jsonLd() {
 export default function AlIctPaper1Page() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
+      <JsonLd data={jsonLd()} />
       <SiteHeader user={null} />
       <PaperAttempt />
 

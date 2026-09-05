@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { DISTINGUISH_PAIRS } from "@/lib/content/distinguish-between";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { faqJsonLd } from "@/lib/seo/json-ld";
 
 export const metadata: Metadata = {
   title: `"Distinguish Between" Questions — 10 Worked A/L ICT Examples`,
@@ -14,17 +16,10 @@ export const metadata: Metadata = {
 // Fixed reference content — safe to cache like the command-words page.
 export const revalidate = 86400;
 
-function faqJsonLd() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: DISTINGUISH_PAIRS.map((p) => ({
-      "@type": "Question",
-      name: `Distinguish between ${p.termA} and ${p.termB}.`,
-      acceptedAnswer: { "@type": "Answer", text: p.strongAnswer },
-    })),
-  };
-}
+const FAQS = DISTINGUISH_PAIRS.map((p) => ({
+  q: `Distinguish between ${p.termA} and ${p.termB}.`,
+  a: p.strongAnswer,
+}));
 
 /**
  * The direct continuation of /command-words: that page explains WHAT
@@ -36,7 +31,7 @@ function faqJsonLd() {
 export default function DistinguishBetweenPage() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }} />
+      <JsonLd data={faqJsonLd(FAQS)} />
       <SiteHeader user={null} />
       <main className="mx-auto max-w-3xl px-5 py-12">
         <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
