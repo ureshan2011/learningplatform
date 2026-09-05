@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { EligibilityExplorer } from "@/components/university-pathways/EligibilityExplorer";
 import { ALSO_WORTH_KNOWING } from "@/lib/content/university-pathways";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 
 // Same three self-hosted fonts as the main landing page, scoped to this page
 // only — this page is built to feel like an extension of it, not a plain
@@ -195,6 +196,15 @@ export default function UniversityPathwaysPage() {
                   </li>
                 </ul>
               </div>
+            </div>
+          </section>
+
+          {/* Free resources — plain `--color-awaken-*` tokens rather than this
+              page's own `--lp-*` set, since it's shared with every other free
+              content page and needs to look the same on all of them. */}
+          <section className="w-full pb-[clamp(24px,4vw,40px)]">
+            <div className={CONTAINER}>
+              <FreeResourcesFooter exclude={["/university-pathways"]} />
             </div>
           </section>
 

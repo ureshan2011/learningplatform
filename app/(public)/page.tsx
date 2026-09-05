@@ -717,7 +717,12 @@ export default async function LandingPage() {
                 <Link href="/past-papers" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">A/L ICT past papers</Link>
                 <Link href="/al-ict-classes" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">A/L ICT classes</Link>
                 <Link href="/syllabus" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">A/L ICT syllabus</Link>
+                <Link href="/revision-plan" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Revision plan for repeats</Link>
                 <Link href="/command-words" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Exam command words</Link>
+                <Link href="/distinguish-between" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">&quot;Distinguish between&quot; examples</Link>
+                <Link href="/number-systems" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Number systems &amp; two&apos;s complement</Link>
+                <Link href="/logic-gates" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Logic gates &amp; truth tables</Link>
+                <Link href="/university-pathways" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">University pathways</Link>
               </div>
             </div>
             <div>

@@ -5,6 +5,9 @@ import { publicContentUrl } from "@/lib/content/r2";
 import { formatDate } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon, type IconName } from "@/components/ui/Icon";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import type { ContentItem, ContentKind, Subject } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -48,6 +51,12 @@ export default async function PublicNotesPage() {
         sees "Sign in" for a moment longer, which costs far less than losing
         static generation on the page search traffic lands on.
       */}
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Free notes", path: "/notes" },
+        ])}
+      />
       <SiteHeader user={null} />
       <main className="mx-auto max-w-3xl px-5 py-12">
       <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
@@ -56,19 +65,7 @@ export default async function PublicNotesPage() {
       </h1>
       <p className="mt-3 text-(--color-awaken-ink-soft)">
         Download these free. No sign-up needed. For live classes, quizzes and marked
-        answers, join a class. Also free:{" "}
-        <Link href="/command-words" className="underline">
-          exam command words explained
-        </Link>
-        ,{" "}
-        <Link href="/number-systems" className="underline">
-          number system conversions
-        </Link>{" "}
-        and{" "}
-        <Link href="/logic-gates" className="underline">
-          logic gate truth tables
-        </Link>
-        .
+        answers, join a class.
       </p>
 
       {items.length === 0 ? (
@@ -107,7 +104,9 @@ export default async function PublicNotesPage() {
         </ul>
       )}
 
-      <section className="mt-14 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+      <FreeResourcesFooter exclude={["/notes"]} />
+
+      <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
         <h2 className="text-lg font-bold">Want the live class?</h2>
         <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
           Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and

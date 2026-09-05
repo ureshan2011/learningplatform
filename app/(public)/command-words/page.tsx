@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 
 export const metadata: Metadata = {
   title: "ICT exam command words explained",
@@ -84,16 +85,10 @@ export default function CommandWordsPage() {
         <Link href="/distinguish-between" className="text-(--color-awaken-accent) underline">
           10 fully worked pairs, free
         </Link>
-        . Also free:{" "}
-        <Link href="/number-systems" className="text-(--color-awaken-accent) underline">
-          number system conversions
-        </Link>{" "}
-        and{" "}
-        <Link href="/logic-gates" className="text-(--color-awaken-accent) underline">
-          logic gate truth tables
-        </Link>
         .
       </p>
+
+      <FreeResourcesFooter exclude={["/command-words"]} />
 
       <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
         <h2 className="text-lg font-bold">Drill these until they&apos;re automatic</h2>

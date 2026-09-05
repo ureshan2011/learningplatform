@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { publicEnv } from "@/lib/env";
 import { breadcrumbJsonLd, faqJsonLd, graphJsonLd, ORG_ID } from "@/lib/seo/json-ld";
 import { EXAM_STRUCTURE, SYLLABUS_AUTHORITY } from "@/lib/seo/site";
@@ -346,7 +347,12 @@ export default async function PastPapersPage() {
             <Link href="/distinguish-between" className="text-(--color-awaken-accent) underline">
               ten worked &quot;distinguish between&quot; answers
             </Link>{" "}
-            are both free.
+            are both free. If you&apos;re repeating, unsure of your last mark, or just short on
+            time,{" "}
+            <Link href="/revision-plan" className="text-(--color-awaken-accent) underline">
+              this revision plan
+            </Link>{" "}
+            builds on this same method.
           </p>
         </section>
 
@@ -453,7 +459,9 @@ export default async function PastPapersPage() {
           </div>
         </section>
 
-        <section className="mt-12 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
+        <FreeResourcesFooter exclude={["/past-papers"]} />
+
+        <section className="mt-8 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
           <h2 className="text-xl font-bold">Want the papers worked through with you?</h2>
           <p className="mt-2 text-(--color-awaken-ink-soft)">
             Past paper questions are worked through live in class, with the marking scheme open and the

@@ -76,8 +76,9 @@ export function GateSymbol({ type, className }: { type: GateType; className?: st
         </>
       )}
 
-      {/* Body */}
-      <path d={def.body} fill="var(--color-awaken-accent-soft)" />
+      {/* Body — outline only. The card's exam-note callout is already this
+          gate's one orange accent; tinting the body too would be a second. */}
+      <path d={def.body} fill="var(--color-awaken-card)" />
       {def.extra ? <path d={def.extra} fill="none" /> : null}
 
       {/* Output line, with an inverting bubble for NAND/NOR/NOT/XNOR */}

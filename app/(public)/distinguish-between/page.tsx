@@ -4,7 +4,8 @@ import { DISTINGUISH_PAIRS } from "@/lib/content/distinguish-between";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { faqJsonLd } from "@/lib/seo/json-ld";
+import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 
 export const metadata: Metadata = {
   title: `"Distinguish Between" Questions — 10 Worked A/L ICT Examples`,
@@ -32,6 +33,12 @@ export default function DistinguishBetweenPage() {
   return (
     <>
       <JsonLd data={faqJsonLd(FAQS)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Distinguish between", path: "/distinguish-between" },
+        ])}
+      />
       <SiteHeader user={null} />
       <main className="mx-auto max-w-3xl px-5 py-12">
         <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
@@ -48,14 +55,6 @@ export default function DistinguishBetweenPage() {
           New to command words in general?{" "}
           <Link href="/command-words" className="text-(--color-awaken-accent) underline">
             Start with what each one requires
-          </Link>
-          . Also free:{" "}
-          <Link href="/number-systems" className="text-(--color-awaken-accent) underline">
-            number system conversions
-          </Link>{" "}
-          and{" "}
-          <Link href="/logic-gates" className="text-(--color-awaken-accent) underline">
-            logic gate truth tables
           </Link>
           .
         </p>
@@ -105,7 +104,9 @@ export default function DistinguishBetweenPage() {
           ))}
         </ul>
 
-        <section className="mt-14 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+        <FreeResourcesFooter exclude={["/distinguish-between"]} />
+
+        <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
           <h2 className="text-lg font-bold">Get this checked in a live class</h2>
           <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
             Every subject&apos;s Practice section drills command words like this one under

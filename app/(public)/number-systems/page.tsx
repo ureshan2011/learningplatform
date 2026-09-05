@@ -8,6 +8,7 @@ import { PlaceValueChart } from "@/components/illustrations/PlaceValueChart";
 import { NibbleGrouping } from "@/components/illustrations/NibbleGrouping";
 import { BinaryAddition } from "@/components/illustrations/BinaryAddition";
 import { TwosComplementFlow } from "@/components/illustrations/TwosComplementFlow";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { BASES, FAQ, PRACTICE } from "@/lib/content/number-systems";
 
 export const metadata: Metadata = {
@@ -196,7 +197,9 @@ export default function NumberSystemsPage() {
           </div>
         </section>
 
-        <section className="mt-14 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+        <FreeResourcesFooter exclude={["/number-systems"]} />
+
+        <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
           <h2 className="text-lg font-bold">Get every conversion drilled until it&apos;s automatic</h2>
           <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
             Every subject&apos;s Practice section includes number-system conversion questions with

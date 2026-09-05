@@ -5,6 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
 import { GateSymbol } from "@/components/illustrations/GateSymbol";
+import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { GATES, FAQ, evalGate } from "@/lib/content/logic-gates";
 
 export const metadata: Metadata = {
@@ -187,7 +188,9 @@ export default function LogicGatesPage() {
           </div>
         </section>
 
-        <section className="mt-14 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
+        <FreeResourcesFooter exclude={["/logic-gates"]} />
+
+        <section className="mt-8 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
           <h2 className="text-lg font-bold">Drill this under real exam pressure</h2>
           <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
             Every subject&apos;s Practice section includes gate-identification and truth-table
