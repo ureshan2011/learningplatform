@@ -12,6 +12,12 @@ import {
 import { clientAuth } from "@/lib/firebase/client";
 import { isFirebaseConfigured, publicEnv } from "@/lib/env";
 import { collectDeviceSignals } from "@/lib/auth/device-client";
+import {
+  cooldownSeconds,
+  recordSend,
+  recordRateLimit,
+  formatWait,
+} from "@/lib/auth/otp-budget";
 import { toE164, formatLocal } from "@/lib/phone";
 import { formatDate } from "@/lib/format";
 import { track, identify } from "@/lib/analytics";
@@ -29,12 +35,6 @@ interface DeviceLimit {
   canSwap: boolean;
   swapAvailableAt?: number;
 }
-
-/** Seconds before "Resend code" becomes tappable. Every resend is a billed SMS. */
-const RESEND_SECONDS = 45;
-
-/** Resends per page load. Beyond this the SMS is not arriving and another one will not help. */
-const MAX_RESENDS = 3;
 
 /**
  * Why the student was sent here, worded so the page never looks like it simply
@@ -87,7 +87,6 @@ export function SignInForm({
   const [error, setError] = useState<string | null>(null);
   const [deviceLimit, setDeviceLimit] = useState<DeviceLimit | null>(null);
   const [secondsLeft, setSecondsLeft] = useState(0);
-  const [resends, setResends] = useState(0);
 
   const confirmationRef = useRef<ConfirmationResult | null>(null);
   const verifierRef = useRef<RecaptchaVerifier | null>(null);
@@ -193,7 +192,24 @@ export function SignInForm({
     });
     confirmationRef.current = await signInWithPhoneNumber(auth, e164, verifierRef.current);
     resetVerifier();
-    setSecondsLeft(RESEND_SECONDS);
+    recordSend(e164);
+    setSecondsLeft(cooldownSeconds(e164));
+  }
+
+  /**
+   * Turns a failed send into the right wait.
+   *
+   * Firebase's own `too-many-requests` is the one error where retrying sooner
+   * cannot possibly work, so it locks the button rather than leaving a message
+   * the student will tap straight past.
+   */
+  function handleSendFailure(err: unknown, e164: string) {
+    if (String((err as { code?: string })?.code ?? "").includes("too-many-requests")) {
+      recordRateLimit(e164);
+      setSecondsLeft(cooldownSeconds(e164));
+    }
+    setError(messageFor(err));
+    resetVerifier();
   }
 
   async function sendCode(e: React.FormEvent) {
@@ -207,20 +223,28 @@ export function SignInForm({
       return;
     }
 
+    const wait = cooldownSeconds(e164);
+    if (wait > 0) {
+      setSecondsLeft(wait);
+      setError(
+        `මොහොතක් රැඳී සිටින්න · Please wait ${formatWait(wait)} before asking for another code.`,
+      );
+      return;
+    }
+
     setBusy(true);
     try {
       await send(e164);
       setStep("code");
     } catch (err) {
-      setError(messageFor(err));
-      resetVerifier();
+      handleSendFailure(err, e164);
     } finally {
       setBusy(false);
     }
   }
 
   async function resend() {
-    if (secondsLeft > 0 || resends >= MAX_RESENDS) return;
+    if (secondsLeft > 0) return;
     const e164 = toE164(phone);
     if (!e164) return;
 
@@ -228,12 +252,10 @@ export function SignInForm({
     setBusy(true);
     try {
       await send(e164);
-      setResends((n) => n + 1);
       setCode("");
       codeInputRef.current?.focus();
     } catch (err) {
-      setError(messageFor(err));
-      resetVerifier();
+      handleSendFailure(err, e164);
     } finally {
       setBusy(false);
     }
@@ -411,7 +433,15 @@ export function SignInForm({
               <input
                 ref={phoneInputRef}
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setPhone(next);
+                  // A cooldown outlives the page load. The moment the number is
+                  // complete, show what is still running on it rather than a
+                  // Send button that is only going to be refused.
+                  const e164 = toE164(next);
+                  setSecondsLeft(e164 ? cooldownSeconds(e164) : 0);
+                }}
                 inputMode="tel"
                 autoComplete="tel"
                 enterKeyHint="send"
@@ -421,12 +451,18 @@ export function SignInForm({
               />
             </div>
           </Field>
-          <button type="submit" disabled={busy} className={buttonClass}>
+          <button
+            type="submit"
+            disabled={busy || secondsLeft > 0}
+            className={buttonClass}
+          >
             {busy ? (
               <span className="inline-flex w-full items-center justify-center gap-2">
                 <Spinner />
                 එවමින්… Sending…
               </span>
+            ) : secondsLeft > 0 ? (
+              `මොහොතක් රැඳී සිටින්න · Wait ${formatWait(secondsLeft)}`
             ) : (
               "කේතය එවන්න · Send code"
             )}
@@ -472,25 +508,25 @@ export function SignInForm({
           </button>
 
           <div className="rounded-ict-md border border-ict-border-dark bg-ict-ink-850 p-3 text-sm">
-            {resends >= MAX_RESENDS ? (
-              <p className="text-(--color-awaken-ink-soft)">
-                SMS ලැබුණේ නැද්ද? සංඥාව ඇති තැනකට ගොස් පිටුව නැවත විවෘත කරන්න.
+            <button
+              type="button"
+              onClick={resend}
+              disabled={busy || secondsLeft > 0}
+              className="font-semibold text-(--color-awaken-deep) underline disabled:text-(--color-awaken-ink-soft) disabled:no-underline"
+            >
+              {secondsLeft > 0
+                ? `කේතය නැවත එවන්න · Resend code (${formatWait(secondsLeft)})`
+                : "කේතය නැවත එවන්න · Resend code"}
+            </button>
+            {secondsLeft >= 120 ? (
+              <p className="mt-2 text-(--color-awaken-ink-soft)">
+                SMS ලැබුණේ නැද්ද? සංඥාව හොඳ තැනකට යන්න — තව කේතයක් ඉක්මනින් එන්නේ නැහැ.
                 <span className="mt-0.5 block">
-                  Still no SMS? Move somewhere with better signal and reload this page.
+                  Still no SMS? Move somewhere with better signal. Another code will not
+                  arrive any faster.
                 </span>
               </p>
-            ) : (
-              <button
-                type="button"
-                onClick={resend}
-                disabled={busy || secondsLeft > 0}
-                className="font-semibold text-(--color-awaken-deep) underline disabled:text-(--color-awaken-ink-soft) disabled:no-underline"
-              >
-                {secondsLeft > 0
-                  ? `කේතය නැවත එවන්න · Resend code (${secondsLeft}s)`
-                  : "කේතය නැවත එවන්න · Resend code"}
-              </button>
-            )}
+            ) : null}
           </div>
 
           <button
@@ -504,7 +540,6 @@ export function SignInForm({
               setStep("phone");
               setCode("");
               setError(null);
-              setSecondsLeft(0);
             }}
             className="w-full text-sm text-(--color-awaken-ink-soft) underline"
           >
@@ -697,7 +732,7 @@ function messageFor(err: unknown): string {
   if (code.includes("invalid-verification-code")) return "එම කේතය වැරදියි · That code is not correct.";
   if (code.includes("code-expired")) return "කේතයේ කාලය ඉකුත් වී ඇත · That code expired. Tap resend.";
   if (code.includes("too-many-requests"))
-    return "උත්සාහ කිරීම් වැඩියි · Too many attempts. Try again in a few minutes.";
+    return "උත්සාහ කිරීම් වැඩියි · Too many attempts. Wait 5 minutes, then try again — the button will unlock itself.";
   if (code.includes("invalid-phone-number"))
     return "දුරකථන අංකය වලංගු නැත · That phone number is not valid.";
   if (code.includes("operation-not-allowed") || code.includes("quota-exceeded"))
