@@ -5,13 +5,18 @@ import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
-const TABS: Array<{ segment: string; label: string; icon: IconName }> = [
-  { segment: "", label: "Overview", icon: "grid_view" },
-  { segment: "/practice", label: "Practice", icon: "quiz" },
-  { segment: "/mock-exams", label: "Mock exams", icon: "schedule" },
-  { segment: "/lab", label: "Code Lab", icon: "code" },
-  { segment: "/certificate", label: "Certificate", icon: "military_tech" },
+const TAB_ORDER: Array<{ segment: string; key: TabKey; icon: IconName }> = [
+  { segment: "", key: "overview", icon: "grid_view" },
+  { segment: "/practice", key: "practice", icon: "quiz" },
+  { segment: "/mock-exams", key: "mockExams", icon: "schedule" },
+  { segment: "/lab", key: "codeLab", icon: "code" },
+  { segment: "/certificate", key: "certificate", icon: "military_tech" },
 ];
+
+/** Labels are passed in rather than looked up: this renders on the client, and the
+ *  dictionary lives on the server. */
+type TabKey = "overview" | "practice" | "mockExams" | "codeLab" | "certificate";
+export type TabLabels = Record<TabKey, string>;
 
 /**
  * The subject's own navigation, on every page inside it.
@@ -26,14 +31,22 @@ const TABS: Array<{ segment: string; label: string; icon: IconName }> = [
  * narrow screens rather than wrapping, so the shape stays the same everywhere
  * and the tabs never reflow under a thumb.
  */
-export function SubjectTabs({ subjectId, locked }: { subjectId: string; locked?: boolean }) {
+export function SubjectTabs({
+  subjectId,
+  locked,
+  labels,
+}: {
+  subjectId: string;
+  locked?: boolean;
+  labels: TabLabels;
+}) {
   const pathname = usePathname();
   const base = `/subjects/${subjectId}`;
 
   return (
     <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <div className="inline-flex items-center gap-1 rounded-full bg-ict-ink-850 p-1">
-        {TABS.map((tab) => {
+        {TAB_ORDER.map((tab) => {
           const href = `${base}${tab.segment}`;
           const active = pathname === href;
           // Overview stays reachable when locked — it is the page that explains
@@ -46,10 +59,10 @@ export function SubjectTabs({ subjectId, locked }: { subjectId: string; locked?:
                 key={tab.segment}
                 aria-disabled
                 title="Subscribe to unlock"
-                className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold text-ict-ink-500"
+                className="inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-sm font-semibold text-ict-ink-500"
               >
-                <Icon name="lock" className="!text-[13px]" />
-                {tab.label}
+                <Icon name="lock" className="!text-sm" />
+                {labels[tab.key]}
               </span>
             );
           }
@@ -60,14 +73,14 @@ export function SubjectTabs({ subjectId, locked }: { subjectId: string; locked?:
               href={href}
               aria-current={active ? "page" : undefined}
               className={clsx(
-                "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold transition-colors duration-[120ms] ease-ict",
+                "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-sm font-semibold transition-colors duration-[120ms] ease-ict",
                 active
                   ? "bg-ict-orange-500 text-white"
                   : "text-ict-ink-300 hover:bg-ict-ink-800 hover:text-ict-paper-50",
               )}
             >
-              <Icon name={tab.icon} className="!text-[15px]" />
-              {tab.label}
+              <Icon name={tab.icon} className="!text-sm" />
+              {labels[tab.key]}
             </Link>
           );
         })}

@@ -33,7 +33,7 @@ type ButtonSize = "sm" | "md" | "lg";
 type ArrowDir = "right" | "up-right" | "down" | "none";
 
 const BUTTON_SIZE: Record<ButtonSize, { shell: string; badge: string; text: string }> = {
-  sm: { shell: "h-8 pl-3.5 text-[13px]", badge: "size-5", text: "text-[13px]" },
+  sm: { shell: "h-8 pl-3.5 text-sm", badge: "size-5", text: "text-sm" },
   md: { shell: "h-10 pl-5 text-sm", badge: "size-[26px]", text: "text-sm" },
   lg: { shell: "h-12 pl-6 text-base", badge: "size-8", text: "text-base" },
 };
@@ -337,7 +337,7 @@ export function StatusChip({
   return (
     <span
       className={clsx(
-        "inline-flex h-[26px] items-center gap-1.5 rounded-full bg-ict-ink-800 px-2.5 text-[12px] font-semibold text-ict-paper-50",
+        "inline-flex h-[26px] items-center gap-1.5 rounded-full bg-ict-ink-800 px-2.5 text-xs font-semibold text-ict-paper-50",
         className,
       )}
     >
@@ -369,7 +369,7 @@ export function Badge({
   return (
     <span
       className={clsx(
-        "inline-flex h-[22px] items-center rounded-full px-2.5 text-[11px] font-bold uppercase tracking-[0.02em]",
+        "inline-flex h-[22px] items-center rounded-full px-2.5 text-xs font-bold uppercase tracking-[0.02em]",
         skin[tone],
         className,
       )}
@@ -394,12 +394,12 @@ export function Chip({
   return (
     <span
       className={clsx(
-        "inline-flex h-[30px] items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold",
+        "inline-flex h-[30px] items-center gap-1.5 rounded-full px-3 text-xs font-semibold",
         active ? "bg-ict-orange-500 text-white" : "bg-ict-ink-800 text-ict-paper-50",
         className,
       )}
     >
-      {icon ? <Icon name={icon} className={clsx("!text-[13px]", active ? "" : "text-ict-orange-400")} /> : null}
+      {icon ? <Icon name={icon} className={clsx("!text-sm", active ? "" : "text-ict-orange-400")} /> : null}
       {children}
     </span>
   );
@@ -508,7 +508,7 @@ export function StatCard({
           name={icon}
           className={clsx("!text-base", tone === "neutral" ? "text-ict-ink-300" : "text-ict-orange-400")}
         />
-        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-ict-ink-300">{label}</span>
+        <span className="text-xs font-bold uppercase tracking-[0.12em] text-ict-ink-300">{label}</span>
       </div>
       <p className="mt-2 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-paper-50">{value}</p>
       {hint ? (

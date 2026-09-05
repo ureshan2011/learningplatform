@@ -92,6 +92,42 @@ use NZ register ("Kia ora", "programme"). **Ignore that half** — this is a Sri
 Lankan platform. The visual system, casing and voice rules apply; the locale
 does not.
 
+## Language
+
+English and Sinhala, switchable from the sidebar and from Account. **English is
+the default and stays the default** — the interface has always been English, and
+silently moving a returning student into another language is worse than letting
+them choose.
+
+- Copy lives in `lib/i18n/dictionary.ts`. Server components read it through
+  `getT()` from `lib/i18n/server.ts`; client components take strings as props,
+  because the dictionary never ships to the browser.
+- The choice is a cookie (`ictclass_lang`), written by the `setLocale` server
+  action. Not the user document: it has to work on the sign-in page where there
+  is no user, and it must not cost a Firestore read per render.
+- Wrap translated pages in `lang={loc.lang}` with `localeAttrs()`. The `[lang]`
+  rule in globals.css gives Sinhala the extra leading and tracking it needs —
+  Sinhala glyphs carry more detail per character and break down first.
+
+**Writing the Sinhala.** Everyday spoken Sinhala, the way a 16-year-old actually
+talks. **Technical words stay in English, in Latin script** — subscribe, XP,
+Code Lab, SQL, Zoom, Live, Mock exam, rank, code — because that is what students
+say out loud and what the exam itself uses. A coined Sinhala equivalent nobody
+uses is harder to read than the English it replaced. Use the settled Sinhala
+where one exists in daily use: පන්තිය, ගුරු, ගෙවීම්, නෝට්ස්.
+
+The teacher console is **English only**, on purpose: one reader, who set the
+platform up in English, and a half-translated accounting ledger is worse than an
+untranslated one.
+
+## Type scale
+
+Tailwind's default scale is redefined in `@theme` — `text-xs` is 13px, `text-sm`
+15px, `text-base` 17px — because most of this app was written in `text-sm` and
+`text-xs`, and the audience reads Sinhala on cheap Android phones. Moving the
+scale lifted every existing class at once. **Do not "fix" readability by
+sprinkling bigger classes at call sites**; change the scale.
+
 ## Rules that must not be broken
 
 1. **`hasAccess()` in `lib/payments/entitlements.ts` is the single access

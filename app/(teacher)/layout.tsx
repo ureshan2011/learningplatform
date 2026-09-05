@@ -2,6 +2,8 @@ import { resolveSession, isStaff } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
 import { AppShell, type NavGroup, type NavItem } from "@/components/nav/AppShell";
+import { LanguageToggle } from "@/components/i18n/LanguageToggle";
+import { getLocale } from "@/lib/i18n/server";
 import { Chip } from "@/components/ds";
 import type { Payment } from "@/lib/types";
 
@@ -23,7 +25,7 @@ export default async function TeacherLayout({ children }: { children: React.Reac
   const { user } = await resolveSession();
   if (!user || !isStaff(user.role)) return <>{children}</>;
 
-  const pendingSlips = await pendingSlipCount();
+  const [pendingSlips, locale] = await Promise.all([pendingSlipCount(), getLocale()]);
 
   const primary: NavItem[] = [
     { href: "/teacher", label: "Overview", icon: "home" },
@@ -64,6 +66,11 @@ export default async function TeacherLayout({ children }: { children: React.Reac
       groups={groups}
       mobileTabs={primary}
       user={{ name: user.name, role: user.role }}
+      // The console itself stays English — see lib/i18n/dictionary.ts — but the
+      // toggle lives here too, so the owner can switch and then go and check the
+      // student view without hunting for it.
+      languageToggle={<LanguageToggle current={locale} className="w-full justify-center" />}
+      labels={{ menu: "Menu", more: "More", yourAccount: "Your account", signOut: "Sign out" }}
       topbarRight={
         pendingSlips > 0 ? (
           <Chip icon="receipt_long">

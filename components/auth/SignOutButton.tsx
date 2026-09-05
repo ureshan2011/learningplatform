@@ -12,7 +12,7 @@ import { clientAuth } from "@/lib/firebase/client";
  * either behind puts the app into a half-signed-in state that looks like a bug.
  * The device stays bound so signing back in does not consume a new slot.
  */
-export function SignOutButton({ className }: { className?: string }) {
+export function SignOutButton({ className, label }: { className?: string; label?: string }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
 
@@ -34,7 +34,7 @@ export function SignOutButton({ className }: { className?: string }) {
       disabled={busy}
       className={className ?? "w-full rounded-lg border border-(--color-awaken-line) px-4 py-3 text-sm disabled:opacity-50"}
     >
-      {busy ? "Signing out…" : "Sign out"}
+      {busy ? "…" : (label ?? "Sign out")}
     </button>
   );
 }
