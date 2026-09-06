@@ -48,19 +48,24 @@ function cssVars(vars: Record<string, string>): React.CSSProperties {
 
 export const metadata: Metadata = {
   // Leads with the subject, grade and the two mediums a student searches for
-  // — "class", "Sinhala", "English" — not the brand.
-  title: "A/L ICT Classes, Sinhala & English Medium — Grades 12 & 13",
+  // — "class", "exam", "Sinhala", "English" — not the brand, and never "free":
+  // that undersells a paid live class next to a search result for a free one.
+  title: "A/L ICT Classes & ICT Exam Prep — Sinhala & English Medium",
   description:
-    "A/L ICT for Sri Lankan Grade 12 and 13 students, in Sinhala and English medium: free notes, past paper breakdowns and the full NIE syllabus unit by unit, plus live online classes with instant quizzes and mock exams. Taught by Dr. Yasas Sri Wickramasinghe, PhD in Human Interface Technology, University of Canterbury.",
+    "A/L ICT classes for Sri Lankan Grade 12 and 13 students, in Sinhala and English medium: free notes, past paper breakdowns and the full NIE syllabus unit by unit, plus live online classes with instant quizzes and mock ICT exams. Taught by Dr. Yasas Sri Wickramasinghe, PhD in Human Interface Technology, University of Canterbury.",
   alternates: { canonical: "/" },
   keywords: [
     "A/L ICT",
+    "ICT A/L",
     "A/L ICT class",
+    "ICT class",
     "A/L ICT online classes Sinhala and English medium",
     "AL ICT tuition Sri Lanka",
     "A/L ICT past papers",
     "A/L ICT notes",
     "A/L ICT syllabus",
+    "A/L ICT exam",
+    "ICT exam",
     "grade 12 ICT",
     "grade 13 ICT",
     "උසස් පෙළ ICT පන්ති",
