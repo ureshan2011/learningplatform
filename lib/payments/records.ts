@@ -102,18 +102,28 @@ export async function listPaymentEvents(limit = 20): Promise<PaymentEvent[]> {
 }
 
 /**
- * Blank settings, so every screen has something to render before the teacher
- * has filled anything in. Every consumer treats an empty string as "not set
- * up yet" and says so rather than printing a half-empty receipt.
+ * Default settings, so every screen has something real to render before the
+ * teacher has opened Teacher → Payments and saved anything. The identity
+ * fields below are the actual details the owner operates under — a sole
+ * individual with no registered business, so `businessName` carries his own
+ * name rather than a trade name (see the "Name on receipts" field's own
+ * hint in `PaymentSettingsForm`). Bank details are left blank on purpose:
+ * only the owner should ever type in an account number, and a wrong one
+ * here would misdirect real money.
+ *
+ * These are still overridden field-by-field the moment a real
+ * `settings/payments` document exists (see `getPaymentSettings` below), so
+ * saving the form once — even unchanged — moves the source of truth from
+ * this fallback into Firestore, editable from a phone from then on.
  */
 export function emptyPaymentSettings(): PaymentSettings {
   return {
     tenantId: publicEnv.tenantId,
-    businessName: "",
+    businessName: "Dr. Yasas Sri Wickramasinghe",
     ownerName: "",
-    addressLine: "",
-    contactPhone: "",
-    contactEmail: "",
+    addressLine: "67/5, Ganemulla Road, Ihala Karagahamuna, Kadawatha 11850",
+    contactPhone: "0768666603",
+    contactEmail: "yasassriofficial@gmail.com",
     bankName: "",
     bankBranch: "",
     accountName: "",
@@ -134,11 +144,52 @@ export async function getPaymentSettings(): Promise<PaymentSettings> {
   try {
     const snap = await col.settings().doc(SETTINGS_DOC).get();
     if (!snap.exists) return emptyPaymentSettings();
-    return { ...emptyPaymentSettings(), ...(snap.data() as PaymentSettings) };
+    return withFallbacksForBlanks(snap.data() as PaymentSettings);
   } catch (err) {
     console.error("[payments] settings unreadable, rendering blanks", err);
     return emptyPaymentSettings();
   }
+}
+
+/** Every optional/required text field on PaymentSettings — see withFallbacksForBlanks. */
+const TEXT_FIELDS: Array<keyof PaymentSettings> = [
+  "businessName",
+  "ownerName",
+  "addressLine",
+  "contactPhone",
+  "contactEmail",
+  "brNumber",
+  "taxId",
+  "bankName",
+  "bankBranch",
+  "accountName",
+  "accountNumber",
+  "slipInstructions",
+];
+
+/**
+ * Overlays a saved settings document onto the defaults, field by field,
+ * treating an empty string as "never typed in" rather than "explicitly
+ * cleared". Without this, a document that exists for some other reason
+ * (say, PayHere credentials were saved once) but has never had, e.g.,
+ * `addressLine` typed into it would spread that empty string straight over
+ * the fallback identity below — the opposite of what the fallback is for.
+ */
+function withFallbacksForBlanks(saved: PaymentSettings): PaymentSettings {
+  const defaults = emptyPaymentSettings();
+  const merged: PaymentSettings = { ...defaults, ...saved };
+  for (const field of TEXT_FIELDS) {
+    restoreIfBlank(merged, defaults, field);
+  }
+  return merged;
+}
+
+function restoreIfBlank<K extends keyof PaymentSettings>(
+  merged: PaymentSettings,
+  defaults: PaymentSettings,
+  field: K,
+): void {
+  if (merged[field] === "") merged[field] = defaults[field];
 }
 
 export async function savePaymentSettings(
