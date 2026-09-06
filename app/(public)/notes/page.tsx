@@ -3,11 +3,11 @@ import { listPublicContent, listSubjects } from "@/lib/queries";
 import { publicContentUrl } from "@/lib/content/r2";
 import { formatDate } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
-import { ButtonLink } from "@/components/ds";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
+import { ResourcePageCta } from "@/components/content/ResourcePageCta";
 import type { ContentItem, ContentKind, Subject } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -106,16 +106,12 @@ export default async function PublicNotesPage() {
 
       <FreeResourcesFooter exclude={["/notes"]} />
 
-      <section className="mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
-        <h2 className="text-lg font-bold">Want the live class?</h2>
-        <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-          Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and
-          every past paper worked through step by step.
-        </p>
-        <ButtonLink href="/signin" variant="primary">
-          Join a class
-        </ButtonLink>
-      </section>
+      <ResourcePageCta
+        title="Want the live class?"
+        body="Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and every past paper worked through step by step."
+        guestHref="/signin"
+        guestLabel="Join a class"
+      />
       </main>
     </>
   );

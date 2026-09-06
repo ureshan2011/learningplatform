@@ -2,11 +2,11 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { COMMAND_WORDS } from "@/lib/content/command-words";
 import { SiteHeader } from "@/components/nav/SiteHeader";
-import { ButtonLink } from "@/components/ds";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
+import { ResourcePageCta } from "@/components/content/ResourcePageCta";
 
 export const metadata: Metadata = {
   title: "ICT exam command words explained",
@@ -91,17 +91,14 @@ export default function CommandWordsPage() {
 
       <FreeResourcesFooter exclude={["/command-words"]} />
 
-      <section className="mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
-        <h2 className="text-lg font-bold">Drill these until they&apos;re automatic</h2>
-        <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-          Every subject&apos;s Practice section includes command-word drill questions —
-          short scenarios that check whether you&apos;d actually answer a &quot;distinguish&quot;
-          or a &quot;justify&quot; correctly under exam conditions.
-        </p>
-        <ButtonLink href="/signin" variant="primary">
-          Join a class
-        </ButtonLink>
-      </section>
+      <ResourcePageCta
+        title="Drill these until they're automatic"
+        body={
+          'Every subject\'s Practice section includes command-word drill questions — short scenarios that check whether you\'d actually answer a "distinguish" or a "justify" correctly under exam conditions.'
+        }
+        guestHref="/signin"
+        guestLabel="Join a class"
+      />
       </main>
     </>
   );
