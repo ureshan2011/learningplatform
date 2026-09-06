@@ -9,13 +9,14 @@ const TAB_ORDER: Array<{ segment: string; key: TabKey; icon: IconName }> = [
   { segment: "", key: "overview", icon: "grid_view" },
   { segment: "/practice", key: "practice", icon: "quiz" },
   { segment: "/mock-exams", key: "mockExams", icon: "schedule" },
+  { segment: "/predicted-paper", key: "predictedPaper", icon: "auto_awesome" },
   { segment: "/lab", key: "codeLab", icon: "code" },
   { segment: "/certificate", key: "certificate", icon: "military_tech" },
 ];
 
 /** Labels are passed in rather than looked up: this renders on the client, and the
  *  dictionary lives on the server. */
-type TabKey = "overview" | "practice" | "mockExams" | "codeLab" | "certificate";
+type TabKey = "overview" | "practice" | "mockExams" | "predictedPaper" | "codeLab" | "certificate";
 export type TabLabels = Record<TabKey, string>;
 
 /**

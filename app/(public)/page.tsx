@@ -31,6 +31,7 @@ import {
   PeopleIcon,
   PresenterIcon,
   SearchIcon,
+  TargetIcon,
   VideoIcon,
 } from "@/components/marketing/landing/icons";
 import type { ClassSession, Subject, Unit } from "@/lib/types";
@@ -102,6 +103,14 @@ const OFFERS: Array<{ icon: LandingIcon; title: string; body: string }> = [
 const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: string; icon: LandingIcon; href?: string }> = [
   {
     delay: 0,
+    badge: "New",
+    tag: "AI exam prediction",
+    title: "A/L ICT 2027 Predicted Paper — free focus areas, built by Dr. Yasas",
+    icon: TargetIcon,
+    href: "/papers/al-ict-2027-predicted-paper",
+  },
+  {
+    delay: 90,
     badge: "Free",
     tag: "MCQ practice paper",
     title: "A/L ICT 2026 Paper I — attempt free, with a timer",
@@ -109,7 +118,7 @@ const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: strin
     href: "/papers/al-ict-2026-paper-1-mcq",
   },
   {
-    delay: 90,
+    delay: 180,
     badge: "Free",
     tag: "Past papers",
     title: "A/L ICT past papers — what gets asked, unit by unit",
@@ -117,7 +126,7 @@ const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: strin
     href: "/past-papers",
   },
   {
-    delay: 180,
+    delay: 270,
     badge: "Free",
     tag: "Exam technique",
     title: '10 worked "distinguish between" answers',
@@ -125,7 +134,7 @@ const RESOURCES: Array<{ delay: number; badge: string; tag: string; title: strin
     href: "/distinguish-between",
   },
   {
-    delay: 270,
+    delay: 360,
     badge: "Free",
     tag: "Syllabus",
     title: "A/L ICT syllabus, unit by unit — browse free",
