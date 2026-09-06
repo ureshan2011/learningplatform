@@ -58,6 +58,11 @@ export default async function RefundPolicyPage() {
           <li>The month is over and you attended the classes.</li>
           <li>You did not attend, but the classes ran and the material was available to you.</li>
           <li>
+            A predicted paper or other AI-assisted study material did not match the real
+            examination — every predicted paper says plainly, before you open it, that it is a
+            focus list built from pattern and syllabus weighting, not a guarantee.
+          </li>
+          <li>
             The account was closed for sharing a login or redistributing our material. That is the
             one case with no refund at all.
           </li>

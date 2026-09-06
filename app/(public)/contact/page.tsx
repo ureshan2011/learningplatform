@@ -27,6 +27,10 @@ export default async function ContactPage() {
           {settings.brNumber ? <>, business registration {settings.brNumber}</> : null}.
         </p>
         <p>{settings.addressLine || <Blank>your address</Blank>}</p>
+        <p>
+          ICT Campus (ictcampus.lk) is a fully online tuition service — there is no shop or office
+          open to the public at this address.
+        </p>
       </Clause>
 
       <Clause heading="How to reach us">
