@@ -8,7 +8,7 @@ import { formatDate } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ButtonLink } from "@/components/ds";
+import { PastPapersCta } from "@/components/content/PastPapersCta";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { publicEnv } from "@/lib/env";
 import { breadcrumbJsonLd, faqJsonLd, graphJsonLd, ORG_ID } from "@/lib/seo/json-ld";
@@ -462,24 +462,7 @@ export default async function PastPapersPage() {
 
         <FreeResourcesFooter exclude={["/past-papers"]} />
 
-        <section className="mt-8 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
-          <h2 className="text-xl font-bold">Want the papers worked through with you?</h2>
-          <p className="mt-2 text-(--color-awaken-ink-soft)">
-            Past paper questions are worked through live in class, with the marking scheme open and the
-            reasoning shown. Seven days free, no card.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
-            <ButtonLink href="/al-ict-classes" variant="primary">
-              See the A/L ICT classes
-            </ButtonLink>
-            <Link
-              href="/notes"
-              className="rounded-full border border-(--color-awaken-line) px-5 py-3 font-semibold transition-colors hover:border-(--color-awaken-accent)/40"
-            >
-              Free notes library
-            </Link>
-          </div>
-        </section>
+        <PastPapersCta />
       </main>
     </>
   );
