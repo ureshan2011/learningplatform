@@ -1,4 +1,5 @@
 import { FEATURE_HINT, FEATURE_LABEL, type Feature } from "@/lib/features";
+import { EmptyState } from "@/components/ds";
 
 /**
  * Shown where a feature would be if its service were connected.
@@ -15,14 +16,14 @@ export function NotConfigured({
   forTeacher?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-(--color-awaken-line) bg-(--color-awaken-card) p-5 text-sm">
-      <p className="font-medium text-(--color-awaken-ink-soft)">{FEATURE_LABEL[feature]} — not set up yet</p>
-      <p className="mt-1.5 text-(--color-awaken-ink-soft)">{FEATURE_HINT[feature]}</p>
-      {forTeacher ? (
-        <p className="mt-3 text-xs text-(--color-awaken-ink-soft)">
-          See SETUP.md → Adding features. Everything else keeps working meanwhile.
-        </p>
-      ) : null}
-    </div>
+    <EmptyState
+      icon="settings"
+      title={`${FEATURE_LABEL[feature]} — not set up yet`}
+      body={
+        forTeacher
+          ? `${FEATURE_HINT[feature]} See SETUP.md → Adding features. Everything else keeps working meanwhile.`
+          : FEATURE_HINT[feature]
+      }
+    />
   );
 }

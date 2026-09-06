@@ -1,0 +1,15 @@
+<!-- @dsCard group="Brand" viewport="700x160" name="Iconography — Lucide line icons" subtitle="1.75–2px stroke, round caps, no fills. Substitution flagged in readme." -->
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css"><style>body{margin:0;padding:18px;background:var(--surface-page)}.t{color:var(--text-muted);font:var(--type-mono);font-size:10px}</style></head><body><script src="https://unpkg.com/lucide@0.454.0/dist/umd/lucide.js"></script>
+<div id="i" style="display:flex;gap:16px;align-items:center;color:var(--text-strong)"></div>
+<div style="display:flex;gap:12px;margin-top:16px">
+<span style="display:grid;place-items:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-brand-soft);color:var(--orange-500)" id="b1"></span>
+<span style="display:grid;place-items:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--ink-800);color:#fff" id="b2"></span>
+<span style="display:grid;place-items:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--surface-brand);color:#fff" id="b3"></span>
+<span class="t" style="align-self:center">Circular badge = the brand's icon container</span>
+</div>
+<script>
+const names=['House','MessageCircle','CalendarDays','Video','Bell','Award','Settings','Cloud','Network','Code','Search','ArrowUpRight'];
+document.getElementById('i').innerHTML=names.map(n=>lucide.createElement(lucide[n]).outerHTML).join('');
+document.querySelectorAll('#i svg').forEach(s=>{s.setAttribute('width',22);s.setAttribute('height',22);s.setAttribute('stroke-width',1.9)});
+[['b1','Folder'],['b2','Mic'],['b3','GraduationCap']].forEach(([id,n])=>{const e=document.getElementById(id);e.innerHTML=lucide.createElement(lucide[n]).outerHTML;e.querySelector('svg').setAttribute('width',22);e.querySelector('svg').setAttribute('height',22)});
+</script></body></html>

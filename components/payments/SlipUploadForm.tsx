@@ -7,6 +7,7 @@ import { getApp } from "firebase/app";
 import { clientAuth } from "@/lib/firebase/client";
 import { Icon } from "@/components/ui/Icon";
 import { fetchWithSession } from "@/lib/auth/session-client";
+import { Button, Card } from "@/components/ds";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 
@@ -99,28 +100,31 @@ export function SlipUploadForm({
 
   if (done) {
     return (
-      <div className="mt-6 rounded-xl border border-(--color-awaken-success)/30 bg-(--color-awaken-success-soft) p-5 text-sm">
-        <div className="flex items-center gap-2 font-semibold text-(--color-awaken-success)">
+      <Card radius="card" className="mt-5 p-5">
+        <div className="flex items-center gap-2 font-semibold text-ict-green-500">
           <Icon name="check_circle" />
           Slip received
         </div>
-        <p className="mt-1 text-(--color-awaken-ink-soft)">
+        <p className="mt-1.5 text-sm text-ict-ink-300">
           Your teacher will approve it shortly. You will see the class unlock on your
           dashboard.
         </p>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <form onSubmit={submit} className="mt-6 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+    <form
+      onSubmit={submit}
+      className="mt-5 rounded-ict-card border border-ict-border-dark bg-ict-ink-850 p-5 shadow-ict-inset"
+    >
       <label className="block">
-        <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">Subject</span>
+        <span className="mb-1.5 block text-sm font-semibold text-ict-ink-300">Subject</span>
         <select
           value={subjectId}
           onChange={(e) => setSubjectId(e.target.value)}
           required
-          className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-base outline-none focus:border-(--color-awaken-accent)"
+          className="w-full rounded-ict-sm border border-ict-border-dark bg-ict-ink-800 px-3 py-2.5 text-base text-ict-paper-50 outline-none focus:border-ict-orange-500"
         >
           {subjects.map((s) => (
             <option key={s.id} value={s.id}>
@@ -131,20 +135,20 @@ export function SlipUploadForm({
       </label>
 
       {selected ? (
-        <div className="mt-4 flex items-center justify-between rounded-lg bg-(--color-awaken-bg) px-4 py-3">
+        <div className="mt-4 flex items-center justify-between rounded-ict-md bg-ict-ink-800 px-4 py-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-(--color-awaken-ink-soft)">Course</p>
-            <p className="font-semibold">{selected.name}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-ict-ink-300">Course</p>
+            <p className="font-semibold text-ict-paper-50">{selected.name}</p>
           </div>
           <div className="text-right">
-            <p className="text-xs font-semibold uppercase tracking-wide text-(--color-awaken-ink-soft)">Total amount</p>
-            <p className="text-lg font-bold text-(--color-awaken-accent)">{selected.price}</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-ict-ink-300">Total amount</p>
+            <p className="text-lg font-bold text-ict-orange-400">{selected.price}</p>
           </div>
         </div>
       ) : null}
 
       <div className="mt-5">
-        <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">Payment slip upload</span>
+        <span className="mb-1.5 block text-sm font-semibold text-ict-ink-300">Payment slip upload</span>
         <label
           onDragOver={(e) => {
             e.preventDefault();
@@ -156,15 +160,15 @@ export function SlipUploadForm({
             setDragOver(false);
             acceptFiles(e.dataTransfer.files);
           }}
-          className={`flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed px-4 py-10 text-center transition-colors ${
-            dragOver ? "border-(--color-awaken-accent) bg-(--color-awaken-accent-soft)" : "border-(--color-awaken-line) bg-(--color-awaken-bg)"
+          className={`flex cursor-pointer flex-col items-center gap-2 rounded-ict-card border-2 border-dashed px-4 py-10 text-center transition-colors duration-[120ms] ${
+            dragOver ? "border-ict-orange-500 bg-ict-orange-500/10" : "border-ict-ink-500 bg-ict-ink-800"
           }`}
         >
-          <span className="flex size-12 items-center justify-center rounded-full bg-(--color-awaken-indigo-soft) text-(--color-awaken-indigo)">
+          <span className="flex size-12 items-center justify-center rounded-full bg-ict-orange-500/12 text-ict-orange-400">
             <Icon name="cloud_upload" className="!text-2xl" />
           </span>
-          <span className="font-semibold">{fileName ?? "Click to upload or drag & drop"}</span>
-          <span className="text-xs text-(--color-awaken-ink-soft)">
+          <span className="font-semibold text-ict-paper-50">{fileName ?? "Click to upload or drag & drop"}</span>
+          <span className="text-xs text-ict-ink-300">
             {fileName ? "Tap to choose a different file" : "PNG, JPG or PDF (max. 5MB)"}
           </span>
           <input
@@ -180,25 +184,18 @@ export function SlipUploadForm({
             onChange={(e) => acceptFiles(e.target.files)}
           />
         </label>
-        <p className="mt-1.5 text-xs text-(--color-awaken-ink-soft)">
-          Make sure the amount and date are readable.
-        </p>
+        <p className="mt-1.5 text-xs text-ict-ink-300">Make sure the amount and date are readable.</p>
       </div>
 
-      <button
-        type="submit"
-        disabled={busy}
-        className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(234,88,12,0.25)] transition-transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
-      >
-        <Icon name="check_circle" className="!text-lg" />
+      <Button type="submit" disabled={busy} className="mt-5 w-full justify-center">
         {busy ? "Uploading…" : "Submit payment slip"}
-      </button>
+      </Button>
 
       {error ? (
-        <p className="mt-2 text-sm text-(--color-awaken-danger)">
+        <p className="mt-2.5 text-sm text-[#f0685a]">
           {error}
           {needsSignIn ? (
-            <a href="/signin?next=/pay/slip&reason=expired" className="ml-1 font-semibold underline">
+            <a href="/signin?next=/pay/slip&reason=expired" className="ml-1 font-semibold underline underline-offset-4">
               Sign in again
             </a>
           ) : null}

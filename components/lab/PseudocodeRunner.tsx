@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { runPseudocode, PSEUDOCODE_EXAMPLES } from "@/lib/lab/pseudocode";
+import { Button } from "@/components/ds";
 
 /**
  * Runs entirely in the browser via `lib/lab/pseudocode.ts` — there is no
@@ -23,7 +24,7 @@ export function PseudocodeRunner() {
 
   return (
     <div>
-      <p className="text-sm text-(--color-awaken-ink-soft)">
+      <p className="text-sm text-ict-ink-300">
         SET/PRINT, IF-THEN-ELSE-ENDIF, FOR-TO-NEXT, WHILE-ENDWHILE — the pseudocode style
         used in A/L ICT textbooks. INPUT asks for a value with a popup when the
         program runs.
@@ -34,37 +35,36 @@ export function PseudocodeRunner() {
         onChange={(e) => setCode(e.target.value)}
         rows={14}
         spellCheck={false}
-        className="mt-3 w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-3 font-mono text-sm outline-none focus:border-(--color-awaken-accent)"
+        className="mt-3 w-full rounded-ict-md border border-ict-border-dark bg-ict-ink-900 p-3 font-mono text-sm text-ict-paper-50 outline-none focus:border-ict-orange-500"
       />
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <button
-          onClick={run}
-          className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
-        >
+        <Button size="sm" arrow="none" onClick={run}>
           Run
-        </button>
+        </Button>
         {PSEUDOCODE_EXAMPLES.map((ex) => (
-          <button
+          <Button
             key={ex.title}
+            variant="outline"
+            size="sm"
+            arrow="none"
             onClick={() => {
               setCode(ex.code);
               setHasRun(false);
             }}
-            className="rounded-lg border border-(--color-awaken-line) px-3 py-1.5 text-xs text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)"
           >
             {ex.title}
-          </button>
+          </Button>
         ))}
       </div>
 
       {hasRun ? (
-        <div className="mt-4 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-3 font-mono text-sm">
+        <div className="mt-4 rounded-ict-md border border-ict-border-dark bg-ict-ink-900 p-3 font-mono text-sm text-ict-paper-50">
           {output.map((line, i) => (
             <div key={i}>{line}</div>
           ))}
-          {error ? <div className="text-(--color-awaken-danger)">{error}</div> : null}
-          {!error && output.length === 0 ? <div className="text-(--color-awaken-ink-soft)">(no output)</div> : null}
+          {error ? <div className="text-[#f0685a]">{error}</div> : null}
+          {!error && output.length === 0 ? <div className="text-ict-ink-300">(no output)</div> : null}
         </div>
       ) : null}
     </div>

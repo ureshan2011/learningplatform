@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { fetchWithSession } from "@/lib/auth/session-client";
+import { Button } from "@/components/ds";
 
 /**
  * Fetches a short-lived download URL and opens it.
@@ -36,15 +37,11 @@ export function DownloadButton({ contentId, label }: { contentId: string; label:
   }
 
   return (
-    <div className="text-right">
-      <button
-        onClick={open}
-        disabled={busy}
-        className="rounded-full border border-(--color-awaken-line) px-4 py-2 text-sm disabled:opacity-50"
-      >
+    <div className="shrink-0 text-right">
+      <Button variant="outline" size="sm" arrow="none" onClick={open} disabled={busy}>
         {busy ? "Preparing…" : label}
-      </button>
-      {error ? <p className="mt-1 text-xs text-(--color-awaken-danger)">{error}</p> : null}
+      </Button>
+      {error ? <p className="mt-1.5 text-xs text-[#f0685a]">{error}</p> : null}
     </div>
   );
 }

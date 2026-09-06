@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { Badge, Button, Card, SectionHeading } from "@/components/ds";
 import {
   AL_ICT_2027_PREDICTED_PAPER2,
   PREDICTED_PAPER2_DURATION_MINUTES,
@@ -18,6 +19,11 @@ const BAND_LABEL: Record<PredictedStructuredItem["confidenceBand"], { en: string
   medium: { en: "Medium confidence", si: "මධ්‍යම විශ්වාසය" },
   low: { en: "Low confidence", si: "අඩු විශ්වාසය" },
 };
+const BAND_TONE: Record<PredictedStructuredItem["confidenceBand"], "success" | "warning" | "neutral"> = {
+  high: "success",
+  medium: "warning",
+  low: "neutral",
+};
 
 /**
  * Paper II has no single correct answer to score — same posture as every
@@ -33,27 +39,27 @@ export function PredictedPaperTwoViewer() {
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="flex items-center gap-2 text-xl font-bold">
-          <Icon name="edit_note" className="text-(--color-awaken-accent)" />
+        <SectionHeading as="h2" className="flex items-center gap-2.5 !text-xl">
+          <Icon name="edit_note" className="text-ict-orange-400" />
           {lang === "si" ? "II ප්‍රශ්න පත්‍රය — ව්‍යුහගත හා රචනා" : "Paper II — Structured & Essay"}
-        </h2>
-        <div className="inline-flex rounded-full border border-(--color-awaken-line) bg-(--color-awaken-card) p-1 text-xs font-semibold">
+        </SectionHeading>
+        <div className="inline-flex items-center gap-1 rounded-full bg-ict-ink-850 p-1 text-xs font-semibold">
           <button
             onClick={() => setLang("en")}
-            className={`rounded-full px-3 py-1.5 ${lang === "en" ? "bg-(--color-awaken-accent) text-white" : "text-(--color-awaken-ink-soft)"}`}
+            className={`rounded-full px-3.5 py-1.5 transition-colors duration-[120ms] ${lang === "en" ? "bg-ict-orange-500 text-white" : "text-ict-ink-300 hover:text-ict-paper-50"}`}
           >
             English
           </button>
           <button
             onClick={() => setLang("si")}
-            className={`rounded-full px-3 py-1.5 ${lang === "si" ? "bg-(--color-awaken-accent) text-white" : "text-(--color-awaken-ink-soft)"}`}
+            className={`rounded-full px-3.5 py-1.5 transition-colors duration-[120ms] ${lang === "si" ? "bg-ict-orange-500 text-white" : "text-ict-ink-300 hover:text-ict-paper-50"}`}
           >
             සිංහල
           </button>
         </div>
       </div>
 
-      <p className="text-sm text-(--color-awaken-ink-soft)">
+      <p className="text-sm text-ict-ink-300">
         {lang === "si"
           ? `මිනිත්තු ${PREDICTED_PAPER2_DURATION_MINUTES} — Part A (ප්‍රශ්න ${PREDICTED_PAPER2_PART_A_COUNT}ම පිළිතුරු දෙන්න) සහ Part B (ප්‍රශ්න ${PREDICTED_PAPER2_PART_B_COUNT}න් ${PREDICTED_PAPER2_PART_B_CHOOSE}ක් තෝරන්න). ලකුණු ${PREDICTED_PAPER2_MARKS_SPLIT.partA}/${PREDICTED_PAPER2_MARKS_SPLIT.partB} බැගින් (මූලාශ්‍රවල තහවුරු නොකළ පොදු අනුමානයකි).`
           : `${PREDICTED_PAPER2_DURATION_MINUTES} minutes — Part A (answer all ${PREDICTED_PAPER2_PART_A_COUNT}) and Part B (choose ${PREDICTED_PAPER2_PART_B_CHOOSE} of ${PREDICTED_PAPER2_PART_B_COUNT}). ${PREDICTED_PAPER2_MARKS_SPLIT.partA}/${PREDICTED_PAPER2_MARKS_SPLIT.partB} marks split — a reasonable, commonly-seen assumption, not a confirmed figure.`}
@@ -72,8 +78,8 @@ export function PredictedPaperTwoViewer() {
 function PartSection({ title, items, lang }: { title: string; items: PredictedStructuredItem[]; lang: Lang }) {
   return (
     <section className="mt-6">
-      <h3 className="text-sm font-bold text-(--color-awaken-ink-soft)">{title}</h3>
-      <ol className="mt-2 space-y-4">
+      <h3 className="text-xs font-bold uppercase tracking-[0.08em] text-ict-ink-300">{title}</h3>
+      <ol className="mt-2.5 space-y-2.5">
         {items.map((item) => (
           <ItemCard key={item.id} item={item} lang={lang} />
         ))}
@@ -88,44 +94,49 @@ function ItemCard({ item, lang }: { item: PredictedStructuredItem; lang: Lang })
   const band = BAND_LABEL[item.confidenceBand];
 
   return (
-    <li className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <p className="font-semibold">
-          {item.id} · {item.topic} <span className="text-(--color-awaken-ink-soft)">({item.marks} marks)</span>
-        </p>
-        <span className="shrink-0 rounded-full bg-(--color-awaken-accent-soft) px-2 py-0.5 text-xs font-semibold text-(--color-awaken-accent)">
-          {band[lang]}
-        </span>
-      </div>
-
-      {scenario ? <p className="mt-2 text-sm">{scenario}</p> : null}
-
-      <ol className="mt-3 space-y-2.5 text-sm">
-        {item.subparts.map((sp) => {
-          const text = lang === "si" ? sp.si ?? sp.en : sp.en;
-          return (
-            <li key={sp.label}>
-              <span className="font-medium">({sp.label})</span> {text}{" "}
-              <span className="text-(--color-awaken-ink-soft)">[{sp.marks}]</span>
-            </li>
-          );
-        })}
-      </ol>
-
-      <button
-        onClick={() => setRevealed((r) => !r)}
-        className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-(--color-awaken-line) px-3 py-1.5 text-xs font-semibold text-(--color-awaken-ink-soft)"
-      >
-        <Icon name={revealed ? "unfold_less" : "unfold_more"} className="!text-sm" />
-        {revealed ? (lang === "si" ? "ලකුණු ක්‍රමය හංගන්න" : "Hide mark scheme") : lang === "si" ? "ලකුණු ක්‍රමය බලන්න" : "Show mark scheme"}
-      </button>
-      {revealed ? (
-        <div className="mt-2 rounded-lg bg-(--color-awaken-bg) p-3 text-xs text-(--color-awaken-ink-soft)">
-          <p>{item.markScheme}</p>
+    <li>
+      <Card radius="card" className="p-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <p className="font-semibold text-ict-paper-50">
+            {item.id} · {item.topic} <span className="text-ict-ink-300">({item.marks} marks)</span>
+          </p>
+          <Badge tone={BAND_TONE[item.confidenceBand]}>{band[lang]}</Badge>
         </div>
-      ) : null}
 
-      <p className="mt-3 border-t border-(--color-awaken-line) pt-2.5 text-xs text-(--color-awaken-ink-soft)">{item.rationale}</p>
+        {scenario ? <p className="mt-2 text-sm text-ict-paper-50">{scenario}</p> : null}
+
+        <ol className="mt-3 space-y-2.5 text-sm text-ict-paper-50">
+          {item.subparts.map((sp) => {
+            const text = lang === "si" ? sp.si ?? sp.en : sp.en;
+            return (
+              <li key={sp.label}>
+                <span className="font-medium">({sp.label})</span> {text}{" "}
+                <span className="text-ict-ink-300">[{sp.marks}]</span>
+              </li>
+            );
+          })}
+        </ol>
+
+        <Button
+          variant="outline"
+          size="sm"
+          arrow="none"
+          onClick={() => setRevealed((r) => !r)}
+          className="mt-4"
+        >
+          <span className="inline-flex items-center gap-1.5">
+            <Icon name={revealed ? "unfold_less" : "unfold_more"} className="!text-sm" />
+            {revealed ? (lang === "si" ? "ලකුණු ක්‍රමය හංගන්න" : "Hide mark scheme") : lang === "si" ? "ලකුණු ක්‍රමය බලන්න" : "Show mark scheme"}
+          </span>
+        </Button>
+        {revealed ? (
+          <div className="mt-3 rounded-ict-md bg-ict-ink-900 p-3.5 text-xs text-ict-ink-300">
+            <p>{item.markScheme}</p>
+          </div>
+        ) : null}
+
+        <p className="mt-3.5 border-t border-ict-border-dark pt-3 text-xs text-ict-ink-300">{item.rationale}</p>
+      </Card>
     </li>
   );
 }

@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchWithSession, signInHref } from "@/lib/auth/session-client";
+import { Icon } from "@/components/ui/Icon";
+import { Button, Card, Chip } from "@/components/ds";
 
 /**
  * A submitted paper, held locally until the server has actually taken it.
@@ -192,20 +194,20 @@ export function MockExamRunner({
   }, [phase, exam, deadline]);
 
   if (phase === "loading") {
-    return <p className="text-sm text-(--color-awaken-ink-soft)">Preparing your paper…</p>;
+    return <p className="text-sm text-ict-ink-300">Preparing your paper…</p>;
   }
 
   if (phase === "error" || !exam) {
     return (
-      <div className="rounded-xl border border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft) p-5 text-sm">
-        <p className="text-(--color-awaken-danger)">Could not start this mock exam.</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-3 rounded-lg border border-(--color-awaken-line) px-4 py-2"
-        >
+      <Card radius="card" className="p-5">
+        <p className="flex items-center gap-2 text-sm text-[#f0685a]">
+          <Icon name="cancel" className="!text-base" />
+          Could not start this mock exam.
+        </p>
+        <Button variant="outline" size="sm" arrow="none" onClick={() => window.location.reload()} className="mt-4">
           Try again
-        </button>
-      </div>
+        </Button>
+      </Card>
     );
   }
 
@@ -235,36 +237,37 @@ export function MockExamRunner({
 
   return (
     <div>
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+      <Card radius="card" className="flex flex-wrap items-center justify-between gap-3 p-4">
         <div>
-          <p className="font-semibold">{exam.title}</p>
-          <p className="text-xs text-(--color-awaken-ink-soft)">
+          <p className="text-[13px] font-semibold text-ict-paper-50">{exam.title}</p>
+          <p className="mt-0.5 text-xs text-ict-ink-300">
             {answeredCount}/{exam.questions.length} answered
-            {exam.negativeMarking > 0 ? ` · -${exam.negativeMarking} for each wrong answer` : ""}
+            {exam.negativeMarking > 0 ? ` · −${exam.negativeMarking} for each wrong answer` : ""}
           </p>
         </div>
-        <div
-          className={`rounded-lg px-3 py-1.5 font-mono text-lg font-bold ${
-            timeLow ? "bg-(--color-awaken-danger-soft) text-(--color-awaken-danger)" : "bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)"
+        <span
+          className={`inline-flex h-9 items-center gap-1.5 rounded-full px-3.5 font-mono text-base font-bold tabular-nums ${
+            timeLow ? "bg-ict-red-500/15 text-[#f0685a]" : "bg-ict-ink-800 text-ict-paper-50"
           }`}
         >
+          <Icon name="timer" className="!text-base" />
           {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
-        </div>
-      </div>
+        </span>
+      </Card>
 
-      <div className="mt-4 flex flex-wrap gap-1.5">
+      <div className="mt-3 flex flex-wrap gap-1.5">
         {exam.questions.map((q, i) => {
           const isAnswered = answers[q.id] !== undefined;
           const isCurrent = i === index;
-          let style = "border-(--color-awaken-line) bg-(--color-awaken-card) text-(--color-awaken-ink-soft)";
-          if (isAnswered) style = "border-(--color-awaken-success) bg-(--color-awaken-success-soft) text-(--color-awaken-success)";
-          if (isCurrent) style = "border-(--color-awaken-accent) bg-(--color-awaken-accent) text-white";
+          let style = "border-ict-border-dark bg-ict-ink-850 text-ict-ink-300";
+          if (isAnswered) style = "border-transparent bg-ict-orange-500/15 text-ict-orange-400";
+          if (isCurrent) style = "border-transparent bg-ict-orange-500 text-white";
           return (
             <button
               key={q.id}
               onClick={() => setIndex(i)}
               disabled={submitting}
-              className={`flex h-8 w-8 items-center justify-center rounded-lg border text-xs font-semibold ${style}`}
+              className={`ict-press flex size-8 items-center justify-center rounded-full border text-xs font-semibold transition-colors duration-[120ms] ${style}`}
             >
               {i + 1}
             </button>
@@ -272,11 +275,14 @@ export function MockExamRunner({
         })}
       </div>
 
-      <div className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
-        <p className="text-xs text-(--color-awaken-ink-soft)">
-          Question {index + 1} of {exam.questions.length} · {question.topic}
-        </p>
-        <p className="mt-2 text-lg font-medium">{question.text}</p>
+      <Card radius="panel" className="mt-3 p-5 sm:p-6">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-xs text-ict-ink-300">
+            Question {index + 1} of {exam.questions.length}
+          </span>
+          <Chip>{question.topic}</Chip>
+        </div>
+        <p className="mt-4 text-lg font-semibold text-ict-paper-50">{question.text}</p>
 
         <div className="mt-5 space-y-2.5">
           {question.options.map((option, i) => {
@@ -286,10 +292,10 @@ export function MockExamRunner({
                 key={i}
                 onClick={() => selectAnswer(i)}
                 disabled={submitting}
-                className={`w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors ${
+                className={`ict-press w-full rounded-ict-md border px-4 py-3 text-left text-sm text-ict-paper-50 transition-colors duration-[120ms] ${
                   isSelected
-                    ? "border-(--color-awaken-accent) bg-(--color-awaken-accent-soft)"
-                    : "border-(--color-awaken-line) bg-(--color-awaken-card) hover:border-(--color-awaken-accent)/40"
+                    ? "border-ict-orange-500/60 bg-ict-orange-500/10"
+                    : "border-ict-border-dark bg-ict-ink-800 hover:border-ict-ink-500"
                 }`}
               >
                 {option}
@@ -297,39 +303,39 @@ export function MockExamRunner({
             );
           })}
         </div>
-      </div>
+      </Card>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-2">
-          <button
+          <Button
+            variant="outline"
+            size="sm"
+            arrow="none"
             onClick={() => setIndex((i) => Math.max(0, i - 1))}
             disabled={index === 0 || submitting}
-            className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm disabled:opacity-40"
           >
-            ← Previous
-          </button>
-          <button
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            arrow="none"
             onClick={() => setIndex((i) => Math.min(exam.questions.length - 1, i + 1))}
             disabled={index === exam.questions.length - 1 || submitting}
-            className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm disabled:opacity-40"
           >
-            Next →
-          </button>
+            Next
+          </Button>
         </div>
-        <button
-          onClick={confirmSubmit}
-          disabled={submitting}
-          className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
-        >
+        <Button size="sm" arrow="none" onClick={confirmSubmit} disabled={submitting}>
           {submitting ? "Submitting…" : "Submit paper"}
-        </button>
+        </Button>
       </div>
 
       {errorMessage ? (
-        <p className="mt-3 text-sm text-(--color-awaken-danger)">
+        <p className="mt-3 text-sm text-[#f0685a]">
           {errorMessage}
           {signInLink ? (
-            <a href={signInLink} className="ml-1 font-semibold underline">
+            <a href={signInLink} className="ml-1 font-semibold underline underline-offset-4">
               Sign in again
             </a>
           ) : null}

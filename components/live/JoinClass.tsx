@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { ZoomEmbed, type ZoomJoinConfig } from "@/components/player/ZoomEmbed";
 import { HlsPlayer } from "@/components/player/HlsPlayer";
 import { fetchWithSession } from "@/lib/auth/session-client";
+import { ButtonLink, Card } from "@/components/ds";
 
 type JoinResponse =
   | ({ mode: "zoom" } & ZoomJoinConfig & { joinUrl: string })
@@ -71,12 +71,9 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
       <Panel tone="error">
         <p>{state.message}</p>
         {state.reason === "expired" || state.reason === "not_enrolled" ? (
-          <Link
-            href="/dashboard"
-            className="mt-4 inline-block rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
-          >
+          <ButtonLink href="/dashboard" arrow="right" className="mt-4">
             Renew to join
-          </Link>
+          </ButtonLink>
         ) : null}
       </Panel>
     );
@@ -86,7 +83,7 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
     return (
       <div>
         <HlsPlayer src={state.data.hlsUrl} watermark={state.data.watermark} lowData={lowData} />
-        <label className="mt-3 flex items-center gap-2 text-sm text-(--color-awaken-ink-soft)">
+        <label className="mt-3 flex items-center gap-2 text-sm text-ict-ink-300">
           <input
             type="checkbox"
             checked={lowData}
@@ -145,14 +142,13 @@ function Panel({
   tone?: "info" | "error";
 }) {
   return (
-    <div
-      className={`flex min-h-[240px] items-center justify-center rounded-xl border p-6 text-center text-sm ${
-        tone === "error"
-          ? "border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft) text-(--color-awaken-danger)"
-          : "border-(--color-awaken-line) bg-(--color-awaken-card) text-(--color-awaken-ink-soft)"
+    <Card
+      radius="card"
+      className={`flex min-h-[240px] items-center justify-center p-6 text-center text-sm ${
+        tone === "error" ? "text-[#f0685a]" : "text-ict-ink-300"
       }`}
     >
       <div>{children}</div>
-    </div>
+    </Card>
   );
 }

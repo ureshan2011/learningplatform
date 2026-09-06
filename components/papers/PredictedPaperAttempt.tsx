@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { PredictedPaperDisclaimer } from "@/components/papers/PredictedPaperDisclaimer";
 import { track } from "@/lib/analytics";
+import { Badge, Button, Card, StatusChip } from "@/components/ds";
 import {
   AL_ICT_2027_PREDICTED_PAPER1,
   PREDICTED_PAPER1_DURATION_MINUTES,
@@ -19,6 +20,11 @@ const BAND_LABEL: Record<PredictedMcqQuestion["confidenceBand"], { en: string; s
   high: { en: "High confidence", si: "ඉහළ විශ්වාසය" },
   medium: { en: "Medium confidence", si: "මධ්‍යම විශ්වාසය" },
   low: { en: "Low confidence", si: "අඩු විශ්වාසය" },
+};
+const BAND_TONE: Record<PredictedMcqQuestion["confidenceBand"], "success" | "warning" | "neutral"> = {
+  high: "success",
+  medium: "warning",
+  low: "neutral",
 };
 
 function formatClock(totalSeconds: number): string {
@@ -95,20 +101,20 @@ export function PredictedPaperAttempt() {
       ) : (
         <>
           <div
-            className={`sticky top-0 z-20 -mx-1 mb-6 flex items-center justify-between gap-3 rounded-lg border px-4 py-3 backdrop-blur ${
+            className={`sticky top-0 z-20 mb-5 flex items-center justify-between gap-3 rounded-ict-card border px-4 py-3 backdrop-blur ${
               phase === "attempting" && low
-                ? "border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft)/95"
-                : "border-(--color-awaken-line) bg-(--color-awaken-bg)/95"
+                ? "border-ict-red-500/30 bg-ict-ink-900/95"
+                : "border-ict-border-dark bg-ict-ink-850/95"
             }`}
           >
-            <div className="flex items-center gap-2 font-mono text-lg font-bold tabular-nums">
+            <div className="flex items-center gap-2 font-mono text-lg font-bold tabular-nums text-ict-paper-50">
               <Icon
                 name="timer"
-                className={`!text-xl ${phase === "attempting" && low ? "text-(--color-awaken-danger)" : "text-(--color-awaken-accent)"}`}
+                className={`!text-xl ${phase === "attempting" && low ? "text-[#f0685a]" : "text-ict-orange-400"}`}
               />
               {phase === "attempting" ? formatClock(secondsLeft) : "—"}
             </div>
-            <div className="text-sm text-(--color-awaken-ink-soft)">
+            <div className="text-sm text-ict-ink-300">
               {phase === "attempting"
                 ? lang === "si"
                   ? `පිළිතුරු ${answeredCount}/${PREDICTED_PAPER1_QUESTION_COUNT}`
@@ -118,18 +124,15 @@ export function PredictedPaperAttempt() {
                   : `Score ${score}/${PREDICTED_PAPER1_QUESTION_COUNT}`}
             </div>
             {phase === "attempting" ? (
-              <button
-                onClick={submit}
-                className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white"
-              >
+              <Button size="sm" arrow="none" onClick={submit}>
                 {lang === "si" ? "ඉදිරිපත් කරන්න" : "Submit"}
-              </button>
+              </Button>
             ) : null}
           </div>
 
           {phase === "submitted" ? <ResultBanner lang={lang} score={score} /> : null}
 
-          <ol className="space-y-6">
+          <ol className="space-y-3">
             {AL_ICT_2027_PREDICTED_PAPER1.map((q, i) => (
               <QuestionCard
                 key={q.id}
@@ -144,14 +147,11 @@ export function PredictedPaperAttempt() {
           </ol>
 
           {phase === "attempting" ? (
-            <button
-              onClick={submit}
-              className="mt-8 w-full rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-3 font-semibold text-white"
-            >
+            <Button onClick={submit} arrow="none" className="mt-6 w-full justify-center">
               {lang === "si"
                 ? `ඉදිරිපත් කරන්න (${answeredCount}/${PREDICTED_PAPER1_QUESTION_COUNT} පිළිතුරු දී ඇත)`
                 : `Submit (${answeredCount}/${PREDICTED_PAPER1_QUESTION_COUNT} answered)`}
-            </button>
+            </Button>
           ) : null}
         </>
       )}
@@ -162,16 +162,16 @@ export function PredictedPaperAttempt() {
 function LangToggle({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
   return (
     <div className="mb-4 flex justify-end">
-      <div className="inline-flex rounded-full border border-(--color-awaken-line) bg-(--color-awaken-card) p-1 text-xs font-semibold">
+      <div className="inline-flex items-center gap-1 rounded-full bg-ict-ink-850 p-1 text-xs font-semibold">
         <button
           onClick={() => onChange("en")}
-          className={`rounded-full px-3 py-1.5 ${lang === "en" ? "bg-(--color-awaken-accent) text-white" : "text-(--color-awaken-ink-soft)"}`}
+          className={`rounded-full px-3.5 py-1.5 transition-colors duration-[120ms] ${lang === "en" ? "bg-ict-orange-500 text-white" : "text-ict-ink-300 hover:text-ict-paper-50"}`}
         >
           English
         </button>
         <button
           onClick={() => onChange("si")}
-          className={`rounded-full px-3 py-1.5 ${lang === "si" ? "bg-(--color-awaken-accent) text-white" : "text-(--color-awaken-ink-soft)"}`}
+          className={`rounded-full px-3.5 py-1.5 transition-colors duration-[120ms] ${lang === "si" ? "bg-ict-orange-500 text-white" : "text-ict-ink-300 hover:text-ict-paper-50"}`}
         >
           සිංහල
         </button>
@@ -182,54 +182,52 @@ function LangToggle({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => voi
 
 function IntroScreen({ lang, onStart }: { lang: Lang; onStart: () => void }) {
   return (
-    <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
-      <h1 className="flex items-center gap-2 text-2xl font-bold">
-        <Icon name="auto_awesome" className="text-(--color-awaken-accent)" />
+    <Card radius="panel" className="p-6 sm:p-8">
+      <h1 className="flex items-center gap-2.5 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-paper-50">
+        <Icon name="auto_awesome" className="text-ict-orange-400" />
         {lang === "si"
           ? "උසස් පෙළ තොරතුරු හා සන්නිවේදන තාක්ෂණය 2027 — පුරෝකථනය කළ I ප්‍රශ්න පත්‍රය"
           : "A/L ICT 2027 — Predicted Paper I (MCQ)"}
       </h1>
-      <ul className="mt-4 space-y-2 text-sm text-(--color-awaken-ink-soft)">
+      <ul className="mt-4 space-y-2 text-sm text-ict-ink-300">
         <li className="flex items-center gap-2">
-          <Icon name="quiz" className="!text-base text-(--color-awaken-accent)" />
+          <Icon name="quiz" className="!text-base text-ict-orange-400" />
           {lang === "si" ? `ප්‍රශ්න 50ක්` : `${PREDICTED_PAPER1_QUESTION_COUNT} questions`}
         </li>
         <li className="flex items-center gap-2">
-          <Icon name="timer" className="!text-base text-(--color-awaken-accent)" />
+          <Icon name="timer" className="!text-base text-ict-orange-400" />
           {lang === "si" ? "පැය දෙකයි — ආරම්භ කළ පසු ගණන් වැටෙයි" : "Two hours — the timer starts the moment you click Start"}
         </li>
         <li className="flex items-center gap-2">
-          <Icon name="insights" className="!text-base text-(--color-awaken-accent)" />
+          <Icon name="insights" className="!text-base text-ict-orange-400" />
           {lang === "si"
             ? "සෑම ප්‍රශ්නයකටම විශ්වාසය මට්ටමක් සහ එය තෝරාගත් හේතුව පෙන්වයි"
             : "Every question shows its confidence band and why it was chosen"}
         </li>
       </ul>
 
-      <PredictedPaperDisclaimer lang={lang} />
+      <div className="mt-5">
+        <PredictedPaperDisclaimer lang={lang} />
+      </div>
 
-      <button
-        onClick={onStart}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-6 py-3.5 text-base font-semibold text-white"
-      >
-        <Icon name="play_arrow" className="!text-xl" />
+      <Button onClick={onStart} arrow="right" className="mt-6 w-full justify-center">
         {lang === "si" ? "විභාගය අරඹන්න" : "Start the paper"}
-      </button>
-    </div>
+      </Button>
+    </Card>
   );
 }
 
 function ResultBanner({ lang, score }: { lang: Lang; score: number }) {
   const pct = Math.round((score / PREDICTED_PAPER1_QUESTION_COUNT) * 100);
   return (
-    <div className="mb-6 rounded-xl border border-(--color-awaken-success)/30 bg-(--color-awaken-success-soft) p-5 text-center">
-      <p className="text-3xl font-bold text-(--color-awaken-success)">
+    <Card variant="feature" radius="panel" className="mb-5 p-6 text-center">
+      <p className="font-display text-4xl font-extrabold text-ict-paper-50">
         {score}/{PREDICTED_PAPER1_QUESTION_COUNT}
       </p>
-      <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+      <p className="mt-1.5 text-sm text-ict-orange-200">
         {lang === "si" ? `(${pct}%) — නිවැරදි පිළිතුරු පහත දැක්වේ` : `(${pct}%) — correct answers shown below`}
       </p>
-    </div>
+    </Card>
   );
 }
 
@@ -254,80 +252,71 @@ function QuestionCard({
   const band = BAND_LABEL[question.confidenceBand];
 
   return (
-    <li
-      id={`pq${question.id}`}
-      className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-    >
-      <div className="flex items-start justify-between gap-3">
-        <p className="font-semibold">
-          <span className="text-(--color-awaken-ink-soft)">{index}.</span> {t.stem}
-        </p>
-        {isSubmitted ? (
-          <span
-            className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${
-              isCorrectOverall
-                ? "bg-(--color-awaken-success-soft) text-(--color-awaken-success)"
-                : selected === undefined
-                  ? "bg-(--color-awaken-bg) text-(--color-awaken-ink-soft)"
-                  : "bg-(--color-awaken-danger-soft) text-(--color-awaken-danger)"
-            }`}
-          >
-            {isCorrectOverall ? "✓" : selected === undefined ? (lang === "si" ? "දුන්නේ නැත" : "skipped") : "✗"}
-          </span>
+    <li>
+      <Card id={`pq${question.id}`} radius="card" className="p-5">
+        <div className="flex items-start justify-between gap-3">
+          <p className="font-semibold text-ict-paper-50">
+            <span className="text-ict-ink-300">{index}.</span> {t.stem}
+          </p>
+          {isSubmitted ? (
+            <StatusChip tone={isCorrectOverall ? "success" : selected === undefined ? "neutral" : "danger"}>
+              {isCorrectOverall ? "Correct" : selected === undefined ? (lang === "si" ? "දුන්නේ නැත" : "Skipped") : "Wrong"}
+            </StatusChip>
+          ) : null}
+        </div>
+
+        {question.code ? (
+          <pre className="mt-2.5 overflow-x-auto rounded-ict-md bg-ict-ink-900 p-3 font-mono text-xs whitespace-pre text-ict-paper-50">
+            {question.code}
+          </pre>
         ) : null}
-      </div>
 
-      {question.code ? (
-        <pre className="mt-2 overflow-x-auto rounded-md bg-(--color-awaken-bg) p-2.5 font-mono text-xs whitespace-pre">{question.code}</pre>
-      ) : null}
-
-      <div className="mt-3 space-y-2">
-        {t.options.map((opt, i) => {
-          const isSelected = selected === i;
-          const isCorrect = i === question.correctIndex;
-          let stateClass = "border-(--color-awaken-line)";
-          if (isSubmitted) {
-            if (isCorrect) stateClass = "border-(--color-awaken-success) bg-(--color-awaken-success-soft)";
-            else if (isSelected) stateClass = "border-(--color-awaken-danger) bg-(--color-awaken-danger-soft)";
-          } else if (isSelected) {
-            stateClass = "border-(--color-awaken-accent) bg-(--color-awaken-accent-soft)";
-          }
-          return (
-            <button
-              key={i}
-              type="button"
-              disabled={isSubmitted}
-              onClick={() => onSelect(i)}
-              className={`flex w-full items-start gap-2.5 rounded-lg border px-3.5 py-2.5 text-left text-sm transition-colors disabled:cursor-default ${stateClass}`}
-            >
-              <span
-                className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border text-[11px] font-bold ${
-                  isSubmitted && isCorrect
-                    ? "border-(--color-awaken-success) bg-(--color-awaken-success) text-white"
-                    : isSelected
-                      ? "border-(--color-awaken-accent) bg-(--color-awaken-accent) text-white"
-                      : "border-(--color-awaken-line)"
-                }`}
+        <div className="mt-3.5 space-y-2">
+          {t.options.map((opt, i) => {
+            const isSelected = selected === i;
+            const isCorrect = i === question.correctIndex;
+            let stateClass = "border-ict-border-dark bg-ict-ink-800";
+            let badgeClass = "bg-ict-ink-700 text-ict-ink-300";
+            if (isSubmitted) {
+              if (isCorrect) {
+                stateClass = "border-ict-green-500/50 bg-ict-green-500/10";
+                badgeClass = "bg-ict-green-500 text-white";
+              } else if (isSelected) {
+                stateClass = "border-ict-red-500/50 bg-ict-red-500/10";
+              }
+            } else if (isSelected) {
+              stateClass = "border-ict-orange-500/60 bg-ict-orange-500/10";
+              badgeClass = "bg-ict-orange-500 text-white";
+            }
+            return (
+              <button
+                key={i}
+                type="button"
+                disabled={isSubmitted}
+                onClick={() => onSelect(i)}
+                className={`ict-press flex w-full items-start gap-2.5 rounded-ict-md border px-3.5 py-2.5 text-left text-sm text-ict-paper-50 transition-colors duration-[120ms] disabled:cursor-default ${stateClass}`}
               >
-                {i + 1}
-              </span>
-              <span className="min-w-0 flex-1">{opt}</span>
-              {isSubmitted && isCorrect ? (
-                <Icon name="check_circle" className="!text-base shrink-0 text-(--color-awaken-success)" />
-              ) : null}
-            </button>
-          );
-        })}
-      </div>
+                <span
+                  className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${badgeClass}`}
+                >
+                  {i + 1}
+                </span>
+                <span className="min-w-0 flex-1">{opt}</span>
+                {isSubmitted && isCorrect ? (
+                  <Icon name="check_circle" className="!text-base shrink-0 text-ict-green-500" />
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
 
-      <div className="mt-3 flex flex-wrap items-baseline gap-2 border-t border-(--color-awaken-line) pt-2.5 text-xs text-(--color-awaken-ink-soft)">
-        <span className="rounded-full bg-(--color-awaken-accent-soft) px-2 py-0.5 font-semibold text-(--color-awaken-accent)">
-          {band[lang]}
-        </span>
-        <span>
-          {question.topic} — {question.rationale}
-        </span>
-      </div>
+        <div className="mt-3.5 flex flex-wrap items-center gap-2 border-t border-ict-border-dark pt-3 text-xs text-ict-ink-300">
+          <Badge tone={BAND_TONE[question.confidenceBand]}>{band[lang]}</Badge>
+          <span>
+            {question.topic} — {question.rationale}
+          </span>
+        </div>
+      </Card>
     </li>
   );
 }

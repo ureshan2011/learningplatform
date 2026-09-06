@@ -298,6 +298,9 @@ without a command line.
 - `SETUP.md` — the three-part browser-only setup
 - `docs/services.md` — adding Zoom, PayHere, R2
 - `docs/PLAN.md` — product roadmap and the reasoning behind the architecture
+- `docs/design-system/` — the original design-system brief (tokens, component specs, voice
+  rules) that `components/ds/` and the tokens in `app/globals.css` were built from. Reference it
+  before designing any new signed-in screen; ignore its NZ copy examples.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

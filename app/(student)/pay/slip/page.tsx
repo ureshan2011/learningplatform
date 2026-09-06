@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { requirePageUser } from "@/lib/auth/session";
 import { listSubjects } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
@@ -7,6 +6,7 @@ import { bankDetailsReady, getPaymentSettings } from "@/lib/payments/records";
 import { BankDetailsCard } from "@/components/payments/BankDetailsCard";
 import { SlipUploadForm } from "@/components/payments/SlipUploadForm";
 import { Icon } from "@/components/ui/Icon";
+import { Card, PageHeader } from "@/components/ds";
 
 export const dynamic = "force-dynamic";
 
@@ -34,24 +34,13 @@ export default async function SlipPage({
   const ready = bankDetailsReady(settings);
 
   return (
-    <main className="mx-auto max-w-md px-5 py-8">
-      <Link
-        href="/dashboard"
-        className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline"
-      >
-        <Icon name="arrow_back" className="!text-base" />
-        Dashboard
-      </Link>
+    <main className="mx-auto max-w-md px-4 py-5 sm:px-6 sm:py-6">
+      <PageHeader
+        title="Pay by bank deposit"
+        subtitle="Deposit the fee, photograph the slip, and upload it below. Your teacher checks it and your class unlocks — usually the same day."
+      />
 
-      <div className="mt-6 text-center">
-        <h1 className="text-2xl font-bold tracking-tight">Pay by bank deposit</h1>
-        <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-          Deposit the fee, photograph the slip, and upload it below. Your teacher checks it and
-          your class unlocks — usually the same day.
-        </p>
-      </div>
-
-      <div className="mt-6">
+      <div className="mt-5">
         {ready && chosen ? (
           <BankDetailsCard
             bankName={settings.bankName}
@@ -63,16 +52,16 @@ export default async function SlipPage({
             instructions={settings.slipInstructions}
           />
         ) : (
-          <div className="rounded-xl border border-(--color-awaken-warn)/40 bg-(--color-awaken-warn-soft) p-5 text-sm">
-            <p className="flex items-center gap-2 font-semibold text-(--color-awaken-warn)">
+          <Card radius="card" className="p-5">
+            <p className="flex items-center gap-2 font-semibold text-ict-amber-500">
               <Icon name="priority_high" className="!text-lg" />
               Bank details not published yet
             </p>
-            <p className="mt-1 text-(--color-awaken-ink-soft)">
+            <p className="mt-1.5 text-sm text-ict-ink-300">
               Ask your teacher for the account number. You can still upload a slip below once you
               have paid.
             </p>
-          </div>
+          </Card>
         )}
       </div>
 
