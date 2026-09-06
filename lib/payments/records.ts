@@ -3,6 +3,7 @@ import "server-only";
 import { adminDb, col } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
 import { colomboDateString } from "@/lib/format";
+import { SANDBOX_TEST_VALUES } from "@/lib/payments/sandbox-test-values";
 import type { Payment, PaymentEvent, PaymentSettings } from "@/lib/types";
 
 /**
@@ -169,27 +170,41 @@ const TEXT_FIELDS: Array<keyof PaymentSettings> = [
 
 /**
  * Overlays a saved settings document onto the defaults, field by field,
- * treating an empty string as "never typed in" rather than "explicitly
- * cleared". Without this, a document that exists for some other reason
- * (say, PayHere credentials were saved once) but has never had, e.g.,
- * `addressLine` typed into it would spread that empty string straight over
- * the fallback identity below — the opposite of what the fallback is for.
+ * treating a blank *or a leftover sandbox test value* as "not really set"
+ * rather than "explicitly typed in". Two real cases this covers:
+ *
+ * 1. A document exists for some other reason (say, PayHere credentials were
+ *    saved once) but has never had, e.g., `addressLine` typed into it — a
+ *    blind spread would print that empty string on a public page instead of
+ *    the fallback identity below.
+ * 2. Someone clicked "Fill with test details" on the Payments console (to
+ *    rehearse the PayHere sandbox flow) and then saved the form — which
+ *    happened at least once, and put literal strings like "071 000 0000"
+ *    and "test@example.com" onto the live Terms, Privacy, Refund and
+ *    Contact pages, and onto real receipts. `SANDBOX_TEST_VALUES` is the
+ *    exact set of strings that button writes, shared with
+ *    `PaymentSettingsForm`, so a value that matches one exactly is treated
+ *    the same as blank rather than displayed as if it were real.
  */
 function withFallbacksForBlanks(saved: PaymentSettings): PaymentSettings {
   const defaults = emptyPaymentSettings();
   const merged: PaymentSettings = { ...defaults, ...saved };
   for (const field of TEXT_FIELDS) {
-    restoreIfBlank(merged, defaults, field);
+    restoreIfBlankOrTestValue(merged, defaults, field);
   }
   return merged;
 }
 
-function restoreIfBlank<K extends keyof PaymentSettings>(
+function restoreIfBlankOrTestValue<K extends keyof PaymentSettings>(
   merged: PaymentSettings,
   defaults: PaymentSettings,
   field: K,
 ): void {
-  if (merged[field] === "") merged[field] = defaults[field];
+  const value = merged[field];
+  const sandboxValue = (SANDBOX_TEST_VALUES as Partial<Record<keyof PaymentSettings, string>>)[field];
+  if (value === "" || (sandboxValue !== undefined && value === sandboxValue)) {
+    merged[field] = defaults[field];
+  }
 }
 
 export async function savePaymentSettings(

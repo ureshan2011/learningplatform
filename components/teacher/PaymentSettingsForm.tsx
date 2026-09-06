@@ -5,16 +5,12 @@ import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import type { PaymentSettings } from "@/lib/types";
 import { fetchWithSession } from "@/lib/auth/session-client";
+import { SANDBOX_TEST_VALUES, looksLikeSandboxTestData, type SettableField } from "@/lib/payments/sandbox-test-values";
 
 const inputClass =
   "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-base outline-none focus:border-(--color-awaken-accent)";
 
-type FieldName = keyof Omit<
-  PaymentSettings,
-  "tenantId" | "updatedAt" | "updatedBy" | "payhereMerchantSecret" | "payhereMode"
->;
-
-const BANK_FIELDS: Array<{ name: FieldName; label: string; hint?: string; required?: boolean }> = [
+const BANK_FIELDS: Array<{ name: SettableField; label: string; hint?: string; required?: boolean }> = [
   { name: "bankName", label: "Bank", hint: "e.g. Bank of Ceylon", required: true },
   { name: "bankBranch", label: "Branch" },
   { name: "accountName", label: "Account name", hint: "Exactly as the bank has it", required: true },
@@ -26,7 +22,7 @@ const BANK_FIELDS: Array<{ name: FieldName; label: string; hint?: string; requir
   },
 ];
 
-const IDENTITY_FIELDS: Array<{ name: FieldName; label: string; hint?: string; required?: boolean }> = [
+const IDENTITY_FIELDS: Array<{ name: SettableField; label: string; hint?: string; required?: boolean }> = [
   {
     name: "businessName",
     label: "Name on receipts",
@@ -42,20 +38,6 @@ const IDENTITY_FIELDS: Array<{ name: FieldName; label: string; hint?: string; re
 ];
 
 const ALL_FIELDS = [...BANK_FIELDS, ...IDENTITY_FIELDS];
-
-/** Obvious test data, so nobody mistakes a rehearsal for the real account. */
-const TEST_DETAILS: Partial<Record<FieldName, string>> = {
-  bankName: "Bank of Ceylon (TEST — not a real account)",
-  bankBranch: "Colombo Main",
-  accountName: "ICT Campus (Sandbox Test)",
-  accountNumber: "0000123456789",
-  slipInstructions: "SANDBOX TEST ONLY — do not deposit real money into this account.",
-  businessName: "ICT Campus (Sandbox Test)",
-  ownerName: "Dr. Yasas Sri Wickramasinghe",
-  addressLine: "123 Test Lane, Colombo 07",
-  contactPhone: "071 000 0000",
-  contactEmail: "test@example.com",
-};
 
 /**
  * The bank account students deposit into, who the receipts come from, and the
@@ -120,14 +102,28 @@ export function PaymentSettingsForm({
   function fillTestDetails() {
     const form = formRef.current;
     if (!form) return;
-    for (const [name, value] of Object.entries(TEST_DETAILS)) {
+    for (const [name, value] of Object.entries(SANDBOX_TEST_VALUES)) {
       const input = form.elements.namedItem(name);
       if (input instanceof HTMLInputElement) input.value = value;
     }
   }
 
+  const isTestData = looksLikeSandboxTestData(settings);
+
   return (
     <form ref={formRef} onSubmit={submit} className="space-y-6">
+      {isTestData ? (
+        <div className="flex items-start gap-2 rounded-lg border border-(--color-awaken-warn)/40 bg-(--color-awaken-warn-soft) p-3.5 text-sm text-(--color-awaken-warn)">
+          <Icon name="priority_high" className="!text-base mt-0.5 shrink-0" />
+          <span>
+            One or more fields below still hold sandbox test details (from &quot;Fill with test
+            details&quot;), saved as if they were real — students, receipts and your policy pages
+            are showing them right now. Replace them with your real information and save before
+            going live.
+          </span>
+        </div>
+      ) : null}
+
       <Section
         title="Where students deposit"
         note="Shown on the deposit page with one-tap copy."
@@ -237,7 +233,7 @@ function Section({
 }: {
   title: string;
   note: string;
-  fields: Array<{ name: FieldName; label: string; hint?: string; required?: boolean }>;
+  fields: Array<{ name: SettableField; label: string; hint?: string; required?: boolean }>;
   settings: Omit<PaymentSettings, "payhereMerchantSecret">;
 }) {
   return (
