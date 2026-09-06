@@ -24,11 +24,17 @@ export default async function TermsPage() {
     >
       <Clause heading="1. Who you are dealing with">
         <p>
-          This platform is operated by {who ? <strong>{who}</strong> : <Blank>your name or registered business name</Blank>}
+          This platform, ICT Campus (ictcampus.lk), is operated by{" "}
+          {who ? <strong>{who}</strong> : <Blank>your name or registered business name</Blank>}
           {settings.brNumber ? <>, business registration number {settings.brNumber}</> : null}, of{" "}
           {settings.addressLine || <Blank>your address</Blank>}. In these terms, &quot;we&quot; and
           &quot;us&quot; mean that person or business, and &quot;you&quot; means the student
           holding the account.
+        </p>
+        <p>
+          This is a fully online tuition service — classes, notes, practice and support are all
+          delivered over the internet, and there is no shop or office open to the public at the
+          address above.
         </p>
       </Clause>
 
@@ -84,9 +90,9 @@ export default async function TermsPage() {
 
       <Clause heading="6. Class recordings and materials">
         <p>
-          Notes, videos, recordings, question banks and simulations are our copyright. You may use
-          them for your own study. You may not record, re-upload, resell, or pass them to anyone
-          else, including in group chats.
+          Notes, videos, recordings, question banks, predicted papers and simulations are our
+          copyright. You may use them for your own study. You may not record, re-upload, resell, or
+          pass them to anyone else, including in group chats.
         </p>
         <p>
           Downloaded material carries a watermark identifying the account it was issued to. If our
@@ -100,7 +106,19 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="7. Interruptions">
+      <Clause heading="7. AI-assisted exam-prediction material">
+        <p>
+          Some material — including any paper labelled a &quot;predicted paper&quot; — is drafted
+          with the help of an AI exam-pattern analysis of past papers and the published syllabus,
+          reviewed by us before students can see it. It is a study aid built from historical pattern
+          and syllabus weighting, not a leaked paper, not sourced from any exam board, and not a
+          guarantee of what will appear in a real examination. We do not promise it will improve
+          your result, and the Department of Examinations and the National Institute of Education
+          have no part in producing it.
+        </p>
+      </Clause>
+
+      <Clause heading="8. Interruptions">
         <p>
           Classes depend on your internet connection and ours, on Zoom, and on your device. If a
           class is cancelled by us, we reschedule it or extend your access by the equivalent time.
@@ -108,7 +126,7 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="8. Suspension">
+      <Clause heading="9. Suspension">
         <p>
           We may suspend or close an account that shares logins or material, disrupts a live class,
           abuses other students or the teacher, or pays with a card that is not theirs. Where the
@@ -116,7 +134,7 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="9. Liability">
+      <Clause heading="10. Liability">
         <p>
           Nothing here limits liability that cannot be limited by Sri Lankan law. Beyond that, our
           liability for any claim is limited to the fees you paid us in the three months before it
@@ -124,7 +142,7 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="10. Changes and governing law">
+      <Clause heading="11. Changes and governing law">
         <p>
           We may update these terms; the date at the top shows when. Material changes are announced
           in class and on the site before they take effect. These terms are governed by the laws of
@@ -132,7 +150,7 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="11. Contact">
+      <Clause heading="12. Contact">
         <p>
           Questions about these terms: {settings.contactPhone || <Blank>your phone</Blank>}
           {settings.contactEmail ? `, ${settings.contactEmail}` : null}.

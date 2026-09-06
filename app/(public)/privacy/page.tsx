@@ -24,7 +24,8 @@ export default async function PrivacyPage() {
         <p>
           {who ? <strong>{who}</strong> : <Blank>your name or registered business name</Blank>}, of{" "}
           {settings.addressLine || <Blank>your address</Blank>}, decides what is collected here and
-          why. Contact: {settings.contactPhone || <Blank>your phone</Blank>}
+          why. ICT Campus (ictcampus.lk) is a fully online tuition service with no shop or office
+          open to the public. Contact: {settings.contactPhone || <Blank>your phone</Blank>}
           {settings.contactEmail ? `, ${settings.contactEmail}` : null}.
         </p>
       </Clause>
@@ -51,6 +52,16 @@ export default async function PrivacyPage() {
         <p>
           <strong>We never see your card number.</strong> Card details are entered on PayHere&apos;s
           own payment page and never reach this platform.
+        </p>
+      </Clause>
+
+      <Clause heading="AI-assisted study material">
+        <p>
+          Some study material, including predicted papers, is drafted with AI assistance from
+          public past-paper and syllabus text, reviewed by us before publishing. Producing it never
+          sends any student&apos;s personal data, answers or performance history to an AI provider —
+          only the finished material reaches your account, the same as any other note or past
+          paper.
         </p>
       </Clause>
 

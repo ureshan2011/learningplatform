@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
 
 /** Every policy page carries the same date, so they are obviously one document set. */
-export const POLICY_UPDATED = "30 August 2026";
+export const POLICY_UPDATED = "6 September 2026";
 
 /**
  * Shared shell for the four policy pages a payment gateway expects to find
