@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { fetchWithSession } from "@/lib/auth/session-client";
+import { Button } from "@/components/ds";
 
 /**
  * Lets a student generate a read-only link for a parent — no second login,
@@ -38,41 +39,33 @@ export function ParentLinkPanel() {
   }
 
   return (
-    <div className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4 text-sm">
-      <p className="text-(--color-awaken-ink-soft)">
+    <div className="text-sm">
+      <p className="text-ict-ink-300">
         Give a parent a link to see your attendance and progress — no account needed
         for them, and it never shows anything you wouldn&apos;t want them to see beyond that.
       </p>
 
       {url ? (
         <>
-          <p className="mt-3 truncate rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) px-3 py-2 font-mono text-xs text-(--color-awaken-ink-soft)">
+          <p className="mt-3 truncate rounded-ict-sm border border-ict-border-dark bg-ict-ink-900 px-3 py-2 font-mono text-xs text-ict-ink-300">
             {url}
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             <WhatsAppShareButton
               text={`Here's a link to see my attendance and progress: ${url}`}
               label="Send on WhatsApp"
             />
-            <button
-              onClick={() => call("revoke")}
-              disabled={busy}
-              className="rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm disabled:opacity-50"
-            >
+            <Button variant="outline" size="sm" arrow="none" onClick={() => call("revoke")} disabled={busy}>
               Revoke all links
-            </button>
+            </Button>
           </div>
         </>
       ) : (
-        <button
-          onClick={() => call("create")}
-          disabled={busy}
-          className="mt-3 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-        >
+        <Button size="sm" arrow="none" onClick={() => call("create")} disabled={busy} className="mt-3">
           {busy ? "Creating…" : "Get parent link"}
-        </button>
+        </Button>
       )}
-      {error ? <p className="mt-2 text-xs text-(--color-awaken-danger)">{error}</p> : null}
+      {error ? <p className="mt-2 text-xs text-[#f0685a]">{error}</p> : null}
     </div>
   );
 }

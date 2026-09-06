@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { track } from "@/lib/analytics";
 import { fetchWithSession } from "@/lib/auth/session-client";
+import { Button } from "@/components/ds";
 
 /**
  * Starts a PayHere checkout.
@@ -58,20 +59,12 @@ export function SubscribeButton({
   }
 
   return (
-    <div className="text-right">
-      <button
-        onClick={start}
-        disabled={busy}
-        className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-      >
+    <div>
+      <Button onClick={start} disabled={busy} size="sm" arrow="right">
         {busy ? "Opening…" : "Pay monthly"}
-      </button>
-      {sandbox ? (
-        <p className="mt-1 text-xs font-semibold text-(--color-awaken-warn)">
-          Sandbox — test cards only
-        </p>
-      ) : null}
-      {error ? <p className="mt-1 text-xs text-(--color-awaken-danger)">{error}</p> : null}
+      </Button>
+      {sandbox ? <p className="mt-1.5 text-xs font-semibold text-ict-amber-500">Sandbox — test cards only</p> : null}
+      {error ? <p className="mt-1.5 text-xs text-[#f0685a]">{error}</p> : null}
     </div>
   );
 }

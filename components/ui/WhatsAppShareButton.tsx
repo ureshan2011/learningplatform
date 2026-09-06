@@ -1,6 +1,7 @@
 "use client";
 
 import { waShareUrl } from "@/lib/share";
+import { Icon } from "@/components/ui/Icon";
 
 /**
  * Opens WhatsApp with a pre-filled message. Plain `<a>`, not a click handler —
@@ -26,10 +27,10 @@ export function WhatsAppShareButton({
       rel="noopener noreferrer"
       className={
         className ??
-        "inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-4 py-2 text-sm font-semibold text-black"
+        "ict-press inline-flex h-10 items-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-black transition-transform duration-[120ms]"
       }
     >
-      <span aria-hidden>💬</span>
+      <Icon name="chat" className="!text-base" />
       {label}
     </a>
   );

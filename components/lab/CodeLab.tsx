@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PseudocodeRunner } from "@/components/lab/PseudocodeRunner";
 import { SpreadsheetSandbox } from "@/components/lab/SpreadsheetSandbox";
 import { SqlSandbox } from "@/components/lab/SqlSandbox";
+import { Card } from "@/components/ds";
 
 const TABS = [
   { id: "pseudocode", label: "Pseudocode", Component: PseudocodeRunner },
@@ -22,24 +23,24 @@ export function CodeLab() {
 
   return (
     <div>
-      <div className="flex gap-1 border-b border-(--color-awaken-line)">
+      <div className="inline-flex items-center gap-1 rounded-full bg-ict-ink-850 p-1">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+            className={`inline-flex h-8 shrink-0 items-center rounded-full px-3.5 text-sm font-semibold transition-colors duration-[120ms] ease-ict ${
               tab === t.id
-                ? "border-b-2 border-(--color-awaken-accent) text-(--color-awaken-accent)"
-                : "text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)"
+                ? "bg-ict-orange-500 text-white"
+                : "text-ict-ink-300 hover:bg-ict-ink-800 hover:text-ict-paper-50"
             }`}
           >
             {t.label}
           </button>
         ))}
       </div>
-      <div className="mt-5">
+      <Card radius="panel" className="mt-3 p-5 sm:p-6">
         <Active />
-      </div>
+      </Card>
     </div>
   );
 }

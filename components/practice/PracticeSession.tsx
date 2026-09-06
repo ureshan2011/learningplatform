@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { fetchWithSession } from "@/lib/auth/session-client";
+import { Icon } from "@/components/ui/Icon";
+import {
+  Button,
+  ButtonLink,
+  Card,
+  Chip,
+  EmptyState,
+  ProgressBar,
+  StatCard,
+  StatusChip,
+} from "@/components/ds";
 
 interface PracticeQuestion {
   id: string;
@@ -105,140 +115,130 @@ export function PracticeSession({
   }
 
   if (phase === "loading") {
-    return <p className="text-sm text-(--color-awaken-ink-soft)">Preparing your questions…</p>;
+    return <p className="text-sm text-ict-ink-300">Preparing your questions…</p>;
   }
 
   if (phase === "error") {
     return (
-      <div className="rounded-xl border border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft) p-5 text-sm">
-        <p className="text-(--color-awaken-danger)">Something went wrong loading practice.</p>
-        <button onClick={loadBatch} className="mt-3 rounded-lg border border-(--color-awaken-line) px-4 py-2">
+      <Card radius="card" className="p-5">
+        <p className="flex items-center gap-2 text-sm text-[#f0685a]">
+          <Icon name="cancel" className="!text-base" />
+          Something went wrong loading practice.
+        </p>
+        <Button variant="outline" size="sm" arrow="none" onClick={loadBatch} className="mt-4">
           Try again
-        </button>
-      </div>
+        </Button>
+      </Card>
     );
   }
 
   if (phase === "empty") {
     return (
-      <p className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
-        No practice questions are ready yet for {subjectName}. Check back once your teacher has
-        added some.
-      </p>
+      <EmptyState
+        icon="quiz"
+        title="No practice questions yet"
+        body={`Nothing is ready for ${subjectName} yet. Check back once your teacher has added some.`}
+      />
     );
   }
 
   if (phase === "summary") {
     const shareText = `I just practised ${subjectName} on ICT Campus — ${correctCount}/${questions.length} correct${
-      latestProgress ? ` and a ${latestProgress.streakDays}-day streak 🔥` : ""
+      latestProgress ? ` and a ${latestProgress.streakDays}-day streak` : ""
     }!`;
     return (
-      <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6 text-center">
-        <p className="text-sm text-(--color-awaken-ink-soft)">Session complete</p>
-        <p className="mt-2 text-4xl font-bold">
+      <Card radius="panel" className="p-6 text-center sm:p-8">
+        <p className="text-sm text-ict-ink-300">Session complete</p>
+        <p className="mt-2 font-display text-4xl font-extrabold text-ict-paper-50">
           {correctCount}/{questions.length}
         </p>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">+{xpEarned} XP earned</p>
+        <p className="mt-1.5 text-sm text-ict-ink-300">+{xpEarned} XP earned</p>
+
         {latestProgress ? (
-          <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-            <div className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) py-3">
-              <p className="text-lg font-bold">Lvl {latestProgress.level}</p>
-              <p className="text-[10px] uppercase tracking-wide text-(--color-awaken-ink-soft)">Level</p>
-            </div>
-            <div className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) py-3">
-              <p className="text-lg font-bold">{latestProgress.streakDays}d</p>
-              <p className="text-[10px] uppercase tracking-wide text-(--color-awaken-ink-soft)">Streak</p>
-            </div>
+          <div className="mt-5 grid grid-cols-2 gap-3 text-left">
+            <StatCard icon="workspace_premium" label="Level" value={latestProgress.level} />
+            <StatCard
+              icon="local_fire_department"
+              label="Streak"
+              value={`${latestProgress.streakDays}d`}
+            />
           </div>
         ) : null}
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <button
-            onClick={loadBatch}
-            className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 text-sm font-semibold text-white"
-          >
-            Practice again
-          </button>
-          <WhatsAppShareButton text={shareText} label="Share result" />
-          <Link
-            href={`/subjects/${subjectId}`}
-            className="rounded-lg border border-(--color-awaken-line) px-5 py-2.5 text-sm"
-          >
+
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <Button onClick={loadBatch}>Practice again</Button>
+          <WhatsAppShareButton
+            text={shareText}
+            label="Share result"
+            className="ict-press inline-flex h-10 items-center gap-2 rounded-full bg-[#25D366] px-5 text-sm font-semibold text-black"
+          />
+          <ButtonLink href={`/subjects/${subjectId}`} variant="outline" arrow="none">
             Back to subject
-          </Link>
+          </ButtonLink>
         </div>
-      </div>
+      </Card>
     );
   }
 
   const question = questions[index];
+  const progressPct = ((index + (result ? 1 : 0)) / questions.length) * 100;
 
   return (
-    <div>
-      <div className="flex items-center justify-between text-xs text-(--color-awaken-ink-soft)">
-        <span>
+    <Card radius="panel" className="p-6 sm:p-8">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-xs text-ict-ink-300">
           Question {index + 1} of {questions.length}
         </span>
-        <span>{question.topic}</span>
+        <Chip>{question.topic}</Chip>
       </div>
-      <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-line)">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) transition-all"
-          style={{ width: `${((index + (result ? 1 : 0)) / questions.length) * 100}%` }}
-        />
-      </div>
+      <ProgressBar value={progressPct} showLabel={false} className="mt-3" />
 
-      <p className="mt-6 text-lg font-medium">{question.text}</p>
+      <p className="mt-6 text-lg font-semibold text-ict-paper-50">{question.text}</p>
 
       <div className="mt-5 space-y-2.5">
         {question.options.map((option, i) => {
           const isSelected = selected === i;
-          const isCorrectOption = result && i === result.correctIndex;
-          const isWrongSelected = result && isSelected && !result.correct;
+          const isCorrectOption = Boolean(result && i === result.correctIndex);
+          const isWrongSelected = Boolean(result && isSelected && !result.correct);
 
-          let style = "border-(--color-awaken-line) bg-(--color-awaken-card) hover:border-(--color-awaken-accent)/40";
-          if (isCorrectOption) style = "border-(--color-awaken-success) bg-(--color-awaken-success-soft)";
-          else if (isWrongSelected) style = "border-(--color-awaken-danger) bg-(--color-awaken-danger-soft)";
-          else if (isSelected) style = "border-(--color-awaken-accent) bg-(--color-awaken-accent-soft)";
+          let style = "border-ict-border-dark bg-ict-ink-800 hover:border-ict-ink-500";
+          if (isCorrectOption) style = "border-ict-green-500/50 bg-ict-green-500/10";
+          else if (isWrongSelected) style = "border-ict-red-500/50 bg-ict-red-500/10";
+          else if (isSelected) style = "border-ict-orange-500/60 bg-ict-orange-500/10";
 
           return (
             <button
               key={i}
+              type="button"
               onClick={() => submitAnswer(i)}
               disabled={selected !== null}
-              className={`w-full rounded-lg border px-4 py-3 text-left text-sm transition-colors disabled:cursor-default ${style}`}
+              className={`ict-press flex w-full items-center justify-between gap-3 rounded-ict-md border px-4 py-3 text-left text-sm text-ict-paper-50 transition-colors duration-[120ms] ease-ict disabled:cursor-default ${style}`}
             >
-              {option}
+              <span>{option}</span>
+              {isCorrectOption ? <Icon name="done" className="!text-base shrink-0 text-ict-green-500" /> : null}
+              {isWrongSelected ? <Icon name="cancel" className="!text-base shrink-0 text-[#f0685a]" /> : null}
             </button>
           );
         })}
       </div>
 
       {result ? (
-        <div
-          className={`mt-5 rounded-xl border p-4 text-sm ${
-            result.correct
-              ? "border-(--color-awaken-success)/30 bg-(--color-awaken-success-soft)"
-              : "border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft)"
-          }`}
-        >
-          <p className={`font-semibold ${result.correct ? "text-(--color-awaken-success)" : "text-(--color-awaken-danger)"}`}>
-            {result.correct ? `Correct! +${result.xpAwarded} XP` : `Not quite. +${result.xpAwarded} XP for trying`}
-          </p>
-          <p className="mt-2 text-(--color-awaken-ink-soft)">{result.explanation}</p>
+        <Card variant="raised" radius="card" className="mt-5 p-4 text-sm">
+          <StatusChip tone={result.correct ? "success" : "danger"}>
+            {result.correct ? `Correct — +${result.xpAwarded} XP` : `Not quite — +${result.xpAwarded} XP`}
+          </StatusChip>
+          <p className="mt-3 text-ict-ink-300">{result.explanation}</p>
           {result.misconception ? (
-            <p className="mt-2 rounded-lg bg-(--color-awaken-bg) p-3 text-(--color-awaken-ink-soft)">
-              <span className="font-medium text-(--color-awaken-ink-soft)">Why that answer felt right: </span>
+            <p className="mt-2 rounded-ict-md bg-ict-ink-900 p-3 text-ict-ink-300">
+              <span className="font-medium text-ict-paper-50">Why that answer felt right: </span>
               {result.misconception}
             </p>
           ) : null}
-          <button
-            onClick={next}
-            className="mt-4 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 font-semibold text-white"
-          >
+          <Button onClick={next} size="sm" className="mt-4">
             {index + 1 >= questions.length ? "See results" : "Next question"}
-          </button>
-        </div>
+          </Button>
+        </Card>
       ) : null}
-    </div>
+    </Card>
   );
 }

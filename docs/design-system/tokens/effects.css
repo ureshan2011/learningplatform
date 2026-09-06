@@ -1,0 +1,31 @@
+:root{
+/* Radii — pills for actions, soft-square for cards */
+--radius-xs:6px;--radius-sm:10px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;--radius-2xl:36px;--radius-pill:999px;
+--radius-card:var(--radius-lg);
+--radius-panel:var(--radius-xl);
+--radius-control:var(--radius-pill);
+
+/* Borders */
+--border-hairline:1px;--border-medium:1.5px;--border-heavy:2px;
+
+/* Shadows — soft, warm, low-contrast; never blue-grey */
+--shadow-xs:0 1px 2px rgba(20,17,16,.06);
+--shadow-sm:0 2px 6px rgba(20,17,16,.07);
+--shadow-md:0 8px 20px -6px rgba(20,17,16,.12);
+--shadow-lg:0 20px 44px -16px rgba(20,17,16,.18);
+--shadow-brand:0 10px 24px -8px rgba(244,85,30,.45);
+--shadow-inset-dark:inset 0 1px 0 rgba(255,255,255,.04);
+
+/* Motion */
+--ease-standard:cubic-bezier(.2,.8,.25,1); /* @kind other */
+--ease-out:cubic-bezier(.16,1,.3,1); /* @kind other */
+--ease-in-out:cubic-bezier(.65,0,.35,1); /* @kind other */
+--dur-fast:120ms; /* @kind other */
+--dur-base:200ms; /* @kind other */--dur-slow:340ms; /* @kind other */
+--press-scale:.97; /* @kind other */
+
+/* Effects */
+--blur-panel:blur(14px); /* @kind other */
+--overlay-scrim:rgba(14,12,11,.62);
+--protect-gradient:linear-gradient(180deg,rgba(14,12,11,0) 0%,rgba(14,12,11,.78) 100%); /* @kind color */
+}

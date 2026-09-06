@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { Card, Eyebrow } from "@/components/ds";
 
 /**
  * Where to deposit, in a form a student can act on from a phone at a bank
@@ -30,11 +31,11 @@ export function BankDetailsCard({
   instructions?: string;
 }) {
   return (
-    <div className="rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-5">
-      <p className="flex items-center gap-2 font-semibold text-(--color-awaken-accent)">
-        <Icon name="account_balance" className="!text-lg" />
-        Deposit to this account
-      </p>
+    <Card radius="card" className="p-5">
+      <div className="flex items-center gap-2">
+        <Icon name="account_balance" className="!text-lg text-ict-orange-400" />
+        <Eyebrow className="mb-0">Deposit to this account</Eyebrow>
+      </div>
 
       <dl className="mt-3 space-y-2">
         <CopyRow label="Bank" value={bankBranch ? `${bankName} — ${bankBranch}` : bankName} />
@@ -44,11 +45,11 @@ export function BankDetailsCard({
         <CopyRow label="Reference to write" value={reference} />
       </dl>
 
-      <p className="mt-3 text-xs text-(--color-awaken-ink-soft)">
+      <p className="mt-3 text-xs text-ict-ink-300">
         {instructions ||
           "Write your phone number as the reference so your payment can be matched to your account."}
       </p>
-    </div>
+    </Card>
   );
 }
 
@@ -76,17 +77,17 @@ function CopyRow({
   }
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg bg-(--color-awaken-card) px-3 py-2">
+    <div className="flex items-center justify-between gap-3 rounded-ict-md bg-ict-ink-800 px-3 py-2">
       <div className="min-w-0">
-        <dt className="text-xs text-(--color-awaken-ink-soft)">{label}</dt>
-        <dd className={`truncate ${emphasise ? "text-base font-bold" : "text-sm font-medium"}`}>
+        <dt className="text-xs text-ict-ink-300">{label}</dt>
+        <dd className={`truncate text-ict-paper-50 ${emphasise ? "text-base font-bold" : "text-sm font-medium"}`}>
           {value}
         </dd>
       </div>
       <button
         type="button"
         onClick={copy}
-        className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-(--color-awaken-line) px-2.5 py-1.5 text-xs font-semibold hover:border-(--color-awaken-accent)/40"
+        className="ict-press inline-flex shrink-0 items-center gap-1.5 rounded-full border border-ict-ink-500 px-3 py-1.5 text-xs font-semibold text-ict-paper-50 transition-colors duration-[120ms] hover:border-ict-ink-300"
       >
         <Icon name={copied ? "check_circle" : "content_copy"} className="!text-sm" />
         {copied ? "Copied" : "Copy"}

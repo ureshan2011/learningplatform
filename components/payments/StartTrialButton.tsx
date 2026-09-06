@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { fetchWithSession } from "@/lib/auth/session-client";
+import { Button } from "@/components/ds";
 
 /**
  * Grants the free trial then reloads the page so the server re-checks
@@ -40,14 +41,10 @@ export function StartTrialButton({ subjectId }: { subjectId: string }) {
 
   return (
     <div>
-      <button
-        onClick={start}
-        disabled={busy}
-        className="rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-      >
+      <Button onClick={start} disabled={busy} arrow="right">
         {busy ? "Starting…" : "Start free 7-day trial"}
-      </button>
-      {error ? <p className="mt-1 text-xs text-(--color-awaken-danger)">{error}</p> : null}
+      </Button>
+      {error ? <p className="mt-1.5 text-xs text-[#f0685a]">{error}</p> : null}
     </div>
   );
 }

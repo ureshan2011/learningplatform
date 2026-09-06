@@ -1,0 +1,57 @@
+:root{
+/* Base — brand orange ramp */
+--orange-50:#FFF1EA;--orange-100:#FFDCCB;--orange-200:#FFB894;--orange-300:#FF8F5C;--orange-400:#FB6A2E;--orange-500:#F4551E;--orange-600:#D8410F;--orange-700:#A5300A;
+
+/* Base — ink (near-black neutrals, warm) */
+--ink-900:#0E0C0B;--ink-850:#141110;--ink-800:#1A1615;--ink-700:#231E1C;--ink-600:#2E2826;--ink-500:#403936;--ink-400:#6B615D;--ink-300:#9B918D;--ink-200:#C8C0BC;
+
+/* Base — cream / paper */
+--paper-0:#FFFFFF;--paper-50:#FEFAF7;--paper-100:#FDF4EE;--paper-200:#F8E9DF;--paper-300:#EFD8C9;
+
+/* Base — accent tints used on dark panels */
+--cocoa-700:#3B211A;--cocoa-600:#4A2A20;
+
+/* Base — semantic hues */
+--green-500:#2FA36B;--green-50:#E7F6EE;
+--amber-500:#E8A317;--amber-50:#FDF3DF;
+--red-500:#D93A2B;--red-50:#FBE9E6;
+--violet-500:#7C5CFF;--violet-50:#EFEBFF;
+--blue-500:#2F6FE0;--blue-50:#E8F0FD;
+
+/* Semantic — light surfaces */
+--surface-page:var(--paper-100);
+--surface-card:var(--paper-0);
+--surface-sunken:var(--paper-200);
+--surface-inverse:var(--ink-850);
+--surface-brand:var(--orange-500);
+--surface-brand-soft:var(--orange-50);
+
+/* Semantic — dark surfaces (app chrome) */
+--surface-app:var(--ink-900);
+--surface-app-panel:var(--ink-850);
+--surface-app-raised:var(--ink-800);
+--surface-app-hover:var(--ink-700);
+--surface-app-feature:var(--cocoa-700);
+
+/* Semantic — text */
+--text-strong:var(--ink-900);
+--text-body:var(--ink-600);
+--text-muted:var(--ink-400);
+--text-brand:var(--orange-500);
+--text-on-brand:var(--paper-0);
+--text-on-dark:var(--paper-50);
+--text-on-dark-muted:var(--ink-300);
+
+/* Semantic — lines */
+--border-subtle:var(--paper-300);
+--border-strong:var(--ink-900);
+--border-dark:#2A2321;
+--focus-ring:var(--orange-400);
+
+/* Semantic — status */
+--status-success:var(--green-500);--status-success-bg:var(--green-50);
+--status-warning:var(--amber-500);--status-warning-bg:var(--amber-50);
+--status-danger:var(--red-500);--status-danger-bg:var(--red-50);
+--status-info:var(--blue-500);--status-info-bg:var(--blue-50);
+--status-event:var(--violet-500);--status-event-bg:var(--violet-50);
+}
