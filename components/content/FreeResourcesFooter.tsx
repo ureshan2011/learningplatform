@@ -17,6 +17,7 @@ interface ResourceLink {
  * instead of every page inventing its own ad-hoc set of links.
  */
 const RESOURCES: ResourceLink[] = [
+  { href: "/papers/al-ict-2027-predicted-paper", label: "A/L ICT 2027 predicted paper — AI exam prediction", icon: "auto_awesome" },
   { href: "/notes", label: "Free ICT notes & past papers", icon: "description" },
   { href: "/past-papers", label: "Past papers, used the right way", icon: "receipt_long" },
   { href: "/syllabus", label: "The full syllabus, unit by unit", icon: "auto_stories" },

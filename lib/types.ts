@@ -408,7 +408,9 @@ export interface Progress {
   updatedAt: number;
 }
 
-export type QuestionSource = "past_paper" | "original" | "command_word_drill";
+export type QuestionSource = "past_paper" | "original" | "command_word_drill" | "ai_predicted";
+
+export type ConfidenceBand = "high" | "medium" | "low";
 
 /**
  * One practice/revision question.
@@ -435,6 +437,78 @@ export interface Question {
   misconceptions?: Record<number, string>;
   active: boolean;
   createdAt: number;
+
+  /**
+   * Set only on `source: "ai_predicted"` questions — the exam-pattern
+   * analyst's own confidence band and reasoning for why this topic was
+   * chosen, plus which past-paper years it draws on. Practice and mock exams
+   * never read these; they exist so a teacher reviewing a predicted-paper
+   * batch (or a student reading the predicted paper itself) can see why a
+   * question is there, not just what it asks.
+   */
+  confidenceBand?: ConfidenceBand;
+  rationale?: string;
+  sourceYearsCited?: number[];
+}
+
+/**
+ * One sub-part of a Paper II structured or essay item — e.g. "(a) State the
+ * three steps of the fetch-execute cycle. (3 marks)". Paper II has no
+ * single-best-answer key, so each sub-part carries its own command word and
+ * marks rather than reusing Question's `correctIndex`/`explanation` shape.
+ */
+export interface PredictedStructuredSubpart {
+  /** "a", "b", "c" ... */
+  label: string;
+  commandWord: string;
+  marks: number;
+  en: string;
+  /** Absent where the source analysis left a sub-part English-only — see the disclosure on the containing item. */
+  si?: string;
+}
+
+/**
+ * One predicted Paper II (structured/essay) item — Part A (answer all) or
+ * Part B (answer a choice of them). There is no existing type for this in
+ * the app: `Question`'s single-correct-answer shape does not fit a
+ * multi-part, mark-scheme-graded essay question.
+ *
+ * Static content, not Firestore — same posture as
+ * `lib/content/al-ict-2026-paper1.ts`. Visibility to students is gated by
+ * the whole-paper `PredictedPaperSettings.published` flag, not a per-item
+ * `active` field: a teacher reviews the full predicted paper once, not
+ * question by question.
+ */
+export interface PredictedStructuredItem {
+  id: string;
+  part: "A" | "B";
+  order: number;
+  /** Competency label(s) this item draws on, e.g. "Databases & SQL". */
+  topic: string;
+  marks: number;
+  en: { scenario?: string };
+  si: { scenario?: string };
+  subparts: PredictedStructuredSubpart[];
+  markScheme: string;
+  confidenceBand: ConfidenceBand;
+  rationale: string;
+  sourceYearsCited: number[];
+}
+
+/**
+ * Whole-paper publish switch for one year's AI-predicted paper, stored under
+ * `settings/predictedPaper<year>` — same home as `PaymentSettings`, so the
+ * teacher flips it from the console, in the browser, with no code change.
+ * Defaults to unpublished: the underlying content is AI-drafted and its
+ * Sinhala wording explicitly has not had a native-speaker check yet, so a
+ * student must never see it before the teacher has looked it over once.
+ */
+export interface PredictedPaperSettings {
+  tenantId: TenantId;
+  examYearTarget: number;
+  published: boolean;
+  publishedAt?: number;
+  publishedBy?: string;
 }
 
 /**
