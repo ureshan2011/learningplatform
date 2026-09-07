@@ -482,7 +482,11 @@ const smallButton =
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 border-b border-(--color-awaken-line)/60 py-1">
+    // `min-w-0`: this div is a grid item (the parent `<dl>` is `grid
+    // sm:grid-cols-2`), and its `truncate`d `<dd>` (an account id or a long
+    // school name) would otherwise force the item to its content's full
+    // width instead of shrinking to the grid track, overflowing on a phone.
+    <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-(--color-awaken-line)/60 py-1">
       <dt className="shrink-0 text-(--color-awaken-ink-soft)">{label}</dt>
       <dd className="truncate text-right font-medium">{value}</dd>
     </div>

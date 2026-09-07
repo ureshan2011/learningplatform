@@ -131,7 +131,17 @@ export function EligibilityExplorer() {
 
             <div className="mt-4 space-y-2.5">
               {program.universities.map((u) => (
-                <div key={u.name} className="grid grid-cols-[1fr_auto] items-center gap-3 sm:grid-cols-[minmax(0,1fr)_140px_90px]">
+                <div
+                  key={u.name}
+                  // `minmax(0,1fr)`, not plain `1fr`: a bare `1fr` track still
+                  // carries an automatic minimum equal to its content's
+                  // min-content size, so a long university name in the
+                  // `truncate`d span below would force this row wider than
+                  // the phone screen instead of shrinking and eliding. The
+                  // `sm:` variant already gets this right — this brings the
+                  // mobile default in line with it.
+                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 sm:grid-cols-[minmax(0,1fr)_140px_90px]"
+                >
                   <span className="truncate text-sm text-(--lp-ink-900)">{u.name}</span>
                   <div className="hidden sm:block">
                     <ZRangeBar zMin={u.zMin} zMax={u.zMax} />
