@@ -67,17 +67,17 @@ export function UnitStation({
     >
       {/* The rail node. Sits on the vertical line drawn by the explorer. */}
       <span
-        className="absolute top-5 left-0 z-10 flex size-9 items-center justify-center rounded-2xl text-sm font-extrabold text-white shadow-[0_6px_16px_rgba(0,0,0,0.14)] transition-transform duration-300 sm:top-6 sm:size-12 sm:text-base"
+        className="absolute top-5 left-0 z-10 flex size-9 items-center justify-center rounded-ict-md text-sm font-extrabold text-white shadow-ict-md transition-transform duration-300 sm:top-6 sm:size-12 sm:text-base"
         style={{
-          backgroundImage: `linear-gradient(140deg, ${tone.gradFrom}, ${tone.gradTo})`,
+          background: tone.gradTo,
           transform: open ? "scale(1.08)" : undefined,
         }}
       >
         {unit.competencyNumber}
         {liveClass ? (
           <span
-            className="syl-pulse-ring absolute inset-0 rounded-2xl border-2"
-            style={{ borderColor: tone.gradFrom }}
+            className="syl-pulse-ring absolute inset-0 rounded-ict-md border-2"
+            style={{ borderColor: tone.gradTo }}
             aria-hidden
           />
         ) : null}
@@ -88,20 +88,14 @@ export function UnitStation({
       <article
         onPointerMove={open ? undefined : tilt.onPointerMove}
         onPointerLeave={open ? undefined : tilt.onPointerLeave}
-        className={`group relative mb-5 overflow-hidden rounded-3xl border bg-(--color-awaken-card) transition-shadow duration-300 ${open ? "" : "syl-tilt"}`}
+        className={`group relative mb-5 overflow-hidden rounded-ict-panel border bg-ict-paper-0 shadow-ict-sm transition-shadow duration-300 ${open ? "" : "syl-tilt"}`}
         style={{
-          borderColor: open ? tone.line : "var(--color-awaken-line)",
-          boxShadow: open
-            ? `0 18px 44px -20px rgba(${tone.rgb}, 0.5)`
-            : "0 1px 3px rgba(0,0,0,0.05)",
+          borderColor: open ? tone.line : "var(--color-ict-paper-300)",
+          boxShadow: open ? `0 18px 44px -20px rgba(${tone.rgb}, 0.5)` : undefined,
         }}
       >
         {/* Tone stripe down the leading edge — the fastest way to tell two units apart. */}
-        <span
-          aria-hidden
-          className="absolute inset-y-0 left-0 w-1"
-          style={{ backgroundImage: `linear-gradient(${tone.gradFrom}, ${tone.gradTo})` }}
-        />
+        <span aria-hidden className="absolute inset-y-0 left-0 w-1" style={{ background: tone.gradTo }} />
         <span aria-hidden className="syl-sheen pointer-events-none absolute inset-0" />
 
         <button
@@ -112,8 +106,8 @@ export function UnitStation({
           className="relative flex w-full items-start gap-3 p-4 text-left sm:gap-4 sm:p-6"
         >
           <span
-            className={`flex size-10 shrink-0 items-center justify-center rounded-2xl text-white transition-transform duration-300 group-hover:scale-105 sm:size-12 ${open ? "" : "syl-float"}`}
-            style={{ backgroundImage: `linear-gradient(140deg, ${tone.gradFrom}, ${tone.gradTo})` }}
+            className={`flex size-10 shrink-0 items-center justify-center rounded-ict-md text-white transition-transform duration-300 group-hover:scale-105 sm:size-12 ${open ? "" : "syl-float"}`}
+            style={{ background: tone.gradTo }}
           >
             <Icon name={unitIcon(unit.competencyNumber)} className="!text-2xl" />
           </span>
@@ -125,7 +119,7 @@ export function UnitStation({
               {isHighYield(unit.periods) ? (
                 <span
                   className="rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-white uppercase"
-                  style={{ backgroundImage: `linear-gradient(120deg, ${tone.gradFrom}, ${tone.gradTo})` }}
+                  style={{ background: tone.gradTo }}
                 >
                   High-yield
                 </span>
@@ -133,29 +127,29 @@ export function UnitStation({
               {liveClass ? <LivePill /> : null}
             </span>
 
-            <span className="mt-2 block text-lg leading-snug font-extrabold tracking-tight">
+            <span className="mt-2 block text-lg leading-snug font-extrabold tracking-tight text-ict-ink-900">
               {unit.title}
             </span>
             <span
-              className={`mt-1 block text-sm text-(--color-awaken-ink-soft) ${open ? "" : "line-clamp-2"}`}
+              className={`mt-1 block text-sm text-ict-ink-400 ${open ? "" : "line-clamp-2"}`}
             >
               {unit.competencyStatement}
             </span>
 
             {/* Period weight, drawn as a share of the heaviest unit on the page. */}
             <span className="mt-4 block">
-              <span className="block h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-bg)">
+              <span className="block h-1.5 w-full overflow-hidden rounded-full bg-ict-paper-200">
                 <span
                   className="block h-full origin-left rounded-full transition-transform duration-[900ms] ease-out"
                   style={{
-                    backgroundImage: `linear-gradient(90deg, ${tone.gradFrom}, ${tone.gradTo})`,
+                    background: tone.gradTo,
                     // Scaling a full-width bar keeps this on the compositor;
                     // animating `width` would reflow on every frame.
                     transform: `scaleX(var(--weight, 0.1))`,
                   }}
                 />
               </span>
-              <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-(--color-awaken-ink-soft)">
+              <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ict-ink-400">
                 <span className="inline-flex items-center gap-1">
                   <Icon name="description" className="!text-sm" />
                   {unit.lessons.length} lesson{unit.lessons.length === 1 ? "" : "s"}
@@ -178,7 +172,7 @@ export function UnitStation({
           <span className="flex shrink-0 flex-col items-end gap-3">
             <Icon
               name="expand_more"
-              className={`!text-2xl text-(--color-awaken-ink-soft) transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+              className={`!text-2xl text-ict-ink-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
             />
           </span>
         </button>
@@ -192,7 +186,7 @@ export function UnitStation({
           <div className="overflow-hidden">
             <div className="border-t px-4 pt-5 pb-6 sm:px-6" style={{ borderColor: tone.line }}>
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs font-bold tracking-wide text-(--color-awaken-ink-soft) uppercase">
+                <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
                   Join the class for any topic below
                 </p>
                 <Link
@@ -212,9 +206,9 @@ export function UnitStation({
                   return (
                     <li
                       key={lesson.id}
-                      className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-2xl border p-3 transition-colors duration-200"
+                      className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-ict-card border p-3 transition-colors duration-200"
                       style={{
-                        borderColor: isMatch ? tone.line : "var(--color-awaken-line)",
+                        borderColor: isMatch ? tone.line : "var(--color-ict-paper-300)",
                         background: isMatch ? tone.soft : undefined,
                       }}
                     >
@@ -229,7 +223,7 @@ export function UnitStation({
                           crushing the lesson title into a column of one word. */}
                       <span className="min-w-[10rem] flex-1">
                         <span className="block leading-snug font-semibold">{lesson.title}</span>
-                        <span className="mt-0.5 block text-xs text-(--color-awaken-ink-soft)">
+                        <span className="mt-0.5 block text-xs text-ict-ink-400">
                           {lesson.periods} periods · {lesson.examObjectives.length} exam objectives
                         </span>
                       </span>
@@ -248,7 +242,7 @@ export function UnitStation({
 
               {unitClasses.length > 0 ? (
                 <div
-                  className="mt-4 rounded-2xl p-4"
+                  className="mt-4 rounded-ict-card p-4"
                   style={{ background: tone.soft }}
                 >
                   <p
@@ -270,7 +264,7 @@ export function UnitStation({
                           </span>
                           <ClassStatus
                             topicClass={topicClass}
-                            className="block text-xs text-(--color-awaken-ink-soft)"
+                            className="block text-xs text-ict-ink-400"
                           />
                         </span>
                         <ClassCta
