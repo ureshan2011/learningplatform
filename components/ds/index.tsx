@@ -192,6 +192,15 @@ export function Card({
   return (
     <div
       className={clsx(
+        // A card is routinely a flex or grid item (a two-up grid of study-tool
+        // cards, a flex row of subject cards). Grid/flex items default to
+        // `min-width: auto`, which for a card containing a `truncate` label
+        // resolves to that label's full, unwrapped text width — so the card
+        // refuses to shrink to its track and the whole row overflows the
+        // viewport on a phone. `min-w-0` is what lets it shrink and truncate
+        // instead. Harmless in normal flow, where block boxes already shrink
+        // to their container.
+        "min-w-0",
         { md: "rounded-ict-md", card: "rounded-ict-card", panel: "rounded-ict-panel" }[radius],
         CARD_SKIN[variant],
         hoverable && "ict-lift hover:border-ict-ink-500",
@@ -222,7 +231,8 @@ export function CardLink({
     <Link
       href={href}
       className={clsx(
-        "block ict-lift hover:border-ict-ink-500",
+        // See the matching comment on `Card` above — same grid/flex shrink fix.
+        "block min-w-0 ict-lift hover:border-ict-ink-500",
         { md: "rounded-ict-md", card: "rounded-ict-card", panel: "rounded-ict-panel" }[radius],
         CARD_SKIN[variant],
         className,

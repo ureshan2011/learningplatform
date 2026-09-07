@@ -96,7 +96,12 @@ export default async function AccountPage() {
             ) : (
               <ul className="grid gap-2 sm:grid-cols-2">
                 {enrollments.map((e) => (
-                  <li key={e.id}>
+                  // `min-w-0`: this `<li>`, not the `Card` inside it, is the
+                  // actual grid item here — `Card`'s own `min-w-0` does not
+                  // reach through an intermediate wrapper, so a long subject
+                  // name in the `truncate`d text below would otherwise force
+                  // this row wider than the grid track on a phone.
+                  <li key={e.id} className="min-w-0">
                     <Card radius="md" className="flex items-center justify-between gap-3 p-4">
                       <div className="min-w-0">
                         <p className="truncate text-[13px] font-semibold text-ict-paper-50">
