@@ -14,6 +14,7 @@ import {
   SESSION_COOKIE,
   SESSION_MAX_AGE_MS,
   SESSION_RENEW_AFTER_MS,
+  SIGNED_IN_HINT_COOKIE,
 } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
 import type { User } from "@/lib/types";
@@ -61,6 +62,8 @@ function setSessionCookies(
   // anyway — but it is set here rather than by script so it cannot drift out of
   // step with the session cookie beside it.
   res.cookies.set(DEVICE_COOKIE, deviceHash, options);
+  // Readable client-side on purpose — see SIGNED_IN_HINT_COOKIE's own comment.
+  res.cookies.set(SIGNED_IN_HINT_COOKIE, "1", { ...options, httpOnly: false });
   return res;
 }
 
@@ -231,5 +234,6 @@ export async function DELETE() {
   const res = NextResponse.json({ ok: true });
   res.cookies.set(SESSION_COOKIE, "", { path: "/", maxAge: 0 });
   res.cookies.set(DEVICE_COOKIE, "", { path: "/", maxAge: 0 });
+  res.cookies.set(SIGNED_IN_HINT_COOKIE, "", { path: "/", maxAge: 0 });
   return res;
 }

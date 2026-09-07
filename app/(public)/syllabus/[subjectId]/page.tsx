@@ -9,6 +9,7 @@ import { SyllabusExplorer } from "@/components/syllabus/SyllabusExplorer";
 import { indexClassesBySyllabus, toTopicClass } from "@/lib/content/topic-classes";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { courseJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
+import { ButtonLink, Card } from "@/components/ds-cream";
 import type { ClassSession } from "@/lib/types";
 
 /**
@@ -75,7 +76,7 @@ export default async function SubjectSyllabusPage({
       <main className="mx-auto max-w-6xl px-5 py-8 md:px-8">
         <Link
           href="/syllabus"
-          className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) transition-colors hover:text-(--color-awaken-ink)"
+          className="inline-flex items-center gap-1 text-sm text-ict-ink-400 transition-colors duration-[120ms] hover:text-ict-ink-900"
         >
           <Icon name="arrow_back" className="!text-base" />
           All syllabuses
@@ -96,37 +97,29 @@ export default async function SubjectSyllabusPage({
 
         <div id="roadmap" className="mt-10 scroll-mt-4">
           {units.length === 0 ? (
-            <p className="rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6 text-sm text-(--color-awaken-ink-soft)">
+            <Card radius="card" className="p-6 text-sm text-ict-ink-400">
               No syllabus breakdown has been loaded for {subject.name} yet.
-            </p>
+            </Card>
           ) : (
             <SyllabusExplorer subjectId={subjectId} units={units} classIndex={classIndex} />
           )}
         </div>
 
-        <section className="relative mt-16 overflow-hidden rounded-[2rem] bg-gradient-to-br from-(--color-awaken-accent) to-(--color-awaken-rose) p-8 text-white sm:p-12">
-          <div
-            aria-hidden
-            className="awaken-blob pointer-events-none absolute -top-20 -right-10 size-64 rounded-full bg-white/20 blur-3xl"
-          />
-          <div className="relative max-w-xl">
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-extrabold tracking-tight sm:text-3xl">
+        <Card variant="dark" radius="panel" className="mt-16 p-8 sm:p-12">
+          <div className="max-w-xl">
+            <h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-paper-50 sm:text-3xl">
               Pick a topic. Sit in the class that teaches it.
             </h2>
-            <p className="mt-3 leading-relaxed text-white/90">
+            <p className="mt-3 leading-relaxed text-ict-ink-300">
               Live lessons in Sinhala, quizzes during class, an island-wide leaderboard
               and every past paper worked through step by step. Every subject starts
               with a free 7-day trial — no card needed.
             </p>
-            <Link
-              href={`/signin?next=/subjects/${subjectId}`}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-(--color-awaken-accent) shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.99]"
-            >
-              <Icon name="videocam" className="!text-lg" />
+            <ButtonLink href={`/signin?next=/subjects/${subjectId}`} variant="primary" className="mt-6">
               Start my free trial
-            </Link>
+            </ButtonLink>
           </div>
-        </section>
+        </Card>
       </main>
     </>
   );

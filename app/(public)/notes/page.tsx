@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { ResourcePageCta } from "@/components/content/ResourcePageCta";
+import { Card, EmptyState, IconBadge, PageHeader } from "@/components/ds-cream";
 import type { ContentItem, ContentKind, Subject } from "@/lib/types";
 
 export const metadata: Metadata = {
@@ -58,60 +59,62 @@ export default async function PublicNotesPage() {
         ])}
       />
       <SiteHeader user={null} />
-      <main className="mx-auto max-w-3xl px-5 py-12">
-      <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
-        <Icon name="description" className="!text-2xl text-(--color-awaken-accent)" />
-        Free ICT notes &amp; past papers
-      </h1>
-      <p className="mt-3 text-(--color-awaken-ink-soft)">
-        Download these free. No sign-up needed. For live classes, quizzes and marked
-        answers, join a class.
-      </p>
+      <main className="bg-ict-paper-100">
+        <div className="mx-auto max-w-3xl px-5 py-12">
+          <PageHeader
+            eyebrow="Free resource"
+            title="Free ICT notes & past papers"
+            subtitle="Download these free. No sign-up needed. For live classes, quizzes and marked answers, join a class."
+          />
 
-      {items.length === 0 ? (
-        <p className="mt-10 text-sm text-(--color-awaken-ink-soft)">Nothing published yet — check back soon.</p>
-      ) : (
-        <ul className="mt-10 space-y-3">
-          {items.map((item) => (
-            <li
-              key={item.id}
-              className="flex flex-wrap items-center justify-between gap-3 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-ict-md bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)">
-                  <Icon name={KIND_ICON[item.kind]} className="!text-lg" />
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{item.title}</p>
-                  <p className="mt-0.5 text-xs text-(--color-awaken-ink-soft)">
-                    {subjectById.get(item.subjectId)?.name ?? item.subjectId} ·{" "}
-                    {KIND_LABEL[item.kind]} · {formatDate(item.createdAt)}
-                  </p>
-                </div>
-              </div>
-              {/* Public content is served straight off R2 — no signing, no auth. */}
-              <a
-                href={publicContentUrl(item.r2Key)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-(--color-awaken-line) px-4 py-2 text-sm hover:border-(--color-awaken-accent)/40"
-              >
-                <Icon name="download" className="!text-base" />
-                Download
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
+          {items.length === 0 ? (
+            <div className="mt-10">
+              <EmptyState
+                icon="description"
+                title="Nothing published yet"
+                body="Check back soon — new notes and past papers are added regularly."
+              />
+            </div>
+          ) : (
+            <ul className="mt-8 space-y-3">
+              {items.map((item) => (
+                <li key={item.id}>
+                  <Card radius="card" className="flex flex-wrap items-center justify-between gap-3 p-4">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <IconBadge icon={KIND_ICON[item.kind]} tone="soft" size={40} />
+                      <div className="min-w-0">
+                        <p className="truncate font-semibold text-ict-ink-900">{item.title}</p>
+                        <p className="mt-0.5 text-xs text-ict-ink-400">
+                          {subjectById.get(item.subjectId)?.name ?? item.subjectId} ·{" "}
+                          {KIND_LABEL[item.kind]} · {formatDate(item.createdAt)}
+                        </p>
+                      </div>
+                    </div>
+                    {/* Public content is served straight off R2 — no signing, no auth. */}
+                    <a
+                      href={publicContentUrl(item.r2Key)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="ict-press inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border-[1.5px] border-ict-ink-900 px-4 text-sm font-semibold text-ict-ink-900 transition-colors duration-[120ms] ease-ict hover:border-ict-orange-500 hover:text-ict-orange-600"
+                    >
+                      <Icon name="download" className="!text-base" />
+                      Download
+                    </a>
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          )}
 
-      <FreeResourcesFooter exclude={["/notes"]} />
+          <FreeResourcesFooter exclude={["/notes"]} />
 
-      <ResourcePageCta
-        title="Want the live class?"
-        body="Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and every past paper worked through step by step."
-        guestHref="/signin"
-        guestLabel="Join a class"
-      />
+          <ResourcePageCta
+            title="Want the live class?"
+            body="Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and every past paper worked through step by step."
+            guestHref="/signin"
+            guestLabel="Join a class"
+          />
+        </div>
       </main>
     </>
   );

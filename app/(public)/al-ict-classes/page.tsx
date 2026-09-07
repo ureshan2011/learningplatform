@@ -6,7 +6,17 @@ import { formatLKR, formatSessionTime } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ButtonLink } from "@/components/ds";
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  CardLink,
+  EmptyState,
+  Eyebrow,
+  IconBadge,
+  SectionHeading,
+  StatCard,
+} from "@/components/ds-cream";
 import { breadcrumbJsonLd, courseJsonLd, faqJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
 import {
   EXAM_STRUCTURE,
@@ -183,15 +193,15 @@ export default async function AlIctClassesPage() {
       <main className="mx-auto max-w-3xl px-5 py-12">
         {/* The H1 carries the query verbatim. Everything else on the page is
             downstream of getting this one line right. */}
-        <h1 className="mt-4 text-3xl font-bold sm:text-4xl">
+        <h1 className="mt-4 font-display text-3xl font-extrabold tracking-[-0.02em] text-ict-ink-900 sm:text-4xl">
           A/L ICT classes online — Sinhala &amp; English, Grades 12 &amp; 13
         </h1>
 
-        <p className="mt-4 text-lg text-(--color-awaken-ink-soft)">
+        <p className="mt-4 text-lg text-ict-ink-400">
           Live A/L ICT tuition for Sri Lankan Advanced Level students, covering the complete{" "}
           {SYLLABUS_AUTHORITY} syllabus — all {AL_ICT_UNITS.length} units across Grade 12 and Grade 13.
           Taught in Sinhala and English medium by{" "}
-          <Link href="/dr-yasas" className="font-semibold text-(--color-awaken-deep) underline">
+          <Link href="/dr-yasas" className="font-semibold text-ict-ink-900 underline decoration-ict-orange-500 underline-offset-2">
             {TEACHER_NAME}
           </Link>
           . The first 7 days are free and no card is needed to start.
@@ -201,47 +211,42 @@ export default async function AlIctClassesPage() {
           <ButtonLink href="/signin" variant="primary">
             Start the free 7-day trial
           </ButtonLink>
-          <Link
-            href="/syllabus"
-            className="rounded-full border border-(--color-awaken-line) px-5 py-3 font-semibold transition-colors hover:border-(--color-awaken-accent)/40"
-          >
+          <ButtonLink href="/syllabus" variant="outline" arrow="none">
             Browse the syllabus first
-          </Link>
+          </ButtonLink>
         </div>
 
         {/* At-a-glance facts. A student comparing three tuition classes reads
             exactly this and nothing else, so it goes above every other section. */}
-        <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-line) sm:grid-cols-3">
-          {[
-            { term: "Subject", value: "A/L ICT (local syllabus)" },
-            { term: "Grades", value: "12 and 13" },
-            { term: "Medium", value: "Sinhala and English" },
-            { term: "Format", value: "Live online, join from a phone" },
-            { term: "Syllabus", value: `${AL_ICT_UNITS.length} units · ${totalPeriods} periods` },
-            { term: "Fee", value: priceLKR ? `From ${formatLKR(priceLKR)} / month` : "See the class list below" },
-          ].map((row) => (
-            <div key={row.term} className="bg-(--color-awaken-card) p-4">
-              <dt className="text-xs font-semibold tracking-wide text-(--color-awaken-ink-soft) uppercase">
-                {row.term}
-              </dt>
-              <dd className="mt-1 text-sm font-semibold">{row.value}</dd>
-            </div>
+        <div className="mt-10 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+          {(
+            [
+              { icon: "auto_stories", label: "Subject", value: "A/L ICT" },
+              { icon: "school", label: "Grades", value: "12 and 13" },
+              { icon: "language", label: "Medium", value: "Sinhala & English" },
+              { icon: "smartphone", label: "Format", value: "Live online" },
+              { icon: "description", label: "Syllabus", value: `${AL_ICT_UNITS.length} units · ${totalPeriods} periods` },
+              {
+                icon: "credit_card",
+                label: "Fee",
+                value: priceLKR ? `From ${formatLKR(priceLKR)} / month` : "See below",
+              },
+            ] satisfies Array<{ icon: IconName; label: string; value: string }>
+          ).map((row) => (
+            <StatCard key={row.label} icon={row.icon} label={row.label} value={row.value} />
           ))}
-        </dl>
+        </div>
 
         {/* Sinhala. The audience is a Sinhala-medium student who very often
             searches in Sinhala script; without a single Sinhala string on the
             site those queries cannot match at all. This is a real summary of
             the offer, not a keyword block — `lang` is set so a crawler and a
             screen reader both handle the script correctly. */}
-        <section
-          lang="si"
-          className="si mt-10 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6"
-        >
-          <h2 className="text-xl font-bold text-(--color-awaken-deep)">
+        <section lang="si" className="si mt-10 rounded-ict-card border border-ict-orange-200 bg-ict-orange-50 p-6">
+          <h2 className="font-display text-xl font-extrabold text-ict-ink-900">
             උසස් පෙළ තොරතුරු හා සන්නිවේදන තාක්ෂණය (ICT) පන්ති — සිංහල මාධ්‍යයෙන්
           </h2>
-          <ul className="mt-4 space-y-2 text-sm text-(--color-awaken-deep)">
+          <ul className="mt-4 space-y-2 text-sm text-ict-ink-500">
             <li>· 12 සහ 13 ශ්‍රේණි සඳහා මාර්ගගත (online) සජීවී ICT පන්ති.</li>
             <li>· NIE විෂය නිර්දේශයේ ඒකක {AL_ICT_UNITS.length}ම සම්පූර්ණයෙන් ආවරණය කරයි.</li>
             <li>· පසුගිය විභාග ප්‍රශ්න පත්‍ර සාකච්ඡා, ක්ෂණික ප්‍රශ්නාවලි සහ බාගත කළ හැකි සටහන්.</li>
@@ -251,7 +256,7 @@ export default async function AlIctClassesPage() {
             <li>· උගන්වන්නේ ආචාර්ය යසස් ශ්‍රී වික්‍රමසිංහ — නවසීලන්තයේ Canterbury විශ්වවිද්‍යාලයෙන් ආචාර්ය උපාධිය ලැබූ, ජ්‍යෙෂ්ඨ කථිකාචාර්යවරයෙකි.</li>
           </ul>
           <p className="mt-4 text-sm">
-            <Link href="/signin" className="font-semibold text-(--color-awaken-accent) underline">
+            <Link href="/signin" className="font-semibold text-ict-orange-600 underline decoration-ict-orange-500 underline-offset-2">
               නොමිලේ දින 7ක් අත්හදා බලන්න
             </Link>
           </p>
@@ -261,70 +266,66 @@ export default async function AlIctClassesPage() {
             publishes a subject — a fabricated price list would be worse than
             none, both for a student and for the Offer schema above. */}
         <section className="mt-12">
-          <h2 className="text-2xl font-bold">Classes and fees</h2>
+          <SectionHeading as="h2">Classes and fees</SectionHeading>
           {subjects.length === 0 ? (
-            <p className="mt-3 text-(--color-awaken-ink-soft)">
-              Classes are being set up for the new intake.{" "}
-              <Link href="/contact" className="text-(--color-awaken-accent) underline">
-                Message us
-              </Link>{" "}
-              and we will tell you the moment enrolment opens.
-            </p>
+            <EmptyState
+              icon="calendar_month"
+              title="Classes are being set up for the new intake"
+              body="Message us and we will tell you the moment enrolment opens."
+              action={
+                <ButtonLink href="/contact" variant="primary" size="sm">
+                  Message us
+                </ButtonLink>
+              }
+            />
           ) : (
             <ul className="mt-4 space-y-3">
               {subjects.map((subject) => (
-                <li
-                  key={subject.id}
-                  className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
-                >
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h3 className="text-lg font-bold">{subject.name}</h3>
-                    <span className="font-bold">
-                      {formatLKR(subject.priceLKR)}
-                      <span className="text-sm font-normal text-(--color-awaken-ink-soft)"> / month</span>
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">{subject.description}</p>
-                  <p className="mt-2 text-xs font-semibold text-(--color-awaken-success)">
-                    First 7 days free · no card required
-                  </p>
+                <li key={subject.id}>
+                  <Card radius="card" className="p-5">
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <h3 className="text-lg font-bold text-ict-ink-900">{subject.name}</h3>
+                      <span className="font-bold text-ict-ink-900">
+                        {formatLKR(subject.priceLKR)}
+                        <span className="text-sm font-normal text-ict-ink-400"> / month</span>
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm text-ict-ink-400">{subject.description}</p>
+                    <Badge tone="success" className="mt-3">
+                      First 7 days free · no card required
+                    </Badge>
+                  </Card>
                 </li>
               ))}
             </ul>
           )}
 
           {upcoming.length > 0 ? (
-            <div className="mt-5 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
-              <h3 className="flex items-center gap-2 font-bold">
-                <Icon name="calendar_month" className="!text-base text-(--color-awaken-accent)" />
+            <Card variant="raised" radius="card" className="mt-5 p-5">
+              <h3 className="flex items-center gap-2 font-bold text-ict-ink-900">
+                <Icon name="calendar_month" className="!text-base text-ict-orange-500" />
                 Next live classes
               </h3>
-              <ul className="mt-3 space-y-1.5 text-sm text-(--color-awaken-ink-soft)">
+              <ul className="mt-3 space-y-1.5 text-sm text-ict-ink-400">
                 {upcoming.map((s) => (
                   <li key={s.id}>
-                    <span className="font-semibold text-(--color-awaken-deep)">{s.title}</span> ·{" "}
-                    {formatSessionTime(s.startsAt)}
+                    <span className="font-semibold text-ict-ink-900">{s.title}</span> · {formatSessionTime(s.startsAt)}
                   </li>
                 ))}
               </ul>
-            </div>
+            </Card>
           ) : null}
         </section>
 
         <section className="mt-12">
-          <h2 className="text-2xl font-bold">What makes this different from a recorded course</h2>
+          <SectionHeading as="h2">What makes this different from a recorded course</SectionHeading>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {WHY.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
-              >
-                <h3 className="flex items-center gap-2 font-bold">
-                  <Icon name={item.icon} className="!text-base text-(--color-awaken-accent)" />
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">{item.body}</p>
-              </div>
+              <Card key={item.title} radius="card" className="p-5">
+                <IconBadge icon={item.icon} tone="soft" size={40} />
+                <h3 className="mt-3.5 font-bold text-ict-ink-900">{item.title}</h3>
+                <p className="mt-2 text-sm text-ict-ink-400">{item.body}</p>
+              </Card>
             ))}
           </div>
         </section>
@@ -333,8 +334,8 @@ export default async function AlIctClassesPage() {
             comparing classes wants to see the whole syllabus is covered, and
             each unit name is itself something students search for. */}
         <section className="mt-12">
-          <h2 className="text-2xl font-bold">Every unit covered, Grade 12 and Grade 13</h2>
-          <p className="mt-2 text-(--color-awaken-ink-soft)">
+          <SectionHeading as="h2">Every unit covered, Grade 12 and Grade 13</SectionHeading>
+          <p className="mt-2 text-ict-ink-400">
             The {SYLLABUS_AUTHORITY} A/L ICT syllabus, unit by unit, with the syllabus&apos;s own numbering
             and period counts — nothing renumbered, nothing skipped.
           </p>
@@ -344,29 +345,27 @@ export default async function AlIctClassesPage() {
             { year: 13 as const, units: grade13 },
           ].map(({ year, units }) => (
             <div key={year} className="mt-6">
-              <h3 className="text-lg font-bold">
+              <h3 className="font-display text-lg font-extrabold text-ict-ink-900">
                 Grade {year}
-                <span className="ml-2 text-sm font-normal text-(--color-awaken-ink-soft)">
+                <span className="ml-2 text-sm font-normal text-ict-ink-400">
                   units {units[0]?.competencyNumber}–{units[units.length - 1]?.competencyNumber}
                 </span>
               </h3>
               <ul className="mt-3 space-y-2">
                 {units.map((u) => (
-                  <li
-                    key={u.id}
-                    className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) px-4 py-3"
-                  >
-                    <Link
+                  <li key={u.id}>
+                    <CardLink
                       href={`/syllabus/${SUBJECT_ID}/${u.id}`}
-                      className="flex flex-wrap items-baseline justify-between gap-2"
+                      radius="md"
+                      className="flex flex-wrap items-baseline justify-between gap-2 px-4 py-3"
                     >
-                      <span className="font-semibold">
-                        <span className="text-(--color-awaken-accent)">{u.competencyNumber}.</span> {u.title}
+                      <span className="font-semibold text-ict-ink-900">
+                        <span className="text-ict-orange-500">{u.competencyNumber}.</span> {u.title}
                       </span>
-                      <span className="text-xs text-(--color-awaken-ink-soft)">
+                      <span className="text-xs text-ict-ink-400">
                         {u.lessons.length} lessons · {u.periods} periods
                       </span>
-                    </Link>
+                    </CardLink>
                   </li>
                 ))}
               </ul>
@@ -377,33 +376,33 @@ export default async function AlIctClassesPage() {
         {/* Exam shape. Ranks for "A/L ICT paper structure" style queries on its
             own, and it is the context that makes the class offer legible. */}
         <section className="mt-12">
-          <h2 className="text-2xl font-bold">How the A/L ICT exam is structured</h2>
+          <SectionHeading as="h2">How the A/L ICT exam is structured</SectionHeading>
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {[EXAM_STRUCTURE.paper1, EXAM_STRUCTURE.paper2].map((paper) => (
-              <div
-                key={paper.name}
-                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
-              >
-                <h3 className="font-bold">{paper.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-(--color-awaken-accent)">
+              <Card key={paper.name} radius="card" className="p-5">
+                <h3 className="font-bold text-ict-ink-900">{paper.name}</h3>
+                <p className="mt-1 text-sm font-semibold text-ict-orange-500">
                   {paper.durationMinutes / 60} hours
                   {"questions" in paper ? ` · ${paper.questions} questions` : ""}
                 </p>
-                <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">{paper.note}</p>
-              </div>
+                <p className="mt-2 text-sm text-ict-ink-400">{paper.note}</p>
+              </Card>
             ))}
           </div>
-          <p className="mt-4 text-sm text-(--color-awaken-ink-soft)">
+          <p className="mt-4 text-sm text-ict-ink-400">
             Free and open to everyone:{" "}
-            <Link href="/past-papers" className="text-(--color-awaken-accent) underline">
+            <Link href="/past-papers" className="text-ict-orange-600 underline decoration-ict-orange-500 underline-offset-2">
               the past papers guide
             </Link>
             ,{" "}
-            <Link href="/papers/al-ict-2026-paper-1-mcq" className="text-(--color-awaken-accent) underline">
+            <Link
+              href="/papers/al-ict-2026-paper-1-mcq"
+              className="text-ict-orange-600 underline decoration-ict-orange-500 underline-offset-2"
+            >
               a full 2026 Paper I MCQ practice paper
             </Link>{" "}
             and{" "}
-            <Link href="/command-words" className="text-(--color-awaken-accent) underline">
+            <Link href="/command-words" className="text-ict-orange-600 underline decoration-ict-orange-500 underline-offset-2">
               what every exam command word requires
             </Link>
             .
@@ -412,54 +411,53 @@ export default async function AlIctClassesPage() {
 
         {/* Who is teaching. For an exam-prep site this is the single strongest
             trust signal a search engine and a parent both look for. */}
-        <section className="mt-12 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
-          <h2 className="text-2xl font-bold">Who teaches these classes</h2>
-          <p className="mt-3 text-(--color-awaken-ink-soft)">
-            <Link href="/dr-yasas" className="font-semibold text-(--color-awaken-deep) underline">
+        <Card radius="card" className="mt-12 p-6">
+          <SectionHeading as="h2">Who teaches these classes</SectionHeading>
+          <p className="mt-3 text-ict-ink-400">
+            <Link href="/dr-yasas" className="font-semibold text-ict-ink-900 underline decoration-ict-orange-500 underline-offset-2">
               {TEACHER_NAME}
             </Link>{" "}
             teaches every class, writes every note and records every video on this site personally —
             there is no panel of assistant tutors.
           </p>
-          <ul className="mt-4 space-y-1.5 text-sm text-(--color-awaken-ink-soft)">
+          <ul className="mt-4 space-y-1.5 text-sm text-ict-ink-400">
             {TEACHER_CREDENTIALS.map((c) => (
               <li key={c} className="flex items-start gap-2">
-                <Icon name="check_circle" className="mt-0.5 shrink-0 !text-base text-(--color-awaken-success)" />
+                <Icon name="check_circle" className="mt-0.5 shrink-0 !text-base text-ict-green-500" />
                 {c}
               </li>
             ))}
           </ul>
-        </section>
+        </Card>
 
         <section className="mt-12">
-          <h2 className="text-2xl font-bold">Questions students and parents ask</h2>
+          <SectionHeading as="h2">Questions students and parents ask</SectionHeading>
           <div className="mt-4 space-y-3">
             {FAQS.map((faq) => (
-              <details
-                key={faq.q}
-                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)"
-              >
-                <summary className="cursor-pointer list-none px-5 py-4 font-semibold">{faq.q}</summary>
-                <p className="border-t border-(--color-awaken-line) px-5 py-4 text-sm text-(--color-awaken-ink-soft)">
-                  {faq.a}
-                </p>
-              </details>
+              <Card key={faq.q} radius="card" className="overflow-hidden">
+                <details>
+                  <summary className="cursor-pointer list-none px-5 py-4 font-semibold text-ict-ink-900">{faq.q}</summary>
+                  <p className="border-t border-ict-paper-300 px-5 py-4 text-sm text-ict-ink-400">{faq.a}</p>
+                </details>
+              </Card>
             ))}
           </div>
         </section>
 
-        <section className="mt-12 rounded-ict-panel bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) p-6 text-white">
-          <h2 className="text-2xl font-bold">Sit in on a real class before you pay</h2>
-          <p className="mt-2 text-white/90">
+        {/* The system's one dark "feature" surface per screen, carrying the
+            single most important thing on this page: sign in and try it. */}
+        <Card variant="dark" radius="panel" className="mt-12 p-6">
+          <Eyebrow className="text-ict-orange-400">Free 7-day trial</Eyebrow>
+          <h2 className="mt-2 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-paper-50">
+            Sit in on a real class before you pay<span className="text-ict-orange-500">.</span>
+          </h2>
+          <p className="mt-2 text-ict-ink-300">
             Seven days free, no card, no auto-renewal. Sign in with your mobile number and one SMS code.
           </p>
-          <Link
-            href="/signin"
-            className="mt-4 inline-block rounded-full bg-white px-5 py-3 font-semibold text-(--color-awaken-accent)"
-          >
+          <ButtonLink href="/signin" variant="primary" className="mt-4">
             Start free
-          </Link>
-        </section>
+          </ButtonLink>
+        </Card>
       </main>
     </>
   );

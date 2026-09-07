@@ -7,8 +7,8 @@ function Bits({ digits, tone }: { digits: number[]; tone: "neutral" | "accent" }
           className={
             "flex size-8 items-center justify-center rounded-ict-md border-2 text-sm font-bold sm:size-9 " +
             (tone === "accent"
-              ? "border-(--color-awaken-accent) bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)"
-              : "border-(--color-awaken-line) text-(--color-awaken-ink)")
+              ? "border-ict-orange-500 bg-ict-orange-50 text-ict-orange-600"
+              : "border-ict-paper-300 text-ict-ink-900")
           }
         >
           {d}
@@ -49,17 +49,17 @@ export function TwosComplementFlow({ bits }: { bits: string }) {
 
   return (
     <div className="not-prose">
-      <div className="flex flex-col items-center gap-2 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
+      <div className="flex flex-col items-center gap-2 rounded-ict-card border border-ict-paper-300 bg-ict-paper-0 p-4">
         {steps.map((step, i) => (
           <div key={step.label} className="flex w-full flex-col items-center">
             <div className="flex flex-col items-center gap-1.5">
-              <span className="text-[11px] font-semibold text-(--color-awaken-ink-soft) uppercase tracking-wide">
+              <span className="text-[11px] font-semibold text-ict-ink-400 uppercase tracking-wide">
                 {step.label}
               </span>
               <Bits digits={step.digits} tone={step.accent ? "accent" : "neutral"} />
             </div>
             {i < steps.length - 1 ? (
-              <span className="my-1 text-xl text-(--color-awaken-ink-soft)" aria-hidden>
+              <span className="my-1 text-xl text-ict-ink-400" aria-hidden>
                 ↓
               </span>
             ) : null}

@@ -5,7 +5,7 @@ import type { SessionUser } from "@/lib/auth/session";
 import { useSignedInClient } from "@/lib/auth/use-signed-in-client";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { Icon } from "@/components/ui/Icon";
-import { ButtonLink } from "@/components/ds";
+import { ButtonLink } from "@/components/ds-cream";
 
 /**
  * The one navigation bar every page (other than the landing hero, which has
@@ -17,29 +17,26 @@ import { ButtonLink } from "@/components/ds";
  * `user` usually comes from the session already resolved by the calling
  * page. Several free-resource pages (`/notes`, `/past-papers`,
  * `/command-words`, ...) pass `null` on purpose even to a signed-in
- * visitor, to stay statically generated for SEO rather than reading the
- * session per request — see the comment on `/notes`. Left alone, that
- * makes a signed-in student who taps one of those links from their own
- * dashboard sidebar land on a page whose header still offers "Sign in" and
- * has no way back except the browser's back button. This client-side
- * check recovers the signed-in nav from Firebase's locally persisted auth
- * state after the first paint — no extra network round trip, and no
- * hydration mismatch, since the guest nav still renders first to match
- * the cached HTML.
+ * visitor, to stay statically generated for SEO — see the comment on
+ * `/notes`. Left alone, that makes a signed-in student who taps one of
+ * those links from their own dashboard sidebar land on a page whose header
+ * still offers "Sign in" and has no way back except the browser's back
+ * button. `useSignedInClient` recovers the signed-in nav after hydration
+ * whenever a real user wasn't resolved server-side.
  */
 export function SiteHeader({ user }: { user: SessionUser | null }) {
   const isStaff = user?.role === "teacher" || user?.role === "admin";
   const showSignedInNav = useSignedInClient(Boolean(user));
 
   return (
-    <header className="border-b border-(--color-awaken-line) bg-(--color-awaken-card)">
+    <header className="border-b border-ict-paper-300 bg-ict-paper-0">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-4">
         <Link href={showSignedInNav ? "/dashboard" : "/"} className="flex items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-(--color-awaken-accent) to-(--color-awaken-rose) text-white">
+          <span className="flex size-8 items-center justify-center rounded-full bg-ict-orange-500 text-white">
             <Icon name="school" className="!text-lg" />
           </span>
-          <span className="font-[family-name:var(--font-display)] text-lg font-extrabold tracking-tight">
-            ICT<span className="text-(--color-awaken-accent)">Campus</span>
+          <span className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-ink-900">
+            ICT<span className="text-ict-orange-500">Campus</span>
           </span>
         </Link>
 
@@ -67,7 +64,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               {isStaff ? <NavLink href="/teacher">Teacher console</NavLink> : null}
               <NavLink href="/account">Account</NavLink>
               <div className="ml-1">
-                <SignOutButton className="rounded-full border border-(--color-awaken-line) px-4 py-2 text-sm font-medium transition-colors hover:border-(--color-awaken-accent)/40" />
+                <SignOutButton className="rounded-full border-[1.5px] border-ict-ink-900 px-4 py-2 text-sm font-semibold text-ict-ink-900 transition-colors duration-[120ms] hover:border-ict-orange-500 hover:text-ict-orange-600" />
               </div>
             </>
           )}
@@ -81,7 +78,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-medium text-(--color-awaken-ink-soft) transition-colors hover:bg-(--color-awaken-bg) hover:text-(--color-awaken-ink)"
+      className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-medium text-ict-ink-500 transition-colors duration-[120ms] hover:bg-ict-paper-100 hover:text-ict-ink-900"
     >
       {children}
     </Link>

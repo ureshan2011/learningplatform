@@ -1,8 +1,7 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { listSubjects, listUnits } from "@/lib/queries";
 import { SiteHeader } from "@/components/nav/SiteHeader";
-import { ButtonLink } from "@/components/ds";
+import { ButtonLink, Card, CardLink, EmptyState, PageHeader } from "@/components/ds-cream";
 import { Icon } from "@/components/ui/Icon";
 import type { Subject, Unit } from "@/lib/types";
 
@@ -28,49 +27,49 @@ export default async function SyllabusIndexPage() {
     <>
       <SiteHeader user={null} />
       <main className="mx-auto max-w-3xl px-5 py-12">
-        <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
-          <Icon name="auto_stories" className="!text-2xl text-(--color-awaken-accent)" />
-          The full syllabus, unit by unit
-        </h1>
-        <p className="mt-3 text-(--color-awaken-ink-soft)">
-          Every official unit and lesson, with exam-targeted objectives and where marks tend to
-          concentrate. Free to browse — no sign-up needed.
-        </p>
+        <PageHeader
+          eyebrow="Free to browse · no sign-up"
+          title="The full syllabus, unit by unit"
+          subtitle="Every official unit and lesson, with exam-targeted objectives and where marks tend to concentrate."
+        />
 
         {ready.length === 0 ? (
-          <p className="mt-10 text-sm text-(--color-awaken-ink-soft)">Nothing published yet — check back soon.</p>
+          <div className="mt-10">
+            <EmptyState
+              icon="auto_stories"
+              title="Nothing published yet"
+              body="Check back soon — units are being added."
+            />
+          </div>
         ) : (
           <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {ready.map(({ subject, units }) => (
               <li key={subject.id}>
-                <Link
-                  href={`/syllabus/${subject.id}`}
-                  className="block rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-1 hover:shadow-[0_12px_24px_rgba(0,0,0,0.08)]"
-                >
-                  <p className="font-bold">{subject.name}</p>
-                  <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+                <CardLink href={`/syllabus/${subject.id}`} className="p-5">
+                  <p className="font-display font-bold text-ict-ink-900">{subject.name}</p>
+                  <p className="mt-1 text-sm text-ict-ink-400">
                     {units.length} units · {units.reduce((n, u) => n + u.lessons.length, 0)} lessons
                   </p>
-                  <span className="mt-3 flex items-center gap-1 text-xs font-semibold text-(--color-awaken-accent)">
+                  <span className="mt-3 flex items-center gap-1 text-xs font-semibold text-ict-orange-600">
                     Explore
                     <Icon name="chevron_right" className="!text-sm" />
                   </span>
-                </Link>
+                </CardLink>
               </li>
             ))}
           </ul>
         )}
 
-        <section className="mt-14 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
-          <h2 className="text-lg font-bold">Want the live class?</h2>
-          <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
+        <Card variant="dark" radius="panel" className="mt-14 p-6 sm:p-8">
+          <h2 className="font-display text-lg font-extrabold text-ict-paper-50">Want the live class?</h2>
+          <p className="mt-2 text-sm text-ict-ink-300">
             Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and every
             past paper worked through step by step.
           </p>
-          <ButtonLink href="/signin" variant="primary">
-          Join a class
-        </ButtonLink>
-        </section>
+          <ButtonLink href="/signin" variant="primary" className="mt-5">
+            Join a class
+          </ButtonLink>
+        </Card>
       </main>
     </>
   );

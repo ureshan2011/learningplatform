@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
@@ -7,6 +6,7 @@ import { EligibilityExplorer } from "@/components/university-pathways/Eligibilit
 import { ALSO_WORTH_KNOWING } from "@/lib/content/university-pathways";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
+import { Eyebrow, Card, ButtonLink } from "@/components/ds-cream";
 
 // Same three self-hosted fonts as the main landing page, scoped to this page
 // only — this page is built to feel like an extension of it, not a plain
@@ -20,7 +20,6 @@ export const metadata: Metadata = {
 };
 
 const CONTAINER = "mx-auto w-full max-w-[900px] px-[clamp(20px,4vw,32px)]";
-const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
 
 function jsonLd() {
   return {
@@ -47,12 +46,12 @@ export default function UniversityPathwaysPage() {
           {/* Hero */}
           <section className="w-full py-[clamp(48px,7vw,88px)]">
             <div className={CONTAINER}>
-              <div className={`lp-reveal ${EYEBROW}`}>Free resource</div>
-              <h1 className="lp-reveal mt-2.5 text-[clamp(32px,5vw,52px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) font-[family-name:var(--lp-font-display)]">
+              <Eyebrow className="lp-reveal">Free resource</Eyebrow>
+              <h1 className="lp-reveal mt-2.5 font-display text-[clamp(32px,5vw,52px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ict-ink-900">
                 Where can A/L ICT actually take you
-                <span className="text-(--lp-orange-500)">?</span>
+                <span className="text-ict-orange-500">?</span>
               </h1>
-              <p className="lp-reveal mt-4 max-w-[62ch] text-[clamp(15px,1.4vw,18px)] text-(--lp-ink-500) text-wrap-pretty">
+              <p className="lp-reveal mt-4 max-w-[62ch] text-[clamp(15px,1.4vw,18px)] text-ict-ink-500 text-wrap-pretty">
                 Not just Computer Science. Tick what you studied below and see which state
                 university degrees you&apos;re realistically eligible for, with Z-score cutoff
                 ranges taken directly from the UGC&apos;s own most recently published admission
@@ -64,9 +63,9 @@ export default function UniversityPathwaysPage() {
           {/* Context: how admission works */}
           <section className="w-full pb-[clamp(24px,4vw,40px)]">
             <div className={CONTAINER}>
-              <div className="lp-reveal rounded-[var(--lp-radius-card)] border border-(--lp-border-subtle) bg-(--lp-paper-100) p-[clamp(18px,2.4vw,26px)] text-sm text-(--lp-ink-500)">
+              <Card radius="card" className="lp-reveal p-[clamp(18px,2.4vw,26px)] text-sm text-ict-ink-500">
                 <p className="flex items-start gap-2">
-                  <Icon name="info" className="mt-0.5 !text-base shrink-0 text-(--lp-orange-500)" />
+                  <Icon name="info" className="mt-0.5 !text-base shrink-0 text-ict-orange-500" />
                   <span>
                     Sri Lankan state university admission runs on a <strong>Z-score</strong> (how you
                     performed relative to everyone else who sat the same subjects) and a{" "}
@@ -78,15 +77,15 @@ export default function UniversityPathwaysPage() {
                     candidate, in the last published round.
                   </span>
                 </p>
-              </div>
+              </Card>
             </div>
           </section>
 
           {/* Interactive eligibility explorer */}
           <section className="w-full pb-[clamp(32px,6vw,72px)]">
             <div className={CONTAINER}>
-              <div className={`lp-reveal ${EYEBROW}`}>Check your combination</div>
-              <h2 className="lp-reveal mt-2.5 mb-[clamp(20px,3vw,30px)] text-[clamp(26px,4vw,38px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) font-[family-name:var(--lp-font-display)]">
+              <Eyebrow className="lp-reveal">Check your combination</Eyebrow>
+              <h2 className="lp-reveal mt-2.5 mb-[clamp(20px,3vw,30px)] font-display text-[clamp(26px,4vw,38px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ict-ink-900">
                 Degrees, ranked by what you actually qualify for
               </h2>
               <EligibilityExplorer />
@@ -96,19 +95,18 @@ export default function UniversityPathwaysPage() {
           {/* Also worth knowing */}
           <section className="w-full pb-[clamp(32px,6vw,72px)]">
             <div className={CONTAINER}>
-              <div className={`lp-reveal ${EYEBROW}`}>Also worth knowing</div>
-              <h2 className="lp-reveal mt-2.5 mb-[clamp(20px,3vw,30px)] text-[clamp(24px,3.6vw,32px)] leading-[1.1] font-extrabold tracking-[-0.03em] text-(--lp-ink-900) font-[family-name:var(--lp-font-display)]">
+              <Eyebrow className="lp-reveal">Also worth knowing</Eyebrow>
+              <h2 className="lp-reveal mt-2.5 mb-[clamp(20px,3vw,30px)] font-display text-[clamp(24px,3.6vw,32px)] leading-[1.1] font-extrabold tracking-[-0.03em] text-ict-ink-900">
                 ICT counts for more than the headline degrees
               </h2>
               <ul className="space-y-3">
                 {ALSO_WORTH_KNOWING.map((item) => (
-                  <li
-                    key={item.name}
-                    className="lp-reveal rounded-[var(--lp-radius-card)] border border-(--lp-border-subtle) bg-(--lp-paper-0) p-4 shadow-[var(--lp-shadow-xs)]"
-                  >
-                    <p className="font-bold text-(--lp-ink-900)">{item.name}</p>
-                    <p className="mt-1 text-sm text-(--lp-ink-400)">{item.note}</p>
-                    <p className="mt-1.5 text-[11px] text-(--lp-ink-300)">Source: {item.sourceRef}</p>
+                  <li key={item.name} className="lp-reveal">
+                    <Card radius="card" className="p-4">
+                      <p className="font-bold text-ict-ink-900">{item.name}</p>
+                      <p className="mt-1 text-sm text-ict-ink-400">{item.note}</p>
+                      <p className="mt-1.5 text-[11px] text-ict-ink-300">Source: {item.sourceRef}</p>
+                    </Card>
                   </li>
                 ))}
               </ul>
@@ -118,21 +116,22 @@ export default function UniversityPathwaysPage() {
           {/* Sources */}
           <section className="w-full pb-[clamp(24px,4vw,40px)]">
             <div className={CONTAINER}>
-              <div className={`lp-reveal ${EYEBROW}`}>Sources</div>
-              <h2 className="lp-reveal mt-2.5 mb-4 text-xl font-bold text-(--lp-ink-900)">
+              <Eyebrow className="lp-reveal">Sources</Eyebrow>
+              <h2 className="lp-reveal mt-2.5 mb-4 text-xl font-bold text-ict-ink-900">
                 Everything here is traceable
               </h2>
-              <ul className="lp-reveal space-y-2 rounded-[var(--lp-radius-card)] border border-(--lp-border-subtle) bg-(--lp-paper-0) p-5 text-sm">
+              <Card radius="card" className="lp-reveal p-5 text-sm">
+                <ul className="space-y-2">
                 <li>
                   <a
                     href="https://www.ugc.ac.lk/downloads/admissions/cutoff_2025/COP_2024_2025-ENGLISH_Final.pdf"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-(--lp-orange-500) underline"
+                    className="text-ict-orange-600 underline"
                   >
                     University Grants Commission — Minimum Z-Scores for University Admission
                   </a>{" "}
-                  <span className="text-(--lp-ink-400)">
+                  <span className="text-ict-ink-400">
                     (2024/2025 academic year, based on the 2024 A/L examination — the most recent round published at time of writing). Every Z-score figure on this page.
                   </span>
                 </li>
@@ -141,31 +140,32 @@ export default function UniversityPathwaysPage() {
                     href="https://mohe.gov.lk/images/pdf/subject_pre-requisites_for_courses_Of_study_.pdf"
                     target="_blank"
                     rel="noreferrer"
-                    className="text-(--lp-orange-500) underline"
+                    className="text-ict-orange-600 underline"
                   >
                     Ministry of Higher Education — Subject Pre-Requisites for Courses of Study (Part Two)
                   </a>{" "}
-                  <span className="text-(--lp-ink-400)">Every subject/stream eligibility rule quoted on this page.</span>
+                  <span className="text-ict-ink-400">Every subject/stream eligibility rule quoted on this page.</span>
                 </li>
                 <li>
-                  <a href="https://www.ugc.ac.lk/" target="_blank" rel="noreferrer" className="text-(--lp-orange-500) underline">
+                  <a href="https://www.ugc.ac.lk/" target="_blank" rel="noreferrer" className="text-ict-orange-600 underline">
                     ugc.ac.lk
                   </a>{" "}
-                  <span className="text-(--lp-ink-400)">— the UGC&apos;s own site, for the current year&apos;s handbook once it is published.</span>
+                  <span className="text-ict-ink-400">— the UGC&apos;s own site, for the current year&apos;s handbook once it is published.</span>
                 </li>
-              </ul>
+                </ul>
+              </Card>
             </div>
           </section>
 
           {/* Disclaimer */}
           <section className="w-full pb-[clamp(32px,6vw,72px)]">
             <div className={CONTAINER}>
-              <div className="lp-reveal rounded-[var(--lp-radius-panel)] border border-(--lp-orange-200) bg-(--lp-orange-50) p-[clamp(20px,3vw,28px)]">
-                <h2 className="flex items-center gap-2 text-lg font-bold text-(--lp-ink-900)">
-                  <Icon name="gavel" className="!text-lg text-(--lp-orange-500)" />
+              <div className="lp-reveal rounded-ict-panel border border-ict-orange-200 bg-ict-orange-50 p-[clamp(20px,3vw,28px)]">
+                <h2 className="flex items-center gap-2 text-lg font-bold text-ict-ink-900">
+                  <Icon name="gavel" className="!text-lg text-ict-orange-500" />
                   Disclaimer — please read before you decide anything
                 </h2>
-                <ul className="mt-3 space-y-2.5 text-sm text-(--lp-ink-500)">
+                <ul className="mt-3 space-y-2.5 text-sm text-ict-ink-500">
                   <li>
                     <strong>These are last cycle&apos;s cutoffs, not this year&apos;s.</strong> Z-scores
                     move every single year with how the whole island performs — sometimes by a
@@ -199,9 +199,8 @@ export default function UniversityPathwaysPage() {
             </div>
           </section>
 
-          {/* Free resources — plain `--color-awaken-*` tokens rather than this
-              page's own `--lp-*` set, since it's shared with every other free
-              content page and needs to look the same on all of them. */}
+          {/* Free resources — same shared component every other free content
+              page ends with, already built on the ict-* tokens. */}
           <section className="w-full pb-[clamp(24px,4vw,40px)]">
             <div className={CONTAINER}>
               <FreeResourcesFooter exclude={["/university-pathways"]} />
@@ -210,22 +209,16 @@ export default function UniversityPathwaysPage() {
 
           {/* CTA */}
           <section className="w-full pt-[clamp(20px,4vw,40px)] pb-[clamp(48px,8vw,96px)]">
-            <div className="relative w-full overflow-hidden bg-(--lp-orange-500)">
+            <div className="relative w-full overflow-hidden bg-ict-orange-500">
               <div className={`${CONTAINER} relative flex flex-wrap items-center gap-6 py-[clamp(32px,5vw,56px)]`}>
                 <div className="flex-1 basis-[320px]">
-                  <h2 className="text-[clamp(22px,3.4vw,32px)] leading-[1.1] font-extrabold tracking-[-0.03em] text-(--lp-paper-0) font-[family-name:var(--lp-font-display)]">
+                  <h2 className="font-display text-[clamp(22px,3.4vw,32px)] leading-[1.1] font-extrabold tracking-[-0.03em] text-white">
                     Whichever degree you&apos;re aiming for, the syllabus is the same first step.
                   </h2>
                 </div>
-                <Link
-                  href="/signin"
-                  className="flex h-12 shrink-0 items-center gap-3 rounded-full bg-(--lp-ink-900) py-2 pr-2 pl-6 text-base font-semibold text-white hover:bg-(--lp-ink-700)"
-                >
+                <ButtonLink href="/signin" variant="secondary" size="lg" className="shrink-0">
                   Start free
-                  <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-(--lp-orange-500) text-white">
-                    <Icon name="arrow_forward" className="!text-base" />
-                  </span>
-                </Link>
+                </ButtonLink>
               </div>
             </div>
           </section>

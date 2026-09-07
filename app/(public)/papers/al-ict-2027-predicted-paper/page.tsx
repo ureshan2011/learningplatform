@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { PredictedPaperDisclaimer } from "@/components/papers/PredictedPaperDisclaimer";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { Icon } from "@/components/ui/Icon";
+import { Badge, ButtonLink, Card, Eyebrow, IconBadge, SectionHeading } from "@/components/ds-cream";
 import { publicEnv } from "@/lib/env";
 import {
   breadcrumbJsonLd,
@@ -78,142 +79,135 @@ export default function PredictedPaperPromoPage() {
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: `${PREDICTED_PAPER_EXAM_YEAR_TARGET} Predicted paper`, path: PATH }])} />
       <SiteHeader user={null} />
 
-      <section className="mx-auto max-w-3xl px-5 pt-10">
-        <p className="text-xs font-bold tracking-[0.14em] text-(--color-awaken-accent) uppercase">
-          AI exam-prediction engine
-        </p>
-        <h1 className="mt-2 flex items-center gap-2 text-3xl font-bold sm:text-4xl">
-          <Icon name="auto_awesome" className="!text-3xl text-(--color-awaken-accent)" />
-          A/L ICT {PREDICTED_PAPER_EXAM_YEAR_TARGET} Predicted Paper
-        </h1>
-        <p className="mt-3 text-base text-(--color-awaken-ink-soft)">
-          Built by {TEACHER_NAME}&rsquo;s AI exam-prediction engine — run once against 25 real past-paper and syllabus
-          files, scored for pattern, recency and syllabus weight, and cross-checked against current events. The
-          highest-accuracy focus list we&rsquo;ve built for this subject yet: {PREDICTED_PAPER1_QUESTION_COUNT} MCQs and{" "}
-          {AL_ICT_2027_PREDICTED_PAPER2.length} structured/essay questions, every one tagged with a confidence band
-          and the exact evidence behind it.
-        </p>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href={`/signin?next=/subjects/al-ict/predicted-paper&ref=predicted-paper-2027`}
-            className="rounded-full bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-6 py-3 text-sm font-semibold text-white"
-          >
-            Sign in to unlock the full paper
-          </Link>
-          <a
-            href="#focus-areas"
-            className="rounded-full border border-(--color-awaken-line) px-6 py-3 text-sm font-semibold text-(--color-awaken-ink-soft)"
-          >
-            See the free focus areas
-          </a>
-        </div>
-
-        <div className="mt-6">
-          <PredictedPaperDisclaimer lang="en" />
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-5 py-8">
-        <h2 className="text-lg font-bold">How the prediction was built</h2>
-        <ul className="mt-3 space-y-2 text-sm text-(--color-awaken-ink-soft)">
-          <li className="flex items-start gap-2">
-            <Icon name="fact_check" className="!text-base mt-0.5 shrink-0 text-(--color-awaken-accent)" />
-            594 real past-paper MCQs across 12 sittings (2011-2026), each tagged against the NIE syllabus&rsquo;s own
-            competency numbering.
-          </li>
-          <li className="flex items-start gap-2">
-            <Icon name="auto_stories" className="!text-base mt-0.5 shrink-0 text-(--color-awaken-accent)" />
-            The full NIE A/L ICT syllabus, including every unit&rsquo;s teaching-period allocation, so a topic that is
-            over- or under-tested for its size shows up as a real statistical signal.
-          </li>
-          <li className="flex items-start gap-2">
-            <Icon name="search" className="!text-base mt-0.5 shrink-0 text-(--color-awaken-accent)" />
-            Live web research for syllabus changes, exam-format announcements and the real Sri Lankan current
-            events examiners tend to build scenario questions around — cited with a source and an access date, not
-            invented.
-          </li>
-          <li className="flex items-start gap-2">
-            <Icon name="account_circle" className="!text-base mt-0.5 shrink-0 text-(--color-awaken-accent)" />
-            Reviewed by <Link href="/dr-yasas" className="underline">{TEACHER_NAME}</Link>, PhD in Human Interface
-            Technology, University of Canterbury, before it reaches a single student.
-          </li>
-        </ul>
-      </section>
-
-      <section id="focus-areas" className="mx-auto max-w-3xl px-5 py-8">
-        <h2 className="text-lg font-bold">Focus areas briefing — free</h2>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-          Every examinable competency, ranked by how likely it is to appear in {PREDICTED_PAPER_EXAM_YEAR_TARGET}.
-        </p>
-        <ul className="mt-4 space-y-2">
-          {AL_ICT_2027_FOCUS_AREAS.map((f) => (
-            <li key={f.competencyNumber} className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) p-3.5 text-sm">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <p className="font-semibold">{f.topic}</p>
-                <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold ${
-                    f.band === "high"
-                      ? "bg-(--color-awaken-success-soft) text-(--color-awaken-success)"
-                      : f.band === "medium"
-                        ? "bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)"
-                        : "bg-(--color-awaken-bg) text-(--color-awaken-ink-soft)"
-                  }`}
-                >
-                  {f.band === "high" ? "High" : f.band === "medium" ? "Medium" : "Low"}
-                </span>
-              </div>
-              <p className="mt-1 text-(--color-awaken-ink-soft)">{f.rationale}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="mx-auto max-w-3xl px-5 py-8">
-        <h2 className="text-lg font-bold">Sample questions</h2>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-          3 of {PREDICTED_PAPER1_QUESTION_COUNT} predicted MCQs. Answers, explanations and the remaining{" "}
-          {PREDICTED_PAPER1_QUESTION_COUNT - samples.length} questions plus the full Paper II unlock once you sign
-          in.
-        </p>
-        <ol className="mt-4 space-y-4">
-          {samples.map((q, i) => (
-            <li key={q.id} className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
-              <p className="font-semibold">
-                {i + 1}. {q.en.stem}
-              </p>
-              {q.code ? (
-                <pre className="mt-2 overflow-x-auto rounded-md bg-(--color-awaken-bg) p-2 font-mono text-xs whitespace-pre">{q.code}</pre>
-              ) : null}
-              <ol className="mt-2 ml-4 list-decimal space-y-0.5 text-sm text-(--color-awaken-ink-soft)">
-                {q.en.options.map((opt, j) => <li key={j}>{opt}</li>)}
-              </ol>
-              <p className="mt-2 text-xs text-(--color-awaken-ink-soft)">{q.topic}</p>
-            </li>
-          ))}
-          <li className="rounded-xl border border-dashed border-(--color-awaken-line) bg-(--color-awaken-bg) p-5 text-center text-sm text-(--color-awaken-ink-soft)">
-            <Icon name="lock" className="mx-auto !text-lg text-(--color-awaken-ink-soft)" />
-            <p className="mt-1.5">
-              {PREDICTED_PAPER1_QUESTION_COUNT - samples.length} more MCQs, all 10 Paper II questions, mark
-              schemes and every confidence rationale
-            </p>
-          </li>
-        </ol>
-
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
-          <p className="text-sm text-(--color-awaken-ink-soft)">
-            One free account unlocks the full predicted paper, live classes and every past paper on ICT Campus.
+      <main className="bg-ict-paper-100">
+        <section className="mx-auto max-w-3xl px-5 pt-10">
+          <Eyebrow>AI exam-prediction engine</Eyebrow>
+          <h1 className="mt-2 flex items-center gap-2 font-display text-3xl font-extrabold tracking-[-0.02em] text-ict-ink-900 sm:text-4xl">
+            <Icon name="auto_awesome" className="!text-3xl text-ict-orange-500" />
+            A/L ICT {PREDICTED_PAPER_EXAM_YEAR_TARGET} Predicted Paper
+          </h1>
+          <p className="mt-3 text-base text-ict-ink-400">
+            Built by {TEACHER_NAME}&rsquo;s AI exam-prediction engine — run once against 25 real past-paper and syllabus
+            files, scored for pattern, recency and syllabus weight, and cross-checked against current events. The
+            highest-accuracy focus list we&rsquo;ve built for this subject yet: {PREDICTED_PAPER1_QUESTION_COUNT} MCQs and{" "}
+            {AL_ICT_2027_PREDICTED_PAPER2.length} structured/essay questions, every one tagged with a confidence band
+            and the exact evidence behind it.
           </p>
-          <Link
-            href="/signin?next=/subjects/al-ict/predicted-paper&ref=predicted-paper-2027"
-            className="shrink-0 rounded-lg bg-(--color-awaken-deep) px-5 py-2.5 text-sm font-semibold text-white"
-          >
-            Sign in — it&rsquo;s free to start
-          </Link>
-        </div>
 
-        <FreeResourcesFooter exclude={[PATH]} />
-      </section>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <ButtonLink href={`/signin?next=/subjects/al-ict/predicted-paper&ref=predicted-paper-2027`} variant="primary" size="lg">
+              Sign in to unlock the full paper
+            </ButtonLink>
+            <ButtonLink href="#focus-areas" variant="outline" size="lg" arrow="none">
+              See the free focus areas
+            </ButtonLink>
+          </div>
+
+          <div className="mt-6">
+            <PredictedPaperDisclaimer lang="en" />
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-3xl px-5 py-8">
+          <SectionHeading as="h2" className="!text-lg">
+            How the prediction was built
+          </SectionHeading>
+          <ul className="mt-3 space-y-2 text-sm text-ict-ink-400">
+            <li className="flex items-start gap-2">
+              <Icon name="fact_check" className="!text-base mt-0.5 shrink-0 text-ict-orange-500" />
+              594 real past-paper MCQs across 12 sittings (2011-2026), each tagged against the NIE syllabus&rsquo;s own
+              competency numbering.
+            </li>
+            <li className="flex items-start gap-2">
+              <Icon name="auto_stories" className="!text-base mt-0.5 shrink-0 text-ict-orange-500" />
+              The full NIE A/L ICT syllabus, including every unit&rsquo;s teaching-period allocation, so a topic that is
+              over- or under-tested for its size shows up as a real statistical signal.
+            </li>
+            <li className="flex items-start gap-2">
+              <Icon name="search" className="!text-base mt-0.5 shrink-0 text-ict-orange-500" />
+              Live web research for syllabus changes, exam-format announcements and the real Sri Lankan current
+              events examiners tend to build scenario questions around — cited with a source and an access date, not
+              invented.
+            </li>
+            <li className="flex items-start gap-2">
+              <Icon name="account_circle" className="!text-base mt-0.5 shrink-0 text-ict-orange-500" />
+              Reviewed by <Link href="/dr-yasas" className="font-semibold text-ict-ink-900 underline">{TEACHER_NAME}</Link>, PhD in Human Interface
+              Technology, University of Canterbury, before it reaches a single student.
+            </li>
+          </ul>
+        </section>
+
+        <section id="focus-areas" className="mx-auto max-w-3xl px-5 py-8">
+          <SectionHeading as="h2" className="!text-lg">
+            Focus areas briefing — free
+          </SectionHeading>
+          <p className="mt-1 text-sm text-ict-ink-400">
+            Every examinable competency, ranked by how likely it is to appear in {PREDICTED_PAPER_EXAM_YEAR_TARGET}.
+          </p>
+          <ul className="mt-4 space-y-2">
+            {AL_ICT_2027_FOCUS_AREAS.map((f) => (
+              <li key={f.competencyNumber}>
+                <Card radius="md" className="p-3.5 text-sm">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <p className="font-semibold text-ict-ink-900">{f.topic}</p>
+                    <Badge tone={f.band === "high" ? "success" : f.band === "medium" ? "brand" : "neutral"} className="shrink-0">
+                      {f.band === "high" ? "High" : f.band === "medium" ? "Medium" : "Low"}
+                    </Badge>
+                  </div>
+                  <p className="mt-1 text-ict-ink-400">{f.rationale}</p>
+                </Card>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="mx-auto max-w-3xl px-5 py-8">
+          <SectionHeading as="h2" className="!text-lg">
+            Sample questions
+          </SectionHeading>
+          <p className="mt-1 text-sm text-ict-ink-400">
+            3 of {PREDICTED_PAPER1_QUESTION_COUNT} predicted MCQs. Answers, explanations and the remaining{" "}
+            {PREDICTED_PAPER1_QUESTION_COUNT - samples.length} questions plus the full Paper II unlock once you sign
+            in.
+          </p>
+          <ol className="mt-4 space-y-4">
+            {samples.map((q, i) => (
+              <li key={q.id}>
+                <Card radius="card" className="p-4">
+                  <p className="font-semibold text-ict-ink-900">
+                    {i + 1}. {q.en.stem}
+                  </p>
+                  {q.code ? (
+                    <pre className="mt-2 overflow-x-auto rounded-ict-sm bg-ict-paper-100 p-2 font-mono text-xs whitespace-pre">{q.code}</pre>
+                  ) : null}
+                  <ol className="mt-2 ml-4 list-decimal space-y-0.5 text-sm text-ict-ink-400">
+                    {q.en.options.map((opt, j) => <li key={j}>{opt}</li>)}
+                  </ol>
+                  <p className="mt-2 text-xs text-ict-ink-400">{q.topic}</p>
+                </Card>
+              </li>
+            ))}
+            <li className="flex flex-col items-center gap-2 rounded-ict-card border border-dashed border-ict-paper-300 bg-ict-paper-0 p-5 text-center text-sm text-ict-ink-400">
+              <IconBadge icon="lock" tone="soft" size={36} />
+              <p>
+                {PREDICTED_PAPER1_QUESTION_COUNT - samples.length} more MCQs, all 10 Paper II questions, mark
+                schemes and every confidence rationale
+              </p>
+            </li>
+          </ol>
+
+          <Card radius="card" className="mt-6 flex flex-wrap items-center justify-between gap-3 p-5">
+            <p className="text-sm text-ict-ink-400">
+              One free account unlocks the full predicted paper, live classes and every past paper on ICT Campus.
+            </p>
+            <ButtonLink href="/signin?next=/subjects/al-ict/predicted-paper&ref=predicted-paper-2027" variant="secondary" size="md" className="shrink-0">
+              Sign in — it&rsquo;s free to start
+            </ButtonLink>
+          </Card>
+
+          <FreeResourcesFooter exclude={[PATH]} />
+        </section>
+      </main>
     </>
   );
 }

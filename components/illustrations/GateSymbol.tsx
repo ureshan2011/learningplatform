@@ -47,7 +47,7 @@ export function GateSymbol({ type, className }: { type: GateType; className?: st
       role="img"
       aria-label={`${type} gate symbol with ${def.double ? "two inputs, A and B," : "one input, A,"} and output Q`}
       fill="none"
-      stroke="var(--color-awaken-ink)"
+      stroke="var(--color-ict-ink-900)"
       strokeWidth={4}
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -57,20 +57,20 @@ export function GateSymbol({ type, className }: { type: GateType; className?: st
         <>
           <line x1={15} y1={45} x2={52} y2={45} />
           <line x1={15} y1={95} x2={52} y2={95} />
-          <circle cx={15} cy={45} r={3} fill="var(--color-awaken-ink)" stroke="none" />
-          <circle cx={15} cy={95} r={3} fill="var(--color-awaken-ink)" stroke="none" />
-          <text x={12} y={36} fontSize={16} fontWeight={700} stroke="none" fill="var(--color-awaken-ink-soft)">
+          <circle cx={15} cy={45} r={3} fill="var(--color-ict-ink-900)" stroke="none" />
+          <circle cx={15} cy={95} r={3} fill="var(--color-ict-ink-900)" stroke="none" />
+          <text x={12} y={36} fontSize={16} fontWeight={700} stroke="none" fill="var(--color-ict-ink-400)">
             A
           </text>
-          <text x={12} y={116} fontSize={16} fontWeight={700} stroke="none" fill="var(--color-awaken-ink-soft)">
+          <text x={12} y={116} fontSize={16} fontWeight={700} stroke="none" fill="var(--color-ict-ink-400)">
             B
           </text>
         </>
       ) : (
         <>
           <line x1={15} y1={70} x2={50} y2={70} />
-          <circle cx={15} cy={70} r={3} fill="var(--color-awaken-ink)" stroke="none" />
-          <text x={12} y={61} fontSize={16} fontWeight={700} stroke="none" fill="var(--color-awaken-ink-soft)">
+          <circle cx={15} cy={70} r={3} fill="var(--color-ict-ink-900)" stroke="none" />
+          <text x={12} y={61} fontSize={16} fontWeight={700} stroke="none" fill="var(--color-ict-ink-400)">
             A
           </text>
         </>
@@ -78,16 +78,16 @@ export function GateSymbol({ type, className }: { type: GateType; className?: st
 
       {/* Body — outline only. The card's exam-note callout is already this
           gate's one orange accent; tinting the body too would be a second. */}
-      <path d={def.body} fill="var(--color-awaken-card)" />
+      <path d={def.body} fill="var(--color-ict-paper-0)" />
       {def.extra ? <path d={def.extra} fill="none" /> : null}
 
       {/* Output line, with an inverting bubble for NAND/NOR/NOT/XNOR */}
       {def.inverted ? (
-        <circle cx={bubbleCx} cy={70} r={7} fill="var(--color-awaken-card)" />
+        <circle cx={bubbleCx} cy={70} r={7} fill="var(--color-ict-paper-0)" />
       ) : null}
       <line x1={outputStartX} y1={70} x2={205} y2={70} />
-      <circle cx={205} cy={70} r={3} fill="var(--color-awaken-ink)" stroke="none" />
-      <text x={198} y={100} fontSize={16} fontWeight={700} stroke="none" fill="var(--color-awaken-ink-soft)" textAnchor="end">
+      <circle cx={205} cy={70} r={3} fill="var(--color-ict-ink-900)" stroke="none" />
+      <text x={198} y={100} fontSize={16} fontWeight={700} stroke="none" fill="var(--color-ict-ink-400)" textAnchor="end">
         Q
       </text>
     </svg>

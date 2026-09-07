@@ -7,6 +7,7 @@ import { METHOD_LABEL, STATUS_LABEL } from "@/lib/payments/ledger";
 import { formatDate, formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import { Icon } from "@/components/ui/Icon";
+import { Card } from "@/components/ds-cream";
 import type { Payment, Subject, User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -49,82 +50,84 @@ export default async function ReceiptPage({
   const issued = payment.paidAt ?? payment.createdAt;
 
   return (
-    <main className="mx-auto max-w-lg px-5 py-8 print:max-w-none print:py-0">
-      <div className="flex items-center justify-between print:hidden">
-        <Link
-          href={isStaff ? "/teacher/payments" : "/account"}
-          className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline"
-        >
-          <Icon name="arrow_back" className="!text-base" />
-          Back
-        </Link>
-        <p className="text-xs text-(--color-awaken-ink-soft)">
-          Use your browser&apos;s Print to save this as a PDF.
-        </p>
-      </div>
-
-      <article className="mt-4 rounded-2xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-6 print:rounded-none print:border-0 print:p-0">
-        <header className="flex flex-wrap items-start justify-between gap-4 border-b border-(--color-awaken-line) pb-4">
-          <div>
-            <p className="text-lg font-bold">{settings.businessName || "ICT Campus"}</p>
-            {settings.ownerName ? (
-              <p className="text-sm text-(--color-awaken-ink-soft)">{settings.ownerName}</p>
-            ) : null}
-            {settings.addressLine ? (
-              <p className="text-sm text-(--color-awaken-ink-soft)">{settings.addressLine}</p>
-            ) : null}
-            <p className="text-sm text-(--color-awaken-ink-soft)">
-              {[settings.contactPhone, settings.contactEmail].filter(Boolean).join(" · ")}
-            </p>
-            {settings.brNumber ? (
-              <p className="text-xs text-(--color-awaken-ink-soft)">BR {settings.brNumber}</p>
-            ) : null}
-            {settings.taxId ? (
-              <p className="text-xs text-(--color-awaken-ink-soft)">TIN {settings.taxId}</p>
-            ) : null}
-          </div>
-          <div className="text-right">
-            <p className="text-xs font-bold tracking-wide text-(--color-awaken-ink-soft) uppercase">
-              Receipt
-            </p>
-            <p className="font-mono text-lg font-bold">{payment.receiptNo ?? "—"}</p>
-            <p className="text-sm text-(--color-awaken-ink-soft)">{formatDate(issued)}</p>
-          </div>
-        </header>
-
-        <dl className="mt-4 space-y-2 text-sm">
-          <Row label="Received from" value={payer?.name ?? "—"} />
-          <Row label="Phone" value={payer ? formatLocal(payer.phone) : "—"} />
-          <Row label="For" value={subject?.name ?? payment.subjectId} />
-          <Row
-            label="Period"
-            value={`${formatDate(payment.periodStart)} — ${formatDate(payment.periodEnd)}`}
-          />
-          <Row label="Method" value={METHOD_LABEL[payment.provider] ?? payment.provider} />
-          {payment.providerRef ? <Row label="Gateway reference" value={payment.providerRef} /> : null}
-          {payment.bankRef ? <Row label="Bank reference" value={payment.bankRef} /> : null}
-          <Row label="Status" value={STATUS_LABEL[payment.status] ?? payment.status} />
-        </dl>
-
-        <div className="mt-4 flex items-center justify-between border-t border-(--color-awaken-line) pt-4">
-          <span className="font-semibold">Total paid</span>
-          <span className="text-2xl font-bold text-(--color-awaken-accent)">
-            {formatLKR(payment.amountLKR)}
-          </span>
+    <main className="min-h-dvh bg-ict-paper-100 px-5 py-8 print:min-h-0 print:bg-white print:py-0">
+      <div className="mx-auto max-w-lg print:max-w-none">
+        <div className="flex items-center justify-between print:hidden">
+          <Link
+            href={isStaff ? "/teacher/payments" : "/account"}
+            className="inline-flex items-center gap-1 text-sm text-ict-ink-400 underline"
+          >
+            <Icon name="arrow_back" className="!text-base" />
+            Back
+          </Link>
+          <p className="text-xs text-ict-ink-400">
+            Use your browser&apos;s Print to save this as a PDF.
+          </p>
         </div>
 
-        {payment.status === "refunded" || payment.accessRevoked ? (
-          <p className="mt-4 rounded-lg bg-(--color-awaken-danger-soft) p-3 text-sm text-(--color-awaken-danger)">
-            This payment was {payment.status === "refunded" ? "refunded" : "reversed"}
-            {payment.refundedAt ? ` on ${formatDate(payment.refundedAt)}` : ""}.
-            {payment.refundReason ? ` ${payment.refundReason}` : ""}
-          </p>
-        ) : null}
+        <Card radius="panel" className="mt-4 p-6 print:rounded-none print:border-0 print:shadow-none print:p-0">
+          <header className="flex flex-wrap items-start justify-between gap-4 border-b border-ict-paper-300 pb-4">
+            <div>
+              <p className="font-display text-lg font-extrabold text-ict-ink-900">{settings.businessName || "ICT Campus"}</p>
+              {settings.ownerName ? (
+                <p className="text-sm text-ict-ink-400">{settings.ownerName}</p>
+              ) : null}
+              {settings.addressLine ? (
+                <p className="text-sm text-ict-ink-400">{settings.addressLine}</p>
+              ) : null}
+              <p className="text-sm text-ict-ink-400">
+                {[settings.contactPhone, settings.contactEmail].filter(Boolean).join(" · ")}
+              </p>
+              {settings.brNumber ? (
+                <p className="text-xs text-ict-ink-400">BR {settings.brNumber}</p>
+              ) : null}
+              {settings.taxId ? (
+                <p className="text-xs text-ict-ink-400">TIN {settings.taxId}</p>
+              ) : null}
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+                Receipt
+              </p>
+              <p className="font-mono text-lg font-bold text-ict-ink-900">{payment.receiptNo ?? "—"}</p>
+              <p className="text-sm text-ict-ink-400">{formatDate(issued)}</p>
+            </div>
+          </header>
 
-        <p className="mt-6 text-xs text-(--color-awaken-ink-soft)">
-          Computer-generated receipt — valid without a signature. Keep it for your records.
-        </p>
-      </article>
+          <dl className="mt-4 space-y-2 text-sm">
+            <Row label="Received from" value={payer?.name ?? "—"} />
+            <Row label="Phone" value={payer ? formatLocal(payer.phone) : "—"} />
+            <Row label="For" value={subject?.name ?? payment.subjectId} />
+            <Row
+              label="Period"
+              value={`${formatDate(payment.periodStart)} — ${formatDate(payment.periodEnd)}`}
+            />
+            <Row label="Method" value={METHOD_LABEL[payment.provider] ?? payment.provider} />
+            {payment.providerRef ? <Row label="Gateway reference" value={payment.providerRef} /> : null}
+            {payment.bankRef ? <Row label="Bank reference" value={payment.bankRef} /> : null}
+            <Row label="Status" value={STATUS_LABEL[payment.status] ?? payment.status} />
+          </dl>
+
+          <div className="mt-4 flex items-center justify-between border-t border-ict-paper-300 pt-4">
+            <span className="font-semibold text-ict-ink-900">Total paid</span>
+            <span className="font-display text-2xl font-extrabold text-ict-orange-500">
+              {formatLKR(payment.amountLKR)}
+            </span>
+          </div>
+
+          {payment.status === "refunded" || payment.accessRevoked ? (
+            <p className="mt-4 rounded-ict-md bg-ict-red-50 p-3 text-sm text-ict-red-500">
+              This payment was {payment.status === "refunded" ? "refunded" : "reversed"}
+              {payment.refundedAt ? ` on ${formatDate(payment.refundedAt)}` : ""}.
+              {payment.refundReason ? ` ${payment.refundReason}` : ""}
+            </p>
+          ) : null}
+
+          <p className="mt-6 text-xs text-ict-ink-400">
+            Computer-generated receipt — valid without a signature. Keep it for your records.
+          </p>
+        </Card>
+      </div>
     </main>
   );
 }
@@ -132,8 +135,8 @@ export default async function ReceiptPage({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4">
-      <dt className="text-(--color-awaken-ink-soft)">{label}</dt>
-      <dd className="text-right font-medium">{value}</dd>
+      <dt className="text-ict-ink-400">{label}</dt>
+      <dd className="text-right font-medium text-ict-ink-900">{value}</dd>
     </div>
   );
 }

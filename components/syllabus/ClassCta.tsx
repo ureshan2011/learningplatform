@@ -40,14 +40,14 @@ export function ClassCta({
     return (
       <Link
         href={`/signin?next=/subjects/${subjectId}`}
-        className={`group/cta inline-flex shrink-0 items-center gap-1.5 rounded-full border font-semibold transition-all duration-200 hover:-translate-y-0.5 ${padding}`}
+        className={`ict-press group/cta inline-flex shrink-0 items-center gap-1.5 rounded-full border font-semibold transition-colors duration-[120ms] ease-ict ${padding}`}
         style={{ borderColor: tone.line, color: tone.ink, background: tone.soft }}
       >
         <Icon name="videocam" className={small ? "!text-sm" : "!text-base"} />
         Join this class
         <Icon
           name="arrow_forward"
-          className={`transition-transform duration-200 group-hover/cta:translate-x-0.5 ${small ? "!text-sm" : "!text-base"}`}
+          className={`transition-transform duration-[120ms] ease-ict group-hover/cta:translate-x-0.5 ${small ? "!text-sm" : "!text-base"}`}
         />
       </Link>
     );
@@ -59,7 +59,7 @@ export function ClassCta({
     return (
       <Link
         href={`/live/${topicClass.id}`}
-        className={`inline-flex shrink-0 items-center gap-2 rounded-full bg-gradient-to-r from-(--color-awaken-danger) to-(--color-awaken-rose) font-semibold text-white shadow-[0_6px_18px_rgba(220,38,38,0.32)] transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.99] ${padding}`}
+        className={`ict-press inline-flex shrink-0 items-center gap-2 rounded-full bg-ict-orange-500 font-semibold text-white shadow-ict-brand transition-colors duration-[120ms] ease-ict hover:bg-ict-orange-600 ${padding}`}
       >
         <span className="relative flex size-2 shrink-0">
           <span className="syl-pulse-ring absolute inline-flex size-2 rounded-full bg-white" />
@@ -73,8 +73,8 @@ export function ClassCta({
   return (
     <Link
       href={`/live/${topicClass.id}`}
-      className={`group/cta inline-flex shrink-0 items-center gap-1.5 rounded-full font-semibold text-white shadow-[0_6px_18px_rgba(0,0,0,0.12)] transition-transform duration-200 hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.99] ${padding}`}
-      style={{ backgroundImage: `linear-gradient(135deg, ${tone.gradFrom}, ${tone.gradTo})` }}
+      className={`ict-press inline-flex shrink-0 items-center gap-1.5 rounded-full font-semibold text-white transition-transform duration-[120ms] ease-ict ${padding}`}
+      style={{ background: tone.gradTo }}
     >
       <Icon name="calendar_month" className={small ? "!text-sm" : "!text-base"} />
       Join · {topicClass.startsAtShort}
@@ -103,7 +103,7 @@ export function ClassStatus({
 
   if (isJoinableNow(topicClass, now)) {
     return (
-      <span className={`font-semibold text-(--color-awaken-danger) ${className ?? ""}`}>
+      <span className={`font-semibold text-ict-red-500 ${className ?? ""}`}>
         Live now
       </span>
     );
@@ -134,10 +134,10 @@ function countdownLabel(topicClass: TopicClass, now: number): string {
 /** Pulsing "LIVE" pill for a unit that has a class running right now. */
 export function LivePill({ label = "Live now" }: { label?: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-(--color-awaken-danger) px-2.5 py-1 text-[11px] font-bold tracking-wide text-white uppercase">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-ict-red-50 px-2.5 py-1 text-[11px] font-bold tracking-wide text-ict-red-500 uppercase">
       <span className="relative flex size-1.5 shrink-0">
-        <span className="syl-pulse-ring absolute inline-flex size-1.5 rounded-full bg-white" />
-        <span className="relative inline-flex size-1.5 rounded-full bg-white" />
+        <span className="syl-pulse-ring absolute inline-flex size-1.5 rounded-full bg-ict-red-500" />
+        <span className="relative inline-flex size-1.5 rounded-full bg-ict-red-500" />
       </span>
       {label}
     </span>

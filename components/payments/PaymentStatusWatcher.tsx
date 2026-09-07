@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { clsx } from "clsx";
 import { Icon } from "@/components/ui/Icon";
+import { ButtonLink, Card } from "@/components/ds-cream";
 import { track } from "@/lib/analytics";
 import { fetchWithSession } from "@/lib/auth/session-client";
 
@@ -88,25 +89,30 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
 
   if (phase === "unlocked") {
     return (
-      <div className="rounded-xl border border-(--color-awaken-success)/30 bg-(--color-awaken-success-soft) p-5 text-sm">
-        <p className="flex items-center justify-center gap-2 font-semibold text-(--color-awaken-success)">
+      <div className={clsx("rounded-ict-card border p-5 text-sm", "border-ict-green-500/30 bg-ict-green-50")}>
+        <p className="flex items-center justify-center gap-2 font-semibold text-ict-green-500">
           <Icon name="check_circle" className="!text-lg" />
           Your class is open
         </p>
         {receiptNo ? (
-          <p className="mt-1 text-(--color-awaken-ink-soft)">Receipt {receiptNo}</p>
+          <p className="mt-1 text-center text-ict-ink-400">Receipt {receiptNo}</p>
         ) : null}
         <div className="mt-4 flex flex-col gap-2">
-          <Link
+          <ButtonLink
             href={subjectId ? `/subjects/${subjectId}` : "/dashboard"}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-6 py-3 font-semibold text-white"
+            variant="primary"
+            size="md"
+            arrow="none"
+            className="justify-center"
           >
-            <Icon name="school" className="!text-base" />
-            Go to my class
-          </Link>
-          <Link href="/account" className="text-xs text-(--color-awaken-ink-soft) underline">
+            <span className="inline-flex items-center gap-1.5">
+              <Icon name="school" className="!text-base" />
+              Go to my class
+            </span>
+          </ButtonLink>
+          <a href="/account" className="text-xs text-ict-ink-400 underline">
             See the receipt
-          </Link>
+          </a>
         </div>
       </div>
     );
@@ -114,21 +120,18 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
 
   if (phase === "failed") {
     return (
-      <div className="rounded-xl border border-(--color-awaken-danger)/30 bg-(--color-awaken-danger-soft) p-5 text-sm">
-        <p className="font-semibold text-(--color-awaken-danger)">That payment did not go through</p>
-        <p className="mt-1 text-(--color-awaken-ink-soft)">
+      <div className={clsx("rounded-ict-card border p-5 text-sm", "border-ict-red-500/30 bg-ict-red-50")}>
+        <p className="font-semibold text-ict-red-500">That payment did not go through</p>
+        <p className="mt-1 text-ict-ink-400">
           Nothing was charged. Try again, or pay by bank deposit instead.
         </p>
         <div className="mt-4 flex flex-col gap-2">
-          <Link
-            href="/dashboard"
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-(--color-awaken-deep) px-6 py-3 font-semibold text-white"
-          >
+          <ButtonLink href="/dashboard" variant="secondary" size="md" arrow="none" className="justify-center">
             Back to dashboard
-          </Link>
-          <Link href="/pay/slip" className="text-xs text-(--color-awaken-ink-soft) underline">
+          </ButtonLink>
+          <a href="/pay/slip" className="text-xs text-ict-ink-400 underline">
             Pay by bank deposit
-          </Link>
+          </a>
         </div>
       </div>
     );
@@ -136,32 +139,29 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
 
   if (phase === "slow") {
     return (
-      <div className="rounded-xl border border-(--color-awaken-warn)/40 bg-(--color-awaken-warn-soft) p-5 text-sm">
-        <p className="font-semibold text-(--color-awaken-warn)">Still waiting on the bank</p>
-        <p className="mt-1 text-(--color-awaken-ink-soft)">
+      <div className={clsx("rounded-ict-card border p-5 text-sm", "border-ict-amber-500/40 bg-ict-amber-50")}>
+        <p className="font-semibold text-[#a1670f]">Still waiting on the bank</p>
+        <p className="mt-1 text-ict-ink-400">
           Your payment may still be on its way. Check your dashboard in a few minutes — if the class
           is still locked, send your teacher this reference and they can see exactly what happened:
         </p>
-        <p className="mt-2 font-mono text-xs break-all">{orderId}</p>
-        <Link
-          href="/dashboard"
-          className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-lg bg-(--color-awaken-deep) px-6 py-3 font-semibold text-white"
-        >
+        <p className="mt-2 font-mono text-xs break-all text-ict-ink-900">{orderId}</p>
+        <ButtonLink href="/dashboard" variant="secondary" size="md" arrow="none" className="mt-4 justify-center">
           Go to my dashboard
-        </Link>
+        </ButtonLink>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 text-sm">
-      <p className="flex items-center justify-center gap-2 font-semibold">
-        <span className="size-2 animate-ping rounded-full bg-(--color-awaken-accent)" />
+    <Card radius="card" className="p-5 text-sm">
+      <p className="flex items-center justify-center gap-2 font-semibold text-ict-ink-900">
+        <span className="size-2 animate-ping rounded-full bg-ict-orange-500" />
         Confirming your payment…
       </p>
-      <p className="mt-1 text-(--color-awaken-ink-soft)">
+      <p className="mt-1 text-center text-ict-ink-400">
         This usually takes a few seconds. Keep this page open.
       </p>
-    </div>
+    </Card>
   );
 }

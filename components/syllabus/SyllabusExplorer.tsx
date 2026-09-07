@@ -10,6 +10,7 @@ import {
   useActiveStation,
   useRevealScope,
 } from "@/components/syllabus/motion";
+import { Button, EmptyState } from "@/components/ds-cream";
 import type { Unit } from "@/lib/types";
 
 type GradeFilter = "all" | 12 | 13;
@@ -142,7 +143,7 @@ export function SyllabusExplorer({
 
   return (
     <div ref={scopeRef}>
-      <div className="sticky top-0 z-30 -mx-5 border-y border-(--color-awaken-line) bg-(--color-awaken-bg)/85 px-5 py-3 backdrop-blur-xl md:-mx-8 md:px-8">
+      <div className="sticky top-0 z-30 -mx-5 border-y border-ict-paper-300 bg-ict-paper-100/85 px-5 py-3 backdrop-blur-xl md:-mx-8 md:px-8">
         <div className="flex flex-wrap items-center gap-2">
           {/* Order is swapped on a phone so the search box and the view toggle
               share the first row — the filter bar is sticky, and three stacked
@@ -151,19 +152,19 @@ export function SyllabusExplorer({
             <span className="sr-only">Search the syllabus</span>
             <Icon
               name="search"
-              className="pointer-events-none absolute top-1/2 left-3 !text-lg -translate-y-1/2 text-(--color-awaken-ink-soft)"
+              className="pointer-events-none absolute top-1/2 left-3 !text-lg -translate-y-1/2 text-ict-ink-400"
             />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search a topic — databases, HTML, truth tables…"
-              className="w-full rounded-full border border-(--color-awaken-line) bg-(--color-awaken-card) py-2 pr-10 pl-10 text-sm outline-none transition-colors focus:border-(--color-awaken-accent) sm:py-2.5"
+              className="w-full rounded-full border border-ict-paper-300 bg-ict-paper-0 py-2 pr-10 pl-10 text-sm outline-none transition-colors duration-[120ms] ease-ict focus:border-ict-orange-500 sm:py-2.5"
             />
             {query ? (
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-(--color-awaken-ink-soft) hover:bg-(--color-awaken-bg)"
+                className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-ict-ink-400 hover:bg-ict-paper-200"
               >
                 <span className="sr-only">Clear search</span>
                 <Icon name="close" className="!text-base" />
@@ -205,10 +206,10 @@ export function SyllabusExplorer({
             type="button"
             onClick={() => setClassesOnly((on) => !on)}
             aria-pressed={classesOnly}
-            className={`order-4 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition-colors sm:order-3 sm:px-3.5 sm:py-2 sm:text-sm ${
+            className={`ict-press order-4 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition-colors duration-[120ms] ease-ict sm:order-3 sm:px-3.5 sm:py-2 sm:text-sm ${
               classesOnly
-                ? "border-transparent bg-(--color-awaken-danger) text-white"
-                : "border-(--color-awaken-line) bg-(--color-awaken-card) text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)"
+                ? "border-transparent bg-ict-orange-500 text-white"
+                : "border-ict-paper-300 bg-ict-paper-0 text-ict-ink-400 hover:text-ict-ink-900"
             }`}
           >
             <Icon name="live_tv" className="!text-base" />
@@ -216,14 +217,14 @@ export function SyllabusExplorer({
           </button>
         </div>
 
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-(--color-awaken-ink-soft)">
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ict-ink-400">
           <span>
-            <strong className="font-bold text-(--color-awaken-ink)">{results.length}</strong>{" "}
+            <strong className="font-bold text-ict-ink-900">{results.length}</strong>{" "}
             unit{results.length === 1 ? "" : "s"}
             {searching ? (
               <>
                 {" "}
-                · <strong className="font-bold text-(--color-awaken-ink)">{lessonMatchCount}</strong>{" "}
+                · <strong className="font-bold text-ict-ink-900">{lessonMatchCount}</strong>{" "}
                 matching lesson{lessonMatchCount === 1 ? "" : "s"}
               </>
             ) : null}
@@ -235,7 +236,7 @@ export function SyllabusExplorer({
             </span>
           ) : null}
           {classIndex.total > 0 ? (
-            <span className="inline-flex items-center gap-1 font-semibold text-(--color-awaken-accent)">
+            <span className="inline-flex items-center gap-1 font-semibold text-ict-orange-600">
               <Icon name="videocam" className="!text-sm" />
               {classIndex.total} class{classIndex.total === 1 ? "" : "es"} scheduled
             </span>
@@ -244,23 +245,24 @@ export function SyllabusExplorer({
       </div>
 
       {results.length === 0 ? (
-        <div className="mt-10 rounded-3xl border border-dashed border-(--color-awaken-line) p-10 text-center">
-          <Icon name="search" className="!text-4xl text-(--color-awaken-ink-soft)" />
-          <p className="mt-2 font-semibold">Nothing matches that yet.</p>
-          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-            Try a shorter word, or clear the filters to see all {units.length} units.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setQuery("");
-              setGrade("all");
-              setClassesOnly(false);
-            }}
-            className="mt-4 rounded-full bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 text-sm font-semibold text-white"
-          >
-            Reset filters
-          </button>
+        <div className="mt-10">
+          <EmptyState
+            icon="search"
+            title="Nothing matches that yet"
+            body={`Try a shorter word, or clear the filters to see all ${units.length} units.`}
+            action={
+              <Button
+                variant="primary"
+                onClick={() => {
+                  setQuery("");
+                  setGrade("all");
+                  setClassesOnly(false);
+                }}
+              >
+                Reset filters
+              </Button>
+            }
+          />
         </div>
       ) : view === "grid" ? (
         <ul className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -280,10 +282,10 @@ export function SyllabusExplorer({
           {/* The roadmap rail. Fills as you travel down the syllabus. */}
           <div
             aria-hidden
-            className="pointer-events-none absolute top-4 bottom-10 left-[17px] w-[2px] overflow-hidden rounded-full bg-(--color-awaken-line) sm:left-[23px]"
+            className="pointer-events-none absolute top-4 bottom-10 left-[17px] w-[2px] overflow-hidden rounded-full bg-ict-paper-300 sm:left-[23px]"
           >
             <div
-              className="absolute inset-0 origin-top rounded-full bg-gradient-to-b from-(--color-awaken-accent) to-(--color-awaken-rose) transition-transform duration-700 ease-out"
+              className="absolute inset-0 origin-top rounded-full bg-ict-orange-500 transition-transform duration-700 ease-out"
               style={{ transform: `scaleY(${railFill.toFixed(3)})` }}
             />
             <div className="syl-rail-spark absolute inset-x-0 h-12 rounded-full bg-gradient-to-b from-transparent via-white/90 to-transparent" />
@@ -309,8 +311,8 @@ export function SyllabusExplorer({
             ))}
           </ol>
 
-          <p className="relative flex items-center gap-3 pl-11 text-sm font-semibold text-(--color-awaken-ink-soft) sm:pl-16">
-            <span className="absolute left-0 flex size-9 items-center justify-center rounded-2xl bg-gradient-to-br from-(--color-awaken-accent) to-(--color-awaken-rose) text-white sm:size-12">
+          <p className="relative flex items-center gap-3 pl-11 text-sm font-semibold text-ict-ink-400 sm:pl-16">
+            <span className="absolute left-0 flex size-9 items-center justify-center rounded-ict-md bg-ict-orange-500 text-white sm:size-12">
               <Icon name="flag" className="!text-xl" />
             </span>
             That&apos;s the whole syllabus — {units.length} units, exam-ready.
@@ -339,7 +341,7 @@ function Segmented<T extends string | number>({
 }) {
   return (
     <div
-      className={`inline-flex gap-1 rounded-full border border-(--color-awaken-line) bg-(--color-awaken-card) p-1 ${className ?? ""}`}
+      className={`inline-flex gap-1 rounded-full border border-ict-paper-300 bg-ict-paper-0 p-1 ${className ?? ""}`}
     >
       {options.map((option) => {
         const active = option.value === value;
@@ -349,10 +351,10 @@ function Segmented<T extends string | number>({
             type="button"
             onClick={() => onChange(option.value)}
             aria-pressed={active}
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition-all duration-200 sm:px-3.5 sm:text-sm ${
+            className={`ict-press inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition-colors duration-[120ms] ease-ict sm:px-3.5 sm:text-sm ${
               active
-                ? "scale-[1.02] bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) text-white shadow-[0_4px_12px_rgba(234,88,12,0.28)]"
-                : "text-(--color-awaken-ink-soft) hover:text-(--color-awaken-ink)"
+                ? "bg-ict-orange-500 text-white shadow-ict-brand"
+                : "text-ict-ink-400 hover:text-ict-ink-900"
             }`}
           >
             {option.icon ? (

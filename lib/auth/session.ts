@@ -19,6 +19,23 @@ export const SESSION_COOKIE = "ictclass_session";
 export const DEVICE_COOKIE = "ictclass_device";
 
 /**
+ * A plain, non-`httpOnly` marker set alongside the real session cookie —
+ * "some browser is signed in", nothing more. It proves nothing on its own and
+ * is never read by any access check; the httpOnly `SESSION_COOKIE` still does
+ * all the real authentication.
+ *
+ * It exists purely so static, cached pages (`/notes`, `/past-papers`, ...)
+ * can decide client-side, synchronously, whether to show "Sign in" or "Back
+ * to dashboard" — without waiting on Firebase Auth's own client-side
+ * persistence, which is asynchronous and, in some browsing contexts (in-app
+ * webviews, Safari's storage restrictions on infrequently-visited or
+ * cross-app contexts), can simply fail to come back even though the visitor
+ * really is signed in. A first-party cookie set via `Set-Cookie` survives
+ * those cases far more reliably than script-written IndexedDB does.
+ */
+export const SIGNED_IN_HINT_COOKIE = "ictclass_ui";
+
+/**
  * 14 days — the maximum Firebase allows for a session cookie.
  *
  * The old value was 5 days, on the theory that a shorter cookie held down the
