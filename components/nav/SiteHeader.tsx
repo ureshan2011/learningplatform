@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { SessionUser } from "@/lib/auth/session";
 import { useSignedInClient } from "@/lib/auth/use-signed-in-client";
 import { SignOutButton } from "@/components/auth/SignOutButton";
@@ -27,6 +28,14 @@ import { ButtonLink } from "@/components/ds-cream";
 export function SiteHeader({ user }: { user: SessionUser | null }) {
   const isStaff = user?.role === "teacher" || user?.role === "admin";
   const showSignedInNav = useSignedInClient(Boolean(user));
+  const pathname = usePathname();
+  // A visitor who taps "Sign in" from an article page should come back to
+  // that article, not the dashboard — the same "return to where you were"
+  // behaviour every gated page already gets from `requirePageUser`. Skipped
+  // on the sign-in page itself and on the payment pages, where "back to
+  // here" is never the right destination.
+  const skipNext = pathname.startsWith("/signin") || pathname.startsWith("/payments");
+  const signInHref = skipNext ? "/signin" : `/signin?next=${encodeURIComponent(pathname)}`;
 
   return (
     <header className="border-b border-ict-paper-300 bg-ict-paper-0">
@@ -51,7 +60,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               <NavLink href="/past-papers">Past papers</NavLink>
               <NavLink href="/notes">Notes</NavLink>
               <NavLink href="/dr-yasas">Lecturer</NavLink>
-              <ButtonLink href="/signin" variant="primary" size="sm" className="ml-1">
+              <ButtonLink href={signInHref} variant="primary" size="sm" className="ml-1">
                 Sign in
               </ButtonLink>
             </>

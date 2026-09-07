@@ -39,7 +39,7 @@ export function ClassCta({
   if (!topicClass) {
     return (
       <Link
-        href={`/signin?next=/subjects/${subjectId}`}
+        href={`/go?do=trial&subject=${subjectId}`}
         className={`ict-press group/cta inline-flex shrink-0 items-center gap-1.5 rounded-full border font-semibold transition-colors duration-[120ms] ease-ict ${padding}`}
         style={{ borderColor: tone.line, color: tone.ink, background: tone.soft }}
       >

@@ -208,7 +208,7 @@ export default async function AlIctClassesPage() {
         </p>
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
-          <ButtonLink href="/signin" variant="primary">
+          <ButtonLink href="/go?do=trial&subject=al-ict" variant="primary">
             Start the free 7-day trial
           </ButtonLink>
           <ButtonLink href="/syllabus" variant="outline" arrow="none">
@@ -256,7 +256,7 @@ export default async function AlIctClassesPage() {
             <li>· උගන්වන්නේ ආචාර්ය යසස් ශ්‍රී වික්‍රමසිංහ — නවසීලන්තයේ Canterbury විශ්වවිද්‍යාලයෙන් ආචාර්ය උපාධිය ලැබූ, ජ්‍යෙෂ්ඨ කථිකාචාර්යවරයෙකි.</li>
           </ul>
           <p className="mt-4 text-sm">
-            <Link href="/signin" className="font-semibold text-ict-orange-600 underline decoration-ict-orange-500 underline-offset-2">
+            <Link href="/go?do=trial&subject=al-ict" className="font-semibold text-ict-orange-600 underline decoration-ict-orange-500 underline-offset-2">
               නොමිලේ දින 7ක් අත්හදා බලන්න
             </Link>
           </p>
@@ -454,7 +454,7 @@ export default async function AlIctClassesPage() {
           <p className="mt-2 text-ict-ink-300">
             Seven days free, no card, no auto-renewal. Sign in with your mobile number and one SMS code.
           </p>
-          <ButtonLink href="/signin" variant="primary" className="mt-4">
+          <ButtonLink href="/go?do=trial&subject=al-ict" variant="primary" className="mt-4">
             Start free
           </ButtonLink>
         </Card>

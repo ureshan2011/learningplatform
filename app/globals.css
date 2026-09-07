@@ -474,12 +474,24 @@ body {
   animation-delay: var(--enter-delay, 0ms);
 }
 
+/*
+ * A step changing on the sign-in screen (phone → code → name) is a smaller
+ * beat than a panel or drawer arriving — the transform tier, not the
+ * entrance tier, so 200ms on the standard ease rather than 340ms on the
+ * "out" curve. Same keyframes; the panel-entrance duration would read as
+ * sluggish for a screen a student is moving through quickly.
+ */
+.ict-step-enter {
+  animation: ict-enter 200ms var(--ease-ict) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ict-lift:hover,
   .ict-press:active {
     transform: none;
   }
-  .ict-enter {
+  .ict-enter,
+  .ict-step-enter {
     animation: none;
   }
 }

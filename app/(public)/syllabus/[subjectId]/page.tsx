@@ -115,7 +115,7 @@ export default async function SubjectSyllabusPage({
               and every past paper worked through step by step. Every subject starts
               with a free 7-day trial — no card needed.
             </p>
-            <ButtonLink href={`/signin?next=/subjects/${subjectId}`} variant="primary" className="mt-6">
+            <ButtonLink href={`/go?do=trial&subject=${subjectId}`} variant="primary" className="mt-6">
               Start my free trial
             </ButtonLink>
           </div>

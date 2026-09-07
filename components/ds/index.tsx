@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { forwardRef } from "react";
 import { clsx } from "clsx";
 import { Icon, type IconName } from "@/components/ui/Icon";
 
@@ -590,6 +591,123 @@ export function EmptyState({
       {body ? <p className="mt-1.5 max-w-sm text-sm text-ict-ink-300">{body}</p> : null}
       {action ? <div className="mt-5">{action}</div> : null}
     </Card>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Forms                                                                       */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Label above a field, hint or error below. An error is a `StatusDot` plus
+ * text, never a red fill — the same rule as everywhere else colour appears.
+ */
+export function Field({
+  label,
+  hint,
+  error,
+  children,
+}: {
+  label?: string;
+  hint?: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      {label ? (
+        <span className="mb-1.5 block text-sm font-medium text-ict-ink-300">{label}</span>
+      ) : null}
+      {children}
+      {error ? (
+        <span className="mt-1.5 flex items-center gap-1.5 text-xs text-ict-ink-300">
+          <StatusDot tone="danger" className="shrink-0" />
+          {error}
+        </span>
+      ) : hint ? (
+        <span className="mt-1.5 block text-xs text-ict-ink-300">{hint}</span>
+      ) : null}
+    </label>
+  );
+}
+
+type InputSize = "md" | "lg";
+
+const INPUT_HEIGHT: Record<InputSize, string> = { md: "h-12", lg: "h-14" };
+const INPUT_TEXT: Record<InputSize, string> = {
+  md: "text-base",
+  lg: "text-2xl tracking-[0.4em] text-center",
+};
+
+/**
+ * A pill text input for the dark world.
+ *
+ * Per the system, inputs are `rounded-full` exactly like every other action
+ * surface — never the 10px "slightly rounded" corner. `prefix` is a fixed
+ * leading slot (a country code) set off by a hairline; `size="lg"` is the
+ * centred, widely tracked style for a one-time code.
+ */
+export const Input = forwardRef<
+  HTMLInputElement,
+  {
+    size?: InputSize;
+    prefix?: React.ReactNode;
+    className?: string;
+  } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "size" | "className">
+>(function Input({ size = "md", prefix, className, ...rest }, ref) {
+  return (
+    <div
+      className={clsx(
+        "flex items-center overflow-hidden rounded-full border border-ict-border-dark bg-ict-ink-800 transition-colors duration-[120ms] ease-ict focus-within:border-ict-orange-500",
+        INPUT_HEIGHT[size],
+        className,
+      )}
+    >
+      {prefix ? (
+        <span className="flex h-full shrink-0 items-center border-r border-ict-border-dark px-4 text-ict-ink-300 select-none">
+          {prefix}
+        </span>
+      ) : null}
+      <input
+        ref={ref}
+        className={clsx(
+          "min-w-0 flex-1 bg-transparent px-4 text-ict-paper-50 outline-none placeholder:text-ict-ink-400",
+          INPUT_TEXT[size],
+        )}
+        {...rest}
+      />
+    </div>
+  );
+});
+
+export type NoticeTone = "info" | "warning" | "danger" | "success";
+
+/**
+ * The single notice slot a screen shows at a time: one thin bordered row,
+ * a `StatusDot` carrying the only colour. Never a large tinted fill — a new
+ * notice replaces the last one rather than stacking beside it, so success can
+ * never appear next to an error.
+ */
+export function Notice({
+  tone,
+  children,
+  className,
+}: {
+  tone: NoticeTone;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <p
+      role={tone === "danger" ? "alert" : "status"}
+      className={clsx(
+        "flex items-start gap-2.5 rounded-ict-md border border-ict-border-dark bg-ict-ink-850 px-3.5 py-3 text-sm text-ict-paper-50",
+        className,
+      )}
+    >
+      <StatusDot tone={tone} className="mt-[7px] shrink-0" />
+      <span>{children}</span>
+    </p>
   );
 }
 
