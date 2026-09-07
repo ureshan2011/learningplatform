@@ -48,24 +48,20 @@ export function UnitGridCard({
         onClick={onOpen}
         onPointerMove={tilt.onPointerMove}
         onPointerLeave={tilt.onPointerLeave}
-        className="syl-tilt group relative flex h-full w-full flex-col overflow-hidden rounded-3xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 text-left shadow-[0_1px_3px_rgba(0,0,0,0.05)] transition-shadow duration-300 hover:shadow-[0_18px_40px_-18px_rgba(0,0,0,0.28)]"
+        className="syl-tilt group relative flex h-full w-full flex-col overflow-hidden rounded-ict-panel border border-ict-paper-300 bg-ict-paper-0 p-5 text-left shadow-ict-sm transition-shadow duration-300 hover:shadow-ict-lg"
       >
         <span aria-hidden className="syl-sheen pointer-events-none absolute inset-0" />
-        <span
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-1.5"
-          style={{ backgroundImage: `linear-gradient(90deg, ${tone.gradFrom}, ${tone.gradTo})` }}
-        />
+        <span aria-hidden className="absolute inset-x-0 top-0 h-1.5" style={{ background: tone.gradTo }} />
 
         <span className="relative flex items-start justify-between gap-3">
           <span
-            className="flex size-12 shrink-0 items-center justify-center rounded-2xl text-white transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3"
-            style={{ backgroundImage: `linear-gradient(140deg, ${tone.gradFrom}, ${tone.gradTo})` }}
+            className="flex size-12 shrink-0 items-center justify-center rounded-ict-md text-white transition-transform duration-300 group-hover:scale-110"
+            style={{ background: tone.gradTo }}
           >
             <Icon name={unitIcon(unit.competencyNumber)} className="!text-2xl" />
           </span>
           <span className="flex flex-col items-end gap-1.5">
-            <span className="text-[11px] font-bold text-(--color-awaken-ink-soft)">
+            <span className="text-[11px] font-bold text-ict-ink-400">
               Grade {unit.gradeYear}
             </span>
             {live ? (
@@ -87,21 +83,21 @@ export function UnitGridCard({
           </span>
           {unit.title}
         </span>
-        <span className="relative mt-1.5 line-clamp-2 block text-xs text-(--color-awaken-ink-soft)">
+        <span className="relative mt-1.5 line-clamp-2 block text-xs text-ict-ink-400">
           {unit.competencyStatement}
         </span>
 
         <span className="relative mt-auto block pt-4">
-          <span className="block h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-bg)">
+          <span className="block h-1.5 w-full overflow-hidden rounded-full bg-ict-paper-200">
             <span
               className="block h-full origin-left rounded-full transition-transform duration-[900ms] ease-out"
               style={{
-                backgroundImage: `linear-gradient(90deg, ${tone.gradFrom}, ${tone.gradTo})`,
+                background: tone.gradTo,
                 transform: "scaleX(var(--weight, 0.04))",
               }}
             />
           </span>
-          <span className="mt-2 flex items-center justify-between text-xs text-(--color-awaken-ink-soft)">
+          <span className="mt-2 flex items-center justify-between text-xs text-ict-ink-400">
             <span>{unit.periods} periods</span>
             <span>
               {unit.lessons.length} lesson{unit.lessons.length === 1 ? "" : "s"}

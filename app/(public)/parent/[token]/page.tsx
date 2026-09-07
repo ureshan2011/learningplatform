@@ -4,8 +4,7 @@ import { listEnrollments, listAttendance, getProgress, listSubjects } from "@/li
 import { formatDate, formatSessionTime } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
-import { StatTile } from "@/components/ui/StatTile";
-import { StatusPill } from "@/components/ui/StatusPill";
+import { Card, Eyebrow, StatCard, StatusChip } from "@/components/ds-cream";
 import type { User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -31,11 +30,15 @@ export default async function ParentViewPage({
     return (
       <>
         <SiteHeader user={null} />
-        <main className="mx-auto max-w-lg px-5 py-16 text-center">
-          <h1 className="text-xl font-bold">This link is no longer valid</h1>
-          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">
-            Ask your child to open their account page and generate a new parent view link.
-          </p>
+        <main className="bg-ict-paper-100 px-5 py-16">
+          <div className="mx-auto max-w-lg text-center">
+            <h1 className="font-display text-xl font-extrabold tracking-[-0.02em] text-ict-ink-900">
+              This link is no longer valid
+            </h1>
+            <p className="mt-3 text-sm text-ict-ink-400">
+              Ask your child to open their account page and generate a new parent view link.
+            </p>
+          </div>
         </main>
       </>
     );
@@ -66,77 +69,80 @@ export default async function ParentViewPage({
   return (
     <>
       <SiteHeader user={null} />
-      <main className="mx-auto max-w-2xl px-5 py-10">
-      <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-(--color-awaken-ink-soft)">
-        <Icon name="family_restroom" className="!text-base text-(--color-awaken-accent)" />
-        Parent view
-      </p>
-      <h1 className="mt-1 text-2xl font-bold">{user.name}</h1>
-      <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">Read-only — attendance and progress only.</p>
+      <main className="bg-ict-paper-100 px-5 py-10">
+        <div className="mx-auto max-w-2xl">
+          <Eyebrow className="flex items-center gap-1.5">
+            <Icon name="family_restroom" className="!text-base" />
+            Parent view
+          </Eyebrow>
+          <h1 className="mt-1 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-ink-900">{user.name}</h1>
+          <p className="mt-1 text-sm text-ict-ink-400">Read-only — attendance and progress only.</p>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold">Subjects</h2>
-        {enrollments.length === 0 ? (
-          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">Not enrolled in any subject yet.</p>
-        ) : (
-          <ul className="mt-3 space-y-3">
-            {enrollments.map((e, i) => {
-              const subject = subjectById.get(e.subjectId);
-              const active = e.status === "active" && e.currentPeriodEnd > now;
-              const progress = progressBySubject[i];
-              return (
-                <li key={e.id} className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4">
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold">{subject?.name ?? e.subjectId}</p>
-                    <StatusPill tone={active ? "success" : "neutral"}>
-                      {active ? `Active until ${formatDate(e.currentPeriodEnd)}` : "Not active"}
-                    </StatusPill>
-                  </div>
-                  {progress ? (
-                    <div className="mt-3 grid grid-cols-3 gap-3">
-                      <StatTile icon="local_fire_department" label="Streak" value={`${progress.streakDays}d`} />
-                      <StatTile icon="grade" label="Level" value={progress.level} />
-                      <StatTile icon="bolt" label="XP" value={progress.xp} />
-                    </div>
-                  ) : null}
-                  {progress && progress.weakTopics.length > 0 ? (
-                    <p className="mt-3 text-xs text-(--color-awaken-ink-soft)">
-                      Focus areas right now: {progress.weakTopics.join(", ")}
-                    </p>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </section>
+          <section className="mt-8">
+            <h2 className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-ink-900">Subjects</h2>
+            {enrollments.length === 0 ? (
+              <p className="mt-3 text-sm text-ict-ink-400">Not enrolled in any subject yet.</p>
+            ) : (
+              <ul className="mt-3 space-y-3">
+                {enrollments.map((e, i) => {
+                  const subject = subjectById.get(e.subjectId);
+                  const active = e.status === "active" && e.currentPeriodEnd > now;
+                  const progress = progressBySubject[i];
+                  return (
+                    <li key={e.id}>
+                      <Card radius="card" className="p-4">
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="font-semibold text-ict-ink-900">{subject?.name ?? e.subjectId}</p>
+                          <StatusChip tone={active ? "success" : "neutral"} className="shrink-0">
+                            {active ? `Active until ${formatDate(e.currentPeriodEnd)}` : "Not active"}
+                          </StatusChip>
+                        </div>
+                        {progress ? (
+                          <div className="mt-3 grid grid-cols-3 gap-3">
+                            <StatCard icon="local_fire_department" label="Streak" value={`${progress.streakDays}d`} />
+                            <StatCard icon="grade" label="Level" value={progress.level} />
+                            <StatCard icon="bolt" label="XP" value={progress.xp} />
+                          </div>
+                        ) : null}
+                        {progress && progress.weakTopics.length > 0 ? (
+                          <p className="mt-3 text-xs text-ict-ink-400">
+                            Focus areas right now: {progress.weakTopics.join(", ")}
+                          </p>
+                        ) : null}
+                      </Card>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
 
-      <section className="mt-8">
-        <h2 className="text-lg font-semibold">Recent attendance</h2>
-        {avgAttendance !== null ? (
-          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
-            Average attendance score over the last {attendance.length} classes:{" "}
-            <span className="font-semibold text-(--color-awaken-ink)">{avgAttendance}%</span>
-          </p>
-        ) : null}
-        {attendance.length === 0 ? (
-          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">No classes attended yet.</p>
-        ) : (
-          <ul className="mt-3 space-y-2 text-sm">
-            {attendance.map((a) => (
-              <li
-                key={`${a.sessionId}_${a.joinedAt}`}
-                className="flex items-center justify-between rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-3"
-              >
-                <span className="text-(--color-awaken-ink-soft)">
-                  {a.joinedAt ? formatSessionTime(a.joinedAt) : "—"}
-                </span>
-                <span className="text-(--color-awaken-ink-soft)">{a.minutesPresent} min present</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          <section className="mt-8">
+            <h2 className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-ink-900">Recent attendance</h2>
+            {avgAttendance !== null ? (
+              <p className="mt-1 text-sm text-ict-ink-400">
+                Average attendance score over the last {attendance.length} classes:{" "}
+                <span className="font-semibold text-ict-ink-900">{avgAttendance}%</span>
+              </p>
+            ) : null}
+            {attendance.length === 0 ? (
+              <p className="mt-3 text-sm text-ict-ink-400">No classes attended yet.</p>
+            ) : (
+              <ul className="mt-3 space-y-2 text-sm">
+                {attendance.map((a) => (
+                  <li key={`${a.sessionId}_${a.joinedAt}`}>
+                    <Card radius="md" className="flex items-center justify-between p-3">
+                      <span className="text-ict-ink-400">
+                        {a.joinedAt ? formatSessionTime(a.joinedAt) : "—"}
+                      </span>
+                      <span className="text-ict-ink-400">{a.minutesPresent} min present</span>
+                    </Card>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
       </main>
     </>
   );
