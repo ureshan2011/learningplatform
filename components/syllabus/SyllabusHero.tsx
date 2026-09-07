@@ -102,7 +102,7 @@ export function SyllabusHero({
               <ClassCta subjectId={subjectId} topicClass={nextClass} tone={TONE.ember} />
             </div>
           ) : (
-            <ButtonLink href={`/signin?next=/subjects/${subjectId}`} variant="primary" size="lg">
+            <ButtonLink href={`/go?do=trial&subject=${subjectId}`} variant="primary" size="lg">
               <Icon name="videocam" className="!text-lg" />
               Start free — 7 days, no card
             </ButtonLink>

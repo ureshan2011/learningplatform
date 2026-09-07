@@ -66,7 +66,7 @@ export default async function SyllabusIndexPage() {
             Live lessons in Sinhala, quizzes during class, an island-wide leaderboard and every
             past paper worked through step by step.
           </p>
-          <ButtonLink href="/signin" variant="primary" className="mt-5">
+          <ButtonLink href="/go?do=trial&subject=al-ict" variant="primary" className="mt-5">
             Join a class
           </ButtonLink>
         </Card>

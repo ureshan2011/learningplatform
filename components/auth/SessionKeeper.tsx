@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { onIdTokenChanged, signOut } from "firebase/auth";
 import { clientAuth } from "@/lib/firebase/client";
 import { isFirebaseConfigured } from "@/lib/env";
@@ -57,10 +58,31 @@ function markRenewed(): void {
  * Failures are silent on purpose. A renewal that cannot reach the network must
  * never interrupt a student mid-lesson — the existing cookie is still good for
  * days, and the next glance at the tab will try again.
+ *
+ * ## Standing down on the sign-in page
+ *
+ * `onIdTokenChanged` fires the instant an OTP is confirmed — before the
+ * sign-in screen has posted its own exchange to `/api/auth/session`. That PUT
+ * used to race the real POST: for a new student or a new device it found no
+ * user document or no bound device yet, got a 401 or 403, and signed the
+ * Firebase client back out. The POST still succeeded, so the student looked
+ * signed in, but silent renewal could never run for that browser again — they
+ * were back at the SMS gate in fourteen days. `/signin` owns its own exchange
+ * end to end, so this component simply does nothing there.
+ *
+ * ## Never signing out on a 401
+ *
+ * A 401 from this route is `invalid_token` — a transient verification hiccup,
+ * never grounds to end anyone's session — or `no_account`, which just means a
+ * sign-in is genuinely still in progress somewhere. Only a 403
+ * (`account_disabled` or `device_released`) is a real revocation.
  */
 export function SessionKeeper() {
+  const pathname = usePathname();
+  const onSignInPage = pathname === "/signin";
+
   useEffect(() => {
-    if (!isFirebaseConfigured()) return;
+    if (!isFirebaseConfigured() || onSignInPage) return;
 
     let cancelled = false;
     let inFlight = false;
@@ -85,15 +107,17 @@ export function SessionKeeper() {
         });
         if (res.ok) {
           markRenewed();
-        } else if (res.status === 401 || res.status === 403) {
-          // The account was disabled, signed out everywhere, or this device's
-          // slot was released. Keeping a half-signed-in Firebase user around
-          // after that is what produces the "some pages think I'm in, some
-          // think I'm out" confusion, so clear it and let the next navigation
-          // redirect normally.
+        } else if (res.status === 403) {
+          // The account was disabled or this device's slot was released —
+          // both real revocations. Keeping a half-signed-in Firebase user
+          // around after that is what produces the "some pages think I'm in,
+          // some think I'm out" confusion, so clear it and let the next
+          // navigation redirect normally.
           markRenewed();
           await signOut(clientAuth()).catch(() => {});
         }
+        // A 401 here is never a reason to sign anyone out — see the class
+        // doc comment above.
       } catch {
         // Offline or a blip. The current cookie has days left; try again later.
       } finally {
@@ -126,7 +150,7 @@ export function SessionKeeper() {
       window.removeEventListener("focus", onVisible);
       window.removeEventListener("online", onOnline);
     };
-  }, []);
+  }, [onSignInPage]);
 
   return null;
 }

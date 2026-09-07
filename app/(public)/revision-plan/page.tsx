@@ -80,7 +80,7 @@ export default function RevisionPlanPage() {
             <li>· පන්තියක් join කරන එකෙන් ඔයාට structure එකක් ලැබෙනවා — මුල් දින 7 නොමිලේ.</li>
           </ul>
           <p className="mt-4 text-sm">
-            <Link href="/signin" className="font-semibold text-ict-orange-600 underline">
+            <Link href="/go?do=trial&subject=al-ict" className="font-semibold text-ict-orange-600 underline">
               නොමිලේ දින 7ක් අත්හදා බලන්න
             </Link>
           </p>

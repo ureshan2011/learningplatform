@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getSessionUser } from "@/lib/auth/session";
-import { SignInForm } from "@/components/auth/SignInForm";
+import { getT, localeAttrs } from "@/lib/i18n/server";
+import { buildSignInCopy } from "@/components/auth/sign-in/copy";
+import { SignInScreen } from "@/components/auth/sign-in/SignInScreen";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +24,12 @@ function safeNext(raw?: string): string {
  * Server component on purpose. A student who is already signed in and taps a
  * shared `/signin?ref=...` link used to be shown the form again and burned a
  * billed SMS proving something the cookie already knew; now they are simply
- * sent where they were going. The typing part lives in `SignInForm`.
+ * sent where they were going.
+ *
+ * The dictionary never ships to the browser — this resolves every string the
+ * client screen needs into a plain object (`buildSignInCopy`) and hands that
+ * down as a prop, the same pattern every other translated page uses via
+ * `getT()`.
  */
 export default async function SignInPage({
   searchParams,
@@ -35,16 +42,25 @@ export default async function SignInPage({
   const user = await getSessionUser();
   if (user) redirect(next);
 
+  const [t, loc] = await Promise.all([getT(), localeAttrs()]);
+  // `buildSignInCopy` only ever passes the `signin.*` keys this file's
+  // dictionary entries define, but its own type is a plain `(key: string) =>
+  // string` — deliberately, so this module never imports `Translator` from
+  // the server-only `lib/i18n/server`. The narrowing is safe; TypeScript just
+  // cannot see across that boundary.
+  const copy = buildSignInCopy((key, vars) => t(key as Parameters<typeof t>[0], vars));
+
   // Sign-in is the threshold, so it belongs to the product's dark world rather
   // than the marketing one — the student crosses over here, not one screen
   // later. `.ict-app` is also what keeps the legacy gradient buttons on this
   // page resolving to flat orange.
   return (
-    <div className="ict-app min-h-dvh">
-      <SignInForm
+    <div className={`ict-app min-h-dvh ${loc.className}`} lang={loc.lang}>
+      <SignInScreen
         next={next}
         referredBy={params.ref?.trim().toUpperCase() || undefined}
         reason={params.reason}
+        copy={copy}
       />
     </div>
   );

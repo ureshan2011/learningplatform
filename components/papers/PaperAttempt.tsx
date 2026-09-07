@@ -16,6 +16,21 @@ import {
 type Lang = "en" | "si";
 type Phase = "intro" | "attempting" | "submitted";
 
+/**
+ * A plain sign-in link back to this exact page.
+ *
+ * Not `signInHref()` from `lib/auth/session-client`: that always appends
+ * `reason=expired`, which is right for a lapsed session but wrong here — a
+ * visitor who just finished a free paper was never signed in at all, so
+ * telling them their sign-in "expired" would be a fact that never happened.
+ * Only ever rendered from the "submitted" phase, well after hydration, so
+ * reading `window.location` here carries no mismatch risk.
+ */
+function currentPageSignInHref(): string {
+  const next = typeof window === "undefined" ? "/" : window.location.pathname + window.location.search;
+  return `/signin?next=${encodeURIComponent(next)}`;
+}
+
 const DURATION_SECONDS = PAPER_DURATION_MINUTES * 60;
 
 function formatClock(totalSeconds: number): string {
@@ -161,7 +176,7 @@ export function PaperAttempt() {
                     ? "වැඩිදුර පුහුණුව අවශ්‍යද? සජීවී පන්තියක් සමඟ ගුරුවරයාගෙන් සෘජුව ඉගෙන ගන්න."
                     : "Want more practice like this? Learn live with a teacher who marks your work."}
                 </p>
-                <ButtonLink href="/signin" variant="secondary" size="md" className="shrink-0">
+                <ButtonLink href={currentPageSignInHref()} variant="secondary" size="md" className="shrink-0">
                   {lang === "si" ? "නොමිලේ අත්හදා බලන්න" : "Start free trial"}
                 </ButtonLink>
               </Card>

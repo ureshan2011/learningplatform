@@ -216,7 +216,7 @@ export default function UniversityPathwaysPage() {
                     Whichever degree you&apos;re aiming for, the syllabus is the same first step.
                   </h2>
                 </div>
-                <ButtonLink href="/signin" variant="secondary" size="lg" className="shrink-0">
+                <ButtonLink href="/go?do=trial&subject=al-ict" variant="secondary" size="lg" className="shrink-0">
                   Start free
                 </ButtonLink>
               </div>

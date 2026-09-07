@@ -5,9 +5,9 @@ import { clsx } from "clsx";
 import { Icon } from "@/components/ui/Icon";
 import { ButtonLink, Card } from "@/components/ds-cream";
 import { track } from "@/lib/analytics";
-import { fetchWithSession } from "@/lib/auth/session-client";
+import { fetchWithSession, signInHref } from "@/lib/auth/session-client";
 
-type Phase = "waiting" | "unlocked" | "failed" | "slow";
+type Phase = "waiting" | "unlocked" | "failed" | "slow" | "signin";
 
 /** PayHere's notification normally lands within a second or two of the redirect. */
 const POLL_MS = 2000;
@@ -37,6 +37,15 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
       const res = await fetchWithSession(`/api/payments/status?order=${encodeURIComponent(orderId)}`, {
         cache: "no-store",
       });
+      if (res.status === 401) {
+        // `fetchWithSession` already tried the silent renewal once — a 401
+        // that survives that is a session genuinely gone, not a blip. The
+        // payment itself is unaffected (the PayHere notify handler unlocks it
+        // regardless of this browser), so this only needs to get the student
+        // back to a session, not resubmit anything.
+        setPhase("signin");
+        return;
+      }
       if (!res.ok) return;
       const data = (await res.json()) as {
         status: string;
@@ -114,6 +123,27 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
             See the receipt
           </a>
         </div>
+      </div>
+    );
+  }
+
+  if (phase === "signin") {
+    return (
+      <div className={clsx("rounded-ict-card border p-5 text-sm", "border-ict-paper-300 bg-ict-paper-0")}>
+        <p className="font-semibold text-ict-ink-900">Sign in to see this payment</p>
+        <p className="mt-1 text-ict-ink-400">
+          Your sign-in lapsed while we were checking. Sign in again and this page will pick up right
+          where it left off — nothing was lost.
+        </p>
+        <ButtonLink
+          href={signInHref()}
+          variant="primary"
+          size="md"
+          arrow="none"
+          className="mt-4 justify-center"
+        >
+          Sign in
+        </ButtonLink>
       </div>
     );
   }
