@@ -2,11 +2,12 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { DISTINGUISH_PAIRS } from "@/lib/content/distinguish-between";
 import { SiteHeader } from "@/components/nav/SiteHeader";
-import { ButtonLink } from "@/components/ds";
 import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
+import { ResourcePageCta } from "@/components/content/ResourcePageCta";
+import { PageHeader, Card } from "@/components/ds-cream";
 
 export const metadata: Metadata = {
   title: `"Distinguish Between" Questions — 10 Worked A/L ICT Examples`,
@@ -42,19 +43,16 @@ export default function DistinguishBetweenPage() {
       />
       <SiteHeader user={null} />
       <main className="mx-auto max-w-3xl px-5 py-12">
-        <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
-          <Icon name="fact_check" className="!text-2xl text-(--color-awaken-accent)" />
-          &quot;Distinguish between&quot; questions, answered properly
-        </h1>
-        <p className="mt-3 text-(--color-awaken-ink-soft)">
-          A &quot;distinguish&quot; question is worth 2–4 marks for one thing: a direct
-          contrast between the two terms. Describing each one separately — even
-          correctly — earns almost nothing. Here are ten of the most commonly asked
-          pairs, each with the answer that loses marks and the one that doesn&apos;t.
-        </p>
-        <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">
+        <PageHeader
+          eyebrow="Free resource"
+          title={'"Distinguish between" questions, answered properly'}
+          subtitle={
+            'A "distinguish" question is worth 2–4 marks for one thing: a direct contrast between the two terms. Describing each one separately — even correctly — earns almost nothing. Here are ten of the most commonly asked pairs, each with the answer that loses marks and the one that doesn\'t.'
+          }
+        />
+        <p className="mt-3 text-sm text-ict-ink-500">
           New to command words in general?{" "}
-          <Link href="/command-words" className="text-(--color-awaken-accent) underline">
+          <Link href="/command-words" className="text-ict-orange-600 underline">
             Start with what each one requires
           </Link>
           .
@@ -65,7 +63,7 @@ export default function DistinguishBetweenPage() {
             <a
               key={p.slug}
               href={`#${p.slug}`}
-              className="rounded-full border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-1.5 text-xs font-medium text-(--color-awaken-ink-soft) hover:border-(--color-awaken-accent) hover:text-(--color-awaken-accent)"
+              className="inline-flex h-[30px] items-center rounded-full bg-ict-paper-200 px-3 text-xs font-semibold text-ict-ink-900 transition-colors duration-[120ms] hover:bg-ict-orange-50 hover:text-ict-orange-600"
             >
               {p.termA} vs {p.termB}
             </a>
@@ -74,50 +72,43 @@ export default function DistinguishBetweenPage() {
 
         <ul className="mt-8 space-y-5">
           {DISTINGUISH_PAIRS.map((p) => (
-            <li
-              key={p.slug}
-              id={p.slug}
-              className="scroll-mt-20 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-            >
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 className="text-lg font-bold">
-                  {p.termA} <span className="text-(--color-awaken-ink-soft) font-normal">vs</span> {p.termB}
-                </h2>
-                <span className="text-xs text-(--color-awaken-ink-soft)">{p.topic}</span>
-              </div>
+            <li key={p.slug} id={p.slug} className="scroll-mt-20">
+              <Card radius="card" className="p-5">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <h2 className="text-lg font-bold text-ict-ink-900">
+                    {p.termA} <span className="font-normal text-ict-ink-500">vs</span> {p.termB}
+                  </h2>
+                  <span className="text-xs text-ict-ink-400">{p.topic}</span>
+                </div>
 
-              <div className="mt-3 flex items-start gap-2 rounded-ict-md bg-(--color-awaken-danger-soft) p-3 text-sm text-(--color-awaken-danger)">
-                <Icon name="cancel" className="mt-0.5 shrink-0 !text-base" />
-                <span>
-                  <span className="font-semibold">Weak (~0–1 mark): </span>
-                  {p.weakAnswer}
-                </span>
-              </div>
+                <div className="mt-3 flex items-start gap-2 rounded-ict-md bg-ict-red-50 p-3 text-sm text-ict-red-500">
+                  <Icon name="cancel" className="mt-0.5 shrink-0 !text-base" />
+                  <span>
+                    <span className="font-semibold">Weak (~0–1 mark): </span>
+                    {p.weakAnswer}
+                  </span>
+                </div>
 
-              <div className="mt-2 flex items-start gap-2 rounded-ict-md bg-(--color-awaken-success-soft) p-3 text-sm text-(--color-awaken-success)">
-                <Icon name="check_circle" className="mt-0.5 shrink-0 !text-base" />
-                <span>
-                  <span className="font-semibold">Full marks: </span>
-                  {p.strongAnswer}
-                </span>
-              </div>
+                <div className="mt-2 flex items-start gap-2 rounded-ict-md bg-ict-green-50 p-3 text-sm text-ict-green-500">
+                  <Icon name="check_circle" className="mt-0.5 shrink-0 !text-base" />
+                  <span>
+                    <span className="font-semibold">Full marks: </span>
+                    {p.strongAnswer}
+                  </span>
+                </div>
+              </Card>
             </li>
           ))}
         </ul>
 
         <FreeResourcesFooter exclude={["/distinguish-between"]} />
 
-        <section className="mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6">
-          <h2 className="text-lg font-bold">Get this checked in a live class</h2>
-          <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-            Every subject&apos;s Practice section drills command words like this one under
-            real exam pressure, with instant feedback on whether your contrast actually
-            earns the mark.
-          </p>
-          <ButtonLink href="/signin" variant="primary">
-          Join a class
-        </ButtonLink>
-        </section>
+        <ResourcePageCta
+          title="Get this checked in a live class"
+          body="Every subject's Practice section drills command words like this one under real exam pressure, with instant feedback on whether your contrast actually earns the mark."
+          guestHref="/signin"
+          guestLabel="Join a class"
+        />
       </main>
     </>
   );

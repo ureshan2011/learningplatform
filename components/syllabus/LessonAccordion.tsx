@@ -50,7 +50,7 @@ export function LessonAccordion({
         <button
           type="button"
           onClick={() => setOpen(allOpen ? new Set() : new Set(lessons.map((l) => l.id)))}
-          className="flex items-center gap-1.5 rounded-full border border-(--color-awaken-line) px-3.5 py-1.5 text-xs font-semibold text-(--color-awaken-ink-soft) transition-colors hover:text-(--color-awaken-ink)"
+          className="ict-press flex items-center gap-1.5 rounded-full border border-ict-paper-300 px-3.5 py-1.5 text-xs font-semibold text-ict-ink-400 transition-colors duration-[120ms] ease-ict hover:text-ict-ink-900"
         >
           <Icon name={allOpen ? "unfold_less" : "unfold_more"} className="!text-base" />
           {allOpen ? "Collapse all" : "Expand all"}
@@ -79,12 +79,10 @@ export function LessonAccordion({
             <li
               key={lesson.id}
               id={`lesson-${lesson.id}`}
-              className="scroll-mt-24 overflow-hidden rounded-2xl border bg-(--color-awaken-card) transition-shadow duration-300"
+              className="scroll-mt-24 overflow-hidden rounded-ict-card border bg-ict-paper-0 shadow-ict-sm transition-shadow duration-300"
               style={{
-                borderColor: isOpen ? tone.line : "var(--color-awaken-line)",
-                boxShadow: isOpen
-                  ? `0 16px 36px -22px rgba(${tone.rgb}, 0.6)`
-                  : "0 1px 3px rgba(0,0,0,0.04)",
+                borderColor: isOpen ? tone.line : "var(--color-ict-paper-300)",
+                boxShadow: isOpen ? `0 16px 36px -22px rgba(${tone.rgb}, 0.6)` : undefined,
               }}
             >
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2 p-4">
@@ -103,13 +101,13 @@ export function LessonAccordion({
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-semibold">{lesson.title}</span>
-                    <span className="block text-xs text-(--color-awaken-ink-soft)">
+                    <span className="block text-xs text-ict-ink-400">
                       {lesson.periods} periods · {lesson.examObjectives.length} exam objectives
                     </span>
                   </span>
                   <Icon
                     name="expand_more"
-                    className={`!text-xl shrink-0 text-(--color-awaken-ink-soft) transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                    className={`!text-xl shrink-0 text-ict-ink-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
                   />
                 </button>
                 <span className="ml-auto">
@@ -129,7 +127,7 @@ export function LessonAccordion({
                 <div className="overflow-hidden">
                   <div className="space-y-4 px-4 pb-4">
                     <div>
-                      <p className="text-xs font-bold tracking-wide text-(--color-awaken-ink-soft) uppercase">
+                      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
                         Exam objectives
                       </p>
                       <ul className="mt-1.5 space-y-1.5">
@@ -137,7 +135,7 @@ export function LessonAccordion({
                           <li key={index} className="flex items-start gap-2 text-sm">
                             <Icon
                               name="check_circle"
-                              className="mt-0.5 !text-base shrink-0 text-(--color-awaken-success)"
+                              className="mt-0.5 !text-base shrink-0 text-ict-green-500"
                             />
                             <span>{objective}</span>
                           </li>
@@ -146,7 +144,7 @@ export function LessonAccordion({
                     </div>
 
                     <div>
-                      <p className="text-xs font-bold tracking-wide text-(--color-awaken-ink-soft) uppercase">
+                      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
                         Important areas to cover
                       </p>
                       <ul className="mt-1.5 space-y-1.5">
@@ -164,7 +162,7 @@ export function LessonAccordion({
                     </div>
 
                     {!lesson.content ? (
-                      <p className="text-xs text-(--color-awaken-ink-soft)">
+                      <p className="text-xs text-ict-ink-400">
                         Lesson content not added yet.
                       </p>
                     ) : null}

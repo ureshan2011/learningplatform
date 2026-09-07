@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { ResourcePageCta } from "@/components/content/ResourcePageCta";
+import { Badge, Card, PageHeader } from "@/components/ds-cream";
 
 export const metadata: Metadata = {
   title: "ICT exam command words explained",
@@ -46,59 +47,60 @@ export default function CommandWordsPage() {
         ])}
       />
       <SiteHeader user={null} />
-      <main className="mx-auto max-w-3xl px-5 py-12">
-      <h1 className="mt-4 flex items-center gap-2 text-3xl font-bold">
-        <Icon name="auto_stories" className="!text-2xl text-(--color-awaken-accent)" />
-        ICT exam command words, explained
-      </h1>
-      <p className="mt-3 text-(--color-awaken-ink-soft)">
-        Every year, students who know the ICT syllabus cold still lose marks — not on
-        content, but on misreading what a question is actually asking for.
-        &quot;Explain&quot; is not &quot;state&quot;. &quot;Distinguish&quot; is not
-        &quot;describe&quot;. Here is exactly what each one requires.
-      </p>
+      <main className="bg-ict-paper-100">
+        <div className="mx-auto max-w-3xl px-5 py-12">
+          <PageHeader
+            eyebrow="Free resource"
+            title="ICT exam command words, explained"
+            subtitle={
+              'Every year, students who know the ICT syllabus cold still lose marks — not on content, but on misreading what a question is actually asking for. "Explain" is not "state". "Distinguish" is not "describe". Here is exactly what each one requires.'
+            }
+          />
 
-      <ul className="mt-10 space-y-4">
-        {COMMAND_WORDS.map((cw) => (
-          <li key={cw.word} className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="text-lg font-bold">{cw.word}</h2>
-              <span className="text-xs text-(--color-awaken-ink-soft)">{cw.typicalMarks}</span>
-            </div>
-            <p className="si mt-1 text-sm text-(--color-awaken-deep)" lang="si">
-              {cw.sinhala}
-            </p>
-            <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">{cw.meaning}</p>
-            <p className="mt-2 flex items-start gap-2 rounded-ict-md bg-(--color-awaken-accent-soft) p-3 text-sm text-(--color-awaken-accent)">
-              <Icon name="bolt" className="mt-0.5 shrink-0 !text-base" />
-              {cw.tip}
-            </p>
-            <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">
-              <span className="font-medium text-(--color-awaken-ink-soft)">Example: </span>
-              {cw.example}
-            </p>
-          </li>
-        ))}
-      </ul>
+          <ul className="mt-8 space-y-4">
+            {COMMAND_WORDS.map((cw) => (
+              <li key={cw.word}>
+                <Card radius="card" className="p-5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <h2 className="font-display text-lg font-extrabold text-ict-ink-900">{cw.word}</h2>
+                    <Badge tone="neutral">{cw.typicalMarks}</Badge>
+                  </div>
+                  <p className="si mt-1 text-sm text-ict-ink-400" lang="si">
+                    {cw.sinhala}
+                  </p>
+                  <p className="mt-3 text-sm text-ict-ink-500">{cw.meaning}</p>
+                  <p className="mt-3 flex items-start gap-2 rounded-ict-md bg-ict-orange-50 p-3 text-sm text-ict-orange-600">
+                    <Icon name="bolt" className="mt-0.5 shrink-0 !text-base" />
+                    {cw.tip}
+                  </p>
+                  <p className="mt-3 text-sm text-ict-ink-500">
+                    <span className="font-semibold text-ict-ink-900">Example: </span>
+                    {cw.example}
+                  </p>
+                </Card>
+              </li>
+            ))}
+          </ul>
 
-      <p className="mt-8 text-sm text-(--color-awaken-ink-soft)">
-        Want to see &quot;distinguish&quot; done properly, worked example by worked example?{" "}
-        <Link href="/distinguish-between" className="text-(--color-awaken-accent) underline">
-          10 fully worked pairs, free
-        </Link>
-        .
-      </p>
+          <p className="mt-8 text-sm text-ict-ink-500">
+            Want to see &quot;distinguish&quot; done properly, worked example by worked example?{" "}
+            <Link href="/distinguish-between" className="font-semibold text-ict-orange-600 underline underline-offset-2">
+              10 fully worked pairs, free
+            </Link>
+            .
+          </p>
 
-      <FreeResourcesFooter exclude={["/command-words"]} />
+          <FreeResourcesFooter exclude={["/command-words"]} />
 
-      <ResourcePageCta
-        title="Drill these until they're automatic"
-        body={
-          'Every subject\'s Practice section includes command-word drill questions — short scenarios that check whether you\'d actually answer a "distinguish" or a "justify" correctly under exam conditions.'
-        }
-        guestHref="/signin"
-        guestLabel="Join a class"
-      />
+          <ResourcePageCta
+            title="Drill these until they're automatic"
+            body={
+              'Every subject\'s Practice section includes command-word drill questions — short scenarios that check whether you\'d actually answer a "distinguish" or a "justify" correctly under exam conditions.'
+            }
+            guestHref="/signin"
+            guestLabel="Join a class"
+          />
+        </div>
       </main>
     </>
   );

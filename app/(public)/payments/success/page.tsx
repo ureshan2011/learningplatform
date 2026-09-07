@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { getSessionUser } from "@/lib/auth/session";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { PaymentStatusWatcher } from "@/components/payments/PaymentStatusWatcher";
-import { Icon } from "@/components/ui/Icon";
+import { ButtonLink, Card, IconBadge } from "@/components/ds-cream";
 
 /**
  * Where PayHere returns the student's browser after payment.
@@ -25,34 +24,33 @@ export default async function PaymentSuccessPage({
   return (
     <>
       <SiteHeader user={user} />
-      <main className="mx-auto flex min-h-[calc(100dvh-73px)] max-w-md flex-col justify-center px-5 py-10 text-center">
-        <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-(--color-awaken-accent-soft) text-(--color-awaken-accent)">
-          <Icon name="credit_card" className="!text-3xl" />
-        </span>
-        <h1 className="mt-4 text-2xl font-bold">Thanks — checking with the bank</h1>
+      <main className="flex min-h-[calc(100dvh-73px)] flex-col justify-center bg-ict-paper-100 px-5 py-10">
+        <div className="mx-auto w-full max-w-md text-center">
+          <IconBadge icon="credit_card" tone="soft" size={56} round className="mx-auto" />
+          <h1 className="mt-4 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-ink-900">
+            Thanks — checking with the bank
+          </h1>
 
-        <div className="mt-6">
+          <div className="mt-6">
+            {order ? (
+              <PaymentStatusWatcher orderId={order} />
+            ) : (
+              <Card radius="card" className="p-5 text-sm text-ict-ink-400">
+                <p>
+                  No payment reference was passed back. Open your dashboard — if the class is still
+                  locked in a few minutes, message your teacher.
+                </p>
+                <ButtonLink href="/dashboard" variant="secondary" size="md" arrow="none" className="mt-4 justify-center">
+                  Go to my dashboard
+                </ButtonLink>
+              </Card>
+            )}
+          </div>
+
           {order ? (
-            <PaymentStatusWatcher orderId={order} />
-          ) : (
-            <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 text-sm text-(--color-awaken-ink-soft)">
-              <p>
-                No payment reference was passed back. Open your dashboard — if the class is still
-                locked in a few minutes, message your teacher.
-              </p>
-              <Link
-                href="/dashboard"
-                className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-lg bg-(--color-awaken-deep) px-6 py-3 font-semibold text-white"
-              >
-                Go to my dashboard
-              </Link>
-            </div>
-          )}
+            <p className="mt-4 text-xs break-all text-ict-ink-400">Reference: {order}</p>
+          ) : null}
         </div>
-
-        {order ? (
-          <p className="mt-4 text-xs break-all text-(--color-awaken-ink-soft)">Reference: {order}</p>
-        ) : null}
       </main>
     </>
   );

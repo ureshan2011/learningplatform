@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { LessonAccordion } from "@/components/syllabus/LessonAccordion";
 import { unitColors, unitIcon, isHighYield } from "@/lib/content/unit-visuals";
 import { indexClassesBySyllabus } from "@/lib/content/topic-classes";
+import { Card } from "@/components/ds-cream";
 import type { ClassSession } from "@/lib/types";
 
 export const revalidate = 300;
@@ -56,55 +57,43 @@ export default async function UnitSyllabusPage({
       <main className="mx-auto max-w-3xl px-5 py-10">
         <Link
           href={`/syllabus/${subjectId}`}
-          className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) transition-colors hover:text-(--color-awaken-ink)"
+          className="inline-flex items-center gap-1 text-sm text-ict-ink-400 transition-colors duration-[120ms] hover:text-ict-ink-900"
         >
           <Icon name="arrow_back" className="!text-base" />
           {subject.name} syllabus
         </Link>
 
-        <div
-          className="awaken-rise relative mt-4 overflow-hidden rounded-3xl border bg-(--color-awaken-card) p-6 sm:p-8"
-          style={{
-            borderColor: tone.line,
-            boxShadow: `0 20px 50px -30px rgba(${tone.rgb}, 0.7)`,
-          }}
-        >
-          <span
-            aria-hidden
-            className="absolute inset-x-0 top-0 h-1.5"
-            style={{ backgroundImage: `linear-gradient(90deg, ${tone.gradFrom}, ${tone.gradTo})` }}
-          />
+        <Card radius="panel" className="relative mt-4 overflow-hidden p-6 sm:p-8">
+          <span aria-hidden className="absolute inset-x-0 top-0 h-1.5" style={{ background: tone.gradTo }} />
+
           <div className="flex flex-wrap items-center gap-2">
-            <span
-              className="rounded-full px-2.5 py-1 text-xs font-bold"
-              style={{ background: tone.soft, color: tone.ink }}
-            >
+            <span className="rounded-full px-2.5 py-1 text-xs font-bold" style={{ background: tone.soft, color: tone.ink }}>
               Grade {unit.gradeYear}
             </span>
-            <span className="rounded-full bg-(--color-awaken-bg) px-2.5 py-1 text-xs font-semibold text-(--color-awaken-ink-soft)">
+            <span className="rounded-full bg-ict-paper-200 px-2.5 py-1 text-xs font-semibold text-ict-ink-500">
               {unit.periods} periods
             </span>
             {isHighYield(unit.periods) ? (
               <span
                 className="rounded-full px-2.5 py-1 text-xs font-extrabold tracking-wide text-white uppercase"
-                style={{ backgroundImage: `linear-gradient(120deg, ${tone.gradFrom}, ${tone.gradTo})` }}
+                style={{ background: tone.gradTo }}
               >
                 High-yield unit
               </span>
             ) : null}
           </div>
 
-          <h1 className="mt-3 flex items-center gap-3 font-[family-name:var(--font-display)] text-2xl font-extrabold tracking-tight">
+          <h1 className="mt-3 flex items-center gap-3 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-ink-900">
             <span
-              className="syl-float flex size-12 shrink-0 items-center justify-center rounded-2xl text-white"
-              style={{ backgroundImage: `linear-gradient(140deg, ${tone.gradFrom}, ${tone.gradTo})` }}
+              className="flex size-12 shrink-0 items-center justify-center rounded-ict-md text-white"
+              style={{ background: tone.gradTo }}
             >
               <Icon name={unitIcon(unit.competencyNumber)} className="!text-2xl" />
             </span>
             {unit.title}
           </h1>
-          <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">{unit.competencyStatement}</p>
-        </div>
+          <p className="mt-2 text-sm text-ict-ink-400">{unit.competencyStatement}</p>
+        </Card>
 
         <div className="mt-8">
           <LessonAccordion

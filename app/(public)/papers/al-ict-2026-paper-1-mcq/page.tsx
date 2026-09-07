@@ -4,6 +4,7 @@ import { PaperAttempt } from "@/components/papers/PaperAttempt";
 import { DisclaimerNote } from "@/components/papers/DisclaimerNote";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
+import { Icon } from "@/components/ui/Icon";
 import { publicEnv } from "@/lib/env";
 import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { AL_ICT_2026_PAPER1, PAPER_DURATION_MINUTES, PAPER_QUESTION_COUNT } from "@/lib/content/al-ict-2026-paper1";
@@ -56,40 +57,45 @@ export default function AlIctPaper1Page() {
         genuinely useful plain answer key for anyone who just wants to check
         one answer without starting a timed attempt.
       */}
-      <section className="mx-auto max-w-3xl px-5 pb-16">
-        <details className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)">
-          <summary className="cursor-pointer list-none px-5 py-4 font-semibold">
-            Read the full paper as text, with every answer (no timer)
-          </summary>
-          <div className="border-t border-(--color-awaken-line) px-5 py-4">
-            <h2 className="text-lg font-bold">A/L ICT 2026 Paper I (MCQ) — all {PAPER_QUESTION_COUNT} questions and answers</h2>
-            <div className="mt-3">
-              <DisclaimerNote lang="en" replacedCount={REPLACED_COUNT} />
+      <section className="bg-ict-paper-100 px-5 pb-16">
+        <div className="mx-auto max-w-3xl">
+          <details className="group overflow-hidden rounded-ict-card border border-ict-paper-300 bg-ict-paper-0">
+            <summary className="ict-press flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 font-semibold text-ict-ink-900">
+              Read the full paper as text, with every answer (no timer)
+              <Icon name="expand_more" className="!text-lg shrink-0 text-ict-ink-400 transition-transform duration-[200ms] group-open:rotate-180" />
+            </summary>
+            <div className="border-t border-ict-paper-300 px-5 py-4">
+              <h2 className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-ink-900">
+                A/L ICT 2026 Paper I (MCQ) — all {PAPER_QUESTION_COUNT} questions and answers
+              </h2>
+              <div className="mt-3">
+                <DisclaimerNote lang="en" replacedCount={REPLACED_COUNT} />
+              </div>
+              <ol className="mt-4 space-y-5 text-sm">
+                {AL_ICT_2026_PAPER1.map((q, i) => (
+                  <li key={q.id} id={`q${q.id}`}>
+                    <p className="font-semibold text-ict-ink-900">
+                      {i + 1}. {q.en.stem}
+                      {q.replaced ? (
+                        <span className="ml-1.5 font-normal text-ict-ink-400 italic">(replacement question — see disclaimer)</span>
+                      ) : null}
+                    </p>
+                    <ol className="mt-1.5 ml-4 list-decimal space-y-0.5 text-ict-ink-400">
+                      {q.en.options.map((opt, j) => (
+                        <li key={j} className={j === q.correctIndex ? "font-semibold text-ict-green-500" : undefined}>
+                          {opt}
+                          {j === q.correctIndex ? " ✓" : ""}
+                        </li>
+                      ))}
+                    </ol>
+                  </li>
+                ))}
+              </ol>
             </div>
-            <ol className="mt-4 space-y-5 text-sm">
-              {AL_ICT_2026_PAPER1.map((q, i) => (
-                <li key={q.id} id={`q${q.id}`}>
-                  <p className="font-semibold">
-                    {i + 1}. {q.en.stem}
-                    {q.replaced ? (
-                      <span className="ml-1.5 font-normal text-(--color-awaken-ink-soft) italic">(replacement question — see disclaimer)</span>
-                    ) : null}
-                  </p>
-                  <ol className="mt-1.5 ml-4 list-decimal space-y-0.5 text-(--color-awaken-ink-soft)">
-                    {q.en.options.map((opt, j) => (
-                      <li key={j} className={j === q.correctIndex ? "font-semibold text-(--color-awaken-success)" : undefined}>
-                        {opt}
-                        {j === q.correctIndex ? " ✓" : ""}
-                      </li>
-                    ))}
-                  </ol>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </details>
+          </details>
 
-        <FreeResourcesFooter exclude={["/papers/al-ict-2026-paper-1-mcq"]} />
+          <FreeResourcesFooter exclude={["/papers/al-ict-2026-paper-1-mcq"]} />
+        </div>
       </section>
     </>
   );

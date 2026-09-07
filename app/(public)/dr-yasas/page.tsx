@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
-import { ButtonLink } from "@/components/ds";
-import { Icon } from "@/components/ui/Icon";
+import { Card, IconBadge, SectionHeading, ButtonLink } from "@/components/ds-cream";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
@@ -91,6 +91,21 @@ const FAQS = [
   },
 ] as const;
 
+/** Each list on this page is a run of credentials, not a checklist — a small
+ *  accent icon marks the line without implying pass/fail semantics. */
+function CredentialList({ icon, items }: { icon: IconName; items: string[] }) {
+  return (
+    <ul className="mt-3 space-y-2">
+      {items.map((item) => (
+        <li key={item} className="flex items-start gap-2 text-sm text-ict-ink-400">
+          <Icon name={icon} className="mt-0.5 shrink-0 !text-base text-ict-orange-500" />
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function LecturerPage() {
   return (
     <>
@@ -115,23 +130,23 @@ export default function LecturerPage() {
           />
           <div>
             {/* One H1, the person's own name — this page's entire purpose. */}
-            <h1 className="text-3xl font-bold sm:text-4xl">{TEACHER_NAME}</h1>
-            <p className="mt-2 text-lg text-(--color-awaken-ink-soft)">
+            <h1 className="font-display text-3xl font-extrabold tracking-[-0.02em] text-ict-ink-900 sm:text-4xl">
+              {TEACHER_NAME}
+            </h1>
+            <p className="mt-2 text-lg text-ict-ink-400">
               PhD in Human Interface Technology, University of Canterbury — lecturer, {SUBJECT_EN}{" "}
               ({GRADES}), ICT Campus
             </p>
 
-            <div className="mt-4 inline-flex items-start gap-3 rounded-ict-card border border-(--color-awaken-accent)/25 bg-(--color-awaken-accent-soft) px-4 py-3">
-              <span className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-full bg-(--color-awaken-accent) text-white">
-                <Icon name="fact_check" className="!text-base" />
-              </span>
+            <Card variant="raised" radius="card" className="mt-4 inline-flex items-start gap-3 px-4 py-3">
+              <IconBadge icon="fact_check" tone="brand" size={36} />
               <div>
-                <p className="text-sm font-bold text-(--color-awaken-ink)">UGC-certified lecturer</p>
-                <p className="text-xs text-(--color-awaken-ink-soft)">
+                <p className="text-sm font-bold text-ict-ink-900">UGC-certified lecturer</p>
+                <p className="text-xs text-ict-ink-400">
                   Certificate in Teaching in Higher Education (CTHE) — top of cohort
                 </p>
               </div>
-            </div>
+            </Card>
 
             <div className="mt-4 flex flex-wrap gap-3">
               <ButtonLink href="/al-ict-classes" variant="primary">
@@ -141,7 +156,7 @@ export default function LecturerPage() {
                 href={TEACHER_WEBSITE}
                 target="_blank"
                 rel="noreferrer me"
-                className="flex items-center gap-2 rounded-full border border-(--color-awaken-line) px-5 py-3 font-semibold transition-colors hover:border-(--color-awaken-accent)/40"
+                className="ict-press inline-flex h-10 items-center gap-2 rounded-full border-[1.5px] border-ict-ink-900 px-5 text-sm font-semibold text-ict-ink-900 transition-colors duration-[120ms] ease-ict hover:border-ict-orange-500 hover:text-ict-orange-600"
               >
                 <Icon name="north_east" className="!text-base" />
                 Personal website
@@ -150,7 +165,7 @@ export default function LecturerPage() {
                 href={TEACHER_LINKEDIN}
                 target="_blank"
                 rel="noreferrer me"
-                className="flex items-center gap-2 rounded-full border border-(--color-awaken-line) px-5 py-3 font-semibold transition-colors hover:border-(--color-awaken-accent)/40"
+                className="ict-press inline-flex h-10 items-center gap-2 rounded-full border-[1.5px] border-ict-ink-900 px-5 text-sm font-semibold text-ict-ink-900 transition-colors duration-[120ms] ease-ict hover:border-ict-orange-500 hover:text-ict-orange-600"
               >
                 <Icon name="north_east" className="!text-base" />
                 LinkedIn
@@ -159,7 +174,7 @@ export default function LecturerPage() {
           </div>
         </div>
 
-        <p className="mt-8 text-(--color-awaken-ink-soft)">
+        <p className="mt-8 text-ict-ink-400">
           {TEACHER_NAME} teaches every live class, writes every note and records every video published on
           ICT Campus personally — an online tuition platform for Sri Lankan GCE Advanced Level{" "}
           {SUBJECT_EN} students ({GRADES}), covering the complete National Institute of Education (NIE)
@@ -167,74 +182,56 @@ export default function LecturerPage() {
         </p>
 
         <section className="mt-10">
-          <h2 className="text-xl font-bold">Academic qualifications</h2>
-          <ul className="mt-3 space-y-2">
-            {ACADEMIC.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-(--color-awaken-ink-soft)">
-                <Icon name="school" className="mt-0.5 shrink-0 !text-base text-(--color-awaken-accent)" />
-                {item}
-              </li>
-            ))}
-          </ul>
+          <SectionHeading as="h2" className="!text-xl">
+            Academic qualifications
+          </SectionHeading>
+          <CredentialList icon="school" items={ACADEMIC} />
         </section>
 
         <section className="mt-8">
-          <h2 className="text-xl font-bold">Teaching experience</h2>
-          <ul className="mt-3 space-y-2">
-            {TEACHING.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-(--color-awaken-ink-soft)">
-                <Icon name="auto_stories" className="mt-0.5 shrink-0 !text-base text-(--color-awaken-accent)" />
-                {item}
-              </li>
-            ))}
-          </ul>
+          <SectionHeading as="h2" className="!text-xl">
+            Teaching experience
+          </SectionHeading>
+          <CredentialList icon="auto_stories" items={TEACHING} />
         </section>
 
         <section className="mt-8">
-          <h2 className="text-xl font-bold">Professional &amp; research experience</h2>
-          <ul className="mt-3 space-y-2">
-            {PROFESSIONAL.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-(--color-awaken-ink-soft)">
-                <Icon name="workspace_premium" className="mt-0.5 shrink-0 !text-base text-(--color-awaken-accent)" />
-                {item}
-              </li>
-            ))}
-          </ul>
+          <SectionHeading as="h2" className="!text-xl">
+            Professional &amp; research experience
+          </SectionHeading>
+          <CredentialList icon="workspace_premium" items={PROFESSIONAL} />
         </section>
 
         <section className="mt-8">
-          <h2 className="text-xl font-bold">Public talks &amp; speaking</h2>
-          <ul className="mt-3 space-y-2">
-            {SPEAKING.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-(--color-awaken-ink-soft)">
-                <Icon name="co_present" className="mt-0.5 shrink-0 !text-base text-(--color-awaken-accent)" />
-                {item}
-              </li>
-            ))}
-          </ul>
+          <SectionHeading as="h2" className="!text-xl">
+            Public talks &amp; speaking
+          </SectionHeading>
+          <CredentialList icon="co_present" items={SPEAKING} />
         </section>
 
-        <section className="mt-10 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-6">
-          <h2 className="text-lg font-bold">Questions people ask</h2>
+        <Card radius="card" className="mt-10 p-6">
+          <SectionHeading as="h2" className="!text-lg">
+            Questions people ask
+          </SectionHeading>
           <div className="mt-4 space-y-3">
             {FAQS.map((faq) => (
-              <details key={faq.q} className="rounded-ict-md border border-(--color-awaken-line)">
-                <summary className="cursor-pointer list-none px-4 py-3 font-semibold">{faq.q}</summary>
-                <p className="border-t border-(--color-awaken-line) px-4 py-3 text-sm text-(--color-awaken-ink-soft)">
-                  {faq.a}
-                </p>
-              </details>
+              <Card key={faq.q} variant="raised" radius="md" className="overflow-hidden">
+                <details>
+                  <summary className="cursor-pointer list-none px-4 py-3 font-semibold text-ict-ink-900">{faq.q}</summary>
+                  <p className="border-t border-ict-paper-300 px-4 py-3 text-sm text-ict-ink-400">{faq.a}</p>
+                </details>
+              </Card>
             ))}
           </div>
-        </section>
+        </Card>
 
-        <p className="mt-8 text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-8 text-sm text-ict-ink-400">
           Read the full class offer on the{" "}
-          <Link href="/al-ict-classes" className="text-(--color-awaken-accent) underline">
+          <Link href="/al-ict-classes" className="text-ict-orange-600 underline decoration-ict-orange-500 underline-offset-2">
             A/L ICT classes page
           </Link>
           , or browse the{" "}
-          <Link href="/syllabus" className="text-(--color-awaken-accent) underline">
+          <Link href="/syllabus" className="text-ict-orange-600 underline decoration-ict-orange-500 underline-offset-2">
             full syllabus
           </Link>{" "}
           he teaches, unit by unit.

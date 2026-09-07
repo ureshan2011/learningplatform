@@ -13,6 +13,7 @@ import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { publicEnv } from "@/lib/env";
 import { breadcrumbJsonLd, faqJsonLd, graphJsonLd, ORG_ID } from "@/lib/seo/json-ld";
 import { EXAM_STRUCTURE, SYLLABUS_AUTHORITY } from "@/lib/seo/site";
+import { Badge, Card, IconBadge, PageHeader, SectionHeading } from "@/components/ds-cream";
 import type { ContentItem } from "@/lib/types";
 
 /**
@@ -189,280 +190,284 @@ export default async function PastPapersPage() {
       />
       <SiteHeader user={null} />
 
-      <main className="mx-auto max-w-3xl px-5 py-12">
-        <h1 className="mt-4 text-3xl font-bold sm:text-4xl">
-          A/L ICT past papers — Sinhala &amp; English medium
-        </h1>
-        <p className="mt-4 text-lg text-(--color-awaken-ink-soft)">
-          Everything a past paper is worth once you have it: what Paper I and Paper II actually contain,
-          which syllabus unit each question comes from, and how to work through one so it changes your
-          mark. Plus a full 2026 Paper I MCQ you can sit online right now, free and without signing in.
-        </p>
+      <main className="bg-ict-paper-100">
+        <div className="mx-auto max-w-3xl px-5 py-12">
+          <PageHeader
+            eyebrow="Exam prep"
+            title="A/L ICT past papers — Sinhala & English medium"
+            subtitle="Everything a past paper is worth once you have it: what Paper I and Paper II actually contain, which syllabus unit each question comes from, and how to work through one so it changes your mark. Plus a full 2026 Paper I MCQ you can sit online right now, free and without signing in."
+          />
 
-        <p className="mt-4 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 text-sm text-(--color-awaken-ink-soft)">
-          <Icon name="info" className="mr-1.5 -mb-0.5 !text-base text-(--color-awaken-accent)" />
-          We do not re-host the official papers. Every year&apos;s paper is published free by the
-          Department of Examinations and the Ministry of Education —{" "}
-          <a href="#official" className="text-(--color-awaken-accent) underline">
-            those links are below
-          </a>
-          . What is on this page is the part they do not give you.
-        </p>
-
-        {/* Sinhala summary — the audience is Sinhala medium and a large share
-            of these searches are typed in Sinhala script. */}
-        <section
-          lang="si"
-          className="si mt-8 rounded-ict-card border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-6"
-        >
-          <h2 className="text-xl font-bold text-(--color-awaken-deep)">
-            උසස් පෙළ ICT පසුගිය විභාග ප්‍රශ්න පත්‍ර — සිංහල මාධ්‍යය
-          </h2>
-          <ul className="mt-4 space-y-2 text-sm text-(--color-awaken-deep)">
-            <li>
-              · පළමු පත්‍රය: බහුවරණ ප්‍රශ්න {EXAM_STRUCTURE.paper1.questions}ක්, පැය{" "}
-              {EXAM_STRUCTURE.paper1.durationMinutes / 60}ක් තුළ. සියල්ලටම පිළිතුරු සැපයිය යුතුය.
-            </li>
-            <li>
-              · දෙවන පත්‍රය: පැය {EXAM_STRUCTURE.paper2.durationMinutes / 60}ක්. A කොටසේ ව්‍යුහගත ප්‍රශ්න
-              සහ B කොටසේ රචනා ප්‍රශ්න.
-            </li>
-            <li>· වැරදි පිළිතුරු සඳහා ලකුණු අඩු නොකරයි. එබැවින් කිසිදු ප්‍රශ්නයක් හිස්ව නොතබන්න.</li>
-            <li>· 2026 පළමු පත්‍රයේ බහුවරණ ප්‍රශ්න පත්‍රය මෙම වෙබ් අඩවියේ නොමිලේ, ලියාපදිංචියකින් තොරව.</li>
-            <li>· නිල ප්‍රශ්න පත්‍ර විභාග දෙපාර්තමේන්තුවේ සහ e-thaksalawa වෙබ් අඩවියේ නොමිලේ ලබාගත හැක.</li>
-          </ul>
-          <p className="mt-4 text-sm">
-            <Link
-              href="/papers/al-ict-2026-paper-1-mcq"
-              className="font-semibold text-(--color-awaken-accent) underline"
-            >
-              2026 පළමු පත්‍රය දැන් නොමිලේ කරන්න
-            </Link>
-          </p>
-        </section>
-
-        {/* The site's own free, attemptable paper — the strongest thing on the
-            page and the reason a student would pick it over a PDF list. */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-bold">Attempt a full paper online, free</h2>
-          <Link
-            href="/papers/al-ict-2026-paper-1-mcq"
-            className="mt-4 block rounded-ict-card border border-(--color-awaken-accent)/40 bg-(--color-awaken-card) p-5 transition-colors hover:border-(--color-awaken-accent)"
-          >
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 className="text-lg font-bold">A/L ICT 2026 Paper I (MCQ)</h3>
-              <span className="rounded-full bg-(--color-awaken-accent-soft) px-3 py-1 text-xs font-bold text-(--color-awaken-accent) uppercase">
-                Free · no sign-in
-              </span>
-            </div>
-            <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-              All {PAPER_QUESTION_COUNT} questions with a live {EXAM_STRUCTURE.paper1.durationMinutes}-minute
-              exam timer, instant scoring and every correct answer explained. Sinhala and English. The full
-              paper is also readable as plain text if you only want to check one answer.
+          <Card radius="card" className="mt-6 flex items-start gap-3 p-4">
+            <IconBadge icon="info" tone="soft" size={32} />
+            <p className="text-sm text-ict-ink-500">
+              We do not re-host the official papers. Every year&apos;s paper is published free by the
+              Department of Examinations and the Ministry of Education —{" "}
+              <a href="#official" className="font-semibold text-ict-orange-600 underline underline-offset-2">
+                those links are below
+              </a>
+              . What is on this page is the part they do not give you.
             </p>
-            <span className="mt-3 flex items-center gap-1 text-sm font-semibold text-(--color-awaken-accent)">
-              Start the paper
-              <Icon name="chevron_right" className="!text-base" />
-            </span>
-          </Link>
-        </section>
+          </Card>
 
-        {/* Real uploads, when the teacher has published any. Absent rather
-            than faked when the library is still empty. */}
-        {papers.length > 0 ? (
-          <section className="mt-10">
-            <h2 className="text-2xl font-bold">Papers and marking schemes to download</h2>
-            <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
-              Free, no sign-up needed.
+          {/* Sinhala summary — the audience is Sinhala medium and a large share
+              of these searches are typed in Sinhala script. */}
+          <section lang="si" className="si mt-8">
+            <Card radius="card" className="p-6">
+              <SectionHeading as="h2">
+                උසස් පෙළ ICT පසුගිය විභාග ප්‍රශ්න පත්‍ර — සිංහල මාධ්‍යය
+              </SectionHeading>
+              <ul className="mt-4 space-y-2.5 text-sm text-ict-ink-500">
+                <li className="flex gap-2">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-ict-orange-500" aria-hidden />
+                  පළමු පත්‍රය: බහුවරණ ප්‍රශ්න {EXAM_STRUCTURE.paper1.questions}ක්, පැය{" "}
+                  {EXAM_STRUCTURE.paper1.durationMinutes / 60}ක් තුළ. සියල්ලටම පිළිතුරු සැපයිය යුතුය.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-ict-orange-500" aria-hidden />
+                  දෙවන පත්‍රය: පැය {EXAM_STRUCTURE.paper2.durationMinutes / 60}ක්. A කොටසේ ව්‍යුහගත ප්‍රශ්න
+                  සහ B කොටසේ රචනා ප්‍රශ්න.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-ict-orange-500" aria-hidden />
+                  වැරදි පිළිතුරු සඳහා ලකුණු අඩු නොකරයි. එබැවින් කිසිදු ප්‍රශ්නයක් හිස්ව නොතබන්න.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-ict-orange-500" aria-hidden />
+                  2026 පළමු පත්‍රයේ බහුවරණ ප්‍රශ්න පත්‍රය මෙම වෙබ් අඩවියේ නොමිලේ, ලියාපදිංචියකින් තොරව.
+                </li>
+                <li className="flex gap-2">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-ict-orange-500" aria-hidden />
+                  නිල ප්‍රශ්න පත්‍ර විභාග දෙපාර්තමේන්තුවේ සහ e-thaksalawa වෙබ් අඩවියේ නොමිලේ ලබාගත හැක.
+                </li>
+              </ul>
+              <p className="mt-4 text-sm">
+                <Link
+                  href="/papers/al-ict-2026-paper-1-mcq"
+                  className="font-semibold text-ict-orange-600 underline underline-offset-2"
+                >
+                  2026 පළමු පත්‍රය දැන් නොමිලේ කරන්න
+                </Link>
+              </p>
+            </Card>
+          </section>
+
+          {/* The site's own free, attemptable paper — the strongest thing on the
+              page and the reason a student would pick it over a PDF list. */}
+          <section className="mt-12">
+            <SectionHeading as="h2">Attempt a full paper online, free</SectionHeading>
+            <Link href="/papers/al-ict-2026-paper-1-mcq" className="mt-4 block">
+              <Card variant="dark" radius="card" hoverable className="p-5">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <h3 className="font-display text-lg font-extrabold">A/L ICT 2026 Paper I (MCQ)</h3>
+                  <Badge tone="brand">Free · no sign-in</Badge>
+                </div>
+                <p className="mt-2 text-sm text-ict-paper-200">
+                  All {PAPER_QUESTION_COUNT} questions with a live {EXAM_STRUCTURE.paper1.durationMinutes}-minute
+                  exam timer, instant scoring and every correct answer explained. Sinhala and English. The full
+                  paper is also readable as plain text if you only want to check one answer.
+                </p>
+                <span className="mt-3 flex items-center gap-1 text-sm font-semibold text-ict-orange-400">
+                  Start the paper
+                  <Icon name="chevron_right" className="!text-base" />
+                </span>
+              </Card>
+            </Link>
+          </section>
+
+          {/* Real uploads, when the teacher has published any. Absent rather
+              than faked when the library is still empty. */}
+          {papers.length > 0 ? (
+            <section className="mt-12">
+              <SectionHeading as="h2">Papers and marking schemes to download</SectionHeading>
+              <p className="mt-2 text-sm text-ict-ink-400">Free, no sign-up needed.</p>
+              <ul className="mt-4 space-y-2">
+                {papers.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={publicContentUrl(item.r2Key)}
+                      className="ict-lift flex items-center gap-3 rounded-ict-card border border-ict-paper-300 bg-ict-paper-0 p-4 shadow-ict-sm"
+                    >
+                      <IconBadge
+                        icon={item.kind === "marking_scheme" ? "check_circle" : "receipt_long"}
+                        tone="soft"
+                        size={40}
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-semibold text-ict-ink-900">{item.title}</span>
+                        <span className="block text-xs text-ict-ink-400">
+                          {KIND_LABEL[item.kind] ?? item.kind} · {formatDate(item.createdAt)}
+                        </span>
+                      </span>
+                      <Icon name="download" className="!text-lg text-ict-ink-400" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          <section className="mt-12">
+            <SectionHeading as="h2">What each paper contains</SectionHeading>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {[EXAM_STRUCTURE.paper1, EXAM_STRUCTURE.paper2].map((paper) => (
+                <Card key={paper.name} radius="card" className="p-5">
+                  <h3 className="font-display font-bold text-ict-ink-900">{paper.name}</h3>
+                  <p className="mt-1 text-sm font-semibold text-ict-orange-600">
+                    {paper.durationMinutes / 60} hours
+                    {"questions" in paper ? ` · ${paper.questions} questions` : ""}
+                  </p>
+                  <p className="mt-2 text-sm text-ict-ink-500">{paper.note}</p>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          <section className="mt-12">
+            <SectionHeading as="h2">How to actually use a past paper</SectionHeading>
+            <p className="mt-2 text-ict-ink-500">
+              Most students collect papers and read them. Reading a paper you have already seen the answers
+              to feels like revision and measures nothing. Five steps, in this order:
+            </p>
+            <ol className="mt-4 space-y-3">
+              {METHOD.map((m) => (
+                <li key={m.step}>
+                  <Card radius="card" className="flex gap-4 p-5">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ict-orange-50 font-mono text-sm font-bold text-ict-orange-600">
+                      {m.step}
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="font-display font-bold text-ict-ink-900">{m.title}</h3>
+                      <p className="mt-2 text-sm text-ict-ink-500">{m.body}</p>
+                    </div>
+                  </Card>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-4 text-sm text-ict-ink-500">
+              Step 3 depends on knowing what each command word demands —{" "}
+              <Link href="/command-words" className="font-semibold text-ict-orange-600 underline underline-offset-2">
+                every A/L ICT command word explained
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/distinguish-between"
+                className="font-semibold text-ict-orange-600 underline underline-offset-2"
+              >
+                ten worked &quot;distinguish between&quot; answers
+              </Link>{" "}
+              are both free. If you&apos;re repeating, unsure of your last mark, or just short on
+              time,{" "}
+              <Link href="/revision-plan" className="font-semibold text-ict-orange-600 underline underline-offset-2">
+                this revision plan
+              </Link>{" "}
+              builds on this same method.
+            </p>
+          </section>
+
+          {/* The differentiator: what gets asked, unit by unit, from the
+              syllabus data this site already maintains. */}
+          <section className="mt-12">
+            <SectionHeading as="h2">What gets asked, unit by unit</SectionHeading>
+            <p className="mt-2 text-ict-ink-500">
+              Use this to trace a lost mark back to the unit that caused it. Period counts are the
+              syllabus&apos;s own — more periods generally tracks more marks — and the question forms are the
+              ones that recur across papers.
+            </p>
+            <div className="mt-5 space-y-2">
+              {AL_ICT_UNITS.map((unit) => {
+                const asked = unit.lessons.flatMap((l) => l.importantAreas).slice(0, 4);
+                return (
+                  <details
+                    key={unit.id}
+                    className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-0 shadow-ict-sm"
+                  >
+                    <summary className="flex cursor-pointer list-none flex-wrap items-baseline justify-between gap-2 px-5 py-4">
+                      <span className="font-semibold text-ict-ink-900">
+                        <span className="text-ict-orange-600">Unit {unit.competencyNumber}.</span> {unit.title}
+                      </span>
+                      <span className="text-xs text-ict-ink-400">
+                        Grade {unit.gradeYear} · {unit.periods} periods
+                      </span>
+                    </summary>
+                    <div className="border-t border-ict-paper-300 px-5 py-4">
+                      <p className="text-sm text-ict-ink-500">{unit.competencyStatement}.</p>
+                      {asked.length > 0 ? (
+                        <>
+                          <p className="mt-3 text-xs font-semibold tracking-wide text-ict-ink-900 uppercase">
+                            Commonly asked as
+                          </p>
+                          <ul className="mt-2 space-y-1.5 text-sm text-ict-ink-500">
+                            {asked.map((a) => (
+                              <li key={a} className="flex items-start gap-2">
+                                <Icon name="chevron_right" className="mt-0.5 shrink-0 !text-base text-ict-orange-500" />
+                                {a}
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      ) : null}
+                      <Link
+                        href={`/syllabus/al-ict/${unit.id}`}
+                        className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-ict-orange-600"
+                      >
+                        Full unit breakdown
+                        <Icon name="chevron_right" className="!text-base" />
+                      </Link>
+                    </div>
+                  </details>
+                );
+              })}
+            </div>
+          </section>
+
+          <section id="official" className="mt-12 scroll-mt-6">
+            <SectionHeading as="h2">Where to get every year&apos;s official paper</SectionHeading>
+            <p className="mt-2 text-ict-ink-500">
+              These are the authorities that publish the papers themselves, free. Always check the year and
+              medium on the paper you download — Sinhala, Tamil and English medium papers are separate files.
             </p>
             <ul className="mt-4 space-y-2">
-              {papers.map((item) => (
-                <li key={item.id}>
+              {OFFICIAL_SOURCES.map((src) => (
+                <li key={src.url}>
                   <a
-                    href={publicContentUrl(item.r2Key)}
-                    className="flex items-center gap-3 rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-colors hover:border-(--color-awaken-accent)/40"
+                    href={src.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ict-lift block rounded-ict-card border border-ict-paper-300 bg-ict-paper-0 p-4 shadow-ict-sm"
                   >
-                    <Icon
-                      name={item.kind === "marking_scheme" ? "check_circle" : "receipt_long"}
-                      className="!text-xl text-(--color-awaken-accent)"
-                    />
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-semibold">{item.title}</span>
-                      <span className="block text-xs text-(--color-awaken-ink-soft)">
-                        {KIND_LABEL[item.kind] ?? item.kind} · {formatDate(item.createdAt)}
-                      </span>
+                    <span className="flex items-center gap-1.5 font-semibold text-ict-ink-900">
+                      {src.name}
+                      <Icon name="north_east" className="!text-sm text-ict-ink-400" />
                     </span>
-                    <Icon name="download" className="!text-lg text-(--color-awaken-ink-soft)" />
+                    <span className="mt-1 block text-sm text-ict-ink-500">{src.note}</span>
                   </a>
                 </li>
               ))}
             </ul>
           </section>
-        ) : null}
 
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold">What each paper contains</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {[EXAM_STRUCTURE.paper1, EXAM_STRUCTURE.paper2].map((paper) => (
-              <div
-                key={paper.name}
-                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
-              >
-                <h3 className="font-bold">{paper.name}</h3>
-                <p className="mt-1 text-sm font-semibold text-(--color-awaken-accent)">
-                  {paper.durationMinutes / 60} hours
-                  {"questions" in paper ? ` · ${paper.questions} questions` : ""}
-                </p>
-                <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">{paper.note}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold">How to actually use a past paper</h2>
-          <p className="mt-2 text-(--color-awaken-ink-soft)">
-            Most students collect papers and read them. Reading a paper you have already seen the answers
-            to feels like revision and measures nothing. Five steps, in this order:
-          </p>
-          <ol className="mt-4 space-y-3">
-            {METHOD.map((m) => (
-              <li
-                key={m.step}
-                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-5"
-              >
-                <h3 className="font-bold">
-                  <span className="mr-2 font-mono text-sm text-(--color-awaken-accent)">{m.step}</span>
-                  {m.title}
-                </h3>
-                <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">{m.body}</p>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-4 text-sm text-(--color-awaken-ink-soft)">
-            Step 3 depends on knowing what each command word demands —{" "}
-            <Link href="/command-words" className="text-(--color-awaken-accent) underline">
-              every A/L ICT command word explained
-            </Link>{" "}
-            and{" "}
-            <Link href="/distinguish-between" className="text-(--color-awaken-accent) underline">
-              ten worked &quot;distinguish between&quot; answers
-            </Link>{" "}
-            are both free. If you&apos;re repeating, unsure of your last mark, or just short on
-            time,{" "}
-            <Link href="/revision-plan" className="text-(--color-awaken-accent) underline">
-              this revision plan
-            </Link>{" "}
-            builds on this same method.
-          </p>
-        </section>
-
-        {/* The differentiator: what gets asked, unit by unit, from the
-            syllabus data this site already maintains. */}
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold">What gets asked, unit by unit</h2>
-          <p className="mt-2 text-(--color-awaken-ink-soft)">
-            Use this to trace a lost mark back to the unit that caused it. Period counts are the
-            syllabus&apos;s own — more periods generally tracks more marks — and the question forms are the
-            ones that recur across papers.
-          </p>
-          <div className="mt-5 space-y-2">
-            {AL_ICT_UNITS.map((unit) => {
-              const asked = unit.lessons.flatMap((l) => l.importantAreas).slice(0, 4);
-              return (
+          <section className="mt-12">
+            <SectionHeading as="h2">Past paper questions students ask</SectionHeading>
+            <div className="mt-4 space-y-3">
+              {FAQS.map((faq) => (
                 <details
-                  key={unit.id}
-                  className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)"
+                  key={faq.q}
+                  className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-0 shadow-ict-sm"
                 >
-                  <summary className="flex cursor-pointer list-none flex-wrap items-baseline justify-between gap-2 px-5 py-4">
-                    <span className="font-semibold">
-                      <span className="text-(--color-awaken-accent)">Unit {unit.competencyNumber}.</span>{" "}
-                      {unit.title}
-                    </span>
-                    <span className="text-xs text-(--color-awaken-ink-soft)">
-                      Grade {unit.gradeYear} · {unit.periods} periods
-                    </span>
+                  <summary className="cursor-pointer list-none px-5 py-4 font-semibold text-ict-ink-900">
+                    {faq.q}
                   </summary>
-                  <div className="border-t border-(--color-awaken-line) px-5 py-4">
-                    <p className="text-sm text-(--color-awaken-ink-soft)">{unit.competencyStatement}.</p>
-                    {asked.length > 0 ? (
-                      <>
-                        <p className="mt-3 text-xs font-semibold tracking-wide text-(--color-awaken-deep) uppercase">
-                          Commonly asked as
-                        </p>
-                        <ul className="mt-2 space-y-1.5 text-sm text-(--color-awaken-ink-soft)">
-                          {asked.map((a) => (
-                            <li key={a} className="flex items-start gap-2">
-                              <Icon
-                                name="chevron_right"
-                                className="mt-0.5 shrink-0 !text-base text-(--color-awaken-accent)"
-                              />
-                              {a}
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    ) : null}
-                    <Link
-                      href={`/syllabus/al-ict/${unit.id}`}
-                      className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-(--color-awaken-accent)"
-                    >
-                      Full unit breakdown
-                      <Icon name="chevron_right" className="!text-base" />
-                    </Link>
-                  </div>
+                  <p className="border-t border-ict-paper-300 px-5 py-4 text-sm text-ict-ink-500">{faq.a}</p>
                 </details>
-              );
-            })}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
 
-        <section id="official" className="mt-12 scroll-mt-6">
-          <h2 className="text-2xl font-bold">Where to get every year&apos;s official paper</h2>
-          <p className="mt-2 text-(--color-awaken-ink-soft)">
-            These are the authorities that publish the papers themselves, free. Always check the year and
-            medium on the paper you download — Sinhala, Tamil and English medium papers are separate files.
-          </p>
-          <ul className="mt-4 space-y-2">
-            {OFFICIAL_SOURCES.map((src) => (
-              <li key={src.url}>
-                <a
-                  href={src.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 transition-colors hover:border-(--color-awaken-accent)/40"
-                >
-                  <span className="flex items-center gap-1.5 font-semibold">
-                    {src.name}
-                    <Icon name="north_east" className="!text-sm text-(--color-awaken-ink-soft)" />
-                  </span>
-                  <span className="mt-1 block text-sm text-(--color-awaken-ink-soft)">{src.note}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
+          <FreeResourcesFooter exclude={["/past-papers"]} />
 
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold">Past paper questions students ask</h2>
-          <div className="mt-4 space-y-3">
-            {FAQS.map((faq) => (
-              <details
-                key={faq.q}
-                className="rounded-ict-card border border-(--color-awaken-line) bg-(--color-awaken-card)"
-              >
-                <summary className="cursor-pointer list-none px-5 py-4 font-semibold">{faq.q}</summary>
-                <p className="border-t border-(--color-awaken-line) px-5 py-4 text-sm text-(--color-awaken-ink-soft)">
-                  {faq.a}
-                </p>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        <FreeResourcesFooter exclude={["/past-papers"]} />
-
-        <PastPapersCta />
+          <PastPapersCta />
+        </div>
       </main>
     </>
   );
