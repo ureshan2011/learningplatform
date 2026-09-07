@@ -278,14 +278,14 @@ export function UnitStation({
                   </ul>
                 </div>
               ) : (
-                <div className="mt-4 rounded-2xl border border-dashed border-(--color-awaken-line) p-4">
-                  <p className="flex items-center gap-1.5 text-sm font-semibold">
+                <div className="mt-4 rounded-ict-card border border-dashed border-ict-paper-300 p-4">
+                  <p className="flex items-center gap-1.5 text-sm font-semibold text-ict-ink-900">
                     <span style={{ color: tone.ink }}>
                       <Icon name="notifications_active" className="!text-base" />
                     </span>
                     Want this unit taught live?
                   </p>
-                  <p className="mt-1 text-xs text-(--color-awaken-ink-soft)">
+                  <p className="mt-1 text-xs text-ict-ink-400">
                     Leave your email and we&apos;ll tell you the moment a class on{" "}
                     {unit.title.toLowerCase()} is scheduled.
                   </p>

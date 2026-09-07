@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { Button } from "@/components/ds-cream";
 
 /**
  * Captures an email address for the free content hub (articles + video
@@ -50,7 +51,7 @@ export function EmailCaptureForm({
   if (done) {
     return (
       <div
-        className={`flex items-center gap-2 rounded-xl border border-(--color-awaken-success)/30 bg-(--color-awaken-success-soft) px-4 py-3 text-sm font-semibold text-(--color-awaken-success) ${className ?? ""}`}
+        className={`flex items-center gap-2 rounded-ict-card border border-ict-green-500/30 bg-ict-green-50 px-4 py-3 text-sm font-semibold text-ict-green-500 ${className ?? ""}`}
       >
         <Icon name="check_circle" className="!text-lg" />
         You&apos;re on the list — we&apos;ll email you when we publish.
@@ -65,7 +66,7 @@ export function EmailCaptureForm({
           <span className="sr-only">Email address</span>
           <Icon
             name="mail"
-            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 !text-lg text-(--color-awaken-ink-soft)"
+            className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 !text-lg text-ict-ink-400"
           />
           <input
             type="email"
@@ -73,20 +74,18 @@ export function EmailCaptureForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={placeholder}
-            className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) py-3 pr-3 pl-10 text-base outline-none focus:border-(--color-awaken-accent)"
+            className="w-full rounded-full border border-ict-paper-300 bg-ict-paper-0 py-3 pr-3 pl-10 text-base text-ict-ink-900 outline-none focus:border-ict-orange-500"
           />
         </label>
-        <button
-          type="submit"
-          disabled={busy}
-          className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(234,88,12,0.25)] transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
-        >
-          {busy ? "Sending…" : buttonLabel}
-          <Icon name="send" className="!text-base" />
-        </button>
+        <Button type="submit" disabled={busy} arrow="none" className="shrink-0 justify-center">
+          <span className="inline-flex items-center gap-1.5">
+            {busy ? "Sending…" : buttonLabel}
+            <Icon name="send" className="!text-base" />
+          </span>
+        </Button>
       </div>
-      <p className="mt-1.5 text-xs text-(--color-awaken-ink-soft)">Free. No spam. Unsubscribe anytime.</p>
-      {error ? <p className="mt-2 text-sm text-(--color-awaken-danger)">{error}</p> : null}
+      <p className="mt-1.5 text-xs text-ict-ink-400">Free. No spam. Unsubscribe anytime.</p>
+      {error ? <p className="mt-2 text-sm text-ict-red-500">{error}</p> : null}
     </form>
   );
 }
