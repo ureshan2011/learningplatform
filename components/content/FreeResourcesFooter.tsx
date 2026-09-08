@@ -56,6 +56,27 @@ export function FreeResourcesFooter({ exclude = [] }: { exclude?: string[] }) {
           </li>
         ))}
       </ul>
+
+      {/* Campus Ready is paid, so it sits outside the list above rather than
+          inside a card headed "free" — but it belongs on this footer, because
+          the student reading a revision page in December is exactly the person
+          who will be waiting a year for university in March. One honest row,
+          labelled as a course, on every free page. */}
+      <Link
+        href="/campus-ready"
+        className="mt-5 flex items-center gap-3 rounded-ict-md border border-ict-paper-300 px-3.5 py-3 transition-colors duration-[120ms] hover:border-ict-orange-500 hover:bg-ict-paper-100"
+      >
+        <Icon name="north_east" className="!text-base shrink-0 text-ict-orange-500" />
+        <span className="min-w-0">
+          <span className="block text-sm font-semibold text-ict-ink-900">
+            Finished your A/Ls? Campus Ready
+          </span>
+          <span className="block text-xs text-ict-ink-400">
+            A 12-week course in data, Python and research skills for the wait before university.
+            Paid, with two intakes a year.
+          </span>
+        </span>
+      </Link>
     </Card>
   );
 }

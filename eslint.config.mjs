@@ -7,7 +7,13 @@ const config = [
   ...typescript,
   {
     // scripts/ is plain Node with no TS project attached.
-    ignores: [".next/**", "node_modules/**", "out/**", "scripts/**"],
+    //
+    // docs/design-system/ is the supplied design-system brief — illustrative
+    // JSX from an external document, not code this project compiles, imports
+    // or maintains. Linting it fails the build on someone else's snippet
+    // (Button.jsx references an `Arrow` it re-exports but never imports) and
+    // otherwise only produces advice about a reference file nobody ships.
+    ignores: [".next/**", "node_modules/**", "out/**", "scripts/**", "docs/**"],
   },
 ];
 
