@@ -41,8 +41,8 @@ export async function POST(req: NextRequest) {
     await startFreeTrial({ uid: user.uid, subjectId, tenantId: user.tenantId });
   } catch (err) {
     const reason = err instanceof Error && "reason" in err ? (err as { reason?: string }).reason : undefined;
-    if (reason === "trial_already_used") {
-      return NextResponse.json({ error: "trial_already_used" }, { status: 409 });
+    if (reason === "trial_already_used" || reason === "trial_not_available") {
+      return NextResponse.json({ error: reason }, { status: 409 });
     }
     throw err;
   }

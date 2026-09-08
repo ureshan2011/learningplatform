@@ -1,7 +1,7 @@
 import "server-only";
 
 import { col, enrollmentId } from "@/lib/firebase/admin";
-import type { AccessResult, Enrollment, User } from "@/lib/types";
+import type { AccessResult, Enrollment, Payment, Subject, User } from "@/lib/types";
 
 /**
  * THE access check. Every gated resource goes through this function:
@@ -195,6 +195,47 @@ export async function grantCohortAccess(params: {
 }
 
 /**
+ * Grants whatever access a confirmed payment bought — monthly or cohort.
+ *
+ * THE single place that decides which of the two rules applies. Access is
+ * granted from three routes (the PayHere webhook, the teacher's bank-slip
+ * approval, and manual entry) and all three must agree; three copies of this
+ * branch is how one of them quietly keeps handing cohort students a month.
+ *
+ * `months` is ignored for a cohort payment, deliberately rather than by
+ * accident: the slip-approval screen asks the teacher for a month count, and
+ * for a fixed-term programme the honest answer is that it does not apply.
+ */
+export async function grantForPayment(params: {
+  payment: Payment;
+  /** Months to grant for a monthly payment. Ignored when the payment is a cohort. */
+  months: number;
+  source: Enrollment["source"];
+}): Promise<Enrollment> {
+  const { payment } = params;
+
+  if (payment.kind === "cohort") {
+    return grantCohortAccess({
+      uid: payment.uid,
+      subjectId: payment.subjectId,
+      tenantId: payment.tenantId,
+      endsAt: payment.periodEnd,
+      source: params.source,
+      paymentId: payment.id,
+    });
+  }
+
+  return grantAccess({
+    uid: payment.uid,
+    subjectId: payment.subjectId,
+    tenantId: payment.tenantId,
+    months: params.months,
+    source: params.source,
+    paymentId: payment.id,
+  });
+}
+
+/**
  * Takes back access bought by a payment that was refunded or charged back.
  *
  * Ends the period now rather than deleting the enrollment: the document is the
@@ -230,12 +271,26 @@ export const FREE_TRIAL_DAYS = 7;
  * all — not "no active enrollment", which a lapsed or cancelled subscriber
  * would also satisfy and could otherwise re-trigger a free trial every time
  * their paid access expires.
+ *
+ * Refuses outright on a fixed-term cohort. The trial is built for an ongoing
+ * monthly class a student can sample and then keep paying for; a cohort is one
+ * fixed programme bought once, so a "free week" of it is just the first two
+ * weeks of a Rs 30,000 course given away. The check reads the subject rather
+ * than trusting the caller, because both callers reach here from a route that
+ * could gain a cohort id without anyone remembering this rule.
  */
 export async function startFreeTrial(params: {
   uid: string;
   subjectId: string;
   tenantId: string;
 }): Promise<Enrollment> {
+  const subjectSnap = await col.subjects().doc(params.subjectId).get();
+  if (subjectSnap.exists && (subjectSnap.data() as Subject).cohort) {
+    const err = new Error("TRIAL_NOT_AVAILABLE") as Error & { reason?: string };
+    err.reason = "trial_not_available";
+    throw err;
+  }
+
   const ref = col.enrollments().doc(enrollmentId(params.uid, params.subjectId));
   const snap = await ref.get();
   if (snap.exists) {

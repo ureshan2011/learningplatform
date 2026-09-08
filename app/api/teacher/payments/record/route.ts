@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { col } from "@/lib/firebase/admin";
 import { requireTeacher } from "@/lib/auth/session";
-import { addMonths, grantAccess } from "@/lib/payments/entitlements";
+import { addMonths, grantForPayment } from "@/lib/payments/entitlements";
 import { paidPatch } from "@/lib/payments/records";
 import { toE164 } from "@/lib/phone";
 import type { Payment, Subject, User } from "@/lib/types";
@@ -83,8 +83,12 @@ export async function POST(req: NextRequest) {
     provider: "manual",
     amountLKR: body.amountLKR,
     status: "pending",
+    // A cohort runs to its own last day, so the month count the teacher typed
+    // does not apply — recording cash for a Campus Ready seat buys that
+    // programme, not N months from the date on the receipt.
+    ...(subject.cohort ? { kind: "cohort" as const } : {}),
     periodStart: paidAt,
-    periodEnd: addMonths(paidAt, body.months),
+    periodEnd: subject.cohort ? subject.cohort.endsAt : addMonths(paidAt, body.months),
     recordedBy: teacherUid,
     createdAt: now,
     updatedAt: now,
@@ -92,14 +96,7 @@ export async function POST(req: NextRequest) {
     ...(body.note ? { note: body.note } : {}),
   };
 
-  await grantAccess({
-    uid: student.uid,
-    subjectId: subject.id,
-    tenantId,
-    months: body.months,
-    source: "manual",
-    paymentId: id,
-  });
+  await grantForPayment({ payment, months: body.months, source: "manual" });
 
   await col.payments().doc(id).set({ ...payment, ...(await paidPatch(payment, paidAt)) });
 

@@ -40,10 +40,13 @@ export default async function GoPage({
     try {
       await startFreeTrial({ uid: user.uid, subjectId, tenantId: user.tenantId });
     } catch (err) {
-      // Already used their trial — that is success from here, not a failure:
-      // the subject page below shows the paid options instead.
+      // Already used their trial, or the subject does not offer one — either
+      // way that is success from here, not a failure: the subject page below
+      // shows the paid options instead. (`getSubject` is A/L-only, so a cohort
+      // id has already redirected above; the second case is belt and braces
+      // against that filter ever widening.)
       const reason = err instanceof Error && "reason" in err ? (err as { reason?: string }).reason : undefined;
-      if (reason !== "trial_already_used") throw err;
+      if (reason !== "trial_already_used" && reason !== "trial_not_available") throw err;
     }
   }
 

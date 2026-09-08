@@ -7,7 +7,7 @@ import {
   verifyNotification,
   type NotifyPayload,
 } from "@/lib/payments/payhere";
-import { grantAccess } from "@/lib/payments/entitlements";
+import { grantForPayment } from "@/lib/payments/entitlements";
 import { getPayHereConfig, logPaymentEvent, paidPatch } from "@/lib/payments/records";
 import { notifyTeacher } from "@/lib/payments/activity";
 import { applyReferralBonus } from "@/lib/referrals";
@@ -74,14 +74,7 @@ export async function processPayHereNotification(
       return { status: 200, body: { ok: true } };
     }
 
-    await grantAccess({
-      uid: payment.uid,
-      subjectId: payment.subjectId,
-      tenantId: payment.tenantId,
-      months: 1,
-      source: "payhere",
-      paymentId: payment.id,
-    });
+    await grantForPayment({ payment, months: 1, source: "payhere" });
     await applyReferralBonus(payment);
 
     const patch = await paidPatch(payment);

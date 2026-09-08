@@ -267,7 +267,18 @@ export interface Payment {
   provider: PaymentProvider;
   amountLKR: number;
   status: PaymentStatus;
-  /** Billing period this payment buys. */
+  /**
+   * What was sold. Absent means "monthly" — every payment taken before Campus
+   * Ready existed is one, and back-filling history to add a field that changes
+   * nothing about it would be rewriting the ledger.
+   *
+   * Recorded here rather than re-derived from the subject when the payment is
+   * confirmed, because the subject can be edited in between: a teacher fixing a
+   * cohort's end date must not retroactively change what an already-captured
+   * payment bought.
+   */
+  kind?: "monthly" | "cohort";
+  /** Billing period this payment buys. For a cohort, `periodEnd` is the cohort's own last day. */
   periodStart: number;
   periodEnd: number;
   /**
