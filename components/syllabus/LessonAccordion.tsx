@@ -44,7 +44,7 @@ function LessonContent({ content }: { content: string }) {
           const [heading, ...rest] = lines;
           return (
             <div key={i}>
-              <p className="font-display text-sm font-bold text-ict-ink-900">{heading.slice(3)}</p>
+              <h3 className="m-0 font-display text-sm font-bold text-ict-ink-900">{heading.slice(3)}</h3>
               {rest.length ? <p className="mt-1">{rest.join(" ")}</p> : null}
             </div>
           );
@@ -148,7 +148,7 @@ export function LessonAccordion({
                     {lesson.id}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-semibold">{lesson.title}</span>
+                    <h2 className="m-0 block truncate text-base font-semibold">{lesson.title}</h2>
                     <span className="block text-xs text-ict-ink-400">
                       {lesson.periods} periods · {lesson.examObjectives.length} exam objectives
                     </span>
