@@ -22,6 +22,8 @@ const RESOURCES: ResourceLink[] = [
   { href: "/notes", label: "Free ICT notes & past papers", icon: "description" },
   { href: "/past-papers", label: "Past papers, used the right way", icon: "receipt_long" },
   { href: "/syllabus", label: "The full syllabus, unit by unit", icon: "auto_stories" },
+  { href: "/al-ict-syllabus-resource-book", label: "Syllabus, resource book & teacher's guide", icon: "fact_check" },
+  { href: "/al-ict-short-notes", label: "Short notes — every unit, one line each", icon: "edit_note" },
   { href: "/revision-plan", label: "A revision plan, especially for repeats", icon: "calendar_month" },
   { href: "/command-words", label: "Exam command words explained", icon: "fact_check" },
   { href: "/distinguish-between", label: "10 worked \"distinguish between\" answers", icon: "rule" },

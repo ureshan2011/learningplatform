@@ -29,6 +29,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/past-papers`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/syllabus`, lastModified, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/notes`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/al-ict-syllabus-resource-book`, lastModified, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${base}/al-ict-short-notes`, lastModified, changeFrequency: "monthly", priority: 0.85 },
     {
       url: `${base}/papers/al-ict-2026-paper-1-mcq`,
       lastModified,
