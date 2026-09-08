@@ -45,6 +45,14 @@ export interface CampusWeek {
   summary: string;
   /** What the student produces. Every week ends in something markable without a mentor. */
   deliverable: string;
+  /**
+   * The actual tools touched that week, named the way a CV names them.
+   *
+   * On the landing page these are the most persuasive thing in the syllabus: a
+   * student comparing courses scans for "Power BI" and "Python" long before
+   * they read a single week's description.
+   */
+  tools: string[];
 }
 
 export const CAMPUS_READY_WEEKS: CampusWeek[] = [
@@ -55,6 +63,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     summary:
       "Moodle, reading an assignment brief, academic email, and keeping files so you can find them in year three.",
     deliverable: "Setup lab",
+    tools: ["Moodle", "Google Drive", "Email"],
   },
   {
     week: 2,
@@ -63,6 +72,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     summary:
       "Styles, an automatic table of contents, captions and cross-references — the difference between a report that looks marked-down and one that does not.",
     deliverable: "Assignment template",
+    tools: ["Word", "Styles", "Table of contents"],
   },
   {
     week: 3,
@@ -70,6 +80,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     title: "Spreadsheets, properly",
     summary: "Formulas, lookups and pivot tables on data that is not already tidy.",
     deliverable: "Spreadsheet lab",
+    tools: ["Excel", "Google Sheets", "Pivot tables"],
   },
   {
     week: 4,
@@ -78,6 +89,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     summary:
       "Designing a survey in Google Forms, cleaning what comes back, and presenting findings without reading off the slide.",
     deliverable: "Milestone 1",
+    tools: ["Google Forms", "Excel", "Slides"],
   },
   {
     week: 5,
@@ -85,6 +97,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     title: "Python foundations",
     summary: "Variables, lists, loops and functions, written in the browser with nothing to install.",
     deliverable: "Python lab",
+    tools: ["Python"],
   },
   {
     week: 6,
@@ -92,6 +105,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     title: "pandas",
     summary: "Load, filter, group and merge — on real Sri Lankan data, not a tutorial dataset.",
     deliverable: "Python lab",
+    tools: ["Python", "pandas"],
   },
   {
     week: 7,
@@ -99,6 +113,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     title: "Charts that do not lie",
     summary: "Choosing the right chart, and the common ones that mislead without meaning to.",
     deliverable: "Milestone 2",
+    tools: ["Python", "matplotlib", "seaborn"],
   },
   {
     week: 8,
@@ -106,6 +121,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     title: "Statistics for your research project",
     summary: "Sampling, confidence, t-test and chi-square — the tests your supervisor will expect.",
     deliverable: "Python and spreadsheet lab",
+    tools: ["Python", "Excel", "SciPy"],
   },
   {
     week: 9,
@@ -113,6 +129,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     title: "Correlation and regression",
     summary: "Running them, and reading the output the way the person marking it will.",
     deliverable: "Quiz",
+    tools: ["Python", "statsmodels"],
   },
   {
     week: 10,
@@ -120,6 +137,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     title: "Power BI",
     summary: "Data model, relationships, the DAX you actually need, and a dashboard that answers a question.",
     deliverable: "Power BI report",
+    tools: ["Power BI", "DAX"],
   },
   {
     week: 11,
@@ -128,6 +146,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     summary:
       "Literature search, Zotero, APA and Harvard, what Turnitin checks — and where the line sits between AI helping you and AI writing for you, including how to declare it.",
     deliverable: "Research pack",
+    tools: ["Zotero", "APA", "Harvard", "Turnitin"],
   },
   {
     week: 12,
@@ -136,6 +155,7 @@ export const CAMPUS_READY_WEEKS: CampusWeek[] = [
     summary:
       "One question, start to finish, on real Sri Lankan open data: clean it, analyse it, build the dashboard, write it up.",
     deliverable: "Portfolio project",
+    tools: ["Python", "Power BI", "Word"],
   },
 ];
 
