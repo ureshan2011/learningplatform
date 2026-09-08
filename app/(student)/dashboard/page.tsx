@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { requirePageUser } from "@/lib/auth/session";
-import { listEnrollments, listSubjects, listUpcomingSessions, getProgress } from "@/lib/queries";
+import {
+  listEnrollments,
+  listSubjects,
+  listCohorts,
+  isEnrolmentOpen,
+  listUpcomingSessions,
+  getProgress,
+} from "@/lib/queries";
 import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { getPayHereConfig } from "@/lib/payments/records";
 import { getT, localeAttrs, type Translator } from "@/lib/i18n/server";
@@ -21,6 +28,7 @@ import {
 } from "@/components/ds";
 import type { MessageKey } from "@/lib/i18n/dictionary";
 import type { ClassSession, Subject } from "@/lib/types";
+import { CAMPUS_READY } from "@/lib/content/campus-ready";
 
 export const dynamic = "force-dynamic";
 
@@ -40,9 +48,10 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const user = await requirePageUser("/dashboard");
 
-  const [enrollments, subjects, t, loc] = await Promise.all([
+  const [enrollments, subjects, cohorts, t, loc] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
+    listCohorts(),
     getT(),
     localeAttrs(),
   ]);
@@ -201,6 +210,30 @@ export default async function DashboardPage() {
             </div>
           </section>
 
+          {/* Only shown once an intake exists, so the dashboard does not carry a
+              dead section for the months between cohorts. A closed intake still
+              appears while a student is enrolled in it — that is their class. */}
+          {cohorts.some((c) => isEnrolmentOpen(c, now) || activeSubjectIds.includes(c.id)) ? (
+            <section>
+              <SectionBar title={t("campus.title")} hint={t("campus.sectionHint")} />
+              <div className="grid gap-2 sm:grid-cols-2">
+                {cohorts
+                  .filter((c) => isEnrolmentOpen(c, now) || activeSubjectIds.includes(c.id))
+                  .map((cohort) => (
+                    <CohortCard
+                      key={cohort.id}
+                      subject={cohort}
+                      enrolled={activeSubjectIds.includes(cohort.id)}
+                      now={now}
+                      cardPaymentsOn={cardPaymentsOn}
+                      sandbox={payhere.mode === "sandbox"}
+                      t={t}
+                    />
+                  ))}
+              </div>
+            </section>
+          ) : null}
+
         </div>
 
         {/* ---------------------------------------------------------------- */}
@@ -280,6 +313,69 @@ const STUDY_TOOLS: Array<{ href: string; title: MessageKey; blurb: MessageKey; i
  */
 function levelProgress(xp: number): number {
   return Math.round(((xp % 1000) / 1000) * 100);
+}
+
+/**
+ * A Campus Ready intake on the dashboard.
+ *
+ * Deliberately not `SubjectCard` with a flag. A cohort answers different
+ * questions — when does it start, when does enrolment shut, what does the whole
+ * thing cost — and bending the monthly card to cover both would leave a student
+ * reading "per month" beside a Rs 30,000 fee.
+ */
+function CohortCard({
+  subject,
+  enrolled,
+  now,
+  cardPaymentsOn,
+  sandbox,
+  t,
+}: {
+  subject: Subject;
+  enrolled: boolean;
+  now: number;
+  cardPaymentsOn: boolean;
+  sandbox: boolean;
+  t: Translator;
+}) {
+  const term = subject.cohort;
+  if (!term) return null;
+  const open = isEnrolmentOpen(subject, now);
+
+  return (
+    <Card radius="card" className="flex flex-col p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-display text-base font-extrabold text-ict-paper-50">{subject.name}</p>
+          <p className="mt-1 text-sm text-ict-ink-300">
+            {enrolled
+              ? t("campus.runsUntil", { date: formatDate(term.endsAt) })
+              : t("campus.onePayment", { price: formatLKR(term.feeLKR) })}
+          </p>
+        </div>
+        <Badge tone={enrolled ? "success" : "neutral"}>
+          {enrolled ? t("campus.enrolled") : t("campus.weeks", { count: CAMPUS_READY.weeks })}
+        </Badge>
+      </div>
+
+      <p className="mt-2 text-xs text-ict-ink-400">
+        {enrolled
+          ? t("campus.starts", { date: formatDate(term.startsAt) })
+          : open
+            ? t("campus.enrolBy", { date: formatDate(term.enrolmentClosesAt) })
+            : t("campus.closed")}
+      </p>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <ButtonLink href={`/campus/${subject.id}`} variant="outline" size="sm" arrow="right">
+          {enrolled ? t("campus.open") : t("campus.enrol")}
+        </ButtonLink>
+        {!enrolled && open && cardPaymentsOn ? (
+          <SubscribeButton subjectId={subject.id} sandbox={sandbox} />
+        ) : null}
+      </div>
+    </Card>
+  );
 }
 
 function SubjectCard({
