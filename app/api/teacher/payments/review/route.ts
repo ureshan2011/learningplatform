@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { col } from "@/lib/firebase/admin";
 import { requireTeacher } from "@/lib/auth/session";
-import { grantAccess } from "@/lib/payments/entitlements";
+import { grantForPayment } from "@/lib/payments/entitlements";
 import { paidPatch } from "@/lib/payments/records";
 import { applyReferralBonus } from "@/lib/referrals";
 import type { Payment } from "@/lib/types";
@@ -62,14 +62,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, status: "failed" });
   }
 
-  await grantAccess({
-    uid: payment.uid,
-    subjectId: payment.subjectId,
-    tenantId: payment.tenantId,
-    months: body.months,
-    source: "bank_slip",
-    paymentId: payment.id,
-  });
+  // `months` is ignored when the payment is a cohort — it ends when the cohort
+  // ends, whatever the approval screen asked for. See `grantForPayment`.
+  await grantForPayment({ payment, months: body.months, source: "bank_slip" });
   await applyReferralBonus(payment);
 
   await ref.update({

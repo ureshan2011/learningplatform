@@ -4,6 +4,7 @@ import { col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { addMonths } from "@/lib/payments/entitlements";
 import { notifyTeacher } from "@/lib/payments/activity";
+import { payableLKR } from "@/lib/payments/pricing";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -40,6 +41,17 @@ export async function POST(req: NextRequest) {
   const subject = subjectSnap.data() as Subject;
 
   const now = Date.now();
+  const cohort = subject.cohort;
+
+  // Closed means closed on this route too, or slips pile up against a cohort
+  // that started weeks ago and get approved by reflex. A student who genuinely
+  // deposited at the bank after the cut-off is not stuck: the teacher records
+  // it by hand from the console, which is an override by design.
+  if (cohort && now > cohort.enrolmentClosesAt) {
+    return NextResponse.json({ error: "enrolment_closed" }, { status: 409 });
+  }
+
+  const amountLKR = payableLKR(subject);
   const id = `slip_${user.uid.slice(0, 8)}_${now}`;
   const payment: Payment = {
     id,
@@ -47,10 +59,11 @@ export async function POST(req: NextRequest) {
     uid: user.uid,
     subjectId: body.subjectId,
     provider: "bank_slip",
-    amountLKR: subject.priceLKR,
+    amountLKR,
     status: "pending",
+    ...(cohort ? { kind: "cohort" as const } : {}),
     periodStart: now,
-    periodEnd: addMonths(now, 1),
+    periodEnd: cohort ? cohort.endsAt : addMonths(now, 1),
     slipUrl: body.slipUrl,
     createdAt: now,
     updatedAt: now,
@@ -64,7 +77,7 @@ export async function POST(req: NextRequest) {
     kind: "slip_uploaded",
     uid: user.uid,
     subjectId: body.subjectId,
-    amountLKR: subject.priceLKR,
+    amountLKR,
     paymentId: id,
     method: "Bank slip — needs approval",
   });

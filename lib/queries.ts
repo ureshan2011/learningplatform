@@ -74,6 +74,74 @@ export async function getSubject(subjectId: string): Promise<Subject | null> {
   return subject.grade === "AL" ? subject : null;
 }
 
+/**
+ * The Campus Ready intakes — the mirror of `listSubjects` for "CAMPUS".
+ *
+ * Deliberately a second pair of accessors rather than a widened filter on the
+ * first. The A/L surfaces ask "what do we teach?" and must keep answering
+ * "A/L ICT"; a cohort appearing in the syllabus or the landing page's subject
+ * list would be a bug, not a feature. Splitting them here means no A/L page
+ * changes and none can regress.
+ *
+ * Same equality-only shape as `listSubjects`, so no composite index is needed
+ * (see the note at the top of this file). Sorted newest intake first in memory.
+ */
+export const listCohorts = cache(async (): Promise<Subject[]> => {
+  const snap = await col
+    .subjects()
+    .where("tenantId", "==", publicEnv.tenantId)
+    .where("active", "==", true)
+    .get();
+  return snap.docs
+    .map((d) => d.data() as Subject)
+    .filter((s) => s.grade === "CAMPUS" && s.cohort)
+    .sort((a, b) => (b.cohort?.startsAt ?? 0) - (a.cohort?.startsAt ?? 0));
+});
+
+/**
+ * One Campus Ready intake.
+ *
+ * Requires `cohort` to be present, not just the grade: a CAMPUS subject with no
+ * cohort block has no start, end or fee, so every downstream caller — checkout,
+ * `grantCohortAccess`, the certificate — would have to re-check it anyway.
+ * Refusing it once here is what lets them treat `cohort` as guaranteed.
+ */
+export async function getCohort(subjectId: string): Promise<Subject | null> {
+  const snap = await col.subjects().doc(subjectId).get();
+  if (!snap.exists) return null;
+  const subject = snap.data() as Subject;
+  return subject.grade === "CAMPUS" && subject.cohort ? subject : null;
+}
+
+/** Whether a cohort is still taking students. The one place that rule is written. */
+export function isEnrolmentOpen(subject: Subject, at: number = Date.now()): boolean {
+  return subject.cohort !== undefined && at <= subject.cohort.enrolmentClosesAt;
+}
+
+/**
+ * Everything a student can pay for — the A/L class and every open or running
+ * cohort.
+ *
+ * The money screens need this rather than `listSubjects`. They resolve a
+ * payment's `subjectId` to a name, so a list that omits cohorts does not merely
+ * hide them: a Campus Ready payment lands in the ledger and the CSV export with
+ * a blank subject, which is an accounting defect, not a display one.
+ *
+ * The split is the point. `listSubjects` answers "what do we teach?" for the
+ * landing page and syllabus, where a cohort must not appear. This answers "what
+ * can money be taken for?", where it must.
+ */
+export const listSellableSubjects = cache(async (): Promise<Subject[]> => {
+  const snap = await col
+    .subjects()
+    .where("tenantId", "==", publicEnv.tenantId)
+    .where("active", "==", true)
+    .get();
+  return snap.docs
+    .map((d) => d.data() as Subject)
+    .filter((s) => s.grade === "AL" || (s.grade === "CAMPUS" && s.cohort));
+});
+
 export const listEnrollments = cache(async (uid: string): Promise<Enrollment[]> => {
   const snap = await col.enrollments().where("uid", "==", uid).get();
   return snap.docs.map((d) => d.data() as Enrollment);

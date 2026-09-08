@@ -1,11 +1,12 @@
 import { adminDb, col } from "@/lib/firebase/admin";
 import { requireStaffPage } from "@/lib/auth/session";
-import { listSubjects, listUnits } from "@/lib/queries";
+import { isEnrolmentOpen, listCohorts, listSubjects, listUnits } from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
-import { formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
+import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { getBusinessOverview, type BusinessOverview } from "@/lib/teacher/insights";
 import { ScheduleSessionForm, type UnitOption } from "@/components/teacher/ScheduleSessionForm";
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
+import { OpenCohortForm } from "@/components/teacher/OpenCohortForm";
 import { DeviceResetPanel } from "@/components/teacher/DeviceResetPanel";
 import { ActivityBell } from "@/components/teacher/ActivityBell";
 import { NotConfigured } from "@/components/ui/NotConfigured";
@@ -58,6 +59,7 @@ export default async function TeacherConsolePage() {
   const user = await requireStaffPage("/teacher");
 
   const subjects = await section("subjects", () => listSubjects(), []);
+  const cohorts = await section("cohorts", () => listCohorts(), []);
 
   const [overview, sessions, slipCount] = await Promise.all([
     section<BusinessOverview>("overview", () => getBusinessOverview(subjects), {
@@ -232,6 +234,52 @@ export default async function TeacherConsolePage() {
             ) : (
               <NotConfigured feature="zoom" forTeacher />
             )}
+          </section>
+
+          <section>
+            <SectionBar
+              title="Campus Ready"
+              hint={
+                cohorts.length > 0
+                  ? `${cohorts.length} intake${cohorts.length === 1 ? "" : "s"}`
+                  : "The programme for students waiting to start university"
+              }
+            />
+            {cohorts.length > 0 ? (
+              <Card radius="card" className="mb-2 p-5">
+                <div className="space-y-2.5">
+                  {cohorts.map((c) => {
+                    // `listCohorts` only returns subjects that have one, but the
+                    // optional field does not narrow on its own.
+                    const term = c.cohort;
+                    if (!term) return null;
+                    const open = isEnrolmentOpen(c);
+                    return (
+                      <div
+                        key={c.id}
+                        className="flex flex-wrap items-center justify-between gap-2 border-b border-ict-border-dark pb-2.5 last:border-0 last:pb-0"
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-ict-paper-50">
+                            {c.name}
+                          </span>
+                          <span className="block text-xs text-ict-ink-300">
+                            {formatDate(term.startsAt)} to {formatDate(term.endsAt)} ·{" "}
+                            {formatLKR(term.feeLKR)}
+                          </span>
+                        </span>
+                        <StatusChip tone={open ? "success" : "neutral"}>
+                          {open
+                            ? `Enrolling until ${formatDate(term.enrolmentClosesAt)}`
+                            : "Enrolment closed"}
+                        </StatusChip>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Card>
+            ) : null}
+            <OpenCohortForm />
           </section>
 
           {subjects.length === 0 ? (

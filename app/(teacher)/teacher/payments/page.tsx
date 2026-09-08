@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { adminDb, col } from "@/lib/firebase/admin";
 import { requireStaffPage } from "@/lib/auth/session";
-import { listSubjects } from "@/lib/queries";
+import { listSellableSubjects } from "@/lib/queries";
+import { payableLKR } from "@/lib/payments/pricing";
 import { publicEnv } from "@/lib/env";
 import { formatLKR, formatSessionTime } from "@/lib/format";
 import { getLedger, type Ledger } from "@/lib/payments/ledger";
@@ -47,7 +48,7 @@ export default async function TeacherPaymentsPage() {
   // Gate only — the app shell renders who is signed in.
   await requireStaffPage("/teacher/payments");
 
-  const subjects = await section("subjects", () => listSubjects(), [] as Subject[]);
+  const subjects = await section("subjects", () => listSellableSubjects(), [] as Subject[]);
 
   const [ledger, slips, settings, events] = await Promise.all([
     section<Ledger>("ledger", () => getLedger(subjects), {
@@ -208,7 +209,7 @@ export default async function TeacherPaymentsPage() {
           </p>
           <div className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
             <ManualPaymentForm
-              subjects={subjects.map((s) => ({ id: s.id, name: s.name, priceLKR: s.priceLKR }))}
+              subjects={subjects.map((s) => ({ id: s.id, name: s.name, priceLKR: payableLKR(s) }))}
             />
           </div>
         </section>

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireTeacher } from "@/lib/auth/session";
-import { listSubjects } from "@/lib/queries";
+import { listSellableSubjects } from "@/lib/queries";
 import { getLedger, ledgerToCsv } from "@/lib/payments/ledger";
 import { colomboDateString } from "@/lib/format";
 
@@ -22,7 +22,7 @@ export async function GET() {
     return NextResponse.json({ error: "not_permitted" }, { status });
   }
 
-  const subjects = await listSubjects();
+  const subjects = await listSellableSubjects();
   const { rows } = await getLedger(subjects);
   // Excel on a Windows machine reads a UTF-8 CSV as Latin-1 unless it finds a
   // byte-order mark, which turns every Sinhala name and "Rs" sign into

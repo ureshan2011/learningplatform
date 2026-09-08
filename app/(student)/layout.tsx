@@ -1,5 +1,5 @@
 import { resolveSession } from "@/lib/auth/session";
-import { listEnrollments, listSubjects } from "@/lib/queries";
+import { listCohorts, listEnrollments, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
@@ -29,9 +29,10 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const { user } = await resolveSession();
   if (!user) return <>{children}</>;
 
-  const [enrollments, subjects, t, locale] = await Promise.all([
+  const [enrollments, subjects, cohorts, t, locale] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
+    listCohorts(),
     getT(),
     getLocale(),
   ]);
@@ -84,6 +85,17 @@ export default async function StudentLayout({ children }: { children: React.Reac
       { href: "/syllabus", label: t("nav.syllabus"), icon: "auto_stories" },
       { href: "/account", label: t("nav.account"), icon: "account_circle" },
     );
+  }
+
+  // A cohort the student is actually in gets its own rail entry. Not offered to
+  // someone who has not enrolled: the dashboard card is where an intake is sold,
+  // and a permanent nav link to something you cannot open is noise.
+  const myCohort = cohorts.find((c) => activeIds.has(c.id)) ?? (isStaff ? cohorts[0] : undefined);
+  if (myCohort) {
+    groups.push({
+      label: t("campus.title"),
+      items: [{ href: `/campus/${myCohort.id}`, label: t("nav.campus"), icon: "school" }],
+    });
   }
 
   groups.push({

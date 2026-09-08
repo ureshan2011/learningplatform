@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/payhere";
 import { addMonths } from "@/lib/payments/entitlements";
 import { getPayHereConfig } from "@/lib/payments/records";
+import { payableLKR } from "@/lib/payments/pricing";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -48,10 +49,22 @@ export async function POST(req: NextRequest) {
   }
 
   const now = Date.now();
+  const cohort = subject.cohort;
+
+  // The enrolment window is enforced here, before money moves, and nowhere
+  // downstream. `grantCohortAccess` deliberately does not re-check it: once
+  // PayHere has captured a card, refusing the grant would leave a student paid
+  // up with nothing. The gate has to be in front of the payment, not behind it.
+  if (cohort && now > cohort.enrolmentClosesAt) {
+    return NextResponse.json({ error: "enrolment_closed" }, { status: 409 });
+  }
+
   // Unique per attempt: an abandoned checkout leaves a pending row rather than
   // overwriting a paid one, and a student paying twice in a month gets two
   // orders, two receipts and two months.
   const orderId = buildOrderId(user.uid, subjectId, now);
+
+  const amountLKR = payableLKR(subject);
 
   const payment: Payment = {
     id: orderId,
@@ -59,10 +72,11 @@ export async function POST(req: NextRequest) {
     uid: user.uid,
     subjectId,
     provider: "payhere",
-    amountLKR: subject.priceLKR,
+    amountLKR,
     status: "pending",
+    ...(cohort ? { kind: "cohort" as const } : {}),
     periodStart: now,
-    periodEnd: addMonths(now, 1),
+    periodEnd: cohort ? cohort.endsAt : addMonths(now, 1),
     createdAt: now,
     updatedAt: now,
   };
@@ -71,8 +85,8 @@ export async function POST(req: NextRequest) {
   const fields = buildCheckoutFields({
     config,
     orderId,
-    amountLKR: subject.priceLKR,
-    itemName: `${subject.name} — 1 month`,
+    amountLKR,
+    itemName: cohort ? subject.name : `${subject.name} — 1 month`,
     studentName: user.name,
     phone: user.phone,
     uid: user.uid,
