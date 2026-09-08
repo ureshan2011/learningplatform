@@ -1,9 +1,14 @@
 # Campus Ready — the must-have programme for every university-bound student
 
 > **Status: approved, not yet launched.** Target first intake January 2027.
-> Built so far: the cohort data model (`Grade` "CAMPUS", `SubjectCohort`,
-> `grantCohortAccess`, `listCohorts`/`getCohort`). Everything else in §7 is
-> still to do.
+>
+> An intake can now be opened from the teacher console, and a student can find
+> it, read the syllabus and pay for it by card, bank slip or cash. Still to
+> build: the Python playground and auto-grading, submissions and peer review,
+> the certificate and verification page, and the public SEO cluster.
+>
+> **For the engineering state — what exists, the invariants, and what to do
+> next — read `docs/campus-ready-handoff.md`.**
 >
 > Market figures here were researched in September 2026 and go stale — the
 > A/L cohort numbers change yearly, and the competitor prices in §1 will move.
