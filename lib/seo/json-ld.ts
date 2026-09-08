@@ -143,9 +143,25 @@ export interface CourseOffering {
   /** The subject's own name, e.g. "A/L ICT — Grade 13". */
   name: string;
   description: string;
-  /** Monthly fee in LKR rupees. Omitted entirely when no subject is published yet. */
+  /** Fee in LKR rupees. Omitted entirely when no subject is published yet. */
   priceLKR?: number;
   path: string;
+  /**
+   * Overrides for a course that is not A/L ICT.
+   *
+   * The defaults describe the only thing this site taught for its first year,
+   * and every A/L page still relies on them. Campus Ready is post-secondary,
+   * teaches something else, and is bought once rather than monthly — stating
+   * any of that wrongly in the graph is worse than omitting it, because a
+   * search engine will believe it.
+   */
+  educationalLevel?: string;
+  teaches?: string;
+  audienceType?: string;
+  /** "Subscription" (the default) or a one-off programme fee. */
+  priceCategory?: "Subscription" | "Fee";
+  /** ISO 8601 duration for one instance, e.g. "P12W". */
+  workload?: string;
 }
 
 /**
@@ -165,18 +181,19 @@ export function courseJsonLd(course: CourseOffering) {
     description: course.description,
     url: `${base()}${course.path}`,
     provider: { "@id": ORG_ID() },
-    educationalLevel: "GCE Advanced Level",
-    teaches: SUBJECT_EN_LONG,
+    educationalLevel: course.educationalLevel ?? "GCE Advanced Level",
+    teaches: course.teaches ?? SUBJECT_EN_LONG,
     inLanguage: ["si", "en"],
     audience: {
       "@type": "EducationalAudience",
       educationalRole: "student",
-      audienceType: `Sri Lankan Advanced Level students, ${GRADES}`,
+      audienceType:
+        course.audienceType ?? `Sri Lankan Advanced Level students, ${GRADES}`,
     },
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "online",
-      courseWorkload: "P4H",
+      courseWorkload: course.workload ?? "P4H",
       inLanguage: "si",
       location: { "@type": "VirtualLocation", url: `${base()}${course.path}` },
       instructor: { "@id": TEACHER_ID() },
@@ -185,7 +202,7 @@ export function courseJsonLd(course: CourseOffering) {
       ? {
           offers: {
             "@type": "Offer",
-            category: "Subscription",
+            category: course.priceCategory ?? "Subscription",
             price: String(course.priceLKR),
             priceCurrency: "LKR",
             availability: "https://schema.org/InStock",

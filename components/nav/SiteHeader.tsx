@@ -56,6 +56,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
                   public page links to the two pages that carry the commercial
                   and the highest-volume informational query. */}
               <NavLink href="/al-ict-classes">Classes</NavLink>
+              <NavLink href="/campus-ready">Campus Ready</NavLink>
               <NavLink href="/syllabus">Syllabus</NavLink>
               <NavLink href="/past-papers">Past papers</NavLink>
               <NavLink href="/notes">Notes</NavLink>
