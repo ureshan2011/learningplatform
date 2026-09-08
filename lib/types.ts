@@ -10,7 +10,18 @@ export type TenantId = string;
 
 export type Role = "student" | "teacher" | "parent" | "admin";
 export type Medium = "sinhala" | "english" | "tamil";
-export type Grade = "OL" | "AL";
+
+/**
+ * What stage of schooling a subject is sold to.
+ *
+ * "CAMPUS" is not a school grade — it is the Campus Ready programme, sold to
+ * students who have finished their A/Ls and are waiting out the ~10-14 month
+ * gap before university. It rides on `Grade` rather than a separate flag so
+ * that `listSubjects`/`getSubject`, which already filter to "AL" as a
+ * deliberate product decision, keep it out of every A/L surface — the landing
+ * page, the syllabus, the dashboard — without a single page changing.
+ */
+export type Grade = "OL" | "AL" | "CAMPUS";
 
 /**
  * Max devices one account may be bound to. Raising this raises piracy.
@@ -97,6 +108,35 @@ export interface User {
   roleUpdatedAt?: number;
 }
 
+/**
+ * A fixed-term intake: everyone starts together, finishes together, and
+ * enrolment shuts when it starts.
+ *
+ * One object rather than four loose optional fields on `Subject`, so that
+ * "is this a cohort?" is a single check instead of four correlated optionals
+ * that can contradict each other.
+ */
+export interface SubjectCohort {
+  /** First day of teaching. */
+  startsAt: number;
+  /** Last day of access. Access ends here for everyone, whenever they paid. */
+  endsAt: number;
+  /**
+   * After this, no new enrolments. Usually `startsAt`: a cohort whose whole
+   * design is a shared pace cannot absorb someone joining in week 7, and the
+   * closing date is what makes the deadline real.
+   */
+  enrolmentClosesAt: number;
+  /**
+   * One-off programme fee in LKR rupees.
+   *
+   * Deliberately not `Subject.priceLKR`, which is documented as a *monthly*
+   * fee and is read as one by the checkout and the ledger. Overloading it
+   * would bill a Rs 30,000 programme every month.
+   */
+  feeLKR: number;
+}
+
 export interface Subject {
   id: string;
   tenantId: TenantId;
@@ -108,6 +148,11 @@ export interface Subject {
   description: string;
   syllabusTopics: string[];
   active: boolean;
+  /**
+   * Present only on fixed-term programmes (Campus Ready). Absent on the
+   * ongoing monthly subjects, which is what makes it the cohort test.
+   */
+  cohort?: SubjectCohort;
 }
 
 export type EnrollmentStatus = "active" | "expired" | "pending_payment" | "suspended";

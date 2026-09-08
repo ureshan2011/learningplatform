@@ -146,6 +146,55 @@ export async function grantBonusDays(params: {
 }
 
 /**
+ * Grants access to a fixed-term cohort — Campus Ready and anything like it.
+ *
+ * The period ends on the cohort's own `endsAt`, never "now plus a duration".
+ * That is the whole difference from `grantAccess` and `grantBonusDays`, and it
+ * is why this is a third function rather than an option on the first: those two
+ * *stack* from the later of now and the existing end, which is right for a
+ * monthly subscription and wrong here. A cohort finishes when the teaching
+ * finishes. A student who pays twice, or pays late, gets the same last day as
+ * everyone else — not a private extension into an empty classroom.
+ *
+ * It does not check whether enrolment has closed. That belongs at checkout,
+ * before money moves: a PayHere notification that lands a few minutes after the
+ * cut-off has already taken the student's money, and dropping it here would
+ * leave them paid-up with nothing to show for it.
+ */
+export async function grantCohortAccess(params: {
+  uid: string;
+  subjectId: string;
+  tenantId: string;
+  /** The cohort's last day, from `Subject.cohort.endsAt`. */
+  endsAt: number;
+  source: Enrollment["source"];
+  paymentId?: string;
+}): Promise<Enrollment> {
+  const ref = col.enrollments().doc(enrollmentId(params.uid, params.subjectId));
+  const now = Date.now();
+
+  const snap = await ref.get();
+  const existing = snap.exists ? (snap.data() as Enrollment) : undefined;
+
+  const enrollment: Enrollment = {
+    id: ref.id,
+    tenantId: params.tenantId,
+    uid: params.uid,
+    subjectId: params.subjectId,
+    status: "active",
+    currentPeriodStart: existing?.currentPeriodStart ?? now,
+    currentPeriodEnd: params.endsAt,
+    source: params.source,
+    ...(params.paymentId ? { lastPaymentId: params.paymentId } : {}),
+    createdAt: existing?.createdAt ?? now,
+    updatedAt: now,
+  };
+
+  await ref.set(enrollment, { merge: true });
+  return enrollment;
+}
+
+/**
  * Takes back access bought by a payment that was refunded or charged back.
  *
  * Ends the period now rather than deleting the enrollment: the document is the
