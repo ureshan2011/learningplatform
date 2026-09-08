@@ -10,6 +10,7 @@ import { CampusReadyMark } from "@/components/marketing/CampusReadyLogo";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
 import { FaqAccordion } from "@/components/marketing/landing/FaqAccordion";
 import { CurriculumShowcase } from "@/components/marketing/landing/CurriculumShowcase";
+import { CrossPromoBand } from "@/components/marketing/landing/CrossPromoBand";
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -748,6 +749,19 @@ export default async function CampusReadyPage() {
             </div>
           </div>
         </section>
+
+        {/* The reciprocal pointer. Somebody arrives here from "after A/L
+            courses" while still a term away from sitting them — this is the
+            one place that says so and sends them to the right product rather
+            than selling them a course they cannot start for a year. */}
+        <CrossPromoBand
+          eyebrow="Still sitting your A/Ls?"
+          title="A/L ICT classes"
+          body="Live online classes for Grades 12 and 13 in Sinhala and English medium, covering the full NIE syllabus. Free notes and past papers, and a free 7-day trial."
+          href="/al-ict-classes"
+          cta="See the classes"
+          mark={<GraduationCapIcon className="size-6" />}
+        />
 
         {/* FAQ */}
         <section id="faq" className="w-full py-[clamp(32px,6vw,72px)]">
