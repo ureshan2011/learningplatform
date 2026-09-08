@@ -203,7 +203,9 @@ Come back to the chat and ask. Each takes about 10 minutes:
   simulcast that lets classes grow past your seat limit.
 - **"add payments"** — PayHere cards. Needs a registered business and business
   bank account.
-- **"add notes"** — Cloudflare R2 for notes, past papers and replays.
+
+Notes and past papers need no setup at all — upload them straight from
+**Teacher console → Content**.
 
 Or ask for product features: **"add the live quiz"**, **"add the parent
 dashboard"**, **"add the AI doubt bot"**. Roadmap in `docs/PLAN.md`.
@@ -229,7 +231,8 @@ node scripts/admin.mjs make-teacher +94771234567    # promote someone
 node scripts/admin.mjs release-devices +94771234567 # they changed phone
 ```
 
-**Bank slip upload** is the one feature needing security rules deployed:
+**Bank slip upload and teacher content uploads (notes/past papers)** are the
+features needing security rules deployed:
 
 ```bash
 npx firebase-tools deploy --only storage

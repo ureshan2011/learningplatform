@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { listPublicContent } from "@/lib/queries";
-import { publicContentUrl } from "@/lib/content/r2";
+import { signedContentUrl } from "@/lib/content/storage";
 import { AL_ICT_UNITS } from "@/lib/content/al-ict-units";
 import { PAPER_QUESTION_COUNT } from "@/lib/content/al-ict-2026-paper1";
 import { formatDate } from "@/lib/format";
@@ -153,7 +153,13 @@ export default async function PastPapersPage() {
   const items = await listPublicContent().catch(() => [] as ContentItem[]);
   // Only the paper-shaped material belongs on this page; general notes stay on
   // /notes so the two pages don't compete for the same query.
-  const papers = items.filter((c) => c.kind === "past_paper" || c.kind === "marking_scheme");
+  const papers = await Promise.all(
+    items
+      .filter((c) => c.kind === "past_paper" || c.kind === "marking_scheme")
+      // This page is revalidated hourly (see `revalidate` below), so a fresh
+      // signed URL on each regeneration comfortably outlives any single visit.
+      .map(async (item) => ({ ...item, downloadUrl: await signedContentUrl(item.storagePath) })),
+  );
 
   // Page-specific node only — the root layout already ships the organisation,
   // the site and the teacher, and `provider` below resolves against them.
@@ -285,7 +291,7 @@ export default async function PastPapersPage() {
                 {papers.map((item) => (
                   <li key={item.id}>
                     <a
-                      href={publicContentUrl(item.r2Key)}
+                      href={item.downloadUrl}
                       className="ict-lift flex items-center gap-3 rounded-ict-card border border-ict-paper-300 bg-ict-paper-0 p-4 shadow-ict-sm"
                     >
                       <IconBadge

@@ -94,7 +94,7 @@ const nextConfig: NextConfig = {
   // with React 19. See components/player/ZoomEmbed.tsx.
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "**.r2.cloudflarestorage.com" },
+      { protocol: "https", hostname: "storage.googleapis.com" },
       { protocol: "https", hostname: "i.ytimg.com" },
     ],
   },

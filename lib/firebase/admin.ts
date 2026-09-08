@@ -4,6 +4,7 @@ import { initializeApp, getApps, getApp, cert, type App } from "firebase-admin/a
 import { getAuth, type Auth } from "firebase-admin/auth";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getDatabase, type Database } from "firebase-admin/database";
+import { getStorage, type Storage } from "firebase-admin/storage";
 import { optionalServerEnv, requireServerEnv, publicEnv } from "@/lib/env";
 
 let cached: App | undefined;
@@ -55,6 +56,7 @@ function adminApp(): App {
   }
 
   const databaseURL = publicEnv.firebase.databaseURL || undefined;
+  const storageBucket = publicEnv.firebase.storageBucket || undefined;
   const hasExplicitKey = Boolean(optionalServerEnv("FIREBASE_PRIVATE_KEY"));
 
   cached = hasExplicitKey
@@ -66,12 +68,13 @@ function adminApp(): App {
           privateKey: requireServerEnv("FIREBASE_PRIVATE_KEY").replace(/\\n/g, "\n"),
         }),
         databaseURL,
+        storageBucket,
       })
     : // No explicit key: fall through to ADC. In production that is the Cloud
       // Run service account; locally it is whatever `gcloud auth
       // application-default login` last wrote, and its absence surfaces as a
       // credential error on the first query rather than at import time.
-      initializeApp({ databaseURL });
+      initializeApp({ databaseURL, storageBucket });
 
   return cached;
 }
@@ -86,6 +89,11 @@ export function adminDb(): Firestore {
 
 export function adminRtdb(): Database {
   return getDatabase(adminApp());
+}
+
+/** Cloud Storage for Firebase — same project, same credentials, already the bucket `SlipUploadForm` uploads deposit slips into. */
+export function adminStorage(): Storage {
+  return getStorage(adminApp());
 }
 
 /**

@@ -45,6 +45,7 @@ export default async function TeacherLayout({ children }: { children: React.Reac
       label: "Teaching",
       items: [
         { href: "/teacher/mock-exams", label: "Mock exams", icon: "schedule" },
+        { href: "/teacher/content", label: "Content", icon: "description" },
         { href: "/syllabus", label: "Syllabus", icon: "auto_stories" },
       ],
     },

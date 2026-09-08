@@ -76,10 +76,9 @@ export default async function PrivacyPage() {
 
       <Clause heading="Who else processes it">
         <ul className="list-disc space-y-1 pl-5">
-          <li><strong>Google Firebase</strong> — sign-in, database and hosting.</li>
+          <li><strong>Google Firebase</strong> — sign-in, database, file storage and hosting.</li>
           <li><strong>PayHere</strong> — card payments (a licensed Sri Lankan payment gateway).</li>
           <li><strong>Zoom</strong> — the live class itself.</li>
-          <li><strong>Cloudflare R2</strong> — storage for notes, papers and recordings.</li>
         </ul>
         <p>
           Each of these is used only to run the service, under their own terms. Some of them store

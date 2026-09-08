@@ -35,7 +35,7 @@ by ambition, not by the Zoom invoice.**
 | Auth | Firebase Auth, phone OTP | The phone number is the identity anchor; one account per real number |
 | Durable data | Firestore | Users, subjects, enrollments, sessions, payments, content |
 | Live data | **Realtime Database** | Chat, presence, reactions, quiz state. Firestore bills per operation and a 1,000-student chat would exhaust the daily free quota in one class |
-| Media | **Cloudflare R2** | Zero egress fees. A 5MB PDF × 3,000 students is 15GB/month — free on R2, billable everywhere else |
+| Media | **Cloud Storage for Firebase** | Same project, no separate account or credentials. Free tier covers this platform's scale; every download is a signed URL, never a public path |
 | Live video | Zoom (S2S OAuth + Meeting SDK) | Reliability students already trust |
 | Payments | PayHere + bank deposit slips | Bank transfer is still how most Sri Lankan parents pay tuition |
 

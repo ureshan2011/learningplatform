@@ -1,11 +1,14 @@
 # Adding services
 
-Reference for the three optional services. **You don't need any of these to go
-live** — see `SETUP.md`. Add them one at a time, and just ask in chat rather
-than working through this by hand.
+Reference for the optional services — Zoom and PayHere. **You don't need
+either to go live** — see `SETUP.md`. Add them one at a time, and just ask in
+chat rather than working through this by hand.
 
-Until a service is connected, the app says "not set up yet" where it would
-appear (`lib/features.ts` decides this). Nothing breaks.
+Until one is connected, the app says "not set up yet" where it would appear
+(`lib/features.ts` decides this). Nothing breaks.
+
+File storage (notes, past papers, replays) isn't on this list — it needs no
+separate setup at all; see below.
 
 ---
 
@@ -132,22 +135,25 @@ other payment, so the books stay complete.
 
 ---
 
-## Cloudflare R2 — notes, past papers, replays
+## Notes, past papers and replays — Cloud Storage for Firebase
 
-Create a bucket and an API token:
+Nothing to configure — this is the same Firebase project as everything else,
+using the config already injected automatically. The one setup step is
+deploying `storage.rules` once (see SETUP.md → "Optional — working on your
+own computer"), which is also what bank slip upload needs.
 
-- `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`
-- `NEXT_PUBLIC_R2_PUBLIC_BASE_URL` — the bucket's public hostname, for free/SEO
-  content served directly
+Teacher → Content uploads a file straight from the browser to Storage (same
+pattern as a student's bank slip), then records it in Firestore. A file is
+never given a stable URL, paid or free: `lib/content/storage.ts` mints a
+signed link valid for ten minutes, long enough to download and useless to
+forward — `/notes` and `/past-papers` mint a fresh one on every hourly
+regeneration.
 
-**Why R2 rather than Firebase Storage:** egress. Firebase bills roughly $0.15/GB
-out; R2 bills nothing. One 5MB notes PDF downloaded by 3,000 students is 15GB —
-a few dollars a month on Firebase for a single document, free on R2. At the
-scale this platform aims for, that difference decides whether the subscription
-price works.
-
-Paid content is never given a stable URL: `lib/content/r2.ts` mints a signed
-link valid for ten minutes, long enough to download and useless to forward.
+Free tier: 5GB stored, 1GB/day served. Past that, Blaze billing is roughly
+$0.026/GB stored and $0.12/GB served a month — cheap enough for this
+platform's scale that it isn't worth a separate provider and a second set of
+credentials just to avoid it. Revisit only if download volume grows enough
+to matter.
 
 ---
 

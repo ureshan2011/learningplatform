@@ -73,6 +73,7 @@ import {
   Smartphone,
   Terminal,
   Timer,
+  Trash2,
   TrendingUp,
   Trophy,
   Tv,
@@ -193,6 +194,7 @@ const ICONS = {
   radio: Radio,
   done: Check,
   help: InfoIcon,
+  delete: Trash2,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

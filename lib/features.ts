@@ -14,7 +14,7 @@
  * exposing them.
  */
 
-export type Feature = "zoom" | "payhere" | "r2";
+export type Feature = "zoom" | "payhere";
 
 /** Server secrets are absent in the browser, so presence checks run server-side. */
 function serverHas(name: string): boolean {
@@ -52,24 +52,12 @@ export function payhereConfigured(): boolean {
   );
 }
 
-/** Notes, past papers and replays. */
-export function r2Configured(): boolean {
-  return (
-    serverHas("R2_ACCOUNT_ID") &&
-    serverHas("R2_ACCESS_KEY_ID") &&
-    serverHas("R2_SECRET_ACCESS_KEY") &&
-    serverHas("R2_BUCKET")
-  );
-}
-
 export function isConfigured(feature: Feature): boolean {
   switch (feature) {
     case "zoom":
       return zoomConfigured();
     case "payhere":
       return payhereConfigured();
-    case "r2":
-      return r2Configured();
   }
 }
 
@@ -77,11 +65,9 @@ export function isConfigured(feature: Feature): boolean {
 export const FEATURE_LABEL: Record<Feature, string> = {
   zoom: "Live classes",
   payhere: "Card payments",
-  r2: "Notes & past papers",
 };
 
 export const FEATURE_HINT: Record<Feature, string> = {
   zoom: "Zoom is not connected yet, so classes cannot be scheduled or joined.",
   payhere: "Card payment is not connected yet. Students can still send a bank deposit slip.",
-  r2: "File storage is not connected yet, so notes and past papers cannot be downloaded.",
 };
