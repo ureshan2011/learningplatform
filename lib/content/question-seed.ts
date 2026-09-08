@@ -1,11 +1,40 @@
 import type { Medium, Question, QuestionSource } from "@/lib/types";
 
-/** Shape the seed route fills in (id, tenantId, createdAt) before writing. */
-export type QuestionSeed = Omit<Question, "id" | "tenantId" | "createdAt">;
+/** Shape the seed route fills in (tenantId, createdAt) before writing. */
+export type QuestionSeed = Omit<Question, "tenantId" | "createdAt">;
 
 const sinhala: Medium = "sinhala";
 
+/**
+ * A question's Firestore id, as a fixed prefix on the legacy scheme this
+ * replaces — see the note on `id` below.
+ */
+const LEGACY_SEED_ID = /^[^_]+_seed_\d+$/;
+
+/** Every legacy `{subjectId}_seed_{index}` id this bank has ever produced — `syncQuestionSeed` deletes these on sight. */
+export function isLegacySeedId(id: string): boolean {
+  return LEGACY_SEED_ID.test(id);
+}
+
 function q(
+  /**
+   * A short, permanent, human-chosen id — never the question's position in
+   * this array.
+   *
+   * The bank used to be keyed by array index (`${subjectId}_seed_${index}`),
+   * which meant inserting a question anywhere but the very end silently
+   * renamed every question after it to a different index — and since a
+   * question's Firestore document is looked up by exactly this id both when
+   * it is shown (`nextQuestionBatch`) and when it is graded (`recordAnswer`,
+   * `submitMockExam`), that renaming reassigned each shifted id's stored
+   * text, options, `correctIndex` and explanation to a *different* question
+   * than the one a student was actually looking at — the "explanation
+   * points to a different question" bug. An id chosen here, once, and never
+   * recomputed from position, can't drift like that: inserting, reordering
+   * or deleting a question anywhere in this file never changes what id any
+   * other question resolves to.
+   */
+  id: string,
   subjectId: string,
   topic: string,
   text: string,
@@ -16,6 +45,7 @@ function q(
   extra: { source?: QuestionSource; commandWord?: string; year?: number } = {},
 ): QuestionSeed {
   return {
+    id: `${subjectId}_${id}`,
     subjectId,
     topic,
     medium: sinhala,
@@ -43,6 +73,7 @@ function q(
 export const QUESTION_SEED: QuestionSeed[] = [
   // ---- A/L ICT — Data, information and their life cycle ------------------
   q(
+    "data-vs-information",
     "al-ict",
     "Data, information and their life cycle",
     "Which of these is data rather than information?",
@@ -61,6 +92,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "data-lifecycle-creation",
     "al-ict",
     "Data, information and their life cycle",
     "A school buys a new attendance-scanning system. On the very first day, a student scans their card and a new record — their ID, the time, the gate used — is saved. Which stage of the data life cycle has just happened?",
@@ -74,6 +106,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "data-lifecycle-removal",
     "al-ict",
     "Data, information and their life cycle",
     "A hospital deletes patient records ten years after a patient's last visit, in line with its data retention policy. This is an example of which stage of the data life cycle?",
@@ -87,6 +120,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "info-characteristic-timely",
     "al-ict",
     "Data, information and their life cycle",
     "A weather app shows yesterday's rainfall figures under today's forecast, with no date shown. A farmer decides whether to irrigate based on it. Which characteristic of valuable information is this app failing to provide?",
@@ -100,6 +134,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "data-vs-information-distinguish",
     "al-ict",
     "Data, information and their life cycle",
     "\"Distinguish between data and information, using an example.\" Which answer would actually earn full marks?",
@@ -121,6 +156,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Fundamentals of computer systems -----------------------
   q(
+    "ram-volatile",
     "al-ict",
     "Fundamentals of computer systems",
     "Why is RAM described as volatile memory?",
@@ -139,6 +175,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "output-device",
     "al-ict",
     "Fundamentals of computer systems",
     "Which of these is an output device?",
@@ -152,6 +189,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "ram-vs-rom-distinguish",
     "al-ict",
     "Fundamentals of computer systems",
     "\"Distinguish between RAM and ROM.\" Which answer would actually earn the marks?",
@@ -173,6 +211,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Data representation ------------------------------------
   q(
+    "binary-to-denary-1101",
     "al-ict",
     "Data representation",
     "What is the denary (base 10) value of the binary number 1101?",
@@ -186,6 +225,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "denary-to-binary-13",
     "al-ict",
     "Data representation",
     "What is the 8-bit binary representation of the denary number 13?",
@@ -201,6 +241,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Operating systems ---------------------------------------
   q(
+    "os-core-function",
     "al-ict",
     "Operating systems",
     "Which of the following is a core function of an operating system?",
@@ -221,6 +262,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Database management ---------------------------------------
   q(
+    "primary-key-definition",
     "al-ict",
     "Database management",
     "What is a primary key in a database table?",
@@ -239,6 +281,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "primary-vs-foreign-key-distinguish",
     "al-ict",
     "Database management",
     "\"Distinguish between a primary key and a foreign key.\" Which answer earns the marks?",
@@ -260,6 +303,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Programming ------------------------------------------------
   q(
+    "loop-definition",
     "al-ict",
     "Programming",
     "Which of these correctly describes a loop in programming?",
@@ -278,6 +322,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "variable-vs-constant",
     "al-ict",
     "Programming",
     "What is the key difference between a variable and a constant in a program?",
@@ -298,6 +343,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Web development --------------------------------------------
   q(
+    "html-anchor-tag",
     "al-ict",
     "Web development",
     "In HTML, what is the purpose of the <a> tag?",
@@ -318,6 +364,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — command word drill (general) --------------------------------
   q(
+    "os-need-explain",
     "al-ict",
     "Operating systems",
     "\"Explain why a computer needs an operating system.\" Which answer would earn full marks?",
@@ -339,6 +386,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Logic gates and Boolean algebra ------------------------------
   q(
+    "and-gate-output",
     "al-ict",
     "Logic gates and Boolean algebra",
     "An AND gate has inputs A=1 and B=0. What is the output?",
@@ -352,6 +400,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "or-gate-output",
     "al-ict",
     "Logic gates and Boolean algebra",
     "An OR gate has inputs A=0 and B=0. What is the output?",
@@ -367,6 +416,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Data communication and networking -----------------------
   q(
+    "lan-vs-wan-distinguish",
     "al-ict",
     "Data communication and networking",
     "\"Distinguish between a LAN and a WAN.\" Which answer earns the marks?",
@@ -388,6 +438,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — Database management ---------------------------------------
   q(
+    "normalisation-purpose",
     "al-ict",
     "Database management",
     "What is the main purpose of normalising a database?",
@@ -406,6 +457,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "foreign-key-purpose",
     "al-ict",
     "Database management",
     "What is the purpose of a foreign key in a relational database?",
@@ -424,6 +476,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
     },
   ),
   q(
+    "database-vs-spreadsheet-justify",
     "al-ict",
     "Database management",
     "\"Justify the use of a database, rather than a spreadsheet, for a school's student records.\" Which answer earns the marks?",
@@ -445,6 +498,7 @@ export const QUESTION_SEED: QuestionSeed[] = [
 
   // ---- A/L ICT — System analysis and design --------------------------------
   q(
+    "feasibility-study-purpose",
     "al-ict",
     "System analysis and design",
     "What is the main purpose of a feasibility study at the start of a systems development project?",
