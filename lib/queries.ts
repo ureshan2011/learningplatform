@@ -3,6 +3,7 @@ import "server-only";
 import { cache } from "react";
 import { col, mockExamAttemptId, progressId } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
+import { AL_ICT_UNITS, type UnitSeed } from "@/lib/content/al-ict-units";
 import type {
   AttendanceRecord,
   ClassSession,
@@ -209,19 +210,29 @@ export async function getProgress(uid: string, subjectId: string): Promise<Progr
 
 /**
  * Full unit + lesson breakdown for a subject's syllabus, ordered for display.
- * ~14 documents for A/L ICT — one `.get()`, no composite index needed.
+ *
+ * Reads straight from `AL_ICT_UNITS` in code, never from Firestore. Nothing
+ * else ever writes a unit or a lesson — the only thing that used to touch
+ * `units` in Firestore was a "seed" button that copied this exact array in,
+ * which meant a syllabus edit needed a developer to change the code *and* a
+ * teacher to remember to click a button before it went live. Reading the
+ * array directly removes that second step: editing `al-ict-units.ts` and
+ * deploying is the whole publish step.
  */
 export async function listUnits(subjectId: string): Promise<Unit[]> {
-  const snap = await col.units().where("subjectId", "==", subjectId).get();
-  return snap.docs
-    .map((d) => d.data() as Unit)
-    .filter((u) => u.tenantId === publicEnv.tenantId)
+  return AL_ICT_UNITS.filter((u) => u.subjectId === subjectId)
+    .map(toUnit)
     .sort((a, b) => a.order - b.order);
 }
 
 export async function getUnit(unitId: string): Promise<Unit | null> {
-  const snap = await col.units().doc(unitId).get();
-  return snap.exists ? (snap.data() as Unit) : null;
+  const seed = AL_ICT_UNITS.find((u) => u.id === unitId);
+  return seed ? toUnit(seed) : null;
+}
+
+/** `UnitSeed` plus the two fields the old Firestore copy carried; nothing reads either. */
+function toUnit(seed: UnitSeed): Unit {
+  return { ...seed, tenantId: publicEnv.tenantId, createdAt: 0 };
 }
 
 export async function listContent(subjectId: string, limit = 50): Promise<ContentItem[]> {

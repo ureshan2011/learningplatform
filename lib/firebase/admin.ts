@@ -17,7 +17,7 @@ let cached: App | undefined;
  * turning a 15-second build into a 50-second one. Failing fast turns that into
  * an immediate, catchable error instead.
  */
-function hasAdminCredentials(): boolean {
+export function hasAdminCredentials(): boolean {
   return Boolean(
     optionalServerEnv("FIREBASE_PRIVATE_KEY") ||
       optionalServerEnv("GOOGLE_APPLICATION_CREDENTIALS") ||
@@ -109,7 +109,6 @@ export const col = {
   mockExams: () => adminDb().collection("mockExams"),
   mockExamAttempts: () => adminDb().collection("mockExamAttempts"),
   leads: () => adminDb().collection("leads"),
-  units: () => adminDb().collection("units"),
   /** Raw provider notifications, kept as evidence behind every payment decision. */
   paymentEvents: () => adminDb().collection("paymentEvents"),
   /** Single-document settings (bank details, receipt identity). Server-read only. */
