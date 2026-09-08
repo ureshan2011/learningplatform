@@ -15,6 +15,9 @@ import { EmailCaptureForm } from "@/components/marketing/EmailCaptureForm";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
 import { FaqAccordion } from "@/components/marketing/landing/FaqAccordion";
 import { HowItWorksShowcase } from "@/components/marketing/landing/HowItWorksShowcase";
+import { CrossPromoBand } from "@/components/marketing/landing/CrossPromoBand";
+import { CampusReadyMark } from "@/components/marketing/CampusReadyLogo";
+import { CAMPUS_READY } from "@/lib/content/campus-ready";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqJsonLd } from "@/lib/seo/json-ld";
 import {
@@ -662,6 +665,19 @@ export default async function LandingPage() {
         </section>
 
         {/* FAQ */}
+        {/* The one pointer to the other product. Placed after the A/L argument
+            is finished and before the FAQ, so the closing CTA still closes
+            rather than following a second offer. A Grade 12 student does not
+            need this yet; a Grade 13 one about to sit their last paper does. */}
+        <CrossPromoBand
+          eyebrow="After your A/Ls"
+          title="Campus Ready"
+          body={`You will wait about a year for university. ${CAMPUS_READY.weeks} weeks of Excel, Python, Power BI and referencing — the skills every degree assumes you already have.`}
+          href="/campus-ready"
+          cta="See the programme"
+          mark={<CampusReadyMark size={24} />}
+        />
+
         <section id="faq" className="w-full py-[clamp(32px,6vw,72px)]">
           <div className="mx-auto w-full max-w-[900px] px-[clamp(20px,4vw,32px)]">
             <div className={`lp-reveal ${EYEBROW}`}>FAQ</div>
@@ -736,6 +752,7 @@ export default async function LandingPage() {
                 <Link href="/number-systems" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Number systems &amp; two&apos;s complement</Link>
                 <Link href="/logic-gates" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Logic gates &amp; truth tables</Link>
                 <Link href="/university-pathways" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">University pathways</Link>
+                <Link href="/campus-ready" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">Campus Ready — after A/L course</Link>
               </div>
             </div>
             <div>
