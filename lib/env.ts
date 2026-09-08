@@ -28,7 +28,6 @@ export const publicEnv = {
     merchantId: process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID ?? "",
     mode: (process.env.NEXT_PUBLIC_PAYHERE_MODE ?? "sandbox") as "sandbox" | "live",
   },
-  r2PublicBaseUrl: process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL ?? "",
 } as const;
 
 /** Reads a required server-side secret, failing loudly rather than silently misbehaving. */

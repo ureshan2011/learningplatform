@@ -1,8 +1,11 @@
 rules_version = '2';
 
-// Firebase Storage holds ONLY small user uploads (bank deposit slips).
-// Notes, past papers and recordings live in Cloudflare R2 — zero egress fees,
-// which is what keeps per-student cost near zero at Sri Lankan scale.
+// Firebase Storage holds bank deposit slips and every note, past paper and
+// recording — all of it, notes and papers included. Downloads never go
+// through these rules: `lib/content/storage.ts` mints a signed URL from the
+// server after checking `hasAccess()` (or that the item is public), and a
+// signed URL is valid on its own regardless of what a rule below says. So
+// `content/` denies read entirely here — a signed URL is the only way in.
 service firebase.storage {
   match /b/{bucket}/o {
 
@@ -16,6 +19,20 @@ service firebase.storage {
         && request.resource.contentType.matches('image/.*|application/pdf');
 
       allow delete: if false; // slips are payment evidence — keep the audit trail
+    }
+
+    // Teacher/admin uploads notes and past papers straight from the browser
+    // (see ContentUploadForm) — the same direct-to-Storage pattern as slips,
+    // just gated by role instead of ownership. `hasAdminCredentials`-backed
+    // server routes (Admin SDK) bypass these rules entirely, so the delete
+    // endpoint at /api/teacher/content works regardless of what's below.
+    match /content/{allPaths=**} {
+      allow read: if false;
+      allow write: if request.auth != null
+        && request.auth.token.role in ['teacher', 'admin']
+        && request.resource.size < 200 * 1024 * 1024
+        && request.resource.contentType.matches('application/pdf|image/.*|video/.*');
+      allow delete: if request.auth != null && request.auth.token.role in ['teacher', 'admin'];
     }
 
     match /{allPaths=**} {

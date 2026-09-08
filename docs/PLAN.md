@@ -58,11 +58,13 @@ Three engines, all of which must exist in the platform:
                     │  Cloud Functions       │            │  live quiz state)          │
                     └────┬──────────┬────────┘            └────────────────────────────┘
                          │          │
-          ┌──────────────▼──┐   ┌───▼────────────┐   ┌──────────────┐   ┌─────────────┐
-          │ Zoom S2S OAuth  │   │ PayHere        │   │ Gemini API   │   │ Cloudflare  │
-          │ API + webhooks  │   │ (checkout +    │   │ (free tier)  │   │ R2 (notes,  │
-          │                 │   │  webhooks)     │   │              │   │ zero egress)│
-          └────────┬────────┘   └────────────────┘   └──────────────┘   └─────────────┘
+          ┌──────────────▼──┐   ┌───▼────────────┐   ┌──────────────┐
+          │ Zoom S2S OAuth  │   │ PayHere        │   │ Gemini API   │
+          │ API + webhooks  │   │ (checkout +    │   │ (free tier)  │
+          │                 │   │  webhooks)     │   │              │
+          └────────┬────────┘   └────────────────┘   └──────────────┘
+                                     (notes/papers/recordings: the Firebase
+                                      Storage box above — no separate service)
                    │
       ┌────────────▼─────────────┐
       │ Zoom meeting (paid seats)│──RTMP simulcast──► YouTube Live (unlisted) ──HLS──► overflow viewers
@@ -72,8 +74,7 @@ Three engines, all of which must exist in the platform:
 **Stack**
 - **Next.js (App Router) + TypeScript + Tailwind + shadcn/ui** — SSR gives you the SEO acquisition channel; one codebase for student/teacher/parent via role-based routing.
 - **PWA, mobile-first.** Most SL students are on mid-range Android with metered data. Installable, offline notes cache, low-data mode (audio-only / 360p toggle).
-- **Firebase**: Auth, Firestore (durable), **Realtime Database (all live/ephemeral traffic)**, Storage, FCM, Cloud Functions.
-- **Cloudflare R2** for notes/PDFs/recordings — zero egress fees, which matters enormously at Sri Lankan scale.
+- **Firebase**: Auth, Firestore (durable), **Realtime Database (all live/ephemeral traffic)**, Storage (notes/PDFs/recordings — same project, no separate account), FCM, Cloud Functions.
 - Firebase **Blaze plan is mandatory** (Cloud Functions can't make outbound calls on Spark). Set a hard budget alert at Rs 5,000/month on day one.
 
 ---
@@ -169,7 +170,7 @@ quizzes/{quizId}             sessionId|standalone, questions[], mode(live|practi
 attempts/{uid}/{quizId}      answers[], score, msPerQuestion[]
 progress/{uid}/{subjectId}   xp, level, streak, weakTopics[], riskScore
 payments/{paymentId}         provider, amount, status, periodCovered, slipUrl
-content/{contentId}          notes/pastPapers, r2Key, isPublic (SEO), embeddings ref
+content/{contentId}          notes/pastPapers, storagePath, isPublic (SEO), embeddings ref
 
 RTDB (ephemeral, hot):
   live/{sessionId}/chat       slow-mode capped

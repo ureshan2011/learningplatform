@@ -7,7 +7,6 @@ import { formatDate, formatLKR, formatSessionTime } from "@/lib/format";
 import { DownloadButton } from "@/components/content/DownloadButton";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
-import { NotConfigured } from "@/components/ui/NotConfigured";
 import { SubjectTabs } from "@/components/subject/SubjectTabs";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import {
@@ -22,7 +21,6 @@ import {
   SectionBar,
   StatusChip,
 } from "@/components/ds";
-import { r2Configured } from "@/lib/features";
 import { getPayHereConfig } from "@/lib/payments/records";
 import { getT, localeAttrs } from "@/lib/i18n/server";
 import type { ContentKind } from "@/lib/types";
@@ -167,9 +165,7 @@ export default async function SubjectPage({
                   : `${visible.length} free · ${lockedCount} locked`
               }
             />
-            {!r2Configured() ? (
-              <NotConfigured feature="r2" />
-            ) : visible.length === 0 ? (
+            {visible.length === 0 ? (
               <EmptyState
                 icon="description"
                 title={t("subject.nothingPublished")}

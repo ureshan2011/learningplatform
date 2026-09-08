@@ -383,8 +383,8 @@ export interface ContentItem {
   kind: ContentKind;
   title: string;
   topic?: string;
-  /** Object key in Cloudflare R2. Zero egress fees is why media never sits in Firebase Storage. */
-  r2Key: string;
+  /** Path within the Firebase Storage bucket, e.g. `content/al-ict/notes/1700000000000-lesson-1-1.pdf`. */
+  storagePath: string;
   sizeBytes?: number;
   /** Public items are indexable and power the free SEO acquisition channel. */
   isPublic: boolean;

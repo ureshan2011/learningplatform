@@ -33,7 +33,8 @@ quotas.
 ## Stack
 
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind 4 · Firebase Auth
-(phone OTP) · Firestore · Realtime Database · Cloudflare R2 · Zoom · PayHere.
+(phone OTP) · Firestore · Realtime Database · Cloud Storage for Firebase ·
+Zoom · PayHere.
 
 ## Design system
 
@@ -139,8 +140,16 @@ sprinkling bigger classes at call sites**; change the scale.
    free quota in one class.
 3. **Never subscribe a client to a Firestore collection.** Aggregate
    server-side into one node and let clients read that.
-4. **All media from Cloudflare R2**, never Firebase Storage — R2 has no egress
-   fees, and video/PDF egress is the main cost risk at scale.
+4. **All media from Cloud Storage for Firebase**, never a separate provider —
+   this was Cloudflare R2 until the owner asked to drop the extra account and
+   hand-wired secrets it needed; Storage is the same Firebase project already
+   running everything else, with no new credentials to enter anywhere.
+   `lib/content/storage.ts` mints a ten-minute signed URL for every download,
+   paid or free, so nothing on the bucket ever gets a stable public path — the
+   R2 design's actual security property, kept. Free tier (5GB stored, 1GB/day
+   served) covers this platform's scale comfortably; Blaze billing past that
+   is roughly $0.026/GB stored, $0.12/GB served. Revisit only if download
+   volume grows enough for that to matter more than the setup simplicity.
 5. **Only the server writes anything that grants access, moves money, or awards
    XP.** If a client can write it, a student can forge it.
 6. **Zoom host `start_url` and RTMP stream keys live in `sessionSecrets`**,

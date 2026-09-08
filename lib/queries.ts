@@ -248,3 +248,12 @@ export async function listContent(subjectId: string, limit = 50): Promise<Conten
     .sort((a, b) => b.createdAt - a.createdAt)
     .slice(0, limit);
 }
+
+/** Every note, past paper and replay across every subject — the teacher content manager's full list. */
+export async function listAllContent(limit = 200): Promise<ContentItem[]> {
+  const snap = await col.content().where("tenantId", "==", publicEnv.tenantId).limit(SCAN_WINDOW).get();
+  return snap.docs
+    .map((d) => d.data() as ContentItem)
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, limit);
+}

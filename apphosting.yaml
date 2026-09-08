@@ -110,23 +110,8 @@ env:
 #    availability: [RUNTIME]
 
 # ---------------------------------------------------------------------------
-# LATER: notes and past papers (Cloudflare R2).
-#
-#   firebase apphosting:secrets:set r2-access-key-id
-#   firebase apphosting:secrets:set r2-secret-access-key
+# Notes, past papers and replays need no entry here at all: they live in
+# Cloud Storage for Firebase, the same project as everything else, using the
+# NEXT_PUBLIC_FIREBASE_* values already injected automatically above. The
+# only setup step is deploying storage.rules once — see SETUP.md.
 # ---------------------------------------------------------------------------
-#  - variable: R2_ACCOUNT_ID
-#    value: your-account-id
-#    availability: [RUNTIME]
-#  - variable: R2_BUCKET
-#    value: your-bucket
-#    availability: [RUNTIME]
-#  - variable: NEXT_PUBLIC_R2_PUBLIC_BASE_URL
-#    value: https://your-public-bucket-url
-#    availability: [BUILD, RUNTIME]
-#  - variable: R2_ACCESS_KEY_ID
-#    secret: r2-access-key-id
-#    availability: [RUNTIME]
-#  - variable: R2_SECRET_ACCESS_KEY
-#    secret: r2-secret-access-key
-#    availability: [RUNTIME]

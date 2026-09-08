@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { listPublicContent, listSubjects } from "@/lib/queries";
-import { publicContentUrl } from "@/lib/content/r2";
+import { signedContentUrl } from "@/lib/content/storage";
 import { formatDate } from "@/lib/format";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon, type IconName } from "@/components/ui/Icon";
@@ -37,10 +37,15 @@ const KIND_ICON: Record<ContentKind, IconName> = {
 };
 
 export default async function PublicNotesPage() {
-  const [items, subjects] = await Promise.all([
+  const [rawItems, subjects] = await Promise.all([
     listPublicContent().catch(() => [] as ContentItem[]),
     listSubjects().catch(() => [] as Subject[]),
   ]);
+  // Fresh signed URLs on every hourly regeneration (see `revalidate` above) —
+  // Storage denies direct reads, so this is the only way a file leaves the bucket.
+  const items = await Promise.all(
+    rawItems.map(async (item) => ({ ...item, downloadUrl: await signedContentUrl(item.storagePath) })),
+  );
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
 
   return (
@@ -90,9 +95,8 @@ export default async function PublicNotesPage() {
                         </p>
                       </div>
                     </div>
-                    {/* Public content is served straight off R2 — no signing, no auth. */}
                     <a
-                      href={publicContentUrl(item.r2Key)}
+                      href={item.downloadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="ict-press inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border-[1.5px] border-ict-ink-900 px-4 text-sm font-semibold text-ict-ink-900 transition-colors duration-[120ms] ease-ict hover:border-ict-orange-500 hover:text-ict-orange-600"

@@ -2,8 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { hasAccess } from "@/lib/payments/entitlements";
-import { signedContentUrl, publicContentUrl } from "@/lib/content/r2";
-import { r2Configured } from "@/lib/features";
+import { signedContentUrl } from "@/lib/content/storage";
 import type { ContentItem } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -26,7 +25,7 @@ export async function GET(
   const item = snap.data() as ContentItem;
 
   if (item.isPublic) {
-    return NextResponse.json({ url: publicContentUrl(item.r2Key), public: true });
+    return NextResponse.json({ url: await signedContentUrl(item.storagePath), public: true });
   }
 
   const user = await getSessionUser();
@@ -37,11 +36,5 @@ export async function GET(
     return NextResponse.json({ error: "forbidden", reason: access.reason }, { status: 403 });
   }
 
-  // Access checks run first: whether a student is entitled does not depend on
-  // whether file storage happens to be connected.
-  if (!r2Configured()) {
-    return NextResponse.json({ error: "not_configured", feature: "r2" }, { status: 503 });
-  }
-
-  return NextResponse.json({ url: await signedContentUrl(item.r2Key), public: false });
+  return NextResponse.json({ url: await signedContentUrl(item.storagePath), public: false });
 }
