@@ -1,5 +1,6 @@
 import { requirePageUser } from "@/lib/auth/session";
-import { listSubjects } from "@/lib/queries";
+import { listSellableSubjects } from "@/lib/queries";
+import { payableLKR } from "@/lib/payments/pricing";
 import { formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import { bankDetailsReady, getPaymentSettings } from "@/lib/payments/records";
@@ -27,7 +28,7 @@ export default async function SlipPage({
   const user = await requirePageUser("/pay/slip");
 
   const { subject: preferredSubject } = await searchParams;
-  const [subjects, settings] = await Promise.all([listSubjects(), getPaymentSettings()]);
+  const [subjects, settings] = await Promise.all([listSellableSubjects(), getPaymentSettings()]);
 
   const chosen =
     subjects.find((s) => s.id === preferredSubject) ?? subjects[0];
@@ -47,7 +48,7 @@ export default async function SlipPage({
             bankBranch={settings.bankBranch}
             accountName={settings.accountName}
             accountNumber={settings.accountNumber}
-            amount={formatLKR(chosen.priceLKR)}
+            amount={formatLKR(payableLKR(chosen))}
             reference={formatLocal(user.phone)}
             instructions={settings.slipInstructions}
           />
@@ -69,7 +70,7 @@ export default async function SlipPage({
         subjects={subjects.map((s) => ({
           id: s.id,
           name: s.name,
-          price: formatLKR(s.priceLKR),
+          price: formatLKR(payableLKR(s)),
         }))}
         initialSubjectId={chosen?.id}
       />

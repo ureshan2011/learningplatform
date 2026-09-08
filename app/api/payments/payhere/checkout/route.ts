@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/payhere";
 import { addMonths } from "@/lib/payments/entitlements";
 import { getPayHereConfig } from "@/lib/payments/records";
+import { payableLKR } from "@/lib/payments/pricing";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -63,10 +64,7 @@ export async function POST(req: NextRequest) {
   // orders, two receipts and two months.
   const orderId = buildOrderId(user.uid, subjectId, now);
 
-  // `cohort.feeLKR` is the whole programme; `priceLKR` is one month. Reading
-  // the wrong one either bills Rs 2,500 for a Rs 30,000 course or bills the
-  // course fee every month.
-  const amountLKR = cohort ? cohort.feeLKR : subject.priceLKR;
+  const amountLKR = payableLKR(subject);
 
   const payment: Payment = {
     id: orderId,

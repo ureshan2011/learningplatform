@@ -12,6 +12,7 @@ import {
 } from "@/lib/payments/payhere";
 import { processPayHereNotification } from "@/lib/payments/payhere-notify";
 import { toE164 } from "@/lib/phone";
+import { payableLKR } from "@/lib/payments/pricing";
 import type { Payment, Subject, User } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -78,19 +79,23 @@ export async function POST(req: NextRequest) {
   if (!subjectSnap.exists) return NextResponse.json({ error: "subject_not_found" }, { status: 404 });
   const subject = subjectSnap.data() as Subject;
 
-  // The same pending row a real checkout writes before redirecting.
+  // The same pending row a real checkout writes before redirecting — including
+  // the cohort branch. A rehearsal that bills a cohort like a monthly class
+  // proves nothing about the route it is standing in for.
   const now = Date.now();
   const orderId = buildOrderId(student.uid, subject.id, now);
+  const amountLKR = payableLKR(subject);
   const payment: Payment = {
     id: orderId,
     tenantId,
     uid: student.uid,
     subjectId: subject.id,
     provider: "payhere",
-    amountLKR: subject.priceLKR,
+    amountLKR,
     status: "pending",
+    ...(subject.cohort ? { kind: "cohort" as const } : {}),
     periodStart: now,
-    periodEnd: addMonths(now, 1),
+    periodEnd: subject.cohort ? subject.cohort.endsAt : addMonths(now, 1),
     note: "Sandbox test payment",
     createdAt: now,
     updatedAt: now,
@@ -101,7 +106,7 @@ export async function POST(req: NextRequest) {
     merchant_id: config.merchantId,
     order_id: orderId,
     payment_id: `SANDBOX${now}`,
-    payhere_amount: formatAmount(subject.priceLKR),
+    payhere_amount: formatAmount(amountLKR),
     payhere_currency: "LKR",
     status_code: body.statusCode,
     method: "TEST",

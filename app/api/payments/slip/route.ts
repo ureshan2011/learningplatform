@@ -4,6 +4,7 @@ import { col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { addMonths } from "@/lib/payments/entitlements";
 import { notifyTeacher } from "@/lib/payments/activity";
+import { payableLKR } from "@/lib/payments/pricing";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "enrolment_closed" }, { status: 409 });
   }
 
-  const amountLKR = cohort ? cohort.feeLKR : subject.priceLKR;
+  const amountLKR = payableLKR(subject);
   const id = `slip_${user.uid.slice(0, 8)}_${now}`;
   const payment: Payment = {
     id,
