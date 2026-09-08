@@ -5,7 +5,55 @@ import { Icon } from "@/components/ui/Icon";
 import type { TopicClass } from "@/lib/content/topic-classes";
 import type { ToneColors } from "@/lib/content/unit-visuals";
 import { ClassCta } from "@/components/syllabus/ClassCta";
+import { DataLifeCycleWalkthrough } from "@/components/syllabus/DataLifeCycleWalkthrough";
 import type { Lesson } from "@/lib/types";
+
+/** One lesson's interactive, keyed by id — add here as more lessons get one. */
+const LESSON_INTERACTIVES: Partial<Record<string, (tone: ToneColors) => React.ReactNode>> = {
+  "1.1": (tone) => <DataLifeCycleWalkthrough tone={tone} />,
+};
+
+/**
+ * Turns a lesson's plain-text notes into paragraphs, bullet lists and
+ * subheadings — no markdown library for what is, so far, one hand-written
+ * field: a blank line starts a new block, a block of "- " lines becomes a
+ * list, and a block starting "## " becomes a subheading.
+ */
+function LessonContent({ content }: { content: string }) {
+  const blocks = content.trim().split(/\n\s*\n/);
+  return (
+    <div className="space-y-3 text-sm leading-relaxed text-ict-ink-500">
+      {blocks.map((block, i) => {
+        const lines = block
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
+        if (lines.length > 0 && lines.every((l) => l.startsWith("- "))) {
+          return (
+            <ul key={i} className="space-y-1.5">
+              {lines.map((l, j) => (
+                <li key={j} className="flex items-start gap-2">
+                  <Icon name="chevron_right" className="mt-0.5 !text-sm shrink-0 text-ict-ink-300" />
+                  <span>{l.slice(2)}</span>
+                </li>
+              ))}
+            </ul>
+          );
+        }
+        if (lines[0]?.startsWith("## ")) {
+          const [heading, ...rest] = lines;
+          return (
+            <div key={i}>
+              <p className="font-display text-sm font-bold text-ict-ink-900">{heading.slice(3)}</p>
+              {rest.length ? <p className="mt-1">{rest.join(" ")}</p> : null}
+            </div>
+          );
+        }
+        return <p key={i}>{lines.join(" ")}</p>;
+      })}
+    </div>
+  );
+}
 
 /**
  * Lessons collapsed by default, each expanding in place to reveal exam
@@ -161,10 +209,19 @@ export function LessonAccordion({
                       </ul>
                     </div>
 
-                    {!lesson.content ? (
-                      <p className="text-xs text-ict-ink-400">
-                        Lesson content not added yet.
-                      </p>
+                    {lesson.content ? (
+                      <div>
+                        <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">Notes</p>
+                        <div className="mt-1.5">
+                          <LessonContent content={lesson.content} />
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-ict-ink-400">Lesson content not added yet.</p>
+                    )}
+
+                    {LESSON_INTERACTIVES[lesson.id] ? (
+                      <div>{LESSON_INTERACTIVES[lesson.id]!(tone)}</div>
                     ) : null}
                   </div>
                 </div>

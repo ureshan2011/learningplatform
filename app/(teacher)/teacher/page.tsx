@@ -8,8 +8,6 @@ import { ScheduleSessionForm, type UnitOption } from "@/components/teacher/Sched
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { DeviceResetPanel } from "@/components/teacher/DeviceResetPanel";
 import { ActivityBell } from "@/components/teacher/ActivityBell";
-import { SeedQuestionsButton } from "@/components/teacher/SeedQuestionsButton";
-import { SeedLessonsButton } from "@/components/teacher/SeedLessonsButton";
 import { NotConfigured } from "@/components/ui/NotConfigured";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import {
@@ -243,19 +241,7 @@ export default async function TeacherConsolePage() {
                 <SeedSubjectsButton />
               </Card>
             </section>
-          ) : (
-            <section>
-              <SectionBar title="Content" hint="Fill your class with syllabus and questions" />
-              <div className="grid gap-2 sm:grid-cols-2">
-                <Card radius="md" className="p-5">
-                  <SeedQuestionsButton />
-                </Card>
-                <Card radius="md" className="p-5">
-                  <SeedLessonsButton />
-                </Card>
-              </div>
-            </section>
-          )}
+          ) : null}
         </div>
 
         {/* ---------------------------------------------------------------- */}
