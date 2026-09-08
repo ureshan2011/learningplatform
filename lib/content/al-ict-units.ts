@@ -10,8 +10,9 @@ function lesson(
   periods: number,
   examObjectives: string[],
   importantAreas: string[],
+  content?: string,
 ): Lesson {
-  return { id, order, title, periods, examObjectives, importantAreas };
+  return { id, order, title, periods, examObjectives, importantAreas, ...(content ? { content } : {}) };
 }
 
 function unit(
@@ -65,7 +66,8 @@ export const AL_ICT_UNITS: UnitSeed[] = [
       [
         "\"Distinguish data from information\" is a near-annual short-answer opener",
         "Listing the characteristics of quality/valuable information is a common structured question",
-      ]),
+      ],
+      "Data is raw, unprocessed facts with no meaning attached yet — a number, a word, a single reading. Information is data that has been processed and given context, so it becomes useful for making a decision.\n\n25, 30, 28, 32 are just data on their own — four numbers with no story. Plot them against the days of the week and average them, and you get \"this week's temperature has been rising\" — that is information.\n\n- Data is the raw material: one exam score\n- Information is the finished product: a class average, a rank, a trend\n\n## The data life cycle\n\nEvery piece of data moves through three stages before it disappears again:\n\n- Creation — data is generated: a sensor reading, a form submission, a bank transaction\n- Management — data is stored, organised, backed up, and processed into information\n- Removal of obsolete data — data no longer accurate, needed, or legally required to keep is deleted or archived\n\nSkipping that third stage is not free. A system that never deletes old records slows every search down, and can breach data-protection law the moment it keeps something it no longer has a reason to hold.\n\n## What makes information valuable\n\nInformation is only worth acting on if it is:\n\n- Timely — it arrives while it can still be used\n- Accurate — free from errors introduced while collecting or processing it\n- In context — meaningful for the situation it is used in\n- Understandable — presented so the reader can actually interpret it\n- Low in uncertainty — trustworthy enough to base a decision on\n\nExam angle: a scenario question usually tests exactly one of these five properties at a time. Read for which one is missing, and answer that — don't list all five unless the question actually asks for them."),
     lesson("1.2", 2, "Why technology is needed to create, disseminate and manage information", 6,
       [
         "Explain the drawbacks of manual data processing (errors, duplication, delay, poor sharing)",
