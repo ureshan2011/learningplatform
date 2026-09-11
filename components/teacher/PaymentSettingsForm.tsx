@@ -148,9 +148,14 @@ export function PaymentSettingsForm({
 
       <Section
         title="Where students deposit"
-        note="Shown on the deposit page with one-tap copy."
+        note={
+          bankSlipEnabled
+            ? "Shown on the deposit page with one-tap copy."
+            : "Bank deposit is off, so these are optional for now — fill them in before you turn it back on."
+        }
         fields={BANK_FIELDS}
         settings={settings}
+        requireFields={bankSlipEnabled}
       />
 
       <Section
@@ -252,35 +257,41 @@ function Section({
   note,
   fields,
   settings,
+  requireFields = true,
 }: {
   title: string;
   note: string;
   fields: Array<{ name: SettableField; label: string; hint?: string; required?: boolean }>;
   settings: Omit<PaymentSettings, "payhereMerchantSecret">;
+  /** False makes every field in this section optional, whatever `field.required` says — e.g. bank fields while bank deposit is switched off. */
+  requireFields?: boolean;
 }) {
   return (
     <div>
       <h3 className="text-sm font-bold">{title}</h3>
       <p className="mt-1 text-xs text-(--color-awaken-ink-soft)">{note}</p>
       <div className="mt-3 grid gap-4 sm:grid-cols-2">
-        {fields.map((field) => (
-          <label key={field.name} className="block">
-            <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
-              {field.label}
-              {field.required ? <span className="text-(--color-awaken-danger)"> *</span> : null}
-            </span>
-            <input
-              name={field.name}
-              defaultValue={(settings[field.name] as string | undefined) ?? ""}
-              required={field.required}
-              maxLength={300}
-              className={inputClass}
-            />
-            {field.hint ? (
-              <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">{field.hint}</span>
-            ) : null}
-          </label>
-        ))}
+        {fields.map((field) => {
+          const required = requireFields && field.required;
+          return (
+            <label key={field.name} className="block">
+              <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+                {field.label}
+                {required ? <span className="text-(--color-awaken-danger)"> *</span> : null}
+              </span>
+              <input
+                name={field.name}
+                defaultValue={(settings[field.name] as string | undefined) ?? ""}
+                required={required}
+                maxLength={300}
+                className={inputClass}
+              />
+              {field.hint ? (
+                <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">{field.hint}</span>
+              ) : null}
+            </label>
+          );
+        })}
       </div>
     </div>
   );
