@@ -3,7 +3,7 @@ import { listSellableSubjects } from "@/lib/queries";
 import { payableLKR } from "@/lib/payments/pricing";
 import { formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
-import { bankDetailsReady, getPaymentSettings } from "@/lib/payments/records";
+import { bankDetailsReady, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { BankDetailsCard } from "@/components/payments/BankDetailsCard";
 import { SlipUploadForm } from "@/components/payments/SlipUploadForm";
 import { Icon } from "@/components/ui/Icon";
@@ -33,6 +33,28 @@ export default async function SlipPage({
   const chosen =
     subjects.find((s) => s.id === preferredSubject) ?? subjects[0];
   const ready = bankDetailsReady(settings);
+  const bankSlipOn = isBankSlipEnabled(settings);
+
+  if (!bankSlipOn) {
+    return (
+      <main className="mx-auto max-w-md px-4 py-5 sm:px-6 sm:py-6">
+        <PageHeader
+          title="Pay by bank deposit"
+          subtitle="Bank deposit is switched off right now — pay by card instead."
+        />
+        <Card radius="card" className="mt-5 p-5">
+          <p className="flex items-center gap-2 font-semibold text-ict-amber-500">
+            <Icon name="priority_high" className="!text-lg" />
+            Bank deposit is not accepted at the moment
+          </p>
+          <p className="mt-1.5 text-sm text-ict-ink-300">
+            Card payment is the only way to pay right now. Go back to your class and pay by card
+            to unlock it instantly.
+          </p>
+        </Card>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto max-w-md px-4 py-5 sm:px-6 sm:py-6">

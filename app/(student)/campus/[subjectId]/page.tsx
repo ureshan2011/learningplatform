@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { requirePageUser } from "@/lib/auth/session";
 import { getCohort, isEnrolmentOpen } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
-import { getPayHereConfig } from "@/lib/payments/records";
+import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { formatDate, formatLKR } from "@/lib/format";
 import { getT, localeAttrs } from "@/lib/i18n/server";
 import { CAMPUS_READY, CAMPUS_READY_WEEKS } from "@/lib/content/campus-ready";
@@ -34,12 +34,14 @@ export default async function CampusCohortPage({
   if (!subject?.cohort) notFound();
   const term = subject.cohort;
 
-  const [access, payhere, t, loc] = await Promise.all([
+  const [access, payhere, paymentSettings, t, loc] = await Promise.all([
     hasAccess(user.uid, subjectId),
     getPayHereConfig(),
+    getPaymentSettings(),
     getT(),
     localeAttrs(),
   ]);
+  const bankSlipOn = isBankSlipEnabled(paymentSettings);
 
   // Server Component: renders once per request, so reading the clock here is
   // deterministic for that render. The purity rule targets client renders.
@@ -85,12 +87,14 @@ export default async function CampusCohortPage({
                 {payhere.configured ? (
                   <SubscribeButton subjectId={subject.id} sandbox={payhere.mode === "sandbox"} />
                 ) : null}
-                <Link
-                  href={`/pay/slip?subject=${subject.id}`}
-                  className="text-sm font-semibold text-ict-orange-400 underline-offset-4 hover:underline"
-                >
-                  {t("dash.payByBank")}
-                </Link>
+                {bankSlipOn ? (
+                  <Link
+                    href={`/pay/slip?subject=${subject.id}`}
+                    className="text-sm font-semibold text-ict-orange-400 underline-offset-4 hover:underline"
+                  >
+                    {t("dash.payByBank")}
+                  </Link>
+                ) : null}
               </div>
             ) : null}
           </Card>

@@ -9,7 +9,7 @@ import {
   getProgress,
 } from "@/lib/queries";
 import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
-import { getPayHereConfig } from "@/lib/payments/records";
+import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { getT, localeAttrs, type Translator } from "@/lib/i18n/server";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { Icon, type IconName } from "@/components/ui/Icon";
@@ -70,8 +70,9 @@ export default async function DashboardPage() {
   ]);
 
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
-  const payhere = await getPayHereConfig();
+  const [payhere, paymentSettings] = await Promise.all([getPayHereConfig(), getPaymentSettings()]);
   const cardPaymentsOn = payhere.configured;
+  const bankSlipOn = isBankSlipEnabled(paymentSettings);
 
   const streakDays = progressList.reduce((max, p) => Math.max(max, p?.streakDays ?? 0), 0);
   const totalXp = progressList.reduce((sum, p) => sum + (p?.xp ?? 0), 0);
@@ -203,6 +204,7 @@ export default async function DashboardPage() {
                     enrollments.find((e) => e.subjectId === subject.id)?.currentPeriodEnd
                   }
                   cardPaymentsOn={cardPaymentsOn}
+                  bankSlipOn={bankSlipOn}
                   sandbox={payhere.mode === "sandbox"}
                   t={t}
                 />
@@ -383,6 +385,7 @@ function SubjectCard({
   active,
   periodEnd,
   cardPaymentsOn,
+  bankSlipOn,
   sandbox,
   t,
 }: {
@@ -390,6 +393,7 @@ function SubjectCard({
   active: boolean;
   periodEnd?: number;
   cardPaymentsOn: boolean;
+  bankSlipOn: boolean;
   sandbox: boolean;
   t: Translator;
 }) {
@@ -413,17 +417,18 @@ function SubjectCard({
             {t("dash.open")}
           </ButtonLink>
         ) : (
-          // Both ways to pay, always, with the instant one first. Card unlocks
-          // the class in seconds; a bank deposit is how most Sri Lankan parents
-          // actually pay, so neither is hidden behind the other.
+          // Card first — it unlocks the class in seconds. Bank deposit only
+          // shows up if the teacher has switched it back on.
           <>
             {cardPaymentsOn ? <SubscribeButton subjectId={subject.id} sandbox={sandbox} /> : null}
-            <Link
-              href={`/pay/slip?subject=${subject.id}`}
-              className="text-sm font-semibold text-ict-orange-400 underline-offset-4 hover:underline"
-            >
-              {t("dash.payByBank")}
-            </Link>
+            {bankSlipOn ? (
+              <Link
+                href={`/pay/slip?subject=${subject.id}`}
+                className="text-sm font-semibold text-ict-orange-400 underline-offset-4 hover:underline"
+              >
+                {t("dash.payByBank")}
+              </Link>
+            ) : null}
           </>
         )}
       </div>

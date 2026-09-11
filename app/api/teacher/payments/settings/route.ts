@@ -24,6 +24,7 @@ const bodySchema = z.object({
   /** Absent means "keep the saved one" — an empty box must never wipe it. */
   payhereMerchantSecret: text(200).min(1).optional(),
   payhereMode: z.enum(["sandbox", "live"]).optional(),
+  bankSlipEnabled: z.boolean().optional(),
 });
 
 /**
