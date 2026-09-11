@@ -65,17 +65,21 @@ export function PaymentSettingsForm({
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bankSlipEnabled, setBankSlipEnabled] = useState(settings.bankSlipEnabled === true);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const secret = String(form.get("payhereMerchantSecret") ?? "").trim();
 
-    const body: Record<string, string> = Object.fromEntries(
+    const body: Record<string, string | boolean> = Object.fromEntries(
       ALL_FIELDS.map((f) => [f.name, String(form.get(f.name) ?? "")]),
     );
     body.payhereMerchantId = String(form.get("payhereMerchantId") ?? "");
     body.payhereMode = String(form.get("payhereMode") ?? "sandbox");
+    // Always sent, unlike the optional text fields — a checkbox that isn't
+    // resent when unticked would never be able to turn itself back off.
+    body.bankSlipEnabled = bankSlipEnabled;
     // An empty box means "leave the saved secret alone", never "erase it" —
     // otherwise every edit to a bank branch would silently turn off cards.
     if (secret) body.payhereMerchantSecret = secret;
@@ -123,6 +127,24 @@ export function PaymentSettingsForm({
           </span>
         </div>
       ) : null}
+
+      <div>
+        <label className="flex items-start gap-2.5 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) p-3.5">
+          <input
+            type="checkbox"
+            checked={bankSlipEnabled}
+            onChange={(e) => setBankSlipEnabled(e.target.checked)}
+            className="mt-0.5 size-4 shrink-0"
+          />
+          <span>
+            <span className="block text-sm font-semibold">Accept bank deposit slips</span>
+            <span className="mt-0.5 block text-xs text-(--color-awaken-ink-soft)">
+              Off by default — card payment (PayHere) is the only way to pay while this is
+              unticked. Students already submitted slips still show up for review either way.
+            </span>
+          </span>
+        </label>
+      </div>
 
       <Section
         title="Where students deposit"

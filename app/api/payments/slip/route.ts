@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { addMonths } from "@/lib/payments/entitlements";
 import { notifyTeacher } from "@/lib/payments/activity";
 import { payableLKR } from "@/lib/payments/pricing";
+import { getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -26,6 +27,11 @@ const bodySchema = z.object({
 export async function POST(req: NextRequest) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
+
+  const settings = await getPaymentSettings();
+  if (!isBankSlipEnabled(settings)) {
+    return NextResponse.json({ error: "bank_slip_disabled" }, { status: 403 });
+  }
 
   let body: z.infer<typeof bodySchema>;
   try {

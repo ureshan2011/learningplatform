@@ -3,7 +3,7 @@ import type { PaymentSettings } from "@/lib/types";
 /** Every field a teacher can type into Teacher → Payments — bank details plus receipt/policy identity. */
 export type SettableField = keyof Omit<
   PaymentSettings,
-  "tenantId" | "updatedAt" | "updatedBy" | "payhereMerchantSecret" | "payhereMode"
+  "tenantId" | "updatedAt" | "updatedBy" | "payhereMerchantSecret" | "payhereMode" | "bankSlipEnabled"
 >;
 
 /**

@@ -129,8 +129,14 @@ export function emptyPaymentSettings(): PaymentSettings {
     bankBranch: "",
     accountName: "",
     accountNumber: "",
+    bankSlipEnabled: false,
     updatedAt: 0,
   };
+}
+
+/** True once the teacher has explicitly switched bank-slip payment back on. */
+export function isBankSlipEnabled(settings: PaymentSettings): boolean {
+  return settings.bankSlipEnabled === true;
 }
 
 /**

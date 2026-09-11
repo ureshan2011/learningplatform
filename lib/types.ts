@@ -382,6 +382,14 @@ export interface PaymentSettings {
   payhereMerchantSecret?: string;
   payhereMode?: "sandbox" | "live";
 
+  /**
+   * Whether students may pay by uploading a bank deposit slip.
+   * Absent (the default) means off — see `isBankSlipEnabled` in
+   * `lib/payments/records.ts`. PayHere is the only checkout path while this
+   * is off; flip it back on from Teacher → Payments, no deploy needed.
+   */
+  bankSlipEnabled?: boolean;
+
   updatedAt: number;
   updatedBy?: string;
 }

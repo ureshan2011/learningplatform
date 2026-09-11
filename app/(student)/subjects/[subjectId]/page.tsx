@@ -21,7 +21,7 @@ import {
   SectionBar,
   StatusChip,
 } from "@/components/ds";
-import { getPayHereConfig } from "@/lib/payments/records";
+import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { getT, localeAttrs } from "@/lib/i18n/server";
 import type { ContentKind } from "@/lib/types";
 
@@ -72,8 +72,9 @@ export default async function SubjectPage({
   // the most effective renewal prompt there is.
   const visible = access.allowed ? items : items.filter((i) => i.isPublic);
   const lockedCount = items.length - visible.length;
-  const payhere = await getPayHereConfig();
+  const [payhere, paymentSettings] = await Promise.all([getPayHereConfig(), getPaymentSettings()]);
   const cardPaymentsOn = payhere.configured;
+  const bankSlipOn = isBankSlipEnabled(paymentSettings);
 
   return (
     <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
@@ -144,12 +145,14 @@ export default async function SubjectPage({
             {cardPaymentsOn ? (
               <SubscribeButton subjectId={subjectId} sandbox={payhere.mode === "sandbox"} />
             ) : null}
-            <Link
-              href={`/pay/slip?subject=${subjectId}`}
-              className="text-sm font-semibold text-ict-paper-50 underline-offset-4 hover:underline"
-            >
-              Pay by bank deposit
-            </Link>
+            {bankSlipOn ? (
+              <Link
+                href={`/pay/slip?subject=${subjectId}`}
+                className="text-sm font-semibold text-ict-paper-50 underline-offset-4 hover:underline"
+              >
+                Pay by bank deposit
+              </Link>
+            ) : null}
           </div>
         </Card>
       ) : null}
@@ -285,14 +288,16 @@ export default async function SubjectPage({
                   {cardPaymentsOn ? (
                     <SubscribeButton subjectId={subjectId} sandbox={payhere.mode === "sandbox"} />
                   ) : null}
-                  <ButtonLink
-                    href={`/pay/slip?subject=${subjectId}`}
-                    variant="outline"
-                    size="sm"
-                    arrow="right"
-                  >
-                    {t("dash.payByBank")}
-                  </ButtonLink>
+                  {bankSlipOn ? (
+                    <ButtonLink
+                      href={`/pay/slip?subject=${subjectId}`}
+                      variant="outline"
+                      size="sm"
+                      arrow="right"
+                    >
+                      {t("dash.payByBank")}
+                    </ButtonLink>
+                  ) : null}
                 </div>
               </>
             )}
