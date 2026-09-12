@@ -177,6 +177,16 @@ const en = {
   "account.language": "Language",
   "account.languageHint": "Choose the language for buttons and menus.",
 
+  /* ---- syllabus unit pages ---- */
+  "syllabus.expandAll": "Expand all",
+  "syllabus.collapseAll": "Collapse all",
+  "syllabus.jumpToLesson": "Jump to lesson",
+  "syllabus.examObjectives": "Exam objectives",
+  "syllabus.importantAreas": "Important areas to cover",
+  "syllabus.notes": "Notes",
+  "syllabus.noNotes": "Lesson content not added yet.",
+  "syllabus.lessonMeta": "{periods} periods · {objectives} exam objectives",
+
   /* ---- sign in ---- */
   "signin.title": "Sign in",
   "signin.lead": "Enter your mobile number and we will text you a code. No password.",
@@ -388,6 +398,17 @@ const si: Record<MessageKey, string> = {
   "account.language": "භාෂාව",
   "account.languageHint": "බොත්තම් සහ මෙනු සඳහා භාෂාව තෝරන්න.",
 
+  /* ---- syllabus unit pages ---- */
+  "syllabus.expandAll": "ඔක්කොම විවෘත කරන්න",
+  "syllabus.collapseAll": "ඔක්කොම වහන්න",
+  "syllabus.jumpToLesson": "පාඩමකට යන්න",
+  "syllabus.examObjectives": "විභාග අරමුණු",
+  "syllabus.importantAreas": "වැදගත් කරුණු",
+  "syllabus.notes": "නෝට්ස්",
+  "syllabus.noNotes": "මේ පාඩමේ නෝට්ස් තාම දාලා නෑ.",
+  "syllabus.lessonMeta": "පාඩම් වාර {periods}ක් · විභාග අරමුණු {objectives}ක්",
+
+  /* ---- sign in ---- */
   "signin.title": "පිවිසෙන්න",
   "signin.lead": "ඔබේ ජංගම අංකය දෙන්න, අපි SMS එකෙන් code එකක් එවනවා. Password එකක් නෑ.",
   "signin.phoneLabel": "ජංගම දුරකථන අංකය",

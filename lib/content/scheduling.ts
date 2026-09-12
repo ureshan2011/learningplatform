@@ -16,6 +16,8 @@
  * three.
  */
 
+import type { Locale } from "@/lib/i18n/dictionary";
+
 export interface Process {
   id: string;
   arrival: number;
@@ -60,35 +62,68 @@ export interface Algorithm {
   preemptive: boolean;
 }
 
-export const ALGORITHMS: Algorithm[] = [
+const ALGORITHM_DATA: Array<{
+  id: AlgorithmId;
+  label: Record<Locale, string>;
+  full: Record<Locale, string>;
+  rule: Record<Locale, string>;
+  tradeoff: Record<Locale, string>;
+  preemptive: boolean;
+}> = [
   {
     id: "fcfs",
-    label: "FCFS",
-    full: "First come, first served",
-    rule: "Processes run in the order they arrive, and each runs to completion before the next starts.",
-    tradeoff:
-      "Simple and never starves anyone, but one long process at the front makes everything behind it wait — the convoy effect.",
+    label: { en: "FCFS", si: "FCFS" },
+    full: { en: "First come, first served", si: "First come, first served" },
+    rule: {
+      en: "Processes run in the order they arrive, and each runs to completion before the next starts.",
+      si: "ක්‍රියාවලි පැමිණි පිළිවෙළට run වෙනවා, එකක් ඉවර වෙනකම් ඊළඟ එක පටන් ගන්නේ නෑ.",
+    },
+    tradeoff: {
+      en: "Simple and never starves anyone, but one long process at the front makes everything behind it wait — the convoy effect.",
+      si: "සරලයි, කාටවත් starvation එකක් නෑ. හැබැයි ඉස්සරහින් තියෙන දිග ක්‍රියාවලියක් නිසා පිටිපස්සේ තියෙන හැම එකක්ම බලාගෙන ඉන්න වෙනවා — ඒකට convoy effect කියනවා.",
+    },
     preemptive: false,
   },
   {
     id: "sjf",
-    label: "SJF",
-    full: "Shortest job first",
-    rule: "Whenever the CPU is free, the shortest of the processes that have arrived runs next, to completion.",
-    tradeoff:
-      "Gives the lowest possible average waiting time, but needs the burst time known in advance, and a steady stream of short jobs can starve a long one forever.",
+    label: { en: "SJF", si: "SJF" },
+    full: { en: "Shortest job first", si: "Shortest job first" },
+    rule: {
+      en: "Whenever the CPU is free, the shortest of the processes that have arrived runs next, to completion.",
+      si: "CPU එක නිදහස් වුණු හැම වෙලාවකම, ඇවිත් තියෙන ක්‍රියාවලිවලින් කෙටිම එක ඊළඟට run වෙනවා, ඉවර වෙනකම්.",
+    },
+    tradeoff: {
+      en: "Gives the lowest possible average waiting time, but needs the burst time known in advance, and a steady stream of short jobs can starve a long one forever.",
+      si: "සාමාන්‍ය රැඳී සිටීමේ කාලය අඩුම කරනවා. හැබැයි burst කාලය කලින් දැනගෙන ඉන්න ඕන, තව කෙටි job එනවා නම් දිග එකකට කවදාවත් වාරය නොලැබී යන්න පුළුවන් (starvation).",
+    },
     preemptive: false,
   },
   {
     id: "rr",
-    label: "Round robin",
-    full: "Round robin",
-    rule: "Each process runs for at most one time quantum, then goes to the back of the ready queue if it still has work left.",
-    tradeoff:
-      "Fair, responsive, and the basis of time sharing — but every switch costs time, so too small a quantum spends the CPU on context switching instead of work.",
+    label: { en: "Round robin", si: "Round robin" },
+    full: { en: "Round robin", si: "Round robin" },
+    rule: {
+      en: "Each process runs for at most one time quantum, then goes to the back of the ready queue if it still has work left.",
+      si: "හැම ක්‍රියාවලියක්ම වැඩිම වුණොත් එක time quantum එකක් run වෙනවා, තව වැඩ ඉතුරු නම් ආපහු ready පෝලිමේ අගට යනවා.",
+    },
+    tradeoff: {
+      en: "Fair, responsive, and the basis of time sharing — but every switch costs time, so too small a quantum spends the CPU on context switching instead of work.",
+      si: "සාධාරණයි, ඉක්මනින් ප්‍රතිචාර දෙනවා, time sharing එකේ පදනම මේකයි. හැබැයි හැම switch එකකටම කාලය යනවා, ඒ නිසා quantum එක ගොඩක් කුඩා නම් CPU එක වැඩ කරනවා වෙනුවට context switch කරගෙන ඉන්නවා.",
+    },
     preemptive: true,
   },
 ];
+
+export function algorithms(locale: Locale = "en"): Algorithm[] {
+  return ALGORITHM_DATA.map((a) => ({
+    id: a.id,
+    label: a.label[locale],
+    full: a.full[locale],
+    rule: a.rule[locale],
+    tradeoff: a.tradeoff[locale],
+    preemptive: a.preemptive,
+  }));
+}
 
 /** The worked example. Chosen so the three algorithms give visibly different answers. */
 export const SAMPLE_PROCESSES: Process[] = [
@@ -243,53 +278,107 @@ export function schedule(
  * asks for the transitions by name — "state the event that moves a process
  * from running to ready" — which a picture does not answer.
  */
-export const PROCESS_STATES = [
+export interface ProcessState {
+  key: string;
+  label: string;
+  description: string;
+  exits: string;
+}
+
+const PROCESS_STATE_DATA: Array<{
+  key: string;
+  label: Record<Locale, string>;
+  description: Record<Locale, string>;
+  exits: Record<Locale, string>;
+}> = [
   {
     key: "new",
-    label: "New",
-    description: "Being created. Its process control block is being set up and memory is being found for it.",
-    exits:
-      "Admitted to ready. If main memory is short it can be admitted straight to ready/suspend instead, on disk.",
+    label: { en: "New", si: "New (අලුත්)" },
+    description: {
+      en: "Being created. Its process control block is being set up and memory is being found for it.",
+      si: "හැදෙමින් තියෙනවා. එකේ process control block එක සකස් වෙනවා, මතකය හොයනවා.",
+    },
+    exits: {
+      en: "Admitted to ready. If main memory is short it can be admitted straight to ready/suspend instead, on disk.",
+      si: "Ready තත්ත්වයට ඇතුළත් වෙනවා. ප්‍රධාන මතකය මදි නම් කෙලින්ම ready/suspend එකට, disk එකට යන්නත් පුළුවන්.",
+    },
   },
   {
     key: "ready",
-    label: "Ready",
-    description: "In main memory and waiting its turn. It has everything it needs except the CPU.",
-    exits: "Dispatched to running when the short-term scheduler picks it, or suspended out to ready/suspend.",
+    label: { en: "Ready", si: "Ready (සූදානම්)" },
+    description: {
+      en: "In main memory and waiting its turn. It has everything it needs except the CPU.",
+      si: "ප්‍රධාන මතකයේ තියෙනවා, වාරය එනකම් බලාගෙන. CPU එක හැර අනිත් හැම දෙයක්ම තියෙනවා.",
+    },
+    exits: {
+      en: "Dispatched to running when the short-term scheduler picks it, or suspended out to ready/suspend.",
+      si: "Short-term scheduler එක තෝරගත්තම running එකට යනවා, නැත්නම් ready/suspend එකට යවනවා.",
+    },
   },
   {
     key: "running",
-    label: "Running",
-    description: "Actually executing on the CPU. On a single-core machine exactly one process is here at a time.",
-    exits:
-      "To ready on a time-out or pre-emption, to blocked on an I/O request, or to exit when it finishes.",
+    label: { en: "Running", si: "Running (ක්‍රියාත්මක)" },
+    description: {
+      en: "Actually executing on the CPU. On a single-core machine exactly one process is here at a time.",
+      si: "ඇත්තටම CPU එකේ ක්‍රියාත්මක වෙනවා. Single-core යන්ත්‍රයක එක වෙලාවක ඉන්නේ එකම එක ක්‍රියාවලියක් විතරයි.",
+    },
+    exits: {
+      en: "To ready on a time-out or pre-emption, to blocked on an I/O request, or to exit when it finishes.",
+      si: "කාලය ඉවර වුණාම හෝ pre-empt වුණාම ready එකට, I/O එකක් ඉල්ලුවම blocked එකට, ඉවර වුණාම exit එකට.",
+    },
   },
   {
     key: "blocked",
-    label: "Blocked (waiting)",
-    description:
-      "Waiting for an event — a disk read, a key press, a network reply. It could not use the CPU even if it were offered one.",
-    exits:
-      "To ready when the event completes, or suspended out to blocked/suspend. Never straight to running.",
+    label: { en: "Blocked (waiting)", si: "Blocked (බලා සිටින)" },
+    description: {
+      en: "Waiting for an event — a disk read, a key press, a network reply. It could not use the CPU even if it were offered one.",
+      si: "සිදුවීමක් එනකම් බලාගෙන — disk එකකින් කියවීමක්, යතුරක් එබීමක්, network පිළිතුරක්. CPU එක දුන්නත් පාවිච්චි කරන්න බෑ.",
+    },
+    exits: {
+      en: "To ready when the event completes, or suspended out to blocked/suspend. Never straight to running.",
+      si: "සිදුවීම ඉවර වුණාම ready එකට, නැත්නම් blocked/suspend එකට. කවදාවත් කෙලින්ම running එකට යන්නේ නෑ.",
+    },
   },
   {
     key: "ready_suspend",
-    label: "Ready/suspend",
-    description:
-      "Runnable, but swapped out to disk to free main memory. Nothing is stopping it except that it is not resident.",
-    exits: "Back to ready when it is swapped in (activated).",
+    label: { en: "Ready/suspend", si: "Ready/suspend" },
+    description: {
+      en: "Runnable, but swapped out to disk to free main memory. Nothing is stopping it except that it is not resident.",
+      si: "Run කරන්න පුළුවන්, හැබැයි ප්‍රධාන මතකය නිදහස් කරගන්න disk එකට swap කරලා. මතකයේ නැති එක විතරයි ප්‍රශ්නය.",
+    },
+    exits: {
+      en: "Back to ready when it is swapped in (activated).",
+      si: "ආපහු මතකයට ගත්තම (activate කළාම) ready එකට.",
+    },
   },
   {
     key: "blocked_suspend",
-    label: "Blocked/suspend",
-    description: "Swapped out to disk and still waiting for its event. Both things are true at once.",
-    exits:
-      "To ready/suspend when the event completes while it is still out, or back to blocked if it is swapped in first.",
+    label: { en: "Blocked/suspend", si: "Blocked/suspend" },
+    description: {
+      en: "Swapped out to disk and still waiting for its event. Both things are true at once.",
+      si: "Disk එකට swap කරලා තියෙනවා, ඒ එක්කම සිදුවීමකුත් එනකම් බලාගෙන. දෙකම එකවර.",
+    },
+    exits: {
+      en: "To ready/suspend when the event completes while it is still out, or back to blocked if it is swapped in first.",
+      si: "පිටත ඉද්දී සිදුවීම ඉවර වුණොත් ready/suspend එකට, කලින් මතකයට ගත්තොත් ආපහු blocked එකට.",
+    },
   },
   {
     key: "exit",
-    label: "Exit (terminated)",
-    description: "Finished or killed. Its resources are released and its PCB is removed.",
-    exits: "Nothing leaves this state.",
+    label: { en: "Exit (terminated)", si: "Exit (අවසන්)" },
+    description: {
+      en: "Finished or killed. Its resources are released and its PCB is removed.",
+      si: "ඉවරයි, නැත්නම් නවත්වලා. එකේ සම්පත් නිදහස් වෙනවා, PCB එක අයින් වෙනවා.",
+    },
+    exits: { en: "Nothing leaves this state.", si: "මේ තත්ත්වයෙන් පිටතට යන්නේ නෑ." },
   },
-] as const;
+];
+
+export function processStates(locale: Locale = "en"): ProcessState[] {
+  return PROCESS_STATE_DATA.map((p) => ({
+    key: p.key,
+    label: p.label[locale],
+    description: p.description[locale],
+    exits: p.exits[locale],
+  }));
+}

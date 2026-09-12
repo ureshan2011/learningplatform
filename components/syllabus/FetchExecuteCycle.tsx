@@ -1,21 +1,44 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { interpolate } from "@/lib/i18n/dictionary";
 import type { ToneColors } from "@/lib/content/unit-visuals";
-import {
-  PROGRAM_LISTING,
-  REGISTER_META,
-  buildTrace,
-  type Phase,
-  type Registers,
+import type {
+  Cell,
+  Phase,
+  RegisterMeta,
+  Registers,
+  TraceStep,
 } from "@/lib/content/fetch-execute";
 
-const PHASES: Array<{ key: Phase; label: string }> = [
-  { key: "fetch", label: "Fetch" },
-  { key: "decode", label: "Decode" },
-  { key: "execute", label: "Execute" },
-];
+/**
+ * Everything this interactive says, already in the reader's language.
+ *
+ * Resolved on the server and handed down, so a Sinhala reader is never sent
+ * the English strings and an English reader is never sent the Sinhala — the
+ * same rule the interface dictionary follows.
+ */
+export interface FetchExecuteCopy {
+  heading: string;
+  intro: string;
+  phaseFetch: string;
+  phaseDecode: string;
+  phaseExecute: string;
+  /** "{current}" and "{total}" are interpolated. */
+  stepCounter: string;
+  registersTitle: string;
+  memoryTitle: string;
+  registerHint: string;
+  memoryHint: string;
+  empty: string;
+  addressBus: string;
+  dataBus: string;
+  back: string;
+  next: string;
+  restart: string;
+  finished: string;
+}
 
 /**
  * A step-through of the fetch–execute cycle for competency level 2.3.
@@ -30,26 +53,37 @@ const PHASES: Array<{ key: Phase; label: string }> = [
  * reverse, and the registers on screen can never disagree with the memory
  * beside them.
  */
-export function FetchExecuteCycle({ tone }: { tone: ToneColors }) {
-  const trace = useMemo(() => buildTrace(), []);
+export function FetchExecuteCycle({
+  tone,
+  trace,
+  registers,
+  copy,
+}: {
+  tone: ToneColors;
+  trace: TraceStep[];
+  registers: RegisterMeta[];
+  copy: FetchExecuteCopy;
+}) {
   const [index, setIndex] = useState(0);
   const step = trace[index];
   const atEnd = index === trace.length - 1;
 
+  const phases: Array<{ key: Phase; label: string }> = [
+    { key: "fetch", label: copy.phaseFetch },
+    { key: "decode", label: copy.phaseDecode },
+    { key: "execute", label: copy.phaseExecute },
+  ];
+
   return (
     <div className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-50 p-4">
       <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
-        Try it — step one instruction through the cycle
+        {copy.heading}
       </p>
-      <p className="mt-1.5 text-sm text-ict-ink-500">
-        The program below adds the number at address 5 to the number at address 6 and stores the
-        answer at address 7. Every instruction takes the same four fetch steps and one decode step.
-        Only the execute steps differ.
-      </p>
+      <p className="mt-1.5 text-sm text-ict-ink-500">{copy.intro}</p>
 
       {/* Phase rail — which of the three phases the current micro-operation belongs to. */}
       <div className="mt-3 flex flex-wrap gap-2" aria-label="Cycle phase">
-        {PHASES.map((phase) => {
+        {phases.map((phase) => {
           const isActive = phase.key === step.phase;
           return (
             <span
@@ -71,17 +105,27 @@ export function FetchExecuteCycle({ tone }: { tone: ToneColors }) {
           );
         })}
         <span className="ml-auto self-center text-xs font-semibold text-ict-ink-400">
-          Step {index + 1} of {trace.length}
+          {interpolate(copy.stepCounter, { current: index + 1, total: trace.length })}
         </span>
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <RegisterPanel registers={step.registers} highlight={step.highlight} tone={tone} />
+        <RegisterPanel
+          meta={registers}
+          values={step.registers}
+          highlight={step.highlight}
+          tone={tone}
+          title={copy.registersTitle}
+          hint={copy.registerHint}
+          empty={copy.empty}
+        />
         <MemoryPanel
           memory={step.memory}
           activeAddress={step.activeAddress}
           pc={step.registers.pc}
           tone={tone}
+          title={copy.memoryTitle}
+          hint={copy.memoryHint}
         />
       </div>
 
@@ -101,7 +145,7 @@ export function FetchExecuteCycle({ tone }: { tone: ToneColors }) {
           {step.bus ? (
             <span className="flex items-center gap-1.5 text-xs font-semibold" style={{ color: tone.ink }}>
               <Icon name="arrow_forward" className="!text-sm" />
-              {step.bus === "address" ? "Address bus" : "Data bus"}
+              {step.bus === "address" ? copy.addressBus : copy.dataBus}
             </span>
           ) : null}
         </div>
@@ -116,7 +160,7 @@ export function FetchExecuteCycle({ tone }: { tone: ToneColors }) {
           className="ict-press flex items-center gap-1.5 rounded-full border border-ict-paper-300 bg-ict-paper-0 px-3.5 py-2 text-sm font-semibold text-ict-ink-500 transition-colors duration-[120ms] ease-ict disabled:opacity-40"
         >
           <Icon name="chevron_left" className="!text-base" />
-          Back
+          {copy.back}
         </button>
         <button
           type="button"
@@ -125,7 +169,7 @@ export function FetchExecuteCycle({ tone }: { tone: ToneColors }) {
           className="ict-press flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors duration-[120ms] ease-ict disabled:opacity-40"
           style={{ background: tone.gradTo }}
         >
-          Next step
+          {copy.next}
           <Icon name="chevron_right" className="!text-base" />
         </button>
         <button
@@ -133,12 +177,12 @@ export function FetchExecuteCycle({ tone }: { tone: ToneColors }) {
           onClick={() => setIndex(0)}
           className="ict-press rounded-full px-3.5 py-2 text-sm font-semibold text-ict-ink-400 underline underline-offset-4 transition-colors duration-[120ms] ease-ict"
         >
-          Start again
+          {copy.restart}
         </button>
         {atEnd ? (
           <span className="flex items-center gap-1.5 text-xs font-semibold text-ict-green-500">
             <Icon name="check_circle" className="!text-base" />
-            Program finished — 12 + 30 = 42, written to address 7
+            {copy.finished}
           </span>
         ) : null}
       </div>
@@ -147,20 +191,28 @@ export function FetchExecuteCycle({ tone }: { tone: ToneColors }) {
 }
 
 function RegisterPanel({
-  registers,
+  meta: metaList,
+  values,
   highlight,
   tone,
+  title,
+  hint,
+  empty,
 }: {
-  registers: Registers;
+  meta: RegisterMeta[];
+  values: Registers;
   highlight: keyof Registers | null;
   tone: ToneColors;
+  title: string;
+  hint: string;
+  empty: string;
 }) {
   return (
     <div className="rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">Registers</p>
+      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">{title}</p>
       <dl className="mt-2 space-y-1.5">
-        {REGISTER_META.map((meta) => {
-          const value = registers[meta.key];
+        {metaList.map((meta) => {
+          const value = values[meta.key];
           const isActive = highlight === meta.key;
           return (
             <div
@@ -176,7 +228,7 @@ function RegisterPanel({
                 {meta.short}
               </dt>
               <dd className="m-0 min-w-0 flex-1 truncate font-mono text-sm font-semibold text-ict-ink-900">
-                {value === null ? <span className="text-ict-ink-300">empty</span> : String(value)}
+                {value === null ? <span className="text-ict-ink-300">{empty}</span> : String(value)}
               </dd>
               {isActive ? (
                 <span
@@ -189,9 +241,7 @@ function RegisterPanel({
           );
         })}
       </dl>
-      <p className="mt-2 text-xs text-ict-ink-400">
-        Hover a register name to see what it is for.
-      </p>
+      <p className="mt-2 text-xs text-ict-ink-400">{hint}</p>
     </div>
   );
 }
@@ -201,15 +251,19 @@ function MemoryPanel({
   activeAddress,
   pc,
   tone,
+  title,
+  hint,
 }: {
-  memory: typeof PROGRAM_LISTING;
+  memory: Cell[];
   activeAddress: number | null;
   pc: number;
   tone: ToneColors;
+  title: string;
+  hint: string;
 }) {
   return (
     <div className="rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">Main memory</p>
+      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">{title}</p>
       <ol className="mt-2 space-y-1">
         {memory.map((cell) => {
           const isActive = cell.address === activeAddress;
@@ -239,9 +293,7 @@ function MemoryPanel({
           );
         })}
       </ol>
-      <p className="mt-2 text-xs text-ict-ink-400">
-        Addresses 0–3 hold the program. 5–7 hold its data.
-      </p>
+      <p className="mt-2 text-xs text-ict-ink-400">{hint}</p>
     </div>
   );
 }

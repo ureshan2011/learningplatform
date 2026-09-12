@@ -7,6 +7,8 @@ import { Icon } from "@/components/ui/Icon";
 import { LessonAccordion } from "@/components/syllabus/LessonAccordion";
 import { unitColors, unitIcon, isHighYield } from "@/lib/content/unit-visuals";
 import { indexClassesBySyllabus } from "@/lib/content/topic-classes";
+import { buildLessonInteractives } from "@/lib/content/lesson-interactives";
+import { getT, localeAttrs } from "@/lib/i18n/server";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { GRADES, MEDIUM_EN } from "@/lib/seo/site";
@@ -76,6 +78,12 @@ export default async function UnitSyllabusPage({
   params: Promise<{ subjectId: string; unitId: string }>;
 }) {
   const { subjectId, unitId } = await params;
+
+  // Sinhala-medium students read these pages too. The interactives take their
+  // wording already resolved here, so only one language reaches the browser.
+  const t = await getT();
+  const loc = await localeAttrs();
+  const interactives = buildLessonInteractives(loc.lang === "si" ? "si" : "en");
 
   const subject = await getSubject(subjectId);
   if (!subject) notFound();
@@ -162,6 +170,16 @@ export default async function UnitSyllabusPage({
             subjectId={subjectId}
             classesByLesson={classIndex.byLesson}
             unitClasses={unitClasses}
+            interactives={interactives}
+            notesLabel={t("syllabus.notes")}
+            noNotesLabel={t("syllabus.noNotes")}
+            expandAll={t("syllabus.expandAll")}
+            collapseAll={t("syllabus.collapseAll")}
+            jumpLabel={t("syllabus.jumpToLesson")}
+            objectivesLabel={t("syllabus.examObjectives")}
+            importantLabel={t("syllabus.importantAreas")}
+            lessonMeta={t("syllabus.lessonMeta")}
+            sinhala={loc.lang === "si"}
           />
         </div>
       </main>

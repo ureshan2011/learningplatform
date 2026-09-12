@@ -2,8 +2,22 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { interpolate } from "@/lib/i18n/dictionary";
 import type { ToneColors } from "@/lib/content/unit-visuals";
-import { NORMAL_FORM_STAGES, type NormalTable } from "@/lib/content/normalization";
+import type { NormalFormStage, NormalTable } from "@/lib/content/normalization";
+
+/** Everything this interactive says, resolved to one language on the server. */
+export interface NormalizationCopy {
+  heading: string;
+  intro: string;
+  stillWrong: string;
+  anomaliesTitle: string;
+  done: string;
+  back: string;
+  /** "{label}" is interpolated. */
+  fixIt: string;
+  finish: string;
+}
 
 /**
  * One table taken from unnormalised to 3NF, a stage at a time.
@@ -19,23 +33,28 @@ import { NORMAL_FORM_STAGES, type NormalTable } from "@/lib/content/normalizatio
  * of the question, and the two are the same fact told twice — the dependency
  * is why the anomaly happens.
  */
-export function NormalizationWalkthrough({ tone }: { tone: ToneColors }) {
+export function NormalizationWalkthrough({
+  tone,
+  stages,
+  copy,
+}: {
+  tone: ToneColors;
+  stages: NormalFormStage[];
+  copy: NormalizationCopy;
+}) {
   const [index, setIndex] = useState(0);
-  const stage = NORMAL_FORM_STAGES[index];
-  const isLast = index === NORMAL_FORM_STAGES.length - 1;
+  const stage = stages[index];
+  const isLast = index === stages.length - 1;
 
   return (
     <div className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-50 p-4">
       <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
-        Try it — take one table from unnormalised to 3NF
+        {copy.heading}
       </p>
-      <p className="mt-1.5 text-sm text-ict-ink-500">
-        The same student results table at every stage. At each step, the highlighted columns are the
-        ones that break the next rule.
-      </p>
+      <p className="mt-1.5 text-sm text-ict-ink-500">{copy.intro}</p>
 
       <div className="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="Normal form">
-        {NORMAL_FORM_STAGES.map((s, i) => {
+        {stages.map((s, i) => {
           const isActive = i === index;
           const isDone = i < index;
           return (
@@ -75,7 +94,7 @@ export function NormalizationWalkthrough({ tone }: { tone: ToneColors }) {
         </p>
 
         <div className="mt-3 space-y-3">
-          {stage.tables.map((table) => (
+          {stage.tables.map((table: NormalTable) => (
             <TableView key={table.name} table={table} tone={tone} />
           ))}
         </div>
@@ -84,7 +103,7 @@ export function NormalizationWalkthrough({ tone }: { tone: ToneColors }) {
           <div className="mt-3 rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
             <p className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
               <span aria-hidden className="size-1.5 rounded-full bg-ict-amber-500" />
-              Still wrong
+              {copy.stillWrong}
             </p>
             <p className="mt-1.5 text-sm text-ict-ink-500">{stage.problem}</p>
             {stage.dependency ? (
@@ -94,7 +113,7 @@ export function NormalizationWalkthrough({ tone }: { tone: ToneColors }) {
             ) : null}
 
             <p className="mt-3 text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
-              Anomalies this causes
+              {copy.anomaliesTitle}
             </p>
             <ul className="mt-1.5 space-y-1.5">
               {stage.anomalies.map((anomaly) => (
@@ -113,11 +132,7 @@ export function NormalizationWalkthrough({ tone }: { tone: ToneColors }) {
         ) : (
           <p className="mt-3 flex items-start gap-2 rounded-ict-md border border-ict-green-500/30 bg-ict-green-50 p-3 text-sm text-ict-ink-500">
             <Icon name="check_circle" className="mt-0.5 !text-base shrink-0 text-ict-green-500" />
-            <span>
-              In 3NF. Every fact is stored once: a class is renamed in one row, a subject in one
-              row, and a student with no results yet can still exist. For A/L ICT, 3NF is where the
-              question stops.
-            </span>
+            <span>{copy.done}</span>
           </p>
         )}
       </div>
@@ -130,16 +145,16 @@ export function NormalizationWalkthrough({ tone }: { tone: ToneColors }) {
           className="ict-press flex items-center gap-1.5 rounded-full border border-ict-paper-300 bg-ict-paper-0 px-3.5 py-2 text-sm font-semibold text-ict-ink-500 transition-colors duration-[120ms] ease-ict disabled:opacity-40"
         >
           <Icon name="chevron_left" className="!text-base" />
-          Back
+          {copy.back}
         </button>
         <button
           type="button"
-          onClick={() => setIndex((i) => Math.min(NORMAL_FORM_STAGES.length - 1, i + 1))}
+          onClick={() => setIndex((i) => Math.min(stages.length - 1, i + 1))}
           disabled={isLast}
           className="ict-press flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors duration-[120ms] ease-ict disabled:opacity-40"
           style={{ background: tone.gradTo }}
         >
-          {isLast ? "Done" : `Fix it — go to ${NORMAL_FORM_STAGES[index + 1].label}`}
+          {isLast ? copy.finish : interpolate(copy.fixIt, { label: stages[index + 1].label })}
           <Icon name="chevron_right" className="!text-base" />
         </button>
       </div>

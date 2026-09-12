@@ -429,6 +429,16 @@ export interface Lesson {
   importantAreas: string[];
   /** Full lesson content (notes, slides, activities). Absent until authored. */
   content?: string;
+  /**
+   * The same notes in Sinhala, for the Sinhala-medium reader.
+   *
+   * A separate field rather than a translated copy of the unit, because the
+   * rest of a lesson — its id, period count and the exam objectives — is
+   * identical in both mediums, and duplicating all of it to change one field
+   * is how the two drift apart. Absent means the English notes are shown,
+   * which is better than an empty panel.
+   */
+  contentSi?: string;
 }
 
 /**

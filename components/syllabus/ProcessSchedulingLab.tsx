@@ -2,17 +2,37 @@
 
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { interpolate } from "@/lib/i18n/dictionary";
 import type { ToneColors } from "@/lib/content/unit-visuals";
 import {
-  ALGORITHMS,
-  PROCESS_STATES,
   SAMPLE_PROCESSES,
   schedule,
+  type Algorithm,
   type AlgorithmId,
   type Process,
+  type ProcessState,
 } from "@/lib/content/scheduling";
 
 const QUANTA = [1, 2, 3, 4];
+
+/** Everything this interactive says, resolved to one language on the server. */
+export interface SchedulingCopy {
+  heading: string;
+  intro: string;
+  quantum: string;
+  colProcess: string;
+  colArrival: string;
+  colBurst: string;
+  colCompletion: string;
+  colTurnaround: string;
+  colWaiting: string;
+  average: string;
+  /** "{id}" is interpolated. */
+  burstLabel: string;
+  formulaNote: string;
+  idle: string;
+  statesSummary: string;
+}
 
 /**
  * Scheduling for competency level 5.3 — the Gantt chart and the timing table,
@@ -27,7 +47,17 @@ const QUANTA = [1, 2, 3, 4];
  * The arithmetic lives in `lib/content/scheduling.ts` and is checked against
  * hand-worked answers for all three algorithms.
  */
-export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
+export function ProcessSchedulingLab({
+  tone,
+  algorithms,
+  states,
+  copy,
+}: {
+  tone: ToneColors;
+  algorithms: Algorithm[];
+  states: ProcessState[];
+  copy: SchedulingCopy;
+}) {
   const [algorithmId, setAlgorithmId] = useState<AlgorithmId>("fcfs");
   const [quantum, setQuantum] = useState(2);
   const [processes, setProcesses] = useState<Process[]>(SAMPLE_PROCESSES);
@@ -36,7 +66,7 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
     () => schedule(algorithmId, processes, quantum),
     [algorithmId, processes, quantum],
   );
-  const algorithm = ALGORITHMS.find((a) => a.id === algorithmId) as (typeof ALGORITHMS)[number];
+  const algorithm = algorithms.find((a) => a.id === algorithmId) as Algorithm;
   const totalTime = result.segments[result.segments.length - 1]?.end ?? 1;
 
   function setBurst(id: string, burst: number) {
@@ -46,15 +76,12 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
   return (
     <div className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-50 p-4">
       <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
-        Try it — draw the Gantt chart and read off the averages
+        {copy.heading}
       </p>
-      <p className="mt-1.5 text-sm text-ict-ink-500">
-        Four processes arriving at different times. Switch the algorithm and watch both the chart and
-        the average waiting time change, with the same four processes underneath.
-      </p>
+      <p className="mt-1.5 text-sm text-ict-ink-500">{copy.intro}</p>
 
       <div className="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="Scheduling algorithm">
-        {ALGORITHMS.map((a) => {
+        {algorithms.map((a) => {
           const isActive = a.id === algorithmId;
           return (
             <button
@@ -81,7 +108,7 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
 
         {algorithm.preemptive ? (
           <span className="flex items-center gap-2 rounded-full border border-ict-paper-300 bg-ict-paper-0 px-3 py-1.5">
-            <span className="text-xs font-semibold text-ict-ink-400">Quantum</span>
+            <span className="text-xs font-semibold text-ict-ink-400">{copy.quantum}</span>
             {QUANTA.map((q) => (
               <button
                 key={q}
@@ -123,9 +150,9 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
                     background: isIdle ? "var(--color-ict-paper-200)" : tone.soft,
                     color: isIdle ? "var(--color-ict-ink-300)" : tone.ink,
                   }}
-                  title={`${segment.id ?? "Idle"}: ${segment.start} to ${segment.end}`}
+                  title={`${segment.id ?? copy.idle}: ${segment.start} – ${segment.end}`}
                 >
-                  {width > 6 ? (segment.id ?? "idle") : ""}
+                  {width > 6 ? (segment.id ?? copy.idle) : ""}
                 </div>
               );
             })}
@@ -157,12 +184,12 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
         <table className="w-full min-w-max border-collapse text-left text-sm">
           <thead>
             <tr className="text-xs font-bold text-ict-ink-400">
-              <th scope="col" className="px-3 py-2">Process</th>
-              <th scope="col" className="px-3 py-2">Arrival</th>
-              <th scope="col" className="px-3 py-2">Burst</th>
-              <th scope="col" className="px-3 py-2">Completion</th>
-              <th scope="col" className="px-3 py-2">Turnaround</th>
-              <th scope="col" className="px-3 py-2">Waiting</th>
+              <th scope="col" className="px-3 py-2">{copy.colProcess}</th>
+              <th scope="col" className="px-3 py-2">{copy.colArrival}</th>
+              <th scope="col" className="px-3 py-2">{copy.colBurst}</th>
+              <th scope="col" className="px-3 py-2">{copy.colCompletion}</th>
+              <th scope="col" className="px-3 py-2">{copy.colTurnaround}</th>
+              <th scope="col" className="px-3 py-2">{copy.colWaiting}</th>
             </tr>
           </thead>
           <tbody>
@@ -172,7 +199,7 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
                 <td className="px-3 py-2 font-mono text-ict-ink-500">{m.arrival}</td>
                 <td className="px-3 py-2">
                   <label className="flex items-center gap-1.5">
-                    <span className="sr-only">Burst time for {m.id}</span>
+                    <span className="sr-only">{interpolate(copy.burstLabel, { id: m.id })}</span>
                     <input
                       type="range"
                       min={1}
@@ -198,7 +225,7 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
           <tfoot>
             <tr className="border-t border-ict-paper-300">
               <td colSpan={4} className="px-3 py-2 text-xs font-bold text-ict-ink-400 uppercase">
-                Average
+                {copy.average}
               </td>
               <td className="px-3 py-2 font-mono font-bold" style={{ color: tone.ink }}>
                 {result.averageTurnaround.toFixed(2)}
@@ -211,10 +238,7 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
         </table>
       </div>
 
-      <p className="mt-2 text-xs text-ict-ink-400">
-        Turnaround = completion − arrival. Waiting = turnaround − burst. Drag a burst time to see how
-        one long process changes everyone else&apos;s wait.
-      </p>
+      <p className="mt-2 text-xs text-ict-ink-400">{copy.formulaNote}</p>
 
       <p className="mt-3 flex items-start gap-2 rounded-ict-md p-3 text-sm" style={{ background: tone.soft }}>
         <span className="mt-0.5 shrink-0" style={{ color: tone.ink }}>
@@ -225,10 +249,10 @@ export function ProcessSchedulingLab({ tone }: { tone: ToneColors }) {
 
       <details className="mt-3 rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
         <summary className="cursor-pointer text-sm font-semibold text-ict-ink-900">
-          The seven process states, and what moves a process between them
+          {copy.statesSummary}
         </summary>
         <ul className="mt-2.5 space-y-2">
-          {PROCESS_STATES.map((state) => (
+          {states.map((state) => (
             <li key={state.key} className="text-sm">
               <span
                 className="rounded-full px-2 py-0.5 text-xs font-bold"

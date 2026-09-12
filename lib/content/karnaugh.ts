@@ -18,6 +18,8 @@
  * syllabus's own worked examples.
  */
 
+import type { Locale } from "@/lib/i18n/dictionary";
+
 export const VARIABLES = ["A", "B", "C", "D"] as const;
 
 /** Gray code order for both axes — what makes physically adjacent cells differ by one bit. */
@@ -241,40 +243,65 @@ export interface KarnaughPreset {
  *
  * Each one exists to show a different trap: the wrap-around groups that only
  * work because the edges touch, an overlap that is allowed and necessary, a
- * don't-care that doubles a group's size, and one map that collapses to a
- * single variable.
+ * don't-care that doubles a group's size, and a map where every group is
+ * forced. The minterms are the teaching content and never change between
+ * languages; only the wording around them does.
  */
-export const PRESETS: KarnaughPreset[] = [
+const PRESET_DATA: Array<{
+  id: string;
+  label: Record<Locale, string>;
+  description: Record<Locale, string>;
+  ones: number[];
+  dontCares: number[];
+}> = [
   {
     id: "wrap",
-    label: "Edge wrap-around",
-    description:
-      "The four corner cells form one group of four, because the left edge is adjacent to the right edge and the top to the bottom. Miss it and you write four separate terms instead of one.",
+    label: { en: "Edge wrap-around", si: "දාර එකතු වීම" },
+    description: {
+      en: "The four corner cells form one group of four, because the left edge is adjacent to the right edge and the top to the bottom. Miss it and you write four separate terms instead of one.",
+      si: "කොන් හතරේ කොටු හතර එකම සමූහයක් වෙනවා, මොකද වම් දාරය දකුණු දාරයට යාබදයි, උඩ පේළිය යට පේළියට යාබදයි. මේක මඟ හැරුණොත් එක පදයක් වෙනුවට වෙන වෙනම පද හතරක් ලියවෙනවා.",
+    },
     ones: [0, 2, 8, 10],
     dontCares: [],
   },
   {
     id: "overlap",
-    label: "Overlapping groups",
-    description:
-      "Two groups of four that share cells. Overlapping is allowed — a cell may be in as many groups as you like, and refusing to overlap here costs you a bigger group.",
+    label: { en: "Overlapping groups", si: "එකිනෙක උඩ තියෙන සමූහ" },
+    description: {
+      en: "Two groups of four that share cells. Overlapping is allowed — a cell may be in as many groups as you like, and refusing to overlap here costs you a bigger group.",
+      si: "කොටු බෙදාගන්න සමූහ. එකිනෙක උඩ තියෙන එකට කමක් නෑ — එක කොටුවක් ඕන තරම් සමූහවල තියෙන්න පුළුවන්, ඒක නොකළොත් ලොකු සමූහයක් අතහැරෙනවා.",
+    },
     ones: [0, 1, 2, 3, 4, 5, 8, 9],
     dontCares: [],
   },
   {
     id: "dontcare",
-    label: "Using don't-care terms",
-    description:
-      "The X cells may be treated as 1 or 0, whichever helps. Here they turn a group of four into a group of eight, and the whole expression collapses to a single variable.",
+    label: { en: "Using don't-care terms", si: "Don\u2019t care පද පාවිච්චිය" },
+    description: {
+      en: "The X cells may be treated as 1 or 0, whichever helps. Here they turn a group of four into a group of eight, and the whole expression collapses to a single variable.",
+      si: "X කොටු 1 විදිහට හෝ 0 විදිහට ගන්න පුළුවන් — වාසි එක අරගන්න. මෙතන ඒවා නිසා හතරේ සමූහයක් අටේ සමූහයක් වෙනවා, සම්පූර්ණ ප්‍රකාශනය එක විචල්‍යයකට බහිනවා.",
+    },
     ones: [0, 1, 2, 3],
     dontCares: [4, 5, 6, 7],
   },
   {
     id: "essential",
-    label: "Essential groups first",
-    description:
-      "Every group here is forced: each one covers a cell that no other group can reach. Three groups of four, and no choosing involved — find the forced ones and the answer falls out.",
+    label: { en: "Essential groups first", si: "අනිවාර්ය සමූහ මුලින්" },
+    description: {
+      en: "Every group here is forced: each one covers a cell that no other group can reach. Three groups of four, and no choosing involved — find the forced ones and the answer falls out.",
+      si: "මෙතන හැම සමූහයක්ම අනිවාර්යයි: හැම එකක්ම වෙන කිසි සමූහයකට ළඟා වෙන්න බැරි කොටුවක් ආවරණය කරනවා. හතරේ සමූහ තුනක්, තෝරගන්න දෙයක් නෑ — අනිවාර්ය ඒවා හොයාගත්තම උත්තරය එනවා.",
+    },
     ones: [0, 1, 2, 4, 6, 8, 9, 10],
     dontCares: [],
   },
 ];
+
+export function karnaughPresets(locale: Locale = "en"): KarnaughPreset[] {
+  return PRESET_DATA.map((p) => ({
+    id: p.id,
+    label: p.label[locale],
+    description: p.description[locale],
+    ones: p.ones,
+    dontCares: p.dontCares,
+  }));
+}
