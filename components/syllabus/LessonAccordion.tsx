@@ -6,11 +6,31 @@ import type { TopicClass } from "@/lib/content/topic-classes";
 import type { ToneColors } from "@/lib/content/unit-visuals";
 import { ClassCta } from "@/components/syllabus/ClassCta";
 import { DataLifeCycleWalkthrough } from "@/components/syllabus/DataLifeCycleWalkthrough";
+import { FetchExecuteCycle } from "@/components/syllabus/FetchExecuteCycle";
+import { KarnaughMapLab } from "@/components/syllabus/KarnaughMapLab";
+import { NormalizationWalkthrough } from "@/components/syllabus/NormalizationWalkthrough";
+import { ProcessSchedulingLab } from "@/components/syllabus/ProcessSchedulingLab";
 import type { Lesson } from "@/lib/types";
 
-/** One lesson's interactive, keyed by id — add here as more lessons get one. */
+/**
+ * One lesson's interactive, keyed by competency-level id.
+ *
+ * Deliberately a lookup rather than a field on the lesson: an interactive is
+ * code, and `AL_ICT_UNITS` is data describing the syllabus. Keying by id also
+ * means a lesson without one simply renders without one, so this can be filled
+ * in a lesson at a time rather than all at once.
+ *
+ * Which lessons get one is decided by where the marks are and where a static
+ * page genuinely fails — a cycle whose register contents change step by step,
+ * a grouping students consistently get wrong, a table that has to be seen at
+ * every stage, a calculation with no way to check the answer.
+ */
 const LESSON_INTERACTIVES: Partial<Record<string, (tone: ToneColors) => React.ReactNode>> = {
   "1.1": (tone) => <DataLifeCycleWalkthrough tone={tone} />,
+  "2.3": (tone) => <FetchExecuteCycle tone={tone} />,
+  "4.2": (tone) => <KarnaughMapLab tone={tone} />,
+  "5.3": (tone) => <ProcessSchedulingLab tone={tone} />,
+  "8.7": (tone) => <NormalizationWalkthrough tone={tone} />,
 };
 
 /**

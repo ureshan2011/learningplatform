@@ -147,7 +147,45 @@ export const AL_ICT_UNITS: UnitSeed[] = [
       [
         "Drawing the Von-Neumann diagram from memory is one of the most frequently repeated essay/structured tasks in the whole syllabus",
         "Listing the fetch-execute cycle steps in order is a common short-answer question",
-      ]),
+      ],
+      `## The stored-program concept
+Von Neumann's idea is that instructions and data live in the same memory, in the same form. Before it, changing a machine's program meant rewiring it. After it, a program is just data you load — which is why one computer can run a spreadsheet and a game.
+
+## The five parts of the architecture
+- Control unit (CU) — fetches and decodes instructions, and raises the control signals that make everything else act
+- Arithmetic and logic unit (ALU) — does the arithmetic and the comparisons
+- Main memory — holds instructions and data together, each in a numbered address
+- Input and output — how data gets in and out
+- Buses — the address bus (one direction, CPU to memory), the data bus (both directions) and the control bus (both directions)
+
+The CU and the ALU together with the registers make up the CPU. A full-mark diagram has all five parts and all three buses, with arrowheads showing that the address bus is one-directional and the other two are not.
+
+## The registers
+- PC, the program counter — the address of the next instruction
+- MAR, the memory address register — the address currently on the address bus
+- MDR, the memory data register — whatever is in transit to or from memory. Some textbooks write MBR; it is the same register
+- CIR, the current instruction register — the instruction being carried out right now
+- ACC, the accumulator — where the ALU keeps the working value
+
+## The cycle itself
+Fetch is the same four steps for every instruction, without exception:
+
+- MAR ← PC
+- MDR ← contents of the address held in MAR
+- PC ← PC + 1
+- CIR ← MDR
+
+Decode is next: the control unit splits the instruction now in CIR into an opcode and an address part, and works out which control signals to raise.
+
+Execute is last, and is the only phase that depends on which instruction it is.
+
+## Two places marks are lost
+The PC is incremented during the fetch, not after the instruction has run. That is exactly why a jump instruction has to overwrite the PC rather than add to it: by the time the jump executes, the PC has already moved on.
+
+MDR carries data in both directions. On a LOAD it brings a value in from memory; on a STORE it carries the accumulator's value out to memory. Describing it as an input-only register is wrong.
+
+## Why multi-core processors are needed
+Everything above runs one instruction at a time, and every instruction and every piece of data has to travel the same path between CPU and memory. That single path is the von Neumann bottleneck: past a point, making the CPU faster stops helping because it is waiting on memory. Several complete cores, each with its own fetch-execute machinery and sharing the memory, is one answer to it.`),
     lesson("2.4", 4, "Memory hierarchy and PC memory system", 6,
       [
         "Explain the need for a memory hierarchy and its comparison criteria (access time, capacity, cost)",
@@ -209,7 +247,46 @@ export const AL_ICT_UNITS: UnitSeed[] = [
       [
         "Karnaugh map simplification (up to 3-4 variables) is one of the highest-value recurring essay questions in this unit — practise until it is routine",
         "De Morgan's law application is a frequent MCQ/short-answer trap question",
-      ]),
+      ],
+      `## Why simplify at all
+Two circuits with the same truth table behave identically, so the smaller one always wins. Every gate removed is a gate that costs money, draws power, takes board space and adds propagation delay. Simplification is not tidying up; it is the design work.
+
+## The laws worth knowing by heart
+- Identity: A + 0 = A and A · 1 = A
+- Null: A + 1 = 1 and A · 0 = 0
+- Idempotent: A + A = A and A · A = A
+- Complement: A + A' = 1 and A · A' = 0
+- Double negation: (A')' = A
+- Absorption: A + AB = A and A(A + B) = A
+- Distributive: A(B + C) = AB + AC, and also A + BC = (A + B)(A + C)
+- De Morgan: (A · B)' = A' + B' and (A + B)' = A' · B'
+
+Two of those catch people out. The second distributive law has no equivalent in ordinary algebra, so it does not feel right and gets skipped. And De Morgan is the one that appears most often, because it is how any expression is converted to NAND-only or NOR-only form — which is asked because real circuits are built from universal gates.
+
+## Sum of products and product of sums
+From a truth table, SOP is built from the rows where the output is 1: one product term per row, each variable negated where it is 0, all added together. POS is built from the rows where the output is 0: one sum term per row, each variable negated where it is 1, all multiplied together. Both describe the same function.
+
+## Reading a Karnaugh map
+Write the rows and columns in Gray code — 00, 01, 11, 10 — never in counting order. The whole method depends on it, because neighbouring cells must differ in exactly one variable: 01 to 11 changes one bit, but 01 to 10 changes two.
+
+Then group the 1s by these rules:
+
+- Groups must be rectangular and of size 1, 2, 4, 8 or 16. Never 3, never 6
+- Bigger is better: each doubling of a group removes one more variable from its term
+- Groups may overlap, and usually should
+- The edges wrap around. The left column is adjacent to the right, the top row to the bottom, and the four corners form one group of four
+- Every 1 must be inside at least one group
+- Use as few groups as you can
+
+For each group, write down the variables that stay the same right across it, negated where they are 0, and drop the variables that change. Add the terms together.
+
+## Don't-care conditions
+An X marks a combination that cannot occur or whose output does not matter — an invalid BCD code, for instance. Treat each X as a 1 wherever that makes a group bigger, and as a 0 wherever it does not. You are never obliged to cover an X.
+
+## The trap in the exam
+Stopping at the first set of groups that happens to cover every 1. The question asks for the simplest expression, not for a correct one, and a correct-but-larger answer loses marks.
+
+Find the forced groups first. If a cell can be reached by only one possible group, that group has to be in the answer. Put those down, and the choices left over shrink sharply.`),
     lesson("4.3", 3, "Designing simple digital circuits", 6,
       [
         "Derive a logic expression and truth table from a stated real-world requirement, up to three inputs",
@@ -257,7 +334,54 @@ export const AL_ICT_UNITS: UnitSeed[] = [
       [
         "The seven-state process transition diagram is one of the most consistently examined diagrams in this unit",
         "Turnaround, response, throughput and waiting time definitions form a frequent short-answer set",
-      ]),
+      ],
+      `## A process is not a program
+A program is a file sitting on disk. A process is that program in execution — the code, its data, and a record of how far it has got. Open the same program twice and you have one program and two processes.
+
+The operating system tracks each one in a process control block (PCB), which holds the process id, its current state, the saved contents of the PC and the other registers, its memory limits, its open files and its accounting information. A context switch is the OS saving one PCB and loading another. It is not free, and that cost is the whole argument against a very small time quantum.
+
+## The seven states
+- New — being created, PCB being set up
+- Ready — in main memory, has everything it needs except the CPU
+- Running — actually executing. On a single core, exactly one process
+- Blocked, also called waiting — waiting for an event such as an I/O completion
+- Ready/suspend — runnable, but swapped out to disk to free memory
+- Blocked/suspend — swapped out to disk and still waiting for its event
+- Exit — finished, resources released
+
+The five-state model leaves out the two suspended states. This syllabus asks for seven, so include them.
+
+## The transitions, which is what gets asked
+- Ready to running is dispatch, done by the short-term scheduler
+- Running to ready is a time-out when the quantum expires, or pre-emption by a higher-priority process
+- Running to blocked is the process requesting I/O
+- Blocked to ready is the awaited event completing
+- Ready to ready/suspend, and blocked to blocked/suspend, is the medium-term scheduler swapping a process out to disk
+- Blocked/suspend to ready/suspend is the event completing while the process is still swapped out
+- Running to exit is the process finishing
+
+Blocked never goes straight to running. When its event completes it joins the ready queue and waits its turn like everything else.
+
+## The three schedulers
+- Long-term — decides which jobs are admitted into the system at all, controlling the degree of multiprogramming
+- Medium-term — swaps processes out to disk and back, which is what creates the two suspended states
+- Short-term — decides which ready process runs next. Runs most often, so it must be fast
+
+## Scheduling algorithms
+- First come, first served — runs in arrival order, each to completion. Simple and nobody starves, but one long process at the front delays everything behind it. That is the convoy effect
+- Shortest job first — picks the shortest of the processes that have arrived. Gives the lowest possible average waiting time, but the burst time has to be known in advance, and a steady supply of short jobs can starve a long one indefinitely
+- Round robin — each process gets at most one quantum, then goes to the back of the queue. Fair and responsive, which is what makes time sharing work. Too small a quantum and the CPU spends its time context switching; too large and it degenerates into first come, first served
+- Priority — highest priority runs first. Starves low-priority processes unless their priority rises the longer they wait, which is called ageing
+
+## Doing the calculation
+- Turnaround time = completion time − arrival time
+- Waiting time = turnaround time − burst time
+- Response time = first time on the CPU − arrival time
+- Average = the total divided by the number of processes
+
+Draw the Gantt chart first and label every boundary time, because every number in the table is read off it. An error in the chart is an error in the entire answer.
+
+For round robin there is one rule that decides whether your chart matches the marking scheme: when a quantum expires, any process that arrived during that quantum joins the ready queue before the process that was just pre-empted rejoins it.`),
     lesson("5.4", 4, "Memory and I/O device management", 6,
       [
         "Explain the role of the Memory Management Unit and virtual memory (paging)",
@@ -461,7 +585,50 @@ export const AL_ICT_UNITS: UnitSeed[] = [
         "Define full, partial and transitive functional dependency",
         "Normalize a given unnormalized table through 1NF, 2NF and 3NF, showing the working at each step",
       ],
-      ["Normalizing a given table to 3NF with all intermediate steps shown is one of the most consistently examined essay questions in the Database unit"]),
+      ["Normalizing a given table to 3NF with all intermediate steps shown is one of the most consistently examined essay questions in the Database unit"],
+      `## What normalisation is for
+Storing the same fact in more than one place is what causes the three anomalies:
+
+- Insert anomaly — a fact cannot be recorded because an unrelated one is missing. A new subject nobody has sat yet has no row to live in
+- Update anomaly — a fact stored in twenty rows has to be corrected in twenty rows, and one row missed leaves the database contradicting itself
+- Delete anomaly — removing one fact silently removes another. Deleting the last student in a class deletes the class
+
+Normalisation splits tables until every fact is stored exactly once, which removes all three.
+
+## Functional dependency
+Write X → Y to mean "X determines Y": knowing X fixes exactly one value of Y. StudentID → StudentName, because one student id gives one name.
+
+- Full dependency — Y depends on the whole of a composite key X
+- Partial dependency — Y depends on only part of a composite key
+- Transitive dependency — the key determines X, and X in turn determines Y, so Y depends on the key only indirectly
+
+Those three names are the answer to "state the dependency you removed", so use them.
+
+## First normal form
+Every cell holds a single value, and there are no repeating groups.
+
+Flatten the repeating group out into extra rows. The key normally has to grow into a composite key at this point, because the original key no longer identifies one row on its own.
+
+## Second normal form
+In 1NF, and every non-key column depends on the whole primary key rather than part of it.
+
+This can only bite when the key is composite. Look for a column fixed by half the key — a student's name fixed by the student id alone, when the key is student id plus subject code. Move that column, together with the part of the key it depends on, into a table of its own.
+
+A 1NF table whose primary key is a single column is already in 2NF. Say so if the question gives you one; it is a mark.
+
+## Third normal form
+In 2NF, and no non-key column depends on another non-key column.
+
+Look for a chain. The key determines ClassID, and ClassID determines ClassName, so ClassName depends on the key only through ClassID. Move that pair into their own table and leave ClassID behind as a foreign key.
+
+## Writing the answer
+The marks are spread across the intermediate stages, not concentrated on the final set of tables. A student who writes only the finished 3NF tables scores a fraction of the question. At each step write:
+
+- the tables at that normal form, with primary keys underlined and foreign keys marked
+- the dependency you removed, as an arrow — StudentID → StudentName
+- the anomaly that dependency was causing
+
+For A/L ICT the question stops at 3NF. BCNF and the higher normal forms are not examined.`),
   ]),
 
   unit(9, 9, 13, "Programming", "Develops algorithms to solve problems and uses python programming language to encode algorithms", [
