@@ -17,6 +17,10 @@ export interface SignInCopy {
   phonePlaceholder: string;
   sendCode: string;
   sending: string;
+  /** Carries `{terms}` and `{privacy}` markers — see `ConsentNote`. */
+  consent: string;
+  consentTerms: string;
+  consentPrivacy: string;
   codeLabel: string;
   sentTo: string;
   slowSms: string;
@@ -81,6 +85,9 @@ export function buildSignInCopy(t: SignInTranslate): SignInCopy {
     phonePlaceholder: t("signin.phonePlaceholder"),
     sendCode: t("signin.sendCode"),
     sending: t("signin.sending"),
+    consent: t("signin.consent"),
+    consentTerms: t("signin.consentTerms"),
+    consentPrivacy: t("signin.consentPrivacy"),
     codeLabel: t("signin.codeLabel"),
     sentTo: t("signin.sentTo"),
     slowSms: t("signin.slowSms"),

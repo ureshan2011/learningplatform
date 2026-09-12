@@ -4,6 +4,7 @@ import { useState } from "react";
 import { track } from "@/lib/analytics";
 import { fetchWithSession } from "@/lib/auth/session-client";
 import { Button } from "@/components/ds";
+import { PolicyNote } from "@/components/payments/PolicyNote";
 
 /**
  * Starts a PayHere checkout.
@@ -65,6 +66,7 @@ export function SubscribeButton({
       </Button>
       {sandbox ? <p className="mt-1.5 text-xs font-semibold text-ict-amber-500">Sandbox — test cards only</p> : null}
       {error ? <p className="mt-1.5 text-xs text-[#f0685a]">{error}</p> : null}
+      <PolicyNote className="mt-2" />
     </div>
   );
 }

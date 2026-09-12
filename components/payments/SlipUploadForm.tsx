@@ -8,6 +8,7 @@ import { clientAuth } from "@/lib/firebase/client";
 import { Icon } from "@/components/ui/Icon";
 import { fetchWithSession } from "@/lib/auth/session-client";
 import { Button, Card } from "@/components/ds";
+import { PolicyNote } from "@/components/payments/PolicyNote";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 
@@ -190,6 +191,8 @@ export function SlipUploadForm({
       <Button type="submit" disabled={busy} className="mt-5 w-full justify-center">
         {busy ? "Uploading…" : "Submit payment slip"}
       </Button>
+
+      <PolicyNote className="mt-2.5" />
 
       {error ? (
         <p className="mt-2.5 text-sm text-[#f0685a]">

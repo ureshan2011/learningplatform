@@ -60,6 +60,54 @@ export function PhoneStep({
           copy.sendCode
         )}
       </Button>
+
+      <ConsentNote copy={copy} />
     </form>
+  );
+}
+
+/**
+ * "By continuing you agree to our Terms and Privacy policy."
+ *
+ * Placed on the first step, under the button that acts on it, because this is
+ * the moment an account comes into existence — most of these students are
+ * under 18, and terms nobody was shown are terms that do not hold when a
+ * parent disputes a charge or an account is closed for sharing a login.
+ *
+ * The sentence is one dictionary string carrying `{terms}` and `{privacy}`
+ * markers rather than five glued fragments, so a translator sees a whole
+ * sentence and Sinhala can put the links where its own word order wants them.
+ *
+ * Both open in a new tab. Navigating away mid-sign-in discards the reCAPTCHA
+ * challenge and the attempt behind it, so a student who tapped "Terms" out of
+ * curiosity would come back to a screen that has to start over.
+ */
+function ConsentNote({ copy }: { copy: SignInCopy }) {
+  const label: Record<string, string> = {
+    terms: copy.consentTerms,
+    privacy: copy.consentPrivacy,
+  };
+  const href: Record<string, string> = { terms: "/terms", privacy: "/privacy" };
+
+  return (
+    <p className="text-center text-xs text-ict-ink-300">
+      {copy.consent.split(/\{(terms|privacy)\}/).map((part, i) =>
+        // Odd indices are the captured marker names; even ones are the text
+        // between them. A marker a translation dropped simply does not appear.
+        i % 2 === 1 ? (
+          <a
+            key={i}
+            href={href[part]}
+            target="_blank"
+            rel="noreferrer"
+            className="underline underline-offset-2"
+          >
+            {label[part]}
+          </a>
+        ) : (
+          <span key={i}>{part}</span>
+        ),
+      )}
+    </p>
   );
 }

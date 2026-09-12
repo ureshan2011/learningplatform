@@ -95,9 +95,15 @@ export default async function TermsPage() {
           pass them to anyone else, including in group chats.
         </p>
         <p>
-          Downloaded material carries a watermark identifying the account it was issued to. If our
-          material appears somewhere it should not, that watermark is how we identify the source,
-          and the account is closed without a refund.
+          Live classes and recordings play with your own name and part of your number moving
+          across the picture. Anything filmed off a screen therefore identifies the account it was
+          played on, and if a recording of ours turns up in a group chat that is how we trace it.
+          Notes and papers are handed out as private links that expire within minutes and are tied
+          to your account, never as public addresses anyone can pass on.
+        </p>
+        <p>
+          Where we can establish that material was shared from an account, that account is closed
+          without a refund.
         </p>
         <p>
           Live classes may be recorded for students who missed them. Your camera and microphone are

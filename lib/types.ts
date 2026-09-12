@@ -72,6 +72,18 @@ export interface User {
   referralRewarded?: boolean;
   /** Bumped to invalidate every parent view link issued before the bump. */
   parentLinkVersion?: number;
+  /**
+   * When this account first passed through a sign-in screen that showed the
+   * Terms and Privacy links, and which dated version of them it showed.
+   *
+   * Most of these students are under 18, so the one thing worth being able to
+   * prove is that the terms were actually put in front of someone before the
+   * account existed — a policy nobody was shown is a policy that does not hold
+   * when a parent disputes a charge or an account is closed for sharing a
+   * login. Absent on accounts created before the notice was added.
+   */
+  termsAcceptedAt?: number;
+  termsAcceptedVersion?: string;
   createdAt: number;
   disabled?: boolean;
   /** Why the account was disabled, shown to the staff member who reads it back. */

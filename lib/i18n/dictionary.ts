@@ -184,6 +184,11 @@ const en = {
   "signin.phonePlaceholder": "077 123 4567",
   "signin.sendCode": "Send code",
   "signin.sending": "Sending…",
+  // {terms} and {privacy} are replaced with links, so the sentence stays whole
+  // for the translator and each language can put them where they belong.
+  "signin.consent": "By continuing you agree to our {terms} and {privacy}.",
+  "signin.consentTerms": "Terms",
+  "signin.consentPrivacy": "Privacy policy",
   "signin.codeLabel": "Code from the SMS",
   "signin.sentTo": "Sent to {phone} · {ago}",
   "signin.slowSms": "SMS can take up to a minute on some networks. The code in it will still work.",
@@ -389,6 +394,9 @@ const si: Record<MessageKey, string> = {
   "signin.phonePlaceholder": "077 123 4567",
   "signin.sendCode": "Code එක එවන්න",
   "signin.sending": "එවමින්…",
+  "signin.consent": "ඉදිරියට ගියාම ඔබ අපේ {terms} සහ {privacy} වලට එකඟ වෙනවා.",
+  "signin.consentTerms": "Terms",
+  "signin.consentPrivacy": "Privacy policy",
   "signin.codeLabel": "SMS එකේ code එක",
   "signin.sentTo": "{phone} වෙත එවා ඇත · {ago}",
   "signin.slowSms": "සමහර networks වල SMS එකට විනාඩියක් යන්න පුළුවන්. ආපු code එක තාම වැඩ කරයි.",
