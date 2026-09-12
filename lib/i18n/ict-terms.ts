@@ -58,6 +58,17 @@ export const ICT_TERMS = {
   cell: t("cell", "කොටුව"),
   example: t("example", "උදාහරණය"),
 
+  /* ---- unit 1: data and information ---- */
+  dataLifeCycle: t("data life cycle", "දත්ත ජීවන චක්‍රය", true),
+  creation: t("creation", "නිර්මාණය", true),
+  management: t("management", "කළමනාකරණය", true),
+  removalOfObsolete: t("removal of obsolete data", "යල් පැන ගිය දත්ත ඉවත් කිරීම", true),
+  timely: t("timely", "කාලෝචිත", true),
+  accurate: t("accurate", "නිරවද්‍ය", true),
+  inContext: t("in context", "සන්දර්භයට ගැළපෙන", true),
+  understandable: t("understandable", "තේරුම්ගත හැකි", true),
+  lowUncertainty: t("low uncertainty", "අවිනිශ්චිතතාව අඩු", true),
+
   /* ---- unit 2: architecture ---- */
   instruction: t("instruction", "විධානය", true),
   controlUnit: t("control unit", "පාලක ඒකකය", true),

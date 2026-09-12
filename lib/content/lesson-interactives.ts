@@ -1,10 +1,12 @@
 import "server-only";
 
 import type { Locale } from "@/lib/i18n/dictionary";
+import { lifeCycleStages } from "@/lib/content/data-life-cycle";
 import { buildTrace, registerMeta } from "@/lib/content/fetch-execute";
 import { karnaughPresets } from "@/lib/content/karnaugh";
 import { normalFormStages } from "@/lib/content/normalization";
 import { algorithms, processStates } from "@/lib/content/scheduling";
+import type { DataLifeCycleCopy } from "@/components/syllabus/DataLifeCycleWalkthrough";
 import type { FetchExecuteCopy } from "@/components/syllabus/FetchExecuteCycle";
 import type { KarnaughCopy } from "@/components/syllabus/KarnaughMapLab";
 import type { NormalizationCopy } from "@/components/syllabus/NormalizationWalkthrough";
@@ -33,6 +35,10 @@ import type { SchedulingCopy } from "@/components/syllabus/ProcessSchedulingLab"
  */
 
 export interface LessonInteractiveData {
+  dataLifeCycle: {
+    stages: ReturnType<typeof lifeCycleStages>;
+    copy: DataLifeCycleCopy;
+  };
   fetchExecute: {
     trace: ReturnType<typeof buildTrace>;
     registers: ReturnType<typeof registerMeta>;
@@ -52,6 +58,17 @@ export interface LessonInteractiveData {
     copy: NormalizationCopy;
   };
 }
+
+const DATA_LIFE_CYCLE_COPY: Record<Locale, DataLifeCycleCopy> = {
+  en: {
+    heading: "Try it — follow one record through the life cycle",
+    stageLabel: "Data life cycle stage",
+  },
+  si: {
+    heading: "කර බලන්න — එක වාර්තාවක් life cycle එක හරහා ගෙනියන්න",
+    stageLabel: "දත්ත ජීවන චක්‍රයේ අදියර",
+  },
+};
 
 const FETCH_EXECUTE_COPY: Record<Locale, FetchExecuteCopy> = {
   en: {
@@ -215,6 +232,10 @@ const NORMALIZATION_COPY: Record<Locale, NormalizationCopy> = {
 
 export function buildLessonInteractives(locale: Locale): LessonInteractiveData {
   return {
+    dataLifeCycle: {
+      stages: lifeCycleStages(locale),
+      copy: DATA_LIFE_CYCLE_COPY[locale],
+    },
     fetchExecute: {
       trace: buildTrace(locale),
       registers: registerMeta(locale),

@@ -34,7 +34,7 @@ import type { Lesson } from "@/lib/types";
 const LESSON_INTERACTIVES: Partial<
   Record<string, (tone: ToneColors, data: LessonInteractiveData) => React.ReactNode>
 > = {
-  "1.1": (tone) => <DataLifeCycleWalkthrough tone={tone} />,
+  "1.1": (tone, data) => <DataLifeCycleWalkthrough tone={tone} {...data.dataLifeCycle} />,
   "2.3": (tone, data) => <FetchExecuteCycle tone={tone} {...data.fetchExecute} />,
   "4.2": (tone, data) => <KarnaughMapLab tone={tone} {...data.karnaugh} />,
   "5.3": (tone, data) => <ProcessSchedulingLab tone={tone} {...data.scheduling} />,

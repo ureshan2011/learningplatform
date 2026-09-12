@@ -78,7 +78,35 @@ export const AL_ICT_UNITS: UnitSeed[] = [
         "\"Distinguish data from information\" is a near-annual short-answer opener",
         "Listing the characteristics of quality/valuable information is a common structured question",
       ],
-      "Data is raw, unprocessed facts with no meaning attached yet — a number, a word, a single reading. Information is data that has been processed and given context, so it becomes useful for making a decision.\n\n25, 30, 28, 32 are just data on their own — four numbers with no story. Plot them against the days of the week and average them, and you get \"this week's temperature has been rising\" — that is information.\n\n- Data is the raw material: one exam score\n- Information is the finished product: a class average, a rank, a trend\n\n## The data life cycle\n\nEvery piece of data moves through three stages before it disappears again:\n\n- Creation — data is generated: a sensor reading, a form submission, a bank transaction\n- Management — data is stored, organised, backed up, and processed into information\n- Removal of obsolete data — data no longer accurate, needed, or legally required to keep is deleted or archived\n\nSkipping that third stage is not free. A system that never deletes old records slows every search down, and can breach data-protection law the moment it keeps something it no longer has a reason to hold.\n\n## What makes information valuable\n\nInformation is only worth acting on if it is:\n\n- Timely — it arrives while it can still be used\n- Accurate — free from errors introduced while collecting or processing it\n- In context — meaningful for the situation it is used in\n- Understandable — presented so the reader can actually interpret it\n- Low in uncertainty — trustworthy enough to base a decision on\n\nExam angle: a scenario question usually tests exactly one of these five properties at a time. Read for which one is missing, and answer that — don't list all five unless the question actually asks for them."),
+      "Data is raw, unprocessed facts with no meaning attached yet — a number, a word, a single reading. Information is data that has been processed and given context, so it becomes useful for making a decision.\n\n25, 30, 28, 32 are just data on their own — four numbers with no story. Plot them against the days of the week and average them, and you get \"this week's temperature has been rising\" — that is information.\n\n- Data is the raw material: one exam score\n- Information is the finished product: a class average, a rank, a trend\n\n## The data life cycle\n\nEvery piece of data moves through three stages before it disappears again:\n\n- Creation — data is generated: a sensor reading, a form submission, a bank transaction\n- Management — data is stored, organised, backed up, and processed into information\n- Removal of obsolete data — data no longer accurate, needed, or legally required to keep is deleted or archived\n\nSkipping that third stage is not free. A system that never deletes old records slows every search down, and can breach data-protection law the moment it keeps something it no longer has a reason to hold.\n\n## What makes information valuable\n\nInformation is only worth acting on if it is:\n\n- Timely — it arrives while it can still be used\n- Accurate — free from errors introduced while collecting or processing it\n- In context — meaningful for the situation it is used in\n- Understandable — presented so the reader can actually interpret it\n- Low in uncertainty — trustworthy enough to base a decision on\n\nExam angle: a scenario question usually tests exactly one of these five properties at a time. Read for which one is missing, and answer that — don't list all five unless the question actually asks for them.",
+      `දත්ත කියන්නේ තාම අර්ථයක් නැති අමු කරුණු — අංකයක්, වචනයක්, එක කියවීමක්. තොරතුරු කියන්නේ ඒ දත්ත සකස් කරලා, සන්දර්භයක් දීලා, තීරණයක් ගන්න පාවිච්චි කරන්න පුළුවන් තත්ත්වයට ආපු දේ.
+
+25, 30, 28, 32 කියන්නේ තනියම දත්ත විතරයි — කතාවක් නැති අංක හතරක්. ඒවා සතියේ දවස් එක්ක යොදලා සාමාන්‍යය ගත්තම "මේ සතියේ උෂ්ණත්වය වැඩි වෙලා" කියලා එනවා — ඒක තොරතුරු.
+
+- දත්ත කියන්නේ අමු ද්‍රව්‍යය: එක විභාග ලකුණක්
+- තොරතුරු කියන්නේ නිමි නිෂ්පාදනය: පන්තියේ සාමාන්‍යය, ශ්‍රේණිගත කිරීමක්, ප්‍රවණතාවක්
+
+## දත්ත ජීවන චක්‍රය
+
+හැම දත්ත කැබැල්ලක්ම නැති වෙලා යන්න කලින් අදියර තුනක් හරහා යනවා:
+
+- නිර්මාණය — දත්ත හැදෙනවා: sensor කියවීමක්, form එකක් submit කිරීමක්, බැංකු ගනුදෙනුවක්
+- කළමනාකරණය — දත්ත ගබඩා කරනවා, පිළිවෙළට දානවා, backup කරනවා, තොරතුරු බවට සකසනවා
+- යල් පැන ගිය දත්ත ඉවත් කිරීම — තව නිවැරදි නැති, ඕන නැති, නීතියෙන් තියාගන්න ඕන නැති දත්ත මකනවා නැත්නම් archive කරනවා
+
+තුන්වෙනි අදියර මඟ හැරියොත් ඒකට වන්දියක් තියෙනවා. පරණ වාර්තා කවදාවත් නොමකන පද්ධතියක හැම සෙවීමක්ම මන්දගාමී වෙනවා, ඒ වගේම තියාගන්න හේතුවක් නැති දෙයක් තියාගත්ත මොහොතේම දත්ත ආරක්ෂණ නීතිය කඩ වෙන්නත් පුළුවන්.
+
+## තොරතුරු වටිනා වෙන්නේ මොනවා තිබ්බාමද
+
+තොරතුරු අනුව ක්‍රියා කරන්න වටින්නේ ඒවා මෙහෙම නම් විතරයි:
+
+- කාලෝචිත — තාම පාවිච්චි කරන්න පුළුවන් වෙලාවට ලැබෙනවා
+- නිරවද්‍ය — එකතු කරනකොට හෝ සකසනකොට ආපු වැරදි නෑ
+- සන්දර්භයට ගැළපෙන — පාවිච්චි කරන තත්ත්වයට අර්ථවත්
+- තේරුම්ගත හැකි — කියවන කෙනාට තේරෙන විදිහට ඉදිරිපත් කරලා
+- අවිනිශ්චිතතාව අඩු — තීරණයක් ගන්න තරමට විශ්වාස කරන්න පුළුවන්
+
+විභාග කෝණය: scenario ප්‍රශ්නයකින් සාමාන්‍යයෙන් එක වෙලාවකට පරීක්ෂා කරන්නේ මේ ගුණාංග පහෙන් එකක් විතරයි. නැති වෙලා තියෙන්නේ මොකද කියලා කියවලා, ඒකට උත්තර දෙන්න — ප්‍රශ්නයෙන් ඇත්තටම ඉල්ලනවා නම් මිසක් පහම ලැයිස්තු ගත කරන්න එපා.`),
     lesson("1.2", 2, "Why technology is needed to create, disseminate and manage information", 6,
       [
         "Explain the drawbacks of manual data processing (errors, duplication, delay, poor sharing)",
