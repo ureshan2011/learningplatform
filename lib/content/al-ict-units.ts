@@ -11,8 +11,19 @@ function lesson(
   examObjectives: string[],
   importantAreas: string[],
   content?: string,
+  /** The same notes in Sinhala. Omitted where they have not been written yet. */
+  contentSi?: string,
 ): Lesson {
-  return { id, order, title, periods, examObjectives, importantAreas, ...(content ? { content } : {}) };
+  return {
+    id,
+    order,
+    title,
+    periods,
+    examObjectives,
+    importantAreas,
+    ...(content ? { content } : {}),
+    ...(contentSi ? { contentSi } : {}),
+  };
 }
 
 function unit(
@@ -67,7 +78,35 @@ export const AL_ICT_UNITS: UnitSeed[] = [
         "\"Distinguish data from information\" is a near-annual short-answer opener",
         "Listing the characteristics of quality/valuable information is a common structured question",
       ],
-      "Data is raw, unprocessed facts with no meaning attached yet — a number, a word, a single reading. Information is data that has been processed and given context, so it becomes useful for making a decision.\n\n25, 30, 28, 32 are just data on their own — four numbers with no story. Plot them against the days of the week and average them, and you get \"this week's temperature has been rising\" — that is information.\n\n- Data is the raw material: one exam score\n- Information is the finished product: a class average, a rank, a trend\n\n## The data life cycle\n\nEvery piece of data moves through three stages before it disappears again:\n\n- Creation — data is generated: a sensor reading, a form submission, a bank transaction\n- Management — data is stored, organised, backed up, and processed into information\n- Removal of obsolete data — data no longer accurate, needed, or legally required to keep is deleted or archived\n\nSkipping that third stage is not free. A system that never deletes old records slows every search down, and can breach data-protection law the moment it keeps something it no longer has a reason to hold.\n\n## What makes information valuable\n\nInformation is only worth acting on if it is:\n\n- Timely — it arrives while it can still be used\n- Accurate — free from errors introduced while collecting or processing it\n- In context — meaningful for the situation it is used in\n- Understandable — presented so the reader can actually interpret it\n- Low in uncertainty — trustworthy enough to base a decision on\n\nExam angle: a scenario question usually tests exactly one of these five properties at a time. Read for which one is missing, and answer that — don't list all five unless the question actually asks for them."),
+      "Data is raw, unprocessed facts with no meaning attached yet — a number, a word, a single reading. Information is data that has been processed and given context, so it becomes useful for making a decision.\n\n25, 30, 28, 32 are just data on their own — four numbers with no story. Plot them against the days of the week and average them, and you get \"this week's temperature has been rising\" — that is information.\n\n- Data is the raw material: one exam score\n- Information is the finished product: a class average, a rank, a trend\n\n## The data life cycle\n\nEvery piece of data moves through three stages before it disappears again:\n\n- Creation — data is generated: a sensor reading, a form submission, a bank transaction\n- Management — data is stored, organised, backed up, and processed into information\n- Removal of obsolete data — data no longer accurate, needed, or legally required to keep is deleted or archived\n\nSkipping that third stage is not free. A system that never deletes old records slows every search down, and can breach data-protection law the moment it keeps something it no longer has a reason to hold.\n\n## What makes information valuable\n\nInformation is only worth acting on if it is:\n\n- Timely — it arrives while it can still be used\n- Accurate — free from errors introduced while collecting or processing it\n- In context — meaningful for the situation it is used in\n- Understandable — presented so the reader can actually interpret it\n- Low in uncertainty — trustworthy enough to base a decision on\n\nExam angle: a scenario question usually tests exactly one of these five properties at a time. Read for which one is missing, and answer that — don't list all five unless the question actually asks for them.",
+      `දත්ත කියන්නේ තාම අර්ථයක් නැති අමු කරුණු — අංකයක්, වචනයක්, එක කියවීමක්. තොරතුරු කියන්නේ ඒ දත්ත සකස් කරලා, සන්දර්භයක් දීලා, තීරණයක් ගන්න පාවිච්චි කරන්න පුළුවන් තත්ත්වයට ආපු දේ.
+
+25, 30, 28, 32 කියන්නේ තනියම දත්ත විතරයි — කතාවක් නැති අංක හතරක්. ඒවා සතියේ දවස් එක්ක යොදලා සාමාන්‍යය ගත්තම "මේ සතියේ උෂ්ණත්වය වැඩි වෙලා" කියලා එනවා — ඒක තොරතුරු.
+
+- දත්ත කියන්නේ අමු ද්‍රව්‍යය: එක විභාග ලකුණක්
+- තොරතුරු කියන්නේ නිමි නිෂ්පාදනය: පන්තියේ සාමාන්‍යය, ශ්‍රේණිගත කිරීමක්, ප්‍රවණතාවක්
+
+## දත්ත ජීවන චක්‍රය
+
+හැම දත්ත කැබැල්ලක්ම නැති වෙලා යන්න කලින් අදියර තුනක් හරහා යනවා:
+
+- නිර්මාණය — දත්ත හැදෙනවා: sensor කියවීමක්, form එකක් submit කිරීමක්, බැංකු ගනුදෙනුවක්
+- කළමනාකරණය — දත්ත ගබඩා කරනවා, පිළිවෙළට දානවා, backup කරනවා, තොරතුරු බවට සකසනවා
+- යල් පැන ගිය දත්ත ඉවත් කිරීම — තව නිවැරදි නැති, ඕන නැති, නීතියෙන් තියාගන්න ඕන නැති දත්ත මකනවා නැත්නම් archive කරනවා
+
+තුන්වෙනි අදියර මඟ හැරියොත් ඒකට වන්දියක් තියෙනවා. පරණ වාර්තා කවදාවත් නොමකන පද්ධතියක හැම සෙවීමක්ම මන්දගාමී වෙනවා, ඒ වගේම තියාගන්න හේතුවක් නැති දෙයක් තියාගත්ත මොහොතේම දත්ත ආරක්ෂණ නීතිය කඩ වෙන්නත් පුළුවන්.
+
+## තොරතුරු වටිනා වෙන්නේ මොනවා තිබ්බාමද
+
+තොරතුරු අනුව ක්‍රියා කරන්න වටින්නේ ඒවා මෙහෙම නම් විතරයි:
+
+- කාලෝචිත — තාම පාවිච්චි කරන්න පුළුවන් වෙලාවට ලැබෙනවා
+- නිරවද්‍ය — එකතු කරනකොට හෝ සකසනකොට ආපු වැරදි නෑ
+- සන්දර්භයට ගැළපෙන — පාවිච්චි කරන තත්ත්වයට අර්ථවත්
+- තේරුම්ගත හැකි — කියවන කෙනාට තේරෙන විදිහට ඉදිරිපත් කරලා
+- අවිනිශ්චිතතාව අඩු — තීරණයක් ගන්න තරමට විශ්වාස කරන්න පුළුවන්
+
+විභාග කෝණය: scenario ප්‍රශ්නයකින් සාමාන්‍යයෙන් එක වෙලාවකට පරීක්ෂා කරන්නේ මේ ගුණාංග පහෙන් එකක් විතරයි. නැති වෙලා තියෙන්නේ මොකද කියලා කියවලා, ඒකට උත්තර දෙන්න — ප්‍රශ්නයෙන් ඇත්තටම ඉල්ලනවා නම් මිසක් පහම ලැයිස්තු ගත කරන්න එපා.`),
     lesson("1.2", 2, "Why technology is needed to create, disseminate and manage information", 6,
       [
         "Explain the drawbacks of manual data processing (errors, duplication, delay, poor sharing)",
@@ -147,7 +186,83 @@ export const AL_ICT_UNITS: UnitSeed[] = [
       [
         "Drawing the Von-Neumann diagram from memory is one of the most frequently repeated essay/structured tasks in the whole syllabus",
         "Listing the fetch-execute cycle steps in order is a common short-answer question",
-      ]),
+      ],
+      `## The stored-program concept
+Von Neumann's idea is that instructions and data live in the same memory, in the same form. Before it, changing a machine's program meant rewiring it. After it, a program is just data you load — which is why one computer can run a spreadsheet and a game.
+
+## The five parts of the architecture
+- Control unit (CU) — fetches and decodes instructions, and raises the control signals that make everything else act
+- Arithmetic and logic unit (ALU) — does the arithmetic and the comparisons
+- Main memory — holds instructions and data together, each in a numbered address
+- Input and output — how data gets in and out
+- Buses — the address bus (one direction, CPU to memory), the data bus (both directions) and the control bus (both directions)
+
+The CU and the ALU together with the registers make up the CPU. A full-mark diagram has all five parts and all three buses, with arrowheads showing that the address bus is one-directional and the other two are not.
+
+## The registers
+- PC, the program counter — the address of the next instruction
+- MAR, the memory address register — the address currently on the address bus
+- MDR, the memory data register — whatever is in transit to or from memory. Some textbooks write MBR; it is the same register
+- CIR, the current instruction register — the instruction being carried out right now
+- ACC, the accumulator — where the ALU keeps the working value
+
+## The cycle itself
+Fetch is the same four steps for every instruction, without exception:
+
+- MAR ← PC
+- MDR ← contents of the address held in MAR
+- PC ← PC + 1
+- CIR ← MDR
+
+Decode is next: the control unit splits the instruction now in CIR into an opcode and an address part, and works out which control signals to raise.
+
+Execute is last, and is the only phase that depends on which instruction it is.
+
+## Two places marks are lost
+The PC is incremented during the fetch, not after the instruction has run. That is exactly why a jump instruction has to overwrite the PC rather than add to it: by the time the jump executes, the PC has already moved on.
+
+MDR carries data in both directions. On a LOAD it brings a value in from memory; on a STORE it carries the accumulator's value out to memory. Describing it as an input-only register is wrong.
+
+## Why multi-core processors are needed
+Everything above runs one instruction at a time, and every instruction and every piece of data has to travel the same path between CPU and memory. That single path is the von Neumann bottleneck: past a point, making the CPU faster stops helping because it is waiting on memory. Several complete cores, each with its own fetch-execute machinery and sharing the memory, is one answer to it.`,
+      `## ගබඩා කළ වැඩසටහන් සංකල්පය
+Von Neumann ගේ අදහස තමයි විධාන සහ දත්ත එකම මතකයේ, එකම ආකාරයෙන් තියෙන එක. ඊට කලින් යන්ත්‍රයක වැඩසටහන වෙනස් කරන්න නම් රැහැන් ආයෙත් සම්බන්ධ කරන්න වුණා. ඊට පස්සේ වැඩසටහනත් load කරන දත්ත විතරයි — ඒකයි එකම පරිගණකයකින් spreadsheet එකකුත් game එකකුත් run කරන්න පුළුවන් වෙන්නේ.
+
+## ගෘහ නිර්මාණයේ ප්‍රධාන කොටස් පහ
+- පාලක ඒකකය (CU) — විධාන ලබාගෙන විකේතනය කරලා, අනිත් හැම දෙයක්ම වැඩ කරවන control signal නිකුත් කරනවා
+- අංක ගණිත හා තාර්කික ඒකකය (ALU) — අංක ගණිතයයි සංසන්දනයයි කරනවා
+- ප්‍රධාන මතකය — විධානයි දත්තයි එකට තියාගන්නවා, හැම එකක්ම අංකිත ලිපිනයක
+- ආදාන සහ ප්‍රතිදාන — දත්ත ඇතුළට සහ පිටතට යන ක්‍රමය
+- බස් — ලිපින බසය (එක දිශාවට, CPU එකේ සිට මතකයට), දත්ත බසය (දෙපැත්තට) සහ පාලක බසය (දෙපැත්තට)
+
+CU එකයි ALU එකයි register එක්ක එකතු වෙලා CPU එක හැදෙනවා. පූර්ණ ලකුණු ගන්න රූප සටහනක කොටස් පහම, බස් තුනම තියෙන්න ඕන, ලිපින බසය එක දිශාවට කියලා පෙන්නන ඊතල හිස් එක්ක.
+
+## Register
+- PC, program counter — ඊළඟ විධානයේ ලිපිනය
+- MAR, memory address register — දැන් ලිපින බසයේ තියෙන ලිපිනය
+- MDR, memory data register — මතකයට යන හෝ මතකයෙන් එන දේ. සමහර පොත්වල මේකට MBR කියනවා
+- CIR, current instruction register — දැන් ක්‍රියාත්මක වෙන විධානය
+- ACC, accumulator — ALU එක වැඩ කරන අගය තියාගන්න තැන
+
+## චක්‍රය
+Fetch කියන්නේ හැම විධානයකටම එකම පියවර හතරයි, කිසි විටෙක වෙනසක් නෑ:
+
+- MAR ← PC
+- MDR ← MAR එකේ තියෙන ලිපිනයේ අන්තර්ගතය
+- PC ← PC + 1
+- CIR ← MDR
+
+ඊට පස්සේ decode: පාලක ඒකකය CIR එකේ තියෙන විධානය opcode එකයි ලිපින කොටසයි කියලා වෙන් කරලා, මොන control signal ද ඕන කියලා තීරණය කරනවා.
+
+අන්තිමට execute: තුන් අදියරෙන් විධානය අනුව වෙනස් වෙන එකම අදියර මේකයි.
+
+## ලකුණු නැති වෙන තැන් දෙකක්
+PC එක වැඩි වෙන්නේ fetch එක අතරතුරදී, විධානය run වෙලා ඉවර වුණාට පස්සේ නෙවෙයි. jump විධානයකට PC එකට එකතු කරනවා වෙනුවට overwrite කරන්නම වෙන්නේ හරියටම ඒ නිසයි — jump එක run වෙනකොට PC එක දැනටමත් ඉස්සරහට ගිහින්.
+
+MDR එකෙන් දත්ත දෙපැත්තටම යනවා. LOAD එකකදී මතකයෙන් අගයක් ඇතුළට ගේනවා; STORE එකකදී accumulator එකේ අගය පිටතට මතකයට ගෙනියනවා. ඒක ආදාන register එකක් විතරයි කියන එක වැරදියි.
+
+## Multi-core processor ඕන වෙන්නේ ඇයි
+උඩ කියපු හැම දෙයක්ම එක වෙලාවකට එක විධානයක් run කරනවා, හැම විධානයක්ම හැම දත්තයක්ම CPU එකයි මතකයයි අතර එකම මාර්ගයෙන් යන්න ඕන. ඒ එකම මාර්ගය තමයි von Neumann bottleneck එක: එක තැනකට පස්සේ CPU එක වේගවත් කරලා වැඩක් නෑ, මොකද ඒක මතකය එනකම් බලාගෙන ඉන්නවා. හැම එකකටම තමන්ගේම fetch-execute යාන්ත්‍රණය තියෙන, මතකය බෙදාගන්න core කීපයක් තියෙන එක ඒකට තියෙන එක උත්තරයක්.`),
     lesson("2.4", 4, "Memory hierarchy and PC memory system", 6,
       [
         "Explain the need for a memory hierarchy and its comparison criteria (access time, capacity, cost)",
@@ -209,7 +324,85 @@ export const AL_ICT_UNITS: UnitSeed[] = [
       [
         "Karnaugh map simplification (up to 3-4 variables) is one of the highest-value recurring essay questions in this unit — practise until it is routine",
         "De Morgan's law application is a frequent MCQ/short-answer trap question",
-      ]),
+      ],
+      `## Why simplify at all
+Two circuits with the same truth table behave identically, so the smaller one always wins. Every gate removed is a gate that costs money, draws power, takes board space and adds propagation delay. Simplification is not tidying up; it is the design work.
+
+## The laws worth knowing by heart
+- Identity: A + 0 = A and A · 1 = A
+- Null: A + 1 = 1 and A · 0 = 0
+- Idempotent: A + A = A and A · A = A
+- Complement: A + A' = 1 and A · A' = 0
+- Double negation: (A')' = A
+- Absorption: A + AB = A and A(A + B) = A
+- Distributive: A(B + C) = AB + AC, and also A + BC = (A + B)(A + C)
+- De Morgan: (A · B)' = A' + B' and (A + B)' = A' · B'
+
+Two of those catch people out. The second distributive law has no equivalent in ordinary algebra, so it does not feel right and gets skipped. And De Morgan is the one that appears most often, because it is how any expression is converted to NAND-only or NOR-only form — which is asked because real circuits are built from universal gates.
+
+## Sum of products and product of sums
+From a truth table, SOP is built from the rows where the output is 1: one product term per row, each variable negated where it is 0, all added together. POS is built from the rows where the output is 0: one sum term per row, each variable negated where it is 1, all multiplied together. Both describe the same function.
+
+## Reading a Karnaugh map
+Write the rows and columns in Gray code — 00, 01, 11, 10 — never in counting order. The whole method depends on it, because neighbouring cells must differ in exactly one variable: 01 to 11 changes one bit, but 01 to 10 changes two.
+
+Then group the 1s by these rules:
+
+- Groups must be rectangular and of size 1, 2, 4, 8 or 16. Never 3, never 6
+- Bigger is better: each doubling of a group removes one more variable from its term
+- Groups may overlap, and usually should
+- The edges wrap around. The left column is adjacent to the right, the top row to the bottom, and the four corners form one group of four
+- Every 1 must be inside at least one group
+- Use as few groups as you can
+
+For each group, write down the variables that stay the same right across it, negated where they are 0, and drop the variables that change. Add the terms together.
+
+## Don't-care conditions
+An X marks a combination that cannot occur or whose output does not matter — an invalid BCD code, for instance. Treat each X as a 1 wherever that makes a group bigger, and as a 0 wherever it does not. You are never obliged to cover an X.
+
+## The trap in the exam
+Stopping at the first set of groups that happens to cover every 1. The question asks for the simplest expression, not for a correct one, and a correct-but-larger answer loses marks.
+
+Find the forced groups first. If a cell can be reached by only one possible group, that group has to be in the answer. Put those down, and the choices left over shrink sharply.`,
+      `## සරල කරන්නේ ඇයි
+එකම සත්‍යතා වගුව තියෙන පරිපථ දෙකක් එකම විදිහට වැඩ කරනවා, ඒ නිසා පොඩි එක හැම වෙලාවෙම දිනනවා. අයින් කරන හැම ද්වාරයක්ම මුදල්, විදුලිය, board එකේ ඉඩ සහ ප්‍රමාදය ඉතිරි කරනවා. සරල කිරීම කියන්නේ පිළිවෙළට තියන එක නෙවෙයි, ඒක තමයි නිර්මාණ කාර්යය.
+
+## හොඳට මතක තියාගන්න ඕන නීති
+- Identity: A + 0 = A සහ A · 1 = A
+- Null: A + 1 = 1 සහ A · 0 = 0
+- Idempotent: A + A = A සහ A · A = A
+- Complement: A + A' = 1 සහ A · A' = 0
+- ද්විත්ව නිශේධනය: (A')' = A
+- Absorption: A + AB = A සහ A(A + B) = A
+- Distributive: A(B + C) = AB + AC, ඒ වගේම A + BC = (A + B)(A + C)
+- De Morgan: (A · B)' = A' + B' සහ (A + B)' = A' · B'
+
+ඒ අතරින් දෙකක් ගොඩක් අය මඟ හරිනවා. දෙවෙනි distributive නීතියට සාමාන්‍ය වීජ ගණිතයේ සමානයක් නෑ, ඒ නිසා ඒක හරි වගේ දැනෙන්නේ නෑ. De Morgan තමයි වැඩිපුරම එන්නේ, මොකද ඕනම ප්‍රකාශනයක් NAND විතරක් හෝ NOR විතරක් වෙත හරවන්නේ ඒකෙන් — ඇත්ත පරිපථ හැදෙන්නේ universal ද්වාරවලින් නිසා ඒක අහනවා.
+
+## Sum of products සහ product of sums
+සත්‍යතා වගුවකින්, ප්‍රතිදානය 1 වෙන පේළිවලින් SOP හැදෙනවා: පේළියකට එක ගුණිත පදයක්, 0 තියෙන තැන් නිශේධනය කරලා, ඔක්කොම එකතු කරලා. ප්‍රතිදානය 0 වෙන පේළිවලින් POS හැදෙනවා: පේළියකට එක ඓක්‍ය පදයක්, 1 තියෙන තැන් නිශේධනය කරලා, ඔක්කොම ගුණ කරලා. දෙකෙන්ම විස්තර වෙන්නේ එකම ශ්‍රිතයයි.
+
+## Karnaugh සිතියමක් කියවන හැටි
+පේළියි තීරුයි Gray code එකෙන් ලියන්න — 00, 01, 11, 10 — ගණන් කරන පිළිවෙළට කවදාවත් නෙවෙයි. මුළු ක්‍රමයම රඳා පවතින්නේ ඒක උඩයි, මොකද යාබද කොටු දෙකක් වෙනස් වෙන්න ඕන හරියටම එක විචල්‍යයකින්: 01 සිට 11 දක්වා වෙනස් වෙන්නේ එක bit එකක්, හැබැයි 01 සිට 10 දක්වා bit දෙකක්.
+
+ඊට පස්සේ 1 සමූහගත කරන්න:
+
+- සමූහ සෘජුකෝණාස්‍රාකාර විය යුතුයි, ප්‍රමාණය 1, 2, 4, 8 හෝ 16. කවදාවත් 3 නෙවෙයි, 6 නෙවෙයි
+- ලොකු නම් හොඳයි: සමූහයක් දෙගුණ වුණාම පදයෙන් තව විචල්‍යයක් අයින් වෙනවා
+- සමූහ එකිනෙක උඩ තියෙන්න පුළුවන්, බොහෝ විට තියෙන්නත් ඕන
+- දාර එකතු වෙනවා. වම් තීරුව දකුණු තීරුවට යාබදයි, උඩ පේළිය යට පේළියට යාබදයි, කොන් හතර එකම හතරේ සමූහයක්
+- හැම 1 එකක්ම අඩුම තරමේ එක සමූහයක හරි තියෙන්න ඕන
+- පුළුවන් තරම් සමූහ ගණන අඩු කරන්න
+
+හැම සමූහයකටම, ඒ සමූහය පුරාම වෙනස් නොවී තියෙන විචල්‍ය ලියන්න, 0 තියෙන තැන් නිශේධනය කරලා, වෙනස් වෙන විචල්‍ය අතහරින්න. පද ඔක්කොම එකතු කරන්න.
+
+## Don't care තත්ත්ව
+X එකකින් කියවෙන්නේ ඒ සංයෝගය සිද්ධ වෙන්නේ නෑ, නැත්නම් ඒකේ ප්‍රතිදානය වැදගත් නෑ කියලා — උදාහරණයක් විදිහට වලංගු නොවන BCD කේතයක්. සමූහයක් ලොකු වෙනවා නම් X එක 1 විදිහට ගන්න, නැත්නම් 0 විදිහට. X එකක් ආවරණය කරන්නම ඕන කියලා නීතියක් නෑ.
+
+## විභාගයේ උගුල
+හැම 1 එකක්ම ආවරණය වෙන පළමු සමූහ කට්ටලය ලැබුණු ගමන් නවතින එක. ප්‍රශ්නයෙන් අහන්නේ සරලම ප්‍රකාශනය මිසක් හරි එකක් නෙවෙයි, ඒ නිසා හරි වුණාට ලොකු උත්තරයකට ලකුණු නැති වෙනවා.
+
+මුලින්ම අනිවාර්ය සමූහ හොයන්න. එක සමූහයකට විතරක් ළඟා වෙන්න පුළුවන් කොටුවක් තියෙනවා නම්, ඒ සමූහය උත්තරයේ තියෙන්නම ඕන. ඒවා මුලින්ම දාගත්තම ඉතුරු තෝරගැනීම් ගොඩක් අඩු වෙනවා.`),
     lesson("4.3", 3, "Designing simple digital circuits", 6,
       [
         "Derive a logic expression and truth table from a stated real-world requirement, up to three inputs",
@@ -257,7 +450,101 @@ export const AL_ICT_UNITS: UnitSeed[] = [
       [
         "The seven-state process transition diagram is one of the most consistently examined diagrams in this unit",
         "Turnaround, response, throughput and waiting time definitions form a frequent short-answer set",
-      ]),
+      ],
+      `## A process is not a program
+A program is a file sitting on disk. A process is that program in execution — the code, its data, and a record of how far it has got. Open the same program twice and you have one program and two processes.
+
+The operating system tracks each one in a process control block (PCB), which holds the process id, its current state, the saved contents of the PC and the other registers, its memory limits, its open files and its accounting information. A context switch is the OS saving one PCB and loading another. It is not free, and that cost is the whole argument against a very small time quantum.
+
+## The seven states
+- New — being created, PCB being set up
+- Ready — in main memory, has everything it needs except the CPU
+- Running — actually executing. On a single core, exactly one process
+- Blocked, also called waiting — waiting for an event such as an I/O completion
+- Ready/suspend — runnable, but swapped out to disk to free memory
+- Blocked/suspend — swapped out to disk and still waiting for its event
+- Exit — finished, resources released
+
+The five-state model leaves out the two suspended states. This syllabus asks for seven, so include them.
+
+## The transitions, which is what gets asked
+- Ready to running is dispatch, done by the short-term scheduler
+- Running to ready is a time-out when the quantum expires, or pre-emption by a higher-priority process
+- Running to blocked is the process requesting I/O
+- Blocked to ready is the awaited event completing
+- Ready to ready/suspend, and blocked to blocked/suspend, is the medium-term scheduler swapping a process out to disk
+- Blocked/suspend to ready/suspend is the event completing while the process is still swapped out
+- Running to exit is the process finishing
+
+Blocked never goes straight to running. When its event completes it joins the ready queue and waits its turn like everything else.
+
+## The three schedulers
+- Long-term — decides which jobs are admitted into the system at all, controlling the degree of multiprogramming
+- Medium-term — swaps processes out to disk and back, which is what creates the two suspended states
+- Short-term — decides which ready process runs next. Runs most often, so it must be fast
+
+## Scheduling algorithms
+- First come, first served — runs in arrival order, each to completion. Simple and nobody starves, but one long process at the front delays everything behind it. That is the convoy effect
+- Shortest job first — picks the shortest of the processes that have arrived. Gives the lowest possible average waiting time, but the burst time has to be known in advance, and a steady supply of short jobs can starve a long one indefinitely
+- Round robin — each process gets at most one quantum, then goes to the back of the queue. Fair and responsive, which is what makes time sharing work. Too small a quantum and the CPU spends its time context switching; too large and it degenerates into first come, first served
+- Priority — highest priority runs first. Starves low-priority processes unless their priority rises the longer they wait, which is called ageing
+
+## Doing the calculation
+- Turnaround time = completion time − arrival time
+- Waiting time = turnaround time − burst time
+- Response time = first time on the CPU − arrival time
+- Average = the total divided by the number of processes
+
+Draw the Gantt chart first and label every boundary time, because every number in the table is read off it. An error in the chart is an error in the entire answer.
+
+For round robin there is one rule that decides whether your chart matches the marking scheme: when a quantum expires, any process that arrived during that quantum joins the ready queue before the process that was just pre-empted rejoins it.`,
+      `## ක්‍රියාවලියක් කියන්නේ වැඩසටහනක් නෙවෙයි
+වැඩසටහනක් කියන්නේ disk එකේ තියෙන ගොනුවක්. ක්‍රියාවලියක් කියන්නේ ඒ වැඩසටහන ක්‍රියාත්මක වෙන එක — කේතය, ඒකේ දත්ත, සහ කොහෙද ඉන්නේ කියන සටහන. එකම වැඩසටහන දෙපාරක් open කළොත් වැඩසටහන එකයි, ක්‍රියාවලි දෙකයි.
+
+මෙහෙයුම් පද්ධතිය හැම එකක්ම process control block (PCB) එකකින් හොයාගන්නවා. ඒකේ ක්‍රියාවලියේ අංකය, දැන් තියෙන තත්ත්වය, PC එකේ සහ අනිත් register වල save කරපු අගයන්, මතක සීමා, විවෘත ගොනු සහ ගිණුම් තොරතුරු තියෙනවා. Context switch එකක් කියන්නේ OS එක එක PCB එකක් save කරලා තව එකක් load කරන එක. ඒක නොමිලේ නෙවෙයි, ඒ වියදම තමයි ගොඩක් කුඩා time quantum එකකට විරුද්ධ තර්කය.
+
+## තත්ත්ව හත
+- New — හැදෙමින්, PCB එක සකස් වෙමින්
+- Ready — ප්‍රධාන මතකයේ, CPU එක හැර අනිත් හැම දෙයක්ම තියෙනවා
+- Running — ඇත්තටම ක්‍රියාත්මක වෙනවා. Single core එකක එකම එකක් විතරයි
+- Blocked, නැත්නම් waiting — I/O එකක් වගේ සිදුවීමක් එනකම් බලාගෙන
+- Ready/suspend — run කරන්න පුළුවන්, හැබැයි මතකය නිදහස් කරන්න disk එකට swap කරලා
+- Blocked/suspend — disk එකට swap කරලා, තාමත් සිදුවීමක් එනකම් බලාගෙන
+- Exit — ඉවරයි, සම්පත් නිදහස් කරලා
+
+තත්ත්ව පහේ ආකෘතියේ suspend තත්ත්ව දෙක නෑ. මේ විෂය නිර්දේශයෙන් අහන්නේ හත, ඒ නිසා ඒ දෙකත් ලියන්න.
+
+## සංක්‍රමණ — අහන්නේ මේවායි
+- Ready සිට running දක්වා යන්නේ dispatch එකෙන්, short-term scheduler එකෙන්
+- Running සිට ready දක්වා යන්නේ quantum එක ඉවර වුණාම (time-out), නැත්නම් වැඩි ප්‍රමුඛතාවක් තියෙන එකකින් pre-empt වුණාම
+- Running සිට blocked දක්වා යන්නේ ක්‍රියාවලිය I/O එකක් ඉල්ලුවම
+- Blocked සිට ready දක්වා යන්නේ බලාගෙන හිටපු සිදුවීම ඉවර වුණාම
+- Ready සිට ready/suspend දක්වා, සහ blocked සිට blocked/suspend දක්වා යන්නේ medium-term scheduler එක disk එකට swap කරාම
+- Blocked/suspend සිට ready/suspend දක්වා යන්නේ පිටත ඉද්දීම සිදුවීම ඉවර වුණාම
+- Running සිට exit දක්වා යන්නේ ක්‍රියාවලිය ඉවර වුණාම
+
+Blocked එකේ ඉඳන් කෙලින්ම running එකට කවදාවත් යන්නේ නෑ. සිදුවීම ඉවර වුණාම ready පෝලිමට ඇවිත් අනිත් අය වගේම වාරය එනකම් ඉන්නවා.
+
+## Scheduler තුන
+- Long-term — කොයි වැඩ පද්ධතියට ඇතුළු කරනවද කියලා තීරණය කරනවා, multiprogramming මට්ටම පාලනය කරනවා
+- Medium-term — ක්‍රියාවලි disk එකට swap කරලා ආපහු ගේනවා. Suspend තත්ත්ව දෙක හැදෙන්නේ ඒකෙන්
+- Short-term — ඊළඟට run වෙන්නේ මොන ready ක්‍රියාවලියද කියලා තීරණය කරනවා. වැඩිපුරම run වෙන නිසා වේගවත් වෙන්න ඕන
+
+## Scheduling ඇල්ගොරිතම
+- First come, first served — පැමිණි පිළිවෙළට, එකක් ඉවර වෙනකම් ඊළඟ එක නෑ. සරලයි, starvation නෑ, හැබැයි ඉස්සරහින් තියෙන දිග එකක් නිසා පිටිපස්සේ ඔක්කොම බලාගෙන ඉන්නවා — convoy effect
+- Shortest job first — ඇවිත් තියෙන ඒවායින් කෙටිම එක. සාමාන්‍ය රැඳී සිටීමේ කාලය අඩුම වෙනවා, හැබැයි burst කාලය කලින් දැනගෙන ඉන්න ඕන, දිග එකකට කවදාවත් වාරය නොලැබී යන්නත් පුළුවන්
+- Round robin — හැම එකකටම එක quantum එකක්, ඊට පස්සේ පෝලිමේ අගට. සාධාරණයි, ඉක්මනින් ප්‍රතිචාර දෙනවා, time sharing එකේ පදනම ඒකයි. Quantum එක ගොඩක් කුඩා නම් CPU එක context switch කරගෙන ඉන්නවා; ගොඩක් ලොකු නම් ඒක FCFS එකක් වෙනවා
+- Priority — වැඩිම ප්‍රමුඛතාවය මුලින්. බලාගෙන ඉන්න තරමට ප්‍රමුඛතාවය වැඩි නොකළොත් (ageing) අඩු ප්‍රමුඛතා ක්‍රියාවලි starve වෙනවා
+
+## ගණනය කරන හැටි
+- හැරවුම් කාලය = සම්පූර්ණ වන කාලය − පැමිණීමේ කාලය
+- රැඳී සිටීමේ කාලය = හැරවුම් කාලය − burst කාලය
+- ප්‍රතිචාර කාලය = පළමු වතාවට CPU එකට ආ වෙලාව − පැමිණීමේ කාලය
+- සාමාන්‍යය = එකතුව ÷ ක්‍රියාවලි ගණන
+
+මුලින්ම Gantt ප්‍රස්තාරය අඳින්න, හැම මායිම් වෙලාවක්ම ලියන්න. වගුවේ හැම අංකයක්ම කියවන්නේ ඒකෙන්, ඒ නිසා ප්‍රස්තාරයේ වැරැද්දක් කියන්නේ මුළු උත්තරයේම වැරැද්දක්.
+
+Round robin එකට ඔබේ ප්‍රස්තාරය marking scheme එකට ගැළපෙනවද කියලා තීරණය කරන නීතිය එකයි: quantum එකක් ඉවර වුණාම, ඒ quantum එක ඇතුළේ ආපු ඕනම ක්‍රියාවලියක් ready පෝලිමට එකතු වෙන්නේ, pre-empt වුණු ක්‍රියාවලිය ආපහු පෝලිමට එකතු වෙන්න කලින්.`),
     lesson("5.4", 4, "Memory and I/O device management", 6,
       [
         "Explain the role of the Memory Management Unit and virtual memory (paging)",
@@ -461,7 +748,93 @@ export const AL_ICT_UNITS: UnitSeed[] = [
         "Define full, partial and transitive functional dependency",
         "Normalize a given unnormalized table through 1NF, 2NF and 3NF, showing the working at each step",
       ],
-      ["Normalizing a given table to 3NF with all intermediate steps shown is one of the most consistently examined essay questions in the Database unit"]),
+      ["Normalizing a given table to 3NF with all intermediate steps shown is one of the most consistently examined essay questions in the Database unit"],
+      `## What normalisation is for
+Storing the same fact in more than one place is what causes the three anomalies:
+
+- Insert anomaly — a fact cannot be recorded because an unrelated one is missing. A new subject nobody has sat yet has no row to live in
+- Update anomaly — a fact stored in twenty rows has to be corrected in twenty rows, and one row missed leaves the database contradicting itself
+- Delete anomaly — removing one fact silently removes another. Deleting the last student in a class deletes the class
+
+Normalisation splits tables until every fact is stored exactly once, which removes all three.
+
+## Functional dependency
+Write X → Y to mean "X determines Y": knowing X fixes exactly one value of Y. StudentID → StudentName, because one student id gives one name.
+
+- Full dependency — Y depends on the whole of a composite key X
+- Partial dependency — Y depends on only part of a composite key
+- Transitive dependency — the key determines X, and X in turn determines Y, so Y depends on the key only indirectly
+
+Those three names are the answer to "state the dependency you removed", so use them.
+
+## First normal form
+Every cell holds a single value, and there are no repeating groups.
+
+Flatten the repeating group out into extra rows. The key normally has to grow into a composite key at this point, because the original key no longer identifies one row on its own.
+
+## Second normal form
+In 1NF, and every non-key column depends on the whole primary key rather than part of it.
+
+This can only bite when the key is composite. Look for a column fixed by half the key — a student's name fixed by the student id alone, when the key is student id plus subject code. Move that column, together with the part of the key it depends on, into a table of its own.
+
+A 1NF table whose primary key is a single column is already in 2NF. Say so if the question gives you one; it is a mark.
+
+## Third normal form
+In 2NF, and no non-key column depends on another non-key column.
+
+Look for a chain. The key determines ClassID, and ClassID determines ClassName, so ClassName depends on the key only through ClassID. Move that pair into their own table and leave ClassID behind as a foreign key.
+
+## Writing the answer
+The marks are spread across the intermediate stages, not concentrated on the final set of tables. A student who writes only the finished 3NF tables scores a fraction of the question. At each step write:
+
+- the tables at that normal form, with primary keys underlined and foreign keys marked
+- the dependency you removed, as an arrow — StudentID → StudentName
+- the anomaly that dependency was causing
+
+For A/L ICT the question stops at 3NF. BCNF and the higher normal forms are not examined.`,
+      `## සාමාන්‍යකරණය කරන්නේ මොකටද
+එකම කාරණය තැන් කීපයක ගබඩා කිරීම තමයි විෂමතා තුනට හේතුව:
+
+- ඇතුළත් කිරීමේ විෂමතාව — සම්බන්ධයක් නැති තව කාරණයක් නැති නිසා එක කාරණයක් සටහන් කරන්න බැරි වෙනවා. තාම කවුරුවත් නොකරන අලුත් විෂයයකට පේළියක් නෑ
+- යාවත්කාලීන කිරීමේ විෂමතාව — පේළි විස්සක තියෙන කාරණයක් හදන්න නම් පේළි විස්සම හදන්න ඕන, එකක් මඟ හැරුණොත් දත්ත ගබඩාව තමන් එක්කම ගැටෙනවා
+- මකා දැමීමේ විෂමතාව — එක කාරණයක් අයින් කරනකොට තව එකක් නිහඬව මැකෙනවා. පන්තියේ ඉතුරු අන්තිම ශිෂ්‍යයා මැකුවම පන්තියත් මැකෙනවා
+
+සාමාන්‍යකරණයෙන් වගු බෙදලා හැම කාරණයක්ම එකම තැනක විතරක් තියෙන තත්ත්වයට ගේනවා, එතකොට විෂමතා තුනම නැති වෙනවා.
+
+## ශ්‍රිතමය පරායත්තතාව
+X → Y කියලා ලියන්නේ "X එකෙන් Y තීරණය වෙනවා" කියන එක: X දැනගත්තම Y ගේ එකම අගයක් හරියටම හසු වෙනවා. StudentID → StudentName, මොකද එක student id එකකින් එක නමක් ලැබෙනවා.
+
+- පූර්ණ පරායත්තතාව — Y රඳා පවතින්නේ සංයුක්ත යතුර X සම්පූර්ණයෙන්ම උඩ
+- අර්ධ පරායත්තතාව — Y රඳා පවතින්නේ සංයුක්ත යතුරෙන් කොටසක් උඩ විතරයි
+- සංක්‍රාන්ති පරායත්තතාව — යතුරෙන් X තීරණය වෙනවා, X එකෙන් Y තීරණය වෙනවා, ඒ නිසා Y යතුර උඩ රඳා පවතින්නේ වක්‍රාකාරවයි
+
+"ඔබ අයින් කරපු පරායත්තතාව නම් කරන්න" කියලා ආවම ලියන්නේ මේ නම් තුනෙන් එකක්, ඒ නිසා ඒවා පාවිච්චි කරන්න.
+
+## පළමු සාමාන්‍ය ස්වරූපය (1NF)
+හැම කොටුවකම එක අගයයි, පුනරාවර්තී සමූහ නෑ.
+
+පුනරාවර්තී සමූහය අමතර පේළිවලට වෙන් කරන්න. යතුර සාමාන්‍යයෙන් සංයුක්ත යතුරක් දක්වා ලොකු වෙන්න ඕන, මොකද පරණ යතුරෙන් තනියම එක පේළියක් හඳුනගන්න දැන් බෑ.
+
+## දෙවන සාමාන්‍ය ස්වරූපය (2NF)
+1NF එකේ තියෙනවා, යතුර නොවන හැම තීරුවක්ම සම්පූර්ණ ප්‍රාථමික යතුර උඩ රඳා පවතිනවා — කොටසක් උඩ විතරක් නෙවෙයි.
+
+මේක ප්‍රශ්නයක් වෙන්නේ යතුර සංයුක්ත වෙලා තියෙනකොට විතරයි. යතුරෙන් බාගයක් උඩ තීරණය වෙන තීරුවක් හොයන්න — යතුර student id + subject code වෙලා තියෙද්දී, ශිෂ්‍යයාගේ නම තීරණය වෙන්නේ student id එකෙන් විතරයි. ඒ තීරුව, ඒක රඳා පවතින යතුරේ කොටසත් එක්ක, වෙනම වගුවකට ගෙනියන්න.
+
+1NF එකේ තියෙන, ප්‍රාථමික යතුර තනි තීරුවක් වෙන වගුවක් දැනටමත් 2NF එකේ. ප්‍රශ්නයෙන් එහෙම එකක් දුන්නොත් ඒක ලියන්න — ඒක ලකුණක්.
+
+## තෙවන සාමාන්‍ය ස්වරූපය (3NF)
+2NF එකේ තියෙනවා, යතුර නොවන තීරුවක් තව යතුර නොවන තීරුවක් උඩ රඳා පවතින්නේ නෑ.
+
+දාමයක් හොයන්න. යතුරෙන් ClassID තීරණය වෙනවා, ClassID එකෙන් ClassName තීරණය වෙනවා, ඒ නිසා ClassName යතුර උඩ රඳා පවතින්නේ ClassID හරහා විතරයි. ඒ දෙක වෙනම වගුවකට ගෙනිහින්, ClassID විදේශීය යතුරක් විදිහට තියලා යන්න.
+
+## උත්තරය ලියන හැටි
+ලකුණු බෙදිලා තියෙන්නේ අතරමැදි අදියරවලට, අන්තිම වගු කට්ටලයට විතරක් නෙවෙයි. අන්තිම 3NF වගු විතරක් ලියන ශිෂ්‍යයෙකුට ලැබෙන්නේ ප්‍රශ්නයේ කොටසක් විතරයි. හැම පියවරකටම ලියන්න:
+
+- ඒ සාමාන්‍ය ස්වරූපයේ වගු, ප්‍රාථමික යතුරු යටින් ඉරි ඇඳලා, විදේශීය යතුරු සලකුණු කරලා
+- ඔබ අයින් කරපු පරායත්තතාව, ඊතලයකින් — StudentID → StudentName
+- ඒ පරායත්තතාවෙන් හැදුණු විෂමතාව
+
+A/L ICT එකට ප්‍රශ්නය නවතින්නේ 3NF එකෙන්. BCNF සහ ඊට ඉහළ ස්වරූප විභාගයට නෑ.`),
   ]),
 
   unit(9, 9, 13, "Programming", "Develops algorithms to solve problems and uses python programming language to encode algorithms", [

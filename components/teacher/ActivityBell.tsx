@@ -3,12 +3,25 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Icon } from "@/components/ui/Icon";
-import type { TeacherActivity } from "@/lib/payments/activity";
+import { Icon, type IconName } from "@/components/ui/Icon";
+import type { ActivityKind, TeacherActivity } from "@/lib/payments/activity";
 import { fetchWithSession } from "@/lib/auth/session-client";
 
 /** Slow enough to be free, fast enough that a payment shows up while you watch. */
 const POLL_MS = 20_000;
+
+const ACTIVITY_ICON: Record<ActivityKind, IconName> = {
+  payment_paid: "payments",
+  payment_chargeback: "priority_high",
+  slip_uploaded: "receipt_long",
+};
+
+/** A 6px-dot's worth of colour: money in is green, money reversed is red. */
+const ACTIVITY_TONE: Record<ActivityKind, string> = {
+  payment_paid: "text-(--color-awaken-success)",
+  payment_chargeback: "text-(--color-awaken-danger)",
+  slip_uploaded: "text-(--color-awaken-warn)",
+};
 
 /**
  * Live notice of money arriving, while the console is open.
@@ -107,8 +120,8 @@ export function ActivityBell() {
                   >
                     <span className="flex items-start gap-2">
                       <Icon
-                        name={item.kind === "payment_paid" ? "payments" : "receipt_long"}
-                        className={`!text-base ${item.kind === "payment_paid" ? "text-(--color-awaken-success)" : "text-(--color-awaken-warn)"}`}
+                        name={ACTIVITY_ICON[item.kind] ?? "receipt_long"}
+                        className={`!text-base ${ACTIVITY_TONE[item.kind] ?? "text-(--color-awaken-warn)"}`}
                       />
                       <span className="min-w-0">
                         <span className="block text-sm font-semibold">{item.title}</span>

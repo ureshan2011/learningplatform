@@ -71,6 +71,13 @@ export async function requireAccess(uid: string, subjectId: string): Promise<Enr
  * Extension stacks from the later of "now" and the existing period end, so a
  * student who pays early is not silently robbed of the days they already
  * bought.
+ *
+ * One payment extends the period once, however many times it is presented.
+ * The webhook grants access before it marks the payment paid — it has to, or a
+ * failure in between would leave a student charged and locked out — so a crash
+ * in that gap used to mean PayHere's retry found the payment still pending and
+ * bought a second month for free. The stored `lastPaymentId` closes that
+ * without depending on the order of the two writes.
  */
 export async function grantAccess(params: {
   uid: string;
@@ -86,6 +93,11 @@ export async function grantAccess(params: {
 
   const snap = await ref.get();
   const existing = snap.exists ? (snap.data() as Enrollment) : undefined;
+
+  if (existing && params.paymentId && existing.lastPaymentId === params.paymentId) {
+    return existing;
+  }
+
   const base = existing && existing.currentPeriodEnd > now ? existing.currentPeriodEnd : now;
 
   const enrollment: Enrollment = {

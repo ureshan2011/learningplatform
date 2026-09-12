@@ -208,3 +208,22 @@ export function buildOrderId(uid: string, subjectId: string, at: number = Date.n
   const suffix = Math.random().toString(36).slice(2, 8);
   return `${uid.slice(0, 8)}-${subjectId}-${at.toString(36)}${suffix}`;
 }
+
+/**
+ * An order id reduced to something safe to hand to `.doc()`.
+ *
+ * The notify URL is open to the whole internet by necessity, and the order id
+ * a caller sends is used as a Firestore document id on two collections. A
+ * slash in that value is not a character there, it is a path separator: an id
+ * like `a/b/c` writes into a sub-location under the event log that the
+ * console's list never reads, which is how someone probing the endpoint keeps
+ * their own attempts out of the evidence. An even number of segments throws
+ * instead, turning a junk POST into a 500.
+ *
+ * Nothing legitimate is altered. Every id `buildOrderId` issues is built from
+ * a Firebase uid, a subject id (`^[a-z0-9-]+$`) and base-36 digits, all of
+ * which are already inside this character set.
+ */
+export function safeOrderId(value: string): string {
+  return value.replace(/[^A-Za-z0-9_-]/g, "").slice(0, 120);
+}

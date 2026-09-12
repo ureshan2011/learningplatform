@@ -34,7 +34,8 @@ export default async function PrivacyPage() {
         <ul className="list-disc space-y-1 pl-5">
           <li>
             <strong>To create an account:</strong> mobile number, name, and optionally school,
-            district and preferred medium.
+            district and preferred medium — plus the date you first signed in and which version of
+            these policies was shown to you at the time.
           </li>
           <li>
             <strong>To keep the class paid-for:</strong> a coarse device fingerprint (a hash, never
@@ -77,6 +78,11 @@ export default async function PrivacyPage() {
       <Clause heading="Who else processes it">
         <ul className="list-disc space-y-1 pl-5">
           <li><strong>Google Firebase</strong> — sign-in, database, file storage and hosting.</li>
+          <li>
+            <strong>Google Analytics</strong> — anonymous counts of which pages are visited and
+            which buttons are pressed, so we can see what students actually use. It is not linked
+            to your name or your number, and it is not used for advertising.
+          </li>
           <li><strong>PayHere</strong> — card payments (a licensed Sri Lankan payment gateway).</li>
           <li><strong>Zoom</strong> — the live class itself.</li>
         </ul>
@@ -128,9 +134,25 @@ export default async function PrivacyPage() {
       </Clause>
 
       <Clause heading="Cookies">
+        <p>Four small cookies, all of them ours and all of them doing a job you can see:</p>
+        <ul className="list-disc space-y-1 pl-5">
+          <li>
+            <strong>The session</strong> — keeps you signed in for up to 14 days, and renews itself
+            while you keep using the site so you are not asked for an SMS code again.
+          </li>
+          <li>
+            <strong>The device marker</strong> — tells this browser apart from your other ones, so
+            freeing up a device slot signs out the right one.
+          </li>
+          <li><strong>Your language</strong> — English or Sinhala, remembered between visits.</li>
+          <li>
+            <strong>A signed-in marker</strong> — lets a page show &quot;Back to dashboard&quot;
+            instead of &quot;Sign in&quot; without waiting. It proves nothing on its own.
+          </li>
+        </ul>
         <p>
-          One cookie: the session that keeps you signed in for five days. No advertising or
-          third-party tracking cookies are set by this site.
+          We set no advertising cookies and sell nothing to advertisers. Google Analytics, listed
+          above, also stores an anonymous identifier in your browser to count visits.
         </p>
       </Clause>
     </PolicyPage>

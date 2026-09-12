@@ -116,8 +116,12 @@ export function SandboxTestPanel({
             <option value="0">Pending</option>
             <option value="-1">Cancelled by student</option>
             <option value="-2">Failed</option>
-            <option value="-3">Chargeback</option>
+            <option value="-3">Chargeback — ends this student&apos;s access</option>
           </select>
+          <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">
+            The rehearsal runs the real handler, so a chargeback really does end the access this
+            student has for the subject above. Pick a test account, not a paying one.
+          </span>
         </label>
       </div>
 

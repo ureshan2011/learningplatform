@@ -3,6 +3,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import { adminAuth, adminDb, col } from "@/lib/firebase/admin";
 import { adminPhones, publicEnv } from "@/lib/env";
+import { POLICY_VERSION } from "@/lib/legal";
 import { toE164 } from "@/lib/phone";
 import type { Role, User } from "@/lib/types";
 
@@ -59,6 +60,14 @@ export async function provisionUser(params: {
     const patch: Partial<User> = { lastSeenAt: Date.now() };
     if (role !== existing.role) patch.role = role;
     if (name && name !== existing.name) patch.name = name;
+    // Stamped the first time an existing account signs in through a screen
+    // carrying the consent notice, and never rewritten after that — the value
+    // worth keeping is the earliest one we can stand behind, not the latest.
+    // It rides along with the `lastSeenAt` write, so it costs nothing.
+    if (!existing.termsAcceptedAt) {
+      patch.termsAcceptedAt = Date.now();
+      patch.termsAcceptedVersion = POLICY_VERSION;
+    }
     if (Object.keys(patch).length > 0) await ref.update(patch);
 
     await ensureClaims(params.uid, role, existing.tenantId);
@@ -83,6 +92,11 @@ export async function provisionUser(params: {
     devices: [],
     referralCode: newReferralCode(),
     ...(params.referredBy ? { referredBy: params.referredBy } : {}),
+    // The account is being created by someone who has just pressed a button
+    // sitting directly under the Terms and Privacy links. That is the moment
+    // worth recording, and the only one where the record is unambiguous.
+    termsAcceptedAt: Date.now(),
+    termsAcceptedVersion: POLICY_VERSION,
     createdAt: Date.now(),
     lastSeenAt: Date.now(),
   };

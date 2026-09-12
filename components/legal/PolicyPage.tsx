@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
-
-/** Every policy page carries the same date, so they are obviously one document set. */
-export const POLICY_UPDATED = "6 September 2026";
+// Every policy page carries the same date, so they are obviously one document
+// set — and the same constant is what an account's acceptance is stamped with.
+import { POLICY_UPDATED } from "@/lib/legal";
 
 /**
  * Shared shell for the four policy pages a payment gateway expects to find

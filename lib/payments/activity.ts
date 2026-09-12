@@ -15,7 +15,7 @@ import type { Subject, User } from "@/lib/types";
  * the kind of query that makes a Firestore bill surprising.
  */
 
-export type ActivityKind = "payment_paid" | "slip_uploaded";
+export type ActivityKind = "payment_paid" | "slip_uploaded" | "payment_chargeback";
 
 export interface TeacherActivity {
   id: string;
@@ -28,6 +28,25 @@ export interface TeacherActivity {
   at: number;
   /** Cleared once the teacher has opened the payments page. */
   seen?: boolean;
+}
+
+/**
+ * The one line the bell shows.
+ *
+ * A chargeback reads as its own sentence rather than a payment with a minus
+ * sign, because it is the one entry here that needs acting on: the money is
+ * already gone and the student has just lost access mid-month.
+ */
+function activityTitle(kind: ActivityKind, name: string | undefined, amountLKR: number): string {
+  const who = name ?? "A student";
+  switch (kind) {
+    case "payment_paid":
+      return `${who} paid ${formatLKR(amountLKR)}`;
+    case "payment_chargeback":
+      return `${who} charged back ${formatLKR(amountLKR)}`;
+    case "slip_uploaded":
+      return `${who} uploaded a deposit slip`;
+  }
 }
 
 export async function notifyTeacher(params: {
@@ -54,10 +73,7 @@ export async function notifyTeacher(params: {
       id,
       tenantId: publicEnv.tenantId,
       kind: params.kind,
-      title:
-        params.kind === "payment_paid"
-          ? `${student?.name ?? "A student"} paid ${formatLKR(params.amountLKR)}`
-          : `${student?.name ?? "A student"} uploaded a deposit slip`,
+      title: activityTitle(params.kind, student?.name, params.amountLKR),
       detail: [
         subject?.name ?? params.subjectId,
         params.method,

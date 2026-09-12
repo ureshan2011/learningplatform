@@ -2,15 +2,43 @@
 
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
+import { interpolate } from "@/lib/i18n/dictionary";
 import type { TopicClass } from "@/lib/content/topic-classes";
 import type { ToneColors } from "@/lib/content/unit-visuals";
 import { ClassCta } from "@/components/syllabus/ClassCta";
 import { DataLifeCycleWalkthrough } from "@/components/syllabus/DataLifeCycleWalkthrough";
+import { FetchExecuteCycle } from "@/components/syllabus/FetchExecuteCycle";
+import { KarnaughMapLab } from "@/components/syllabus/KarnaughMapLab";
+import { NormalizationWalkthrough } from "@/components/syllabus/NormalizationWalkthrough";
+import { ProcessSchedulingLab } from "@/components/syllabus/ProcessSchedulingLab";
+import type { LessonInteractiveData } from "@/lib/content/lesson-interactives";
 import type { Lesson } from "@/lib/types";
 
-/** One lesson's interactive, keyed by id — add here as more lessons get one. */
-const LESSON_INTERACTIVES: Partial<Record<string, (tone: ToneColors) => React.ReactNode>> = {
-  "1.1": (tone) => <DataLifeCycleWalkthrough tone={tone} />,
+/**
+ * One lesson's interactive, keyed by competency-level id.
+ *
+ * Deliberately a lookup rather than a field on the lesson: an interactive is
+ * code, and `AL_ICT_UNITS` is data describing the syllabus. Keying by id also
+ * means a lesson without one simply renders without one, so this can be filled
+ * in a lesson at a time rather than all at once.
+ *
+ * Which lessons get one is decided by where the marks are and where a static
+ * page genuinely fails — a cycle whose register contents change step by step,
+ * a grouping students consistently get wrong, a table that has to be seen at
+ * every stage, a calculation with no way to check the answer.
+ *
+ * Every interactive takes its wording already resolved to the reader's
+ * language. `data` is built on the server by `buildLessonInteractives`, so the
+ * language the reader is not using never reaches the browser.
+ */
+const LESSON_INTERACTIVES: Partial<
+  Record<string, (tone: ToneColors, data: LessonInteractiveData) => React.ReactNode>
+> = {
+  "1.1": (tone, data) => <DataLifeCycleWalkthrough tone={tone} {...data.dataLifeCycle} />,
+  "2.3": (tone, data) => <FetchExecuteCycle tone={tone} {...data.fetchExecute} />,
+  "4.2": (tone, data) => <KarnaughMapLab tone={tone} {...data.karnaugh} />,
+  "5.3": (tone, data) => <ProcessSchedulingLab tone={tone} {...data.scheduling} />,
+  "8.7": (tone, data) => <NormalizationWalkthrough tone={tone} {...data.normalization} />,
 };
 
 /**
@@ -56,6 +84,18 @@ function LessonContent({ content }: { content: string }) {
 }
 
 /**
+ * The notes to show this reader.
+ *
+ * Falls back to the English notes when a lesson has no Sinhala ones yet, which
+ * is deliberate: a Sinhala-medium student who can read some English is far
+ * better served by the English notes than by an empty panel, and the notes are
+ * being translated a lesson at a time.
+ */
+function lessonNotes(lesson: Lesson, sinhala: boolean): string | undefined {
+  return (sinhala ? lesson.contentSi : undefined) ?? lesson.content;
+}
+
+/**
  * Lessons collapsed by default, each expanding in place to reveal exam
  * objectives and exam-focus notes — "go deeper" without leaving the unit page
  * or triggering a request, since all the data is already on the client.
@@ -70,12 +110,34 @@ export function LessonAccordion({
   subjectId,
   classesByLesson,
   unitClasses,
+  interactives,
+  notesLabel,
+  noNotesLabel,
+  expandAll,
+  collapseAll,
+  jumpLabel,
+  objectivesLabel,
+  importantLabel,
+  lessonMeta,
+  sinhala,
 }: {
   lessons: Lesson[];
   tone: ToneColors;
   subjectId: string;
   classesByLesson: Record<string, TopicClass[]>;
   unitClasses: TopicClass[];
+  interactives: LessonInteractiveData;
+  notesLabel: string;
+  noNotesLabel: string;
+  expandAll: string;
+  collapseAll: string;
+  jumpLabel: string;
+  objectivesLabel: string;
+  importantLabel: string;
+  /** "{periods}" and "{objectives}" are interpolated. */
+  lessonMeta: string;
+  /** True when the reader is on Sinhala, so a lesson's `contentSi` is preferred. */
+  sinhala: boolean;
 }) {
   const [open, setOpen] = useState<Set<string>>(new Set([lessons[0]?.id]));
   const allOpen = open.size === lessons.length;
@@ -101,12 +163,12 @@ export function LessonAccordion({
           className="ict-press flex items-center gap-1.5 rounded-full border border-ict-paper-300 px-3.5 py-1.5 text-xs font-semibold text-ict-ink-400 transition-colors duration-[120ms] ease-ict hover:text-ict-ink-900"
         >
           <Icon name={allOpen ? "unfold_less" : "unfold_more"} className="!text-base" />
-          {allOpen ? "Collapse all" : "Expand all"}
+          {allOpen ? collapseAll : expandAll}
         </button>
       </div>
 
       {/* Quick-jump rail: every competency-level number, scrolling straight to its card. */}
-      <nav className="mt-3 flex flex-wrap gap-1.5" aria-label="Jump to lesson">
+      <nav className="mt-3 flex flex-wrap gap-1.5" aria-label={jumpLabel}>
         {lessons.map((l) => (
           <a
             key={l.id}
@@ -150,7 +212,7 @@ export function LessonAccordion({
                   <span className="min-w-0 flex-1">
                     <h2 className="m-0 block truncate text-base font-semibold">{lesson.title}</h2>
                     <span className="block text-xs text-ict-ink-400">
-                      {lesson.periods} periods · {lesson.examObjectives.length} exam objectives
+                      {interpolate(lessonMeta, { periods: lesson.periods, objectives: lesson.examObjectives.length })}
                     </span>
                   </span>
                   <Icon
@@ -176,7 +238,7 @@ export function LessonAccordion({
                   <div className="space-y-4 px-4 pb-4">
                     <div>
                       <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
-                        Exam objectives
+                        {objectivesLabel}
                       </p>
                       <ul className="mt-1.5 space-y-1.5">
                         {lesson.examObjectives.map((objective, index) => (
@@ -193,7 +255,7 @@ export function LessonAccordion({
 
                     <div>
                       <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
-                        Important areas to cover
+                        {importantLabel}
                       </p>
                       <ul className="mt-1.5 space-y-1.5">
                         {lesson.importantAreas.map((area, index) => (
@@ -209,19 +271,19 @@ export function LessonAccordion({
                       </ul>
                     </div>
 
-                    {lesson.content ? (
+                    {lessonNotes(lesson, sinhala) ? (
                       <div>
-                        <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">Notes</p>
+                        <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">{notesLabel}</p>
                         <div className="mt-1.5">
-                          <LessonContent content={lesson.content} />
+                          <LessonContent content={lessonNotes(lesson, sinhala) as string} />
                         </div>
                       </div>
                     ) : (
-                      <p className="text-xs text-ict-ink-400">Lesson content not added yet.</p>
+                      <p className="text-xs text-ict-ink-400">{noNotesLabel}</p>
                     )}
 
                     {LESSON_INTERACTIVES[lesson.id] ? (
-                      <div>{LESSON_INTERACTIVES[lesson.id]!(tone)}</div>
+                      <div>{LESSON_INTERACTIVES[lesson.id]!(tone, interactives)}</div>
                     ) : null}
                   </div>
                 </div>
