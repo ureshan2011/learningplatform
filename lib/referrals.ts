@@ -51,6 +51,14 @@ export async function applyReferralBonus(payment: Payment): Promise<void> {
   const referrer = referrerSnap.docs[0].data() as User;
   if (referrer.uid === student.uid) return;
 
+  // Claim the reward before handing it out, rather than alongside it. Bonus
+  // days stack onto a rolling period end, so a retry that lands between the
+  // grant and the flag pays them twice — and this runs on the webhook path,
+  // which retries by design. Failing the other way round costs one student
+  // three days and is visible to a human; failing this way is invisible and
+  // compounds.
+  await studentRef.update({ referralRewarded: true });
+
   await Promise.all([
     grantBonusDays({
       uid: student.uid,
@@ -66,6 +74,5 @@ export async function applyReferralBonus(payment: Payment): Promise<void> {
       days: REFERRAL_BONUS_DAYS,
       source: "trial",
     }),
-    studentRef.update({ referralRewarded: true }),
   ]);
 }

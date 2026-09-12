@@ -3,6 +3,7 @@ import "server-only";
 import { adminDb, col } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
 import { colomboDateString } from "@/lib/format";
+import { safeOrderId } from "@/lib/payments/payhere";
 import { SANDBOX_TEST_VALUES } from "@/lib/payments/sandbox-test-values";
 import type { Payment, PaymentEvent, PaymentSettings } from "@/lib/types";
 
@@ -71,13 +72,17 @@ export async function logPaymentEvent(params: {
   raw: Record<string, string>;
 }): Promise<void> {
   const receivedAt = Date.now();
-  const id = `${receivedAt}_${params.orderId || "unknown"}`.slice(0, 200);
+  // Sanitised at the sink as well as at the caller. The order id reaching here
+  // came off an open endpoint, and this is the line that turns it into a
+  // document path — see `safeOrderId` for what a slash would otherwise do.
+  const orderId = safeOrderId(params.orderId ?? "");
+  const id = `${receivedAt}_${orderId || "unknown"}`.slice(0, 200);
 
   const event: PaymentEvent = {
     id,
     tenantId: publicEnv.tenantId,
     provider: "payhere",
-    orderId: params.orderId ?? "",
+    orderId,
     outcome: params.outcome,
     raw: params.raw,
     receivedAt,
