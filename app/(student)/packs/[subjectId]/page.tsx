@@ -6,9 +6,17 @@ import { hasAccess } from "@/lib/payments/entitlements";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { formatDate, formatLKR } from "@/lib/format";
 import { getT, getLocale, localeAttrs } from "@/lib/i18n/server";
-import { AI_NOTE, PACK_ITEMS, SURVIVAL_PACK, pick } from "@/lib/content/survival-pack";
+import {
+  AI_NOTE,
+  PACK_BUNDLED_FILES,
+  PACK_ITEMS,
+  SURVIVAL_PACK,
+  bundledFileForSlot,
+  pick,
+} from "@/lib/content/survival-pack";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { DownloadButton } from "@/components/content/DownloadButton";
+import { PackFileButton } from "@/components/packs/PackFileButton";
 import {
   Badge,
   ButtonLink,
@@ -69,6 +77,11 @@ export default async function PackPage({
     if (file.slug && !bySlug.has(file.slug)) bySlug.set(file.slug, file);
   }
   const unslotted = packFiles.filter((f) => !f.slug || !PACK_ITEMS.some((i) => i.key === f.slug));
+
+  // The notebook's dataset and the BibTeX library. Only offered for a product
+  // that actually ships files, which today is the Survival Pack.
+  const bundledExtras =
+    subject.id === SURVIVAL_PACK.id ? PACK_BUNDLED_FILES.filter((f) => !f.slot) : [];
 
   return (
     <main lang={loc.lang} className={loc.className}>
@@ -158,13 +171,22 @@ export default async function PackPage({
                           {t("pack.read")}
                         </ButtonLink>
                       ) : file ? (
+                        // An uploaded file wins over the bundled one, so any of
+                        // these can be replaced from the console without a deploy.
                         <DownloadButton
                           contentId={file.id}
                           label={t("pack.download")}
                           expiredMessage={t("pack.expired")}
                         />
+                      ) : bundledFileForSlot(item.key) ? (
+                        <PackFileButton
+                          subjectId={subject.id}
+                          name={bundledFileForSlot(item.key)!.name}
+                          label={t("pack.download")}
+                          expiredMessage={t("pack.expired")}
+                        />
                       ) : (
-                        // A slot with no file yet says so plainly. An error here
+                        // A slot with neither says so plainly. An error here
                         // would read as "you paid and it is broken".
                         <StatusChip tone="neutral">{t("pack.comingSoon")}</StatusChip>
                       )}
@@ -176,10 +198,21 @@ export default async function PackPage({
           </div>
         </section>
 
-        {owned && unslotted.length > 0 ? (
+        {owned && (unslotted.length > 0 || bundledExtras.length > 0) ? (
           <section>
             <SectionBar title={t("pack.moreFiles")} />
             <Card radius="card" className="divide-y divide-ict-border-dark p-1">
+              {bundledExtras.map((extra) => (
+                <div key={extra.name} className="flex items-center justify-between gap-3 p-3.5">
+                  <span className="min-w-0 truncate text-sm text-ict-paper-50">{extra.name}</span>
+                  <PackFileButton
+                    subjectId={subject.id}
+                    name={extra.name}
+                    label={t("pack.download")}
+                    expiredMessage={t("pack.expired")}
+                  />
+                </div>
+              ))}
               {unslotted.map((file) => (
                 <div key={file.id} className="flex items-center justify-between gap-3 p-3.5">
                   <span className="min-w-0 truncate text-sm text-ict-paper-50">{file.title}</span>

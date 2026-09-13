@@ -89,6 +89,13 @@ const canonicalHost = (() => {
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   env: firebasePublicEnv,
+  // The Campus Survival Pack's files are read from disk at request time by the
+  // download route, so nothing imports them and the build's dependency trace
+  // cannot see them. Without this they are dropped from the deployment and
+  // every download 404s in production while working perfectly in `next dev`.
+  outputFileTracingIncludes: {
+    "/api/packs/[subjectId]/files/[name]": ["./content-packs/**/*"],
+  },
   // Zoom's Meeting SDK is loaded from source.zoom.us at runtime rather than npm:
   // @zoom/meetingsdk pins react@18.2.0 as a peer dependency and would conflict
   // with React 19. See components/player/ZoomEmbed.tsx.

@@ -6,6 +6,7 @@ import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/p
 import { addMonths, DAY_MS } from "@/lib/payments/entitlements";
 import { getPayHereConfig } from "@/lib/payments/records";
 import { payableLKR } from "@/lib/payments/pricing";
+import { ensureSurvivalPack } from "@/lib/content/ensure-product";
 import type { Enrollment, Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -38,6 +39,10 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
+
+  // A student can reach checkout on a cold instance that has not rendered a
+  // page which creates the pack yet. Cheap, and once per instance.
+  await ensureSurvivalPack();
 
   const subjectSnap = await col.subjects().doc(subjectId).get();
   if (!subjectSnap.exists) {

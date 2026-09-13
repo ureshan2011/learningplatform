@@ -137,8 +137,9 @@ export function CreateProductForm() {
         </Button>
 
         <Notice tone="info">
-          Upload the files under Content with kind Pack, one per slot. If an upload is refused,
-          paste the Storage rules into the Firebase console first.
+          The Survival Pack already exists and its seven files ship with the app — nothing to
+          upload. To replace one, add it under Content with kind Pack and its slot; an uploaded
+          file wins over the built-in one.
         </Notice>
 
         {done ? <Notice tone="success">{done}</Notice> : null}
