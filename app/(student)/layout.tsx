@@ -1,6 +1,7 @@
 import { resolveSession } from "@/lib/auth/session";
 import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
+import { ensureSurvivalPack } from "@/lib/content/ensure-product";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { Chip } from "@/components/ds";
@@ -28,6 +29,10 @@ import { Chip } from "@/components/ds";
 export default async function StudentLayout({ children }: { children: React.ReactNode }) {
   const { user } = await resolveSession();
   if (!user) return <>{children}</>;
+
+  // The pack has to exist before anything can list or sell it, and nobody is
+  // going to create it from the console. Once per server instance.
+  await ensureSurvivalPack();
 
   const [enrollments, subjects, cohorts, products, t, locale] = await Promise.all([
     listEnrollments(user.uid),

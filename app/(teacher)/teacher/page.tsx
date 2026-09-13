@@ -328,7 +328,10 @@ export default async function TeacherConsolePage() {
                             {p.name}
                           </span>
                           <span className="block text-xs text-ict-ink-300">
-                            {formatLKR(p.product?.feeLKR ?? 0)} · {files} of 7 files uploaded
+                            {formatLKR(p.product?.feeLKR ?? 0)} ·{" "}
+                            {files > 0
+                              ? `${files} uploaded file${files === 1 ? "" : "s"}, replacing the built-in ones`
+                              : "files ship with the app"}
                           </span>
                         </span>
                         <StatusChip tone={p.active ? "success" : "neutral"}>

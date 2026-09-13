@@ -1,12 +1,24 @@
 # Campus Survival Pack — file generators
 
 The seven downloads are generated here and committed under
-`content-packs/campus-survival-pack/`, then uploaded by hand from
-**Teacher console → Content**, kind **Pack**, one file per slot.
+`content-packs/campus-survival-pack/`. They **ship with the deployment** and are
+served by `app/api/packs/[subjectId]/files/[name]/route.ts`, which re-checks
+`hasAccess()` on every request. Nothing has to be uploaded for the pack to work.
 
-They are not in `public/`, and must not be: `lib/content/storage.ts` mints a
-ten-minute signed URL for every download precisely so nothing on the bucket has
-a stable public path.
+They are not in `public/`, and must not be — that was the point of the
+signed-URL design, and a gated route keeps the property rather than weakening
+it: there is no public path at all, and access is checked per request instead of
+once when a ten-minute link is minted.
+
+`next.config.ts` lists `content-packs/**/*` under `outputFileTracingIncludes`
+for that route. Nothing imports these files, so without that entry the build's
+dependency trace drops them and every download 404s in production while working
+perfectly in `next dev`. If you add a file, add it to `PACK_BUNDLED_FILES` in
+`lib/content/survival-pack.ts` — that list is also the download allowlist, so a
+name missing from it is a 404 rather than a path to traverse.
+
+To replace one without a deploy, upload it from **Teacher console → Content**,
+kind **Pack**, into its slot. An uploaded file wins over the bundled one.
 
 ## Running them
 
@@ -34,22 +46,27 @@ python3 scripts/packs/survey-checklist.py   content-packs/campus-survival-pack
 The two data generators use a fixed random seed, so re-running produces the
 same numbers and the worked examples that reference them stay true.
 
-## Which file goes in which slot
+## Which file fills which slot
 
-Slot keys come from `PACK_ITEMS` in `lib/content/survival-pack.ts`.
+Slot keys come from `PACK_ITEMS` in `lib/content/survival-pack.ts`; the mapping
+itself is `PACK_BUNDLED_FILES` in the same file.
 
 | Slot | File |
 |---|---|
 | `word-template` | `university-assignment-template.docx` |
 | `assignment-planner` | `assignment-planner.xlsx` |
 | `data-workbook` | `excel-practice-workbook.xlsx` |
-| `python-starter` | `python-starter.ipynb` — upload `sri-lanka-districts-synthetic.csv` too, as a second Pack file with no slot; it appears under "More files" |
-| `zotero-library` | `zotero-starter-library.ris` — `.bib` goes up the same way, unslotted |
+| `python-starter` | `python-starter.ipynb` |
+| `zotero-library` | `zotero-starter-library.ris` |
 | `ai-declaration` | `ai-use-declaration.docx` |
 | `survey-checklist` | `survey-design-checklist.pdf` |
 
-A slot with nothing uploaded shows "Coming soon" on the pack page rather than
-an error, so uploading them one at a time is safe.
+`sri-lanka-districts-synthetic.csv` (the notebook's dataset) and
+`zotero-starter-library.bib` have no slot of their own and appear under "More
+files" on the pack page.
+
+A slot with neither a bundled nor an uploaded file shows "Coming soon" rather
+than an error — to someone who has just paid, an error reads as "it is broken".
 
 ## Rules these files are held to
 

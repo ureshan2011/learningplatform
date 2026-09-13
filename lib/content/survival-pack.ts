@@ -590,6 +590,45 @@ Thank you.
 /** The two templates published free at `/campus/academic-email` as the search sample. */
 export const FREE_EMAIL_SAMPLE_COUNT = 2;
 
+/**
+ * The files that ship with the application, under
+ * `content-packs/campus-survival-pack/`.
+ *
+ * The pack has to work on a platform nobody can upload to: the owner can paste
+ * Firebase rules and nothing else, so a pack whose contents arrive by hand is a
+ * pack that stays empty. These are served by `/api/packs/[subjectId]/files/`,
+ * which checks `hasAccess()` on every request — so there is still no stable URL
+ * and no public path, which was the property the signed-URL design existed to
+ * protect.
+ *
+ * A file uploaded into a slot from the console wins over the bundled one, so
+ * replacing any of these later needs no deploy.
+ */
+export interface PackBundledFile {
+  /** The slot it fills. Absent means it appears under "More files". */
+  slot?: string;
+  /** Filename on disk, and what the browser saves it as. The download allowlist. */
+  name: string;
+}
+
+export const PACK_BUNDLED_FILES: PackBundledFile[] = [
+  { slot: "word-template", name: "university-assignment-template.docx" },
+  { slot: "assignment-planner", name: "assignment-planner.xlsx" },
+  { slot: "data-workbook", name: "excel-practice-workbook.xlsx" },
+  { slot: "python-starter", name: "python-starter.ipynb" },
+  { slot: "zotero-library", name: "zotero-starter-library.ris" },
+  { slot: "ai-declaration", name: "ai-use-declaration.docx" },
+  { slot: "survey-checklist", name: "survey-design-checklist.pdf" },
+  // The notebook's dataset and the BibTeX copy of the library. No slot of their
+  // own — they belong to the two above rather than standing alone.
+  { name: "sri-lanka-districts-synthetic.csv" },
+  { name: "zotero-starter-library.bib" },
+];
+
+export function bundledFileForSlot(slot: string): PackBundledFile | undefined {
+  return PACK_BUNDLED_FILES.find((f) => f.slot === slot);
+}
+
 /** The seven upload slots, for the teacher's Pack-file picker. */
 export const PACK_DOWNLOADS = PACK_ITEMS.filter((i) => i.kind === "download");
 
