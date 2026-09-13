@@ -3,6 +3,7 @@ import { col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { signedContentUrl } from "@/lib/content/storage";
+import { recordQuietly } from "@/lib/activity/record";
 import type { ContentItem } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -35,6 +36,16 @@ export async function GET(
   if (!access.allowed) {
     return NextResponse.json({ error: "forbidden", reason: access.reason }, { status: 403 });
   }
+
+  // Recorded here rather than in the browser: this is the moment access was
+  // actually granted, and it is the row a teacher most often wants — "did they
+  // ever get the paper". Never allowed to fail the download.
+  recordQuietly(user.uid, user.tenantId, {
+    kind: "download",
+    path: `/subjects/${item.subjectId}`,
+    at: Date.now(),
+    label: item.title,
+  });
 
   return NextResponse.json({ url: await signedContentUrl(item.storagePath), public: false });
 }

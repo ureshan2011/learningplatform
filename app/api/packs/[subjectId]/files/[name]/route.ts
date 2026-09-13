@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSessionUser } from "@/lib/auth/session";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { PACK_BUNDLED_FILES } from "@/lib/content/survival-pack";
+import { recordQuietly } from "@/lib/activity/record";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -59,6 +60,13 @@ export async function GET(
     // "coming soon" in that case.
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
+
+  recordQuietly(user.uid, user.tenantId, {
+    kind: "download",
+    path: `/packs/${subjectId}`,
+    at: Date.now(),
+    label: name,
+  });
 
   const extension = name.split(".").pop() ?? "";
   return new NextResponse(new Uint8Array(bytes), {

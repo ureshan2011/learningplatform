@@ -1,6 +1,7 @@
 import { resolveSession, isStaff } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
+import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { getLocale } from "@/lib/i18n/server";
@@ -82,6 +83,7 @@ export default async function TeacherLayout({ children }: { children: React.Reac
         )
       }
     >
+      <ActivityRecorder />
       {children}
     </AppShell>
   );

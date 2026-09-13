@@ -2,6 +2,7 @@ import { resolveSession } from "@/lib/auth/session";
 import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
+import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { Chip } from "@/components/ds";
@@ -171,6 +172,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
         )
       }
     >
+      <ActivityRecorder />
       {children}
     </AppShell>
   );
