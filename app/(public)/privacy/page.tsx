@@ -49,6 +49,12 @@ export default async function PrivacyPage() {
             <strong>To take payment:</strong> the amount, date, method and reference of each
             payment, and — if you pay by deposit — the photograph of the slip you upload.
           </li>
+          <li>
+            <strong>How you use the site:</strong> which pages you opened and when, which files you
+            downloaded, and when you signed in. Your teacher can see this on your record. We do not
+            record what you type, what you search for, your location, or anything you do on other
+            websites — only which pages of this site you opened.
+          </li>
         </ul>
         <p>
           <strong>We never see your card number.</strong> Card details are entered on PayHere&apos;s
@@ -71,6 +77,12 @@ export default async function PrivacyPage() {
           To let you in to the classes you have paid for, to teach and mark you, to tell you when a
           class is starting, to keep proper payment records as tax law requires, and to stop paid
           material being shared with people who have not paid.
+        </p>
+        <p className="mt-2">
+          The record of which pages you opened is there so your teacher can help you — to see that
+          you have not opened the notes before an exam, or that a file you paid for never
+          downloaded. It is not used to advertise to you and it is not sold or shared with anyone
+          outside this platform.
         </p>
         <p>We do not sell your data, and we do not run advertising on this platform.</p>
       </Clause>
@@ -111,6 +123,11 @@ export default async function PrivacyPage() {
           case it is reopened. Payment records are kept for at least six years, because tax and
           accounting rules require it — that means a closed account still leaves its receipts
           behind, including any deposit slip uploaded as proof of payment.
+        </p>
+        <p className="mt-2">
+          The record of which pages you opened is shown to your teacher for the last 30 days. You
+          can ask us to delete it at any time and we will, because nothing depends on keeping it —
+          unlike a receipt, it is not a record we are required to hold.
         </p>
       </Clause>
 
