@@ -4,6 +4,7 @@ import {
   listEnrollments,
   listSubjects,
   listCohorts,
+  listProducts,
   isEnrolmentOpen,
   listUpcomingSessions,
   getProgress,
@@ -48,10 +49,11 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const user = await requirePageUser("/dashboard");
 
-  const [enrollments, subjects, cohorts, t, loc] = await Promise.all([
+  const [enrollments, subjects, cohorts, products, t, loc] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
     listCohorts(),
+    listProducts(),
     getT(),
     localeAttrs(),
   ]);
@@ -215,13 +217,19 @@ export default async function DashboardPage() {
           {/* Only shown once an intake exists, so the dashboard does not carry a
               dead section for the months between cohorts. A closed intake still
               appears while a student is enrolled in it — that is their class. */}
-          {cohorts.some((c) => isEnrolmentOpen(c, now) || activeSubjectIds.includes(c.id)) ? (
-            <section>
-              <SectionBar title={t("campus.title")} hint={t("campus.sectionHint")} />
-              <div className="grid gap-2 sm:grid-cols-2">
-                {cohorts
-                  .filter((c) => isEnrolmentOpen(c, now) || activeSubjectIds.includes(c.id))
-                  .map((cohort) => (
+          {(() => {
+            const openCohorts = cohorts.filter(
+              (c) => isEnrolmentOpen(c, now) || activeSubjectIds.includes(c.id),
+            );
+            // The pack is on sale every day, so unlike an intake it never leaves
+            // this section — which is also why the section now survives the
+            // months between cohorts.
+            if (openCohorts.length === 0 && products.length === 0) return null;
+            return (
+              <section>
+                <SectionBar title={t("campus.title")} hint={t("campus.sectionHint")} />
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {openCohorts.map((cohort) => (
                     <CohortCard
                       key={cohort.id}
                       subject={cohort}
@@ -232,9 +240,18 @@ export default async function DashboardPage() {
                       t={t}
                     />
                   ))}
-              </div>
-            </section>
-          ) : null}
+                  {products.map((product) => (
+                    <PackCard
+                      key={product.id}
+                      subject={product}
+                      owned={activeSubjectIds.includes(product.id)}
+                      t={t}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })()}
 
         </div>
 
@@ -315,6 +332,46 @@ const STUDY_TOOLS: Array<{ href: string; title: MessageKey; blurb: MessageKey; i
  */
 function levelProgress(xp: number): number {
   return Math.round(((xp % 1000) / 1000) * 100);
+}
+
+/**
+ * The Survival Pack on the dashboard.
+ *
+ * Outline button in both states, never a second orange one: the banner above
+ * already carries this screen's single orange call to action, and the pack is
+ * not what a student came to the dashboard to do.
+ */
+function PackCard({
+  subject,
+  owned,
+  t,
+}: {
+  subject: Subject;
+  owned: boolean;
+  t: Translator;
+}) {
+  const product = subject.product;
+  if (!product) return null;
+
+  return (
+    <Card radius="card" className="flex flex-col p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-display text-base font-extrabold text-ict-paper-50">{subject.name}</p>
+          <p className="mt-1 text-sm text-ict-ink-300">
+            {t("pack.onePayment", { price: formatLKR(product.feeLKR) })}
+          </p>
+        </div>
+        {owned ? <Badge tone="success">{t("campus.enrolled")}</Badge> : null}
+      </div>
+
+      <div className="mt-4">
+        <ButtonLink href={`/packs/${subject.id}`} variant="outline" size="sm" arrow="right">
+          {owned ? t("pack.open") : t("pack.seeInside")}
+        </ButtonLink>
+      </div>
+    </Card>
+  );
 }
 
 /**
