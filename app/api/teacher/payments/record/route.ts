@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { col } from "@/lib/firebase/admin";
 import { requireTeacher } from "@/lib/auth/session";
-import { addMonths, grantForPayment } from "@/lib/payments/entitlements";
+import { addMonths, DAY_MS, grantForPayment } from "@/lib/payments/entitlements";
 import { paidPatch } from "@/lib/payments/records";
 import { toE164 } from "@/lib/phone";
 import type { Payment, Subject, User } from "@/lib/types";
@@ -83,12 +83,21 @@ export async function POST(req: NextRequest) {
     provider: "manual",
     amountLKR: body.amountLKR,
     status: "pending",
-    // A cohort runs to its own last day, so the month count the teacher typed
-    // does not apply — recording cash for a Campus Ready seat buys that
-    // programme, not N months from the date on the receipt.
-    ...(subject.cohort ? { kind: "cohort" as const } : {}),
+    // A cohort runs to its own last day and a pack for its own access period,
+    // so the month count the teacher typed does not apply to either —
+    // recording cash for a Campus Ready seat buys that programme, not N months
+    // from the date on the receipt.
+    ...(subject.product
+      ? { kind: "product" as const }
+      : subject.cohort
+        ? { kind: "cohort" as const }
+        : {}),
     periodStart: paidAt,
-    periodEnd: subject.cohort ? subject.cohort.endsAt : addMonths(paidAt, body.months),
+    periodEnd: subject.product
+      ? paidAt + subject.product.accessDays * DAY_MS
+      : subject.cohort
+        ? subject.cohort.endsAt
+        : addMonths(paidAt, body.months),
     recordedBy: teacherUid,
     createdAt: now,
     updatedAt: now,

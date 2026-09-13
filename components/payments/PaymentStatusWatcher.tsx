@@ -27,6 +27,7 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
   const [phase, setPhase] = useState<Phase>("waiting");
   const [subjectId, setSubjectId] = useState<string | null>(null);
   const [receiptNo, setReceiptNo] = useState<string | null>(null);
+  const [kind, setKind] = useState<string>("monthly");
   // Set on the first poll rather than during render — reading the clock while
   // rendering is impure, and the deadline only has to start when polling does.
   const startedAt = useRef(0);
@@ -54,11 +55,13 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
         receiptNo?: string | null;
         amountLKR?: number;
         provider?: string;
+        kind?: string;
       };
 
       if (data.unlocked || data.status === "paid") {
         setSubjectId(data.subjectId ?? null);
         setReceiptNo(data.receiptNo ?? null);
+        setKind(data.kind ?? "monthly");
         setPhase("unlocked");
 
         // sessionStorage, not a ref: a refresh of this same success page must
@@ -97,26 +100,35 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
   }, [check, phase]);
 
   if (phase === "unlocked") {
+    // A pack buyer has no class to go to — sending them to a subject page they
+    // are not enrolled in is the one place this screen can still lose someone.
+    const isProduct = kind === "product";
     return (
       <div className={clsx("rounded-ict-card border p-5 text-sm", "border-ict-green-500/30 bg-ict-green-50")}>
         <p className="flex items-center justify-center gap-2 font-semibold text-ict-green-500">
           <Icon name="check_circle" className="!text-lg" />
-          Your class is open
+          {isProduct ? "Your pack is ready" : "Your class is open"}
         </p>
         {receiptNo ? (
           <p className="mt-1 text-center text-ict-ink-400">Receipt {receiptNo}</p>
         ) : null}
         <div className="mt-4 flex flex-col gap-2">
           <ButtonLink
-            href={subjectId ? `/subjects/${subjectId}` : "/dashboard"}
+            href={
+              subjectId
+                ? isProduct
+                  ? `/packs/${subjectId}`
+                  : `/subjects/${subjectId}`
+                : "/dashboard"
+            }
             variant="primary"
             size="md"
             arrow="none"
             className="justify-center"
           >
             <span className="inline-flex items-center gap-1.5">
-              <Icon name="school" className="!text-base" />
-              Go to my class
+              <Icon name={isProduct ? "inventory_2" : "school"} className="!text-base" />
+              {isProduct ? "Open my pack" : "Go to my class"}
             </span>
           </ButtonLink>
           <a href="/account" className="text-xs text-ict-ink-400 underline">
