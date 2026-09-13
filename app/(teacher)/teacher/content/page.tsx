@@ -1,5 +1,5 @@
 import { requireStaffPage } from "@/lib/auth/session";
-import { listAllContent, listSubjects } from "@/lib/queries";
+import { listAllContent, listSellableSubjects } from "@/lib/queries";
 import { PageHeader, SectionBar } from "@/components/ds";
 import { ContentUploadForm } from "@/components/teacher/ContentUploadForm";
 import { ContentList, type ContentRow } from "@/components/teacher/ContentList";
@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 export default async function TeacherContentPage() {
   await requireStaffPage("/teacher/content");
 
-  const [subjects, items] = await Promise.all([listSubjects(), listAllContent()]);
+  const [subjects, items] = await Promise.all([listSellableSubjects(), listAllContent()]);
   const subjectNameById = new Map(subjects.map((s) => [s.id, s.name]));
 
   const rows: ContentRow[] = items.map((item) => ({
