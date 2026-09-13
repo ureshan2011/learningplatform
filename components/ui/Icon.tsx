@@ -50,6 +50,7 @@ import {
   MessageCircle,
   Monitor,
   Network,
+  Package,
   Info as InfoIcon,
   Languages,
   Cpu,
@@ -195,6 +196,7 @@ const ICONS = {
   done: Check,
   help: InfoIcon,
   delete: Trash2,
+  inventory_2: Package,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

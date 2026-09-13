@@ -16,15 +16,16 @@ import type { Subject } from "@/lib/types";
 
 /** The amount to charge or display for this subject. */
 export function payableLKR(subject: Subject): number {
+  if (subject.product) return subject.product.feeLKR;
   return subject.cohort ? subject.cohort.feeLKR : subject.priceLKR;
 }
 
 /**
  * How to describe that amount.
  *
- * A cohort is bought once, so "per month" beside its fee is not a wording
- * slip — it tells a parent they owe Rs 30,000 a month.
+ * A cohort and a pack are both bought once, so "per month" beside the fee is
+ * not a wording slip — it tells a parent they owe Rs 30,000 a month.
  */
 export function billingLabel(subject: Subject): "per month" | "one payment" {
-  return subject.cohort ? "one payment" : "per month";
+  return subject.product || subject.cohort ? "one payment" : "per month";
 }
