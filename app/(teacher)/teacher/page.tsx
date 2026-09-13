@@ -1,12 +1,20 @@
 import { adminDb, col } from "@/lib/firebase/admin";
 import { requireStaffPage } from "@/lib/auth/session";
-import { isEnrolmentOpen, listCohorts, listSubjects, listUnits } from "@/lib/queries";
+import {
+  isEnrolmentOpen,
+  listCohorts,
+  listContent,
+  listProducts,
+  listSubjects,
+  listUnits,
+} from "@/lib/queries";
 import { publicEnv } from "@/lib/env";
 import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { getBusinessOverview, type BusinessOverview } from "@/lib/teacher/insights";
 import { ScheduleSessionForm, type UnitOption } from "@/components/teacher/ScheduleSessionForm";
 import { SeedSubjectsButton } from "@/components/teacher/SeedSubjectsButton";
 import { OpenCohortForm } from "@/components/teacher/OpenCohortForm";
+import { CreateProductForm } from "@/components/teacher/CreateProductForm";
 import { DeviceResetPanel } from "@/components/teacher/DeviceResetPanel";
 import { ActivityBell } from "@/components/teacher/ActivityBell";
 import { NotConfigured } from "@/components/ui/NotConfigured";
@@ -60,6 +68,20 @@ export default async function TeacherConsolePage() {
 
   const subjects = await section("subjects", () => listSubjects(), []);
   const cohorts = await section("cohorts", () => listCohorts(), []);
+  const products = await section("products", () => listProducts(), []);
+  const packFileCounts = await section(
+    "packFiles",
+    async () =>
+      new Map(
+        await Promise.all(
+          products.map(
+            async (p) =>
+              [p.id, (await listContent(p.id)).filter((i) => i.kind === "pack").length] as const,
+          ),
+        ),
+      ),
+    new Map<string, number>(),
+  );
 
   const [overview, sessions, slipCount] = await Promise.all([
     section<BusinessOverview>("overview", () => getBusinessOverview(subjects), {
@@ -280,6 +302,45 @@ export default async function TeacherConsolePage() {
               </Card>
             ) : null}
             <OpenCohortForm />
+          </section>
+
+          <section>
+            <SectionBar
+              title="Products"
+              hint={
+                products.length > 0
+                  ? `${products.length} product${products.length === 1 ? "" : "s"}`
+                  : "Files and guides sold once, on sale every day"
+              }
+            />
+            {products.length > 0 ? (
+              <Card radius="card" className="mb-2 p-5">
+                <div className="space-y-2.5">
+                  {products.map((p) => {
+                    const files = packFileCounts.get(p.id) ?? 0;
+                    return (
+                      <div
+                        key={p.id}
+                        className="flex flex-wrap items-center justify-between gap-2 border-b border-ict-border-dark pb-2.5 last:border-0 last:pb-0"
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-sm font-semibold text-ict-paper-50">
+                            {p.name}
+                          </span>
+                          <span className="block text-xs text-ict-ink-300">
+                            {formatLKR(p.product?.feeLKR ?? 0)} · {files} of 7 files uploaded
+                          </span>
+                        </span>
+                        <StatusChip tone={p.active ? "success" : "neutral"}>
+                          {p.active ? "On sale" : "Off sale"}
+                        </StatusChip>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Card>
+            ) : null}
+            <CreateProductForm />
           </section>
 
           {subjects.length === 0 ? (
