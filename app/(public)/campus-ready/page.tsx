@@ -160,7 +160,7 @@ const REASONS: Array<{ icon: LandingIcon; title: string; body: string }> = [
 ];
 
 /** What the student physically keeps. The certificate is not the only artefact. */
-const TAKEAWAYS: Array<{ icon: LandingIcon; title: string; body: string }> = [
+const TAKEAWAYS: Array<{ icon: LandingIcon; title: string; body: string; href?: string }> = [
   {
     icon: CertificateIcon,
     title: "A certificate you can prove",
@@ -174,7 +174,8 @@ const TAKEAWAYS: Array<{ icon: LandingIcon; title: string; body: string }> = [
   {
     icon: DownloadIcon,
     title: "The Campus Survival Pack",
-    body: "Assignment template with auto contents, a Zotero library, APA and Harvard styles, a Python notebook, a Power BI template.",
+    body: "Assignment template with auto contents, a Zotero library, APA and Harvard guides, a Python notebook, email templates. Also sold on its own.",
+    href: "/campus-survival-pack",
   },
   {
     icon: MedalIcon,
@@ -583,7 +584,20 @@ export default async function CampusReadyPage() {
                       <div className="mt-[18px] mb-[7px] text-lg font-bold text-(--lp-paper-50)">
                         {item.title}
                       </div>
-                      <p className="m-0 text-xs text-(--lp-ink-300)">{item.body}</p>
+                      <p className="m-0 text-xs text-(--lp-ink-300)">
+                        {item.body}
+                        {item.href ? (
+                          <>
+                            {" "}
+                            <Link
+                              href={item.href}
+                              className="font-semibold text-(--lp-orange-300) underline-offset-2 hover:underline"
+                            >
+                              See the pack
+                            </Link>
+                          </>
+                        ) : null}
+                      </p>
                     </div>
                   ))}
                 </div>
