@@ -5,7 +5,6 @@ import { getSubject, listContent, listUnits } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { formatDate, formatLKR, formatSessionTime } from "@/lib/format";
 import { DownloadButton } from "@/components/content/DownloadButton";
-import { LaunchNotice } from "@/components/payments/LaunchNotice";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { SubjectTabs } from "@/components/subject/SubjectTabs";
@@ -82,6 +81,11 @@ export default async function SubjectPage({
   const paused = paymentsPaused();
   const cardPaymentsOn = !paused && payhere.configured;
   const bankSlipOn = !paused && isBankSlipEnabled(paymentSettings);
+  // The student has spent their seven days and cannot pay, because payments are
+  // off. They are the one case with nothing to click, so every line on this
+  // screen has to stop offering a trial and start saying "soon" — any
+  // enrollment document at all means the trial is gone (see `startFreeTrial`).
+  const trialSpent = paused && Boolean(access.enrollment);
 
   return (
     <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
@@ -120,18 +124,24 @@ export default async function SubjectPage({
       {!access.allowed ? (
         <Card variant="feature" radius="panel" className="mt-4 p-6 sm:p-8">
           <Eyebrow>
-            {paused
-              ? t("launch.eyebrow")
-              : access.reason === "expired"
-                ? "Your subscription ended"
-                : "Not subscribed yet"}
+            {trialSpent
+              ? t("launch.trialEndedEyebrow")
+              : paused
+                ? t("launch.eyebrow")
+                : access.reason === "expired"
+                  ? "Your subscription ended"
+                  : "Not subscribed yet"}
           </Eyebrow>
           <h2 className="mt-2.5 font-display text-[26px] font-extrabold leading-[1.1] tracking-[-0.03em] text-ict-paper-50">
             {lockedCount > 0 ? (
               <>
                 {lockedCount} more resource{lockedCount === 1 ? "" : "s"}
                 <br />
-                {paused ? "unlock on the free trial" : "unlock when you subscribe"}
+                {trialSpent
+                  ? "unlock when classes open"
+                  : paused
+                    ? "unlock on the free trial"
+                    : "unlock when you subscribe"}
               </>
             ) : (
               <>
@@ -142,9 +152,11 @@ export default async function SubjectPage({
             )}
           </h2>
           <p className="mt-3 max-w-md text-sm text-ict-orange-200">
-            {paused
-              ? t("launch.body")
-              : `${formatLKR(subject.priceLKR)} per month — live classes, practice that targets your weak topics, timed mock exams and the Code Lab.`}
+            {trialSpent
+              ? t("launch.trialEnded")
+              : paused
+                ? t("launch.body")
+                : `${formatLKR(subject.priceLKR)} per month — live classes, practice that targets your weak topics, timed mock exams and the Code Lab.`}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             {/*
@@ -166,12 +178,6 @@ export default async function SubjectPage({
               </Link>
             ) : null}
           </div>
-          {/* A student whose trial has already been used has nothing to click
-              here while payments are off, so say what happens next rather than
-              leaving them on an empty panel. */}
-          {paused && access.enrollment ? (
-            <LaunchNotice message={t("launch.short")} className="mt-5" />
-          ) : null}
         </Card>
       ) : null}
 
@@ -297,9 +303,19 @@ export default async function SubjectPage({
               </>
             ) : (
               <>
-                <Eyebrow>{paused ? t("launch.eyebrow") : t("subject.monthly")}</Eyebrow>
+                <Eyebrow>
+                  {trialSpent
+                    ? t("launch.trialEndedEyebrow")
+                    : paused
+                      ? t("launch.eyebrow")
+                      : t("subject.monthly")}
+                </Eyebrow>
                 <p className="mt-2 font-display text-3xl font-extrabold tracking-[-0.03em] text-ict-paper-50">
-                  {paused ? t("launch.freeNow") : formatLKR(subject.priceLKR)}
+                  {trialSpent
+                    ? t("launch.openingSoon")
+                    : paused
+                      ? t("launch.freeNow")
+                      : formatLKR(subject.priceLKR)}
                 </p>
                 <p className="mt-1 text-sm text-ict-ink-300">
                   {paused
@@ -345,7 +361,11 @@ export default async function SubjectPage({
             </ul>
             {access.allowed ? null : (
               <Badge tone="brand" className="mt-4">
-                {paused ? "Unlocks on the free trial" : "Unlocks on subscribe"}
+                {trialSpent
+                  ? "Unlocks when classes open"
+                  : paused
+                    ? "Unlocks on the free trial"
+                    : "Unlocks on subscribe"}
               </Badge>
             )}
           </Card>

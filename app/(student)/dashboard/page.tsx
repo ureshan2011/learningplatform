@@ -86,6 +86,9 @@ export default async function DashboardPage() {
   // exactly the rule `startFreeTrial` enforces server-side, so the button is
   // only offered where it will actually work.
   const enrolledSubjectIds = new Set(enrollments.map((e) => e.subjectId));
+  // Whether *any* class still has a trial going spare, for the lines that talk
+  // about the student rather than about one card.
+  const anyTrialAvailable = subjects.some((s) => !enrolledSubjectIds.has(s.id));
 
   const streakDays = progressList.reduce((max, p) => Math.max(max, p?.streakDays ?? 0), 0);
   const totalXp = progressList.reduce((sum, p) => sum + (p?.xp ?? 0), 0);
@@ -295,7 +298,9 @@ export default async function DashboardPage() {
                 {activeSubjectIds.length > 0
                   ? t("dash.noTimetable")
                   : paused
-                    ? t("launch.noTimetable")
+                    ? anyTrialAvailable
+                      ? t("launch.noTimetable")
+                      : t("launch.short")
                     : t("dash.noTimetableLocked")}
               </p>
             ) : (
@@ -506,7 +511,11 @@ function SubjectCard({
             {active && periodEnd
               ? t("dash.paidUntil", { date: formatDate(periodEnd) })
               : paused
-                ? t("launch.freeNow")
+                ? // Trial still theirs to take, or already spent — the second
+                  // is the student who has nothing to buy and nothing to start.
+                  trialAvailable
+                  ? t("launch.freeNow")
+                  : t("launch.openingSoon")
                 : t("dash.perMonth", { price: formatLKR(subject.priceLKR) })}
           </p>
         </div>

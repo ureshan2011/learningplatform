@@ -62,6 +62,9 @@ export const LAUNCH_NOTE = {
   title: "Free trial is open. Payments are not.",
   body:
     "ICT Campus is in the final phase of launch, so we are not taking any payments yet. Start the free trial now — no payment required — and you will be told the day paid classes open.",
-  short: "We are not taking payments yet — the free trial is open, no payment required.",
+  // Deliberately says nothing about the trial. This line is shown beside the
+  // pack and the cohort, which have no trial, and to a student whose seven days
+  // are already spent — "the free trial is open" is wrong for all three.
+  short: "We are not taking payments yet. We will tell you the day they open.",
   cta: "Start free — no payment required",
 } as const;
