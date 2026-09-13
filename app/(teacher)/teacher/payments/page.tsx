@@ -6,6 +6,7 @@ import { payableLKR } from "@/lib/payments/pricing";
 import { publicEnv } from "@/lib/env";
 import { formatLKR, formatSessionTime } from "@/lib/format";
 import { getLedger, type Ledger } from "@/lib/payments/ledger";
+import { paymentsPaused } from "@/lib/payments/launch";
 import {
   bankDetailsReady,
   emptyPaymentSettings,
@@ -118,6 +119,26 @@ export default async function TeacherPaymentsPage() {
           />
           <StatTile icon="account_balance" label="All time" value={formatLKR(totals.collectedAllTimeLKR)} tone="success" />
         </div>
+
+        {/* Trial-only launch. Said here because this screen is where the owner
+            would otherwise wonder why no card payment has come in for a week —
+            and because manual entry and slip approval below still work, so the
+            difference is not obvious from the ledger alone. */}
+        {paymentsPaused() ? (
+          <div className="mt-6 rounded-xl border border-(--color-awaken-line) p-5">
+            <p className="flex items-center gap-2 font-semibold">
+              <Icon name="info" className="!text-lg" />
+              Student payments are switched off for launch
+            </p>
+            <p className="mt-1.5 text-sm text-(--color-awaken-ink-soft)">
+              Students are being offered the free trial instead, and every card and bank-slip
+              route is refused. You can still record a cash payment by hand below, and any
+              PayHere notification that arrives is still honoured. To take payments again, set{" "}
+              <code>TRIAL_ONLY_LAUNCH</code> to <code>false</code> in{" "}
+              <code>lib/payments/launch.ts</code> and push to <code>main</code>.
+            </p>
+          </div>
+        ) : null}
 
         {!bankReady ? (
           <div className="mt-6 rounded-xl border border-(--color-awaken-warn)/40 bg-(--color-awaken-warn-soft) p-5">

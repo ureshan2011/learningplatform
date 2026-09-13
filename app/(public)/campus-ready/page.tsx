@@ -30,6 +30,7 @@ import {
 } from "@/components/marketing/landing/icons";
 import { breadcrumbJsonLd, courseJsonLd, faqJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
 import { COUNTRY, TEACHER_NAME } from "@/lib/seo/site";
+import { LAUNCH_NOTE, paymentsPaused } from "@/lib/payments/launch";
 import type { Subject } from "@/lib/types";
 
 type LandingIcon = (props: { className?: string }) => React.JSX.Element;
@@ -242,6 +243,10 @@ export default async function CampusReadyPage() {
   const nextOpen = open[open.length - 1];
   const enrolling = nextOpen?.cohort;
   const feeLKR = enrolling?.feeLKR ?? CAMPUS_READY.feeLKR;
+  // Trial-only launch — see `lib/payments/launch.ts`. A cohort seat cannot be
+  // bought today, so the enrol buttons below read as "see the details" and the
+  // page says why, rather than asking for Rs 30,000 it will refuse to take.
+  const paused = paymentsPaused();
 
   const schema = graphJsonLd([
     courseJsonLd({
@@ -305,7 +310,7 @@ export default async function CampusReadyPage() {
               href="#intakes"
               className="flex items-center gap-2 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-4 text-xs font-semibold whitespace-nowrap text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
             >
-              {enrolling ? "Enrol" : "Get notified"}
+              {enrolling && !paused ? "Enrol" : "Get notified"}
               <span className="grid size-6 place-items-center overflow-hidden rounded-full bg-white text-(--lp-orange-500)">
                 <ArrowRightIcon className="size-3.5" />
               </span>
@@ -367,13 +372,20 @@ export default async function CampusReadyPage() {
                 {formatLKR(feeLKR)}.
               </p>
 
+              {paused ? (
+                <p className="mb-[clamp(18px,2.4vw,26px)] max-w-[520px] rounded-[var(--lp-radius-card)] border border-(--lp-orange-200) bg-(--lp-orange-50) p-4 text-sm text-(--lp-ink-500)">
+                  <span className="font-bold text-(--lp-ink-900)">{LAUNCH_NOTE.eyebrow}.</span>{" "}
+                  {LAUNCH_NOTE.body}
+                </p>
+              ) : null}
+
               <div className="flex flex-wrap items-center gap-[clamp(12px,1.6vw,18px)]">
                 {enrolling && nextOpen ? (
                   <Link
                     href={`/campus/${nextOpen.id}`}
                     className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
                   >
-                    Enrol — {formatLKR(enrolling.feeLKR)}
+                    {paused ? "See the details" : `Enrol — ${formatLKR(enrolling.feeLKR)}`}
                     <span className="grid size-8 place-items-center overflow-hidden rounded-full bg-white text-(--lp-orange-500)">
                       <ArrowRightIcon className="size-4" />
                     </span>
@@ -701,16 +713,18 @@ export default async function CampusReadyPage() {
                         {formatDate(term.startsAt)} to {formatDate(term.endsAt)}
                       </p>
                       <p className="mt-1 text-xs text-(--lp-ink-400)">
-                        {stillOpen
-                          ? `Enrolment closes ${formatDate(term.enrolmentClosesAt)}`
-                          : "Enrolment closed"}
+                        {!stillOpen
+                          ? "Enrolment closed"
+                          : paused
+                            ? "Not open for payment yet"
+                            : `Enrolment closes ${formatDate(term.enrolmentClosesAt)}`}
                       </p>
                       {stillOpen ? (
                         <Link
                           href={`/campus/${c.id}`}
                           className="mt-5 flex h-11 w-fit items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-5 text-sm font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
                         >
-                          Enrol now
+                          {paused ? "See the details" : "Enrol now"}
                           <span className="grid size-7 place-items-center overflow-hidden rounded-full bg-white text-(--lp-orange-500)">
                             <ArrowRightIcon className="size-3.5" />
                           </span>

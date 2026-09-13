@@ -11,7 +11,10 @@ import {
 } from "@/lib/queries";
 import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
+import { paymentsPaused } from "@/lib/payments/launch";
 import { getT, localeAttrs, type Translator } from "@/lib/i18n/server";
+import { LaunchNotice } from "@/components/payments/LaunchNotice";
+import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import {
@@ -73,8 +76,16 @@ export default async function DashboardPage() {
 
   const subjectById = new Map(subjects.map((s) => [s.id, s]));
   const [payhere, paymentSettings] = await Promise.all([getPayHereConfig(), getPaymentSettings()]);
-  const cardPaymentsOn = payhere.configured;
-  const bankSlipOn = isBankSlipEnabled(paymentSettings);
+  // Trial-only launch — see `lib/payments/launch.ts`. Both flags go false
+  // together, so every "Pay" control on this screen disappears at once.
+  const paused = paymentsPaused();
+  const cardPaymentsOn = !paused && payhere.configured;
+  const bankSlipOn = !paused && isBankSlipEnabled(paymentSettings);
+  // Which subjects this student could still start a trial on. Any enrollment
+  // document at all disqualifies one — active, lapsed or cancelled — which is
+  // exactly the rule `startFreeTrial` enforces server-side, so the button is
+  // only offered where it will actually work.
+  const enrolledSubjectIds = new Set(enrollments.map((e) => e.subjectId));
 
   const streakDays = progressList.reduce((max, p) => Math.max(max, p?.streakDays ?? 0), 0);
   const totalXp = progressList.reduce((sum, p) => sum + (p?.xp ?? 0), 0);
@@ -193,7 +204,11 @@ export default async function DashboardPage() {
             <SectionBar
               title={t("dash.yourClasses")}
               hint={
-                activeSubjectIds.length > 0 ? t("dash.yourClassesHint") : t("dash.subscribeHint")
+                activeSubjectIds.length > 0
+                  ? t("dash.yourClassesHint")
+                  : paused
+                    ? t("launch.short")
+                    : t("dash.subscribeHint")
               }
             />
             <div className="grid gap-2 sm:grid-cols-2">
@@ -207,6 +222,8 @@ export default async function DashboardPage() {
                   }
                   cardPaymentsOn={cardPaymentsOn}
                   bankSlipOn={bankSlipOn}
+                  paused={paused}
+                  trialAvailable={!enrolledSubjectIds.has(subject.id)}
                   sandbox={payhere.mode === "sandbox"}
                   t={t}
                 />
@@ -228,6 +245,10 @@ export default async function DashboardPage() {
             return (
               <section>
                 <SectionBar title={t("campus.title")} hint={t("campus.sectionHint")} />
+                {/* Neither a cohort seat nor the pack can be bought while
+                    payments are off, and both cards below lead to a page with
+                    no button on it — so say why here rather than there. */}
+                {paused ? <LaunchNotice message={t("launch.short")} className="mb-3" /> : null}
                 <div className="grid gap-2 sm:grid-cols-2">
                   {openCohorts.map((cohort) => (
                     <CohortCard
@@ -236,6 +257,7 @@ export default async function DashboardPage() {
                       enrolled={activeSubjectIds.includes(cohort.id)}
                       now={now}
                       cardPaymentsOn={cardPaymentsOn}
+                      paused={paused}
                       sandbox={payhere.mode === "sandbox"}
                       t={t}
                     />
@@ -245,6 +267,7 @@ export default async function DashboardPage() {
                       key={product.id}
                       subject={product}
                       owned={activeSubjectIds.includes(product.id)}
+                      paused={paused}
                       t={t}
                     />
                   ))}
@@ -269,7 +292,11 @@ export default async function DashboardPage() {
 
             {sessions.length === 0 ? (
               <p className="mt-4 text-sm text-ict-ink-300">
-                {activeSubjectIds.length === 0 ? t("dash.noTimetableLocked") : t("dash.noTimetable")}
+                {activeSubjectIds.length > 0
+                  ? t("dash.noTimetable")
+                  : paused
+                    ? t("launch.noTimetable")
+                    : t("dash.noTimetableLocked")}
               </p>
             ) : (
               <ul className="mt-4 space-y-2">
@@ -344,10 +371,13 @@ function levelProgress(xp: number): number {
 function PackCard({
   subject,
   owned,
+  paused,
   t,
 }: {
   subject: Subject;
   owned: boolean;
+  /** Trial-only launch: the pack is not on sale, so its fee is not quoted. */
+  paused: boolean;
   t: Translator;
 }) {
   const product = subject.product;
@@ -359,7 +389,9 @@ function PackCard({
         <div className="min-w-0">
           <p className="font-display text-base font-extrabold text-ict-paper-50">{subject.name}</p>
           <p className="mt-1 text-sm text-ict-ink-300">
-            {t("pack.onePayment", { price: formatLKR(product.feeLKR) })}
+            {owned || !paused
+              ? t("pack.onePayment", { price: formatLKR(product.feeLKR) })
+              : t("launch.waitlist")}
           </p>
         </div>
         {owned ? <Badge tone="success">{t("campus.enrolled")}</Badge> : null}
@@ -387,6 +419,7 @@ function CohortCard({
   enrolled,
   now,
   cardPaymentsOn,
+  paused,
   sandbox,
   t,
 }: {
@@ -394,6 +427,8 @@ function CohortCard({
   enrolled: boolean;
   now: number;
   cardPaymentsOn: boolean;
+  /** Trial-only launch: enrolment is not open, so the fee is not quoted. */
+  paused: boolean;
   sandbox: boolean;
   t: Translator;
 }) {
@@ -409,7 +444,9 @@ function CohortCard({
           <p className="mt-1 text-sm text-ict-ink-300">
             {enrolled
               ? t("campus.runsUntil", { date: formatDate(term.endsAt) })
-              : t("campus.onePayment", { price: formatLKR(term.feeLKR) })}
+              : paused
+                ? t("launch.waitlist")
+                : t("campus.onePayment", { price: formatLKR(term.feeLKR) })}
           </p>
         </div>
         <Badge tone={enrolled ? "success" : "neutral"}>
@@ -427,7 +464,7 @@ function CohortCard({
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
         <ButtonLink href={`/campus/${subject.id}`} variant="outline" size="sm" arrow="right">
-          {enrolled ? t("campus.open") : t("campus.enrol")}
+          {enrolled ? t("campus.open") : paused ? t("launch.seeDetails") : t("campus.enrol")}
         </ButtonLink>
         {!enrolled && open && cardPaymentsOn ? (
           <SubscribeButton subjectId={subject.id} sandbox={sandbox} />
@@ -443,6 +480,8 @@ function SubjectCard({
   periodEnd,
   cardPaymentsOn,
   bankSlipOn,
+  paused,
+  trialAvailable,
   sandbox,
   t,
 }: {
@@ -451,6 +490,10 @@ function SubjectCard({
   periodEnd?: number;
   cardPaymentsOn: boolean;
   bankSlipOn: boolean;
+  /** Trial-only launch: no fee is quoted and the trial is the only way in. */
+  paused: boolean;
+  /** This student has never had an enrollment on this subject, so a trial is still theirs to take. */
+  trialAvailable: boolean;
   sandbox: boolean;
   t: Translator;
 }) {
@@ -462,7 +505,9 @@ function SubjectCard({
           <p className="mt-1 text-sm text-ict-ink-300">
             {active && periodEnd
               ? t("dash.paidUntil", { date: formatDate(periodEnd) })
-              : t("dash.perMonth", { price: formatLKR(subject.priceLKR) })}
+              : paused
+                ? t("launch.freeNow")
+                : t("dash.perMonth", { price: formatLKR(subject.priceLKR) })}
           </p>
         </div>
         <Badge tone={active ? "success" : "neutral"}>{active ? t("dash.active") : subject.grade}</Badge>
@@ -475,8 +520,10 @@ function SubjectCard({
           </ButtonLink>
         ) : (
           // Card first — it unlocks the class in seconds. Bank deposit only
-          // shows up if the teacher has switched it back on.
+          // shows up if the teacher has switched it back on. During the
+          // trial-only launch neither appears and the trial takes their place.
           <>
+            {paused && trialAvailable ? <StartTrialButton subjectId={subject.id} /> : null}
             {cardPaymentsOn ? <SubscribeButton subjectId={subject.id} sandbox={sandbox} /> : null}
             {bankSlipOn ? (
               <Link
@@ -485,6 +532,11 @@ function SubjectCard({
               >
                 {t("dash.payByBank")}
               </Link>
+            ) : null}
+            {paused && !trialAvailable ? (
+              <ButtonLink href={`/subjects/${subject.id}`} variant="outline" size="sm" arrow="right">
+                {t("dash.open")}
+              </ButtonLink>
             ) : null}
           </>
         )}

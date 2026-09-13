@@ -5,6 +5,7 @@ import { getSessionUser } from "@/lib/auth/session";
 import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/payhere";
 import { addMonths, DAY_MS } from "@/lib/payments/entitlements";
 import { getPayHereConfig } from "@/lib/payments/records";
+import { PAYMENTS_PAUSED_ERROR, paymentsPaused } from "@/lib/payments/launch";
 import { payableLKR } from "@/lib/payments/pricing";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
 import type { Enrollment, Payment, Subject } from "@/lib/types";
@@ -21,6 +22,14 @@ const bodySchema = z.object({ subjectId: z.string().min(1).max(64) });
  * that can name its own price is a client that pays Rs 1.
  */
 export async function POST(req: NextRequest) {
+  // Trial-only launch: refused here, not merely hidden in the UI. The button is
+  // gone from every screen, but a checkout that still minted a signed PayHere
+  // form for anyone who kept an old tab open would take real money during a
+  // launch we have told students is free.
+  if (paymentsPaused()) {
+    return NextResponse.json({ error: PAYMENTS_PAUSED_ERROR }, { status: 503 });
+  }
+
   // Card payments not connected yet — students can still send a bank slip.
   const config = await getPayHereConfig();
   if (!config.configured) {

@@ -4,6 +4,8 @@ import { payableLKR } from "@/lib/payments/pricing";
 import { formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import { bankDetailsReady, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
+import { LAUNCH_NOTE, paymentsPaused } from "@/lib/payments/launch";
+import { ButtonLink } from "@/components/ds";
 import { BankDetailsCard } from "@/components/payments/BankDetailsCard";
 import { SlipUploadForm } from "@/components/payments/SlipUploadForm";
 import { Icon } from "@/components/ui/Icon";
@@ -28,6 +30,42 @@ export default async function SlipPage({
   const user = await requirePageUser("/pay/slip");
 
   const { subject: preferredSubject } = await searchParams;
+
+  // Trial-only launch. Checked before the settings are read, and before any
+  // bank account number is rendered: nobody should be able to reach a deposit
+  // instruction for a fee we are not charging. The API refuses the upload too.
+  if (paymentsPaused()) {
+    return (
+      <main className="mx-auto max-w-md px-4 py-5 sm:px-6 sm:py-6">
+        <PageHeader title={LAUNCH_NOTE.title} subtitle={LAUNCH_NOTE.body} />
+        <Card radius="card" className="mt-5 p-5">
+          <p className="flex items-center gap-2 font-semibold text-ict-paper-50">
+            <Icon name="info" className="!text-lg text-ict-orange-400" />
+            No payment is needed right now
+          </p>
+          <p className="mt-1.5 text-sm text-ict-ink-300">
+            Do not deposit anything yet. Start the free trial instead — it opens the class
+            immediately, and we will tell you the day paid classes begin.
+          </p>
+          <ButtonLink
+            // Straight through `/go`, which starts the trial and lands them in
+            // the class, rather than back to a page with one more button on it.
+            href={
+              preferredSubject
+                ? `/go?do=trial&subject=${encodeURIComponent(preferredSubject)}`
+                : "/dashboard"
+            }
+            size="sm"
+            arrow="right"
+            className="mt-4"
+          >
+            {LAUNCH_NOTE.cta}
+          </ButtonLink>
+        </Card>
+      </main>
+    );
+  }
+
   const [subjects, settings] = await Promise.all([listSellableSubjects(), getPaymentSettings()]);
 
   const chosen =

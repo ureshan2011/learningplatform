@@ -17,6 +17,8 @@ import {
   SectionHeading,
   StatCard,
 } from "@/components/ds-cream";
+import { LaunchBand } from "@/components/marketing/LaunchBand";
+import { paymentsPaused } from "@/lib/payments/launch";
 import { breadcrumbJsonLd, courseJsonLd, faqJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
 import {
   EXAM_STRUCTURE,
@@ -164,6 +166,10 @@ export default async function AlIctClassesPage() {
   // is a manual action, not a small mistake.
   const priceLKR = subjects.length > 0 ? Math.min(...subjects.map((s) => s.priceLKR)) : undefined;
   const upcoming = sessions.slice(0, 3);
+  // Trial-only launch — see `lib/payments/launch.ts`. The fees below stay on
+  // the page, because they are what the class will cost; what changes is that
+  // the page stops implying a student can pay one today.
+  const paused = paymentsPaused();
 
   // Only the page-specific node. The root layout already ships the
   // organisation, the site and the teacher on every page, and the `@id`
@@ -216,6 +222,8 @@ export default async function AlIctClassesPage() {
           </ButtonLink>
         </div>
 
+        <LaunchBand show={paused} className="mt-6" />
+
         {/* At-a-glance facts. A student comparing three tuition classes reads
             exactly this and nothing else, so it goes above every other section. */}
         <div className="mt-10 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
@@ -229,7 +237,11 @@ export default async function AlIctClassesPage() {
               {
                 icon: "credit_card",
                 label: "Fee",
-                value: priceLKR ? `From ${formatLKR(priceLKR)} / month` : "See below",
+                value: paused
+                  ? "Free during launch"
+                  : priceLKR
+                    ? `From ${formatLKR(priceLKR)} / month`
+                    : "See below",
               },
             ] satisfies Array<{ icon: IconName; label: string; value: string }>
           ).map((row) => (
@@ -287,12 +299,16 @@ export default async function AlIctClassesPage() {
                       <h3 className="text-lg font-bold text-ict-ink-900">{subject.name}</h3>
                       <span className="font-bold text-ict-ink-900">
                         {formatLKR(subject.priceLKR)}
-                        <span className="text-sm font-normal text-ict-ink-400"> / month</span>
+                        <span className="text-sm font-normal text-ict-ink-400">
+                          {paused ? " / month after launch" : " / month"}
+                        </span>
                       </span>
                     </div>
                     <p className="mt-2 text-sm text-ict-ink-400">{subject.description}</p>
                     <Badge tone="success" className="mt-3">
-                      First 7 days free · no card required
+                      {paused
+                        ? "Free during launch · no payment required"
+                        : "First 7 days free · no card required"}
                     </Badge>
                   </Card>
                 </li>

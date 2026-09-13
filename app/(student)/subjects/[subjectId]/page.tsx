@@ -5,6 +5,7 @@ import { getSubject, listContent, listUnits } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { formatDate, formatLKR, formatSessionTime } from "@/lib/format";
 import { DownloadButton } from "@/components/content/DownloadButton";
+import { LaunchNotice } from "@/components/payments/LaunchNotice";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { SubjectTabs } from "@/components/subject/SubjectTabs";
@@ -22,6 +23,7 @@ import {
   StatusChip,
 } from "@/components/ds";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
+import { paymentsPaused } from "@/lib/payments/launch";
 import { getT, localeAttrs } from "@/lib/i18n/server";
 import type { ContentKind } from "@/lib/types";
 
@@ -75,8 +77,11 @@ export default async function SubjectPage({
   const visible = access.allowed ? items : items.filter((i) => i.isPublic);
   const lockedCount = items.length - visible.length;
   const [payhere, paymentSettings] = await Promise.all([getPayHereConfig(), getPaymentSettings()]);
-  const cardPaymentsOn = payhere.configured;
-  const bankSlipOn = isBankSlipEnabled(paymentSettings);
+  // Trial-only launch takes both payment routes off this screen at once, ahead
+  // of whether either is configured — see `lib/payments/launch.ts`.
+  const paused = paymentsPaused();
+  const cardPaymentsOn = !paused && payhere.configured;
+  const bankSlipOn = !paused && isBankSlipEnabled(paymentSettings);
 
   return (
     <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
@@ -115,14 +120,18 @@ export default async function SubjectPage({
       {!access.allowed ? (
         <Card variant="feature" radius="panel" className="mt-4 p-6 sm:p-8">
           <Eyebrow>
-            {access.reason === "expired" ? "Your subscription ended" : "Not subscribed yet"}
+            {paused
+              ? t("launch.eyebrow")
+              : access.reason === "expired"
+                ? "Your subscription ended"
+                : "Not subscribed yet"}
           </Eyebrow>
           <h2 className="mt-2.5 font-display text-[26px] font-extrabold leading-[1.1] tracking-[-0.03em] text-ict-paper-50">
             {lockedCount > 0 ? (
               <>
                 {lockedCount} more resource{lockedCount === 1 ? "" : "s"}
                 <br />
-                unlock when you subscribe
+                {paused ? "unlock on the free trial" : "unlock when you subscribe"}
               </>
             ) : (
               <>
@@ -133,8 +142,9 @@ export default async function SubjectPage({
             )}
           </h2>
           <p className="mt-3 max-w-md text-sm text-ict-orange-200">
-            {formatLKR(subject.priceLKR)} per month — live classes, practice that targets your weak
-            topics, timed mock exams and the Code Lab.
+            {paused
+              ? t("launch.body")
+              : `${formatLKR(subject.priceLKR)} per month — live classes, practice that targets your weak topics, timed mock exams and the Code Lab.`}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             {/*
@@ -156,6 +166,12 @@ export default async function SubjectPage({
               </Link>
             ) : null}
           </div>
+          {/* A student whose trial has already been used has nothing to click
+              here while payments are off, so say what happens next rather than
+              leaving them on an empty panel. */}
+          {paused && access.enrollment ? (
+            <LaunchNotice message={t("launch.short")} className="mt-5" />
+          ) : null}
         </Card>
       ) : null}
 
@@ -281,11 +297,15 @@ export default async function SubjectPage({
               </>
             ) : (
               <>
-                <Eyebrow>{t("subject.monthly")}</Eyebrow>
+                <Eyebrow>{paused ? t("launch.eyebrow") : t("subject.monthly")}</Eyebrow>
                 <p className="mt-2 font-display text-3xl font-extrabold tracking-[-0.03em] text-ict-paper-50">
-                  {formatLKR(subject.priceLKR)}
+                  {paused ? t("launch.freeNow") : formatLKR(subject.priceLKR)}
                 </p>
-                <p className="mt-1 text-sm text-ict-ink-300">{t("subject.cancelAnyTime")}</p>
+                <p className="mt-1 text-sm text-ict-ink-300">
+                  {paused
+                    ? t("launch.priceAfter", { price: formatLKR(subject.priceLKR) })
+                    : t("subject.cancelAnyTime")}
+                </p>
                 <div className="mt-4 space-y-2">
                   {cardPaymentsOn ? (
                     <SubscribeButton subjectId={subjectId} sandbox={payhere.mode === "sandbox"} />
@@ -325,7 +345,7 @@ export default async function SubjectPage({
             </ul>
             {access.allowed ? null : (
               <Badge tone="brand" className="mt-4">
-                Unlocks on subscribe
+                {paused ? "Unlocks on the free trial" : "Unlocks on subscribe"}
               </Badge>
             )}
           </Card>

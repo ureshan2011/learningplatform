@@ -4,6 +4,7 @@ import { requirePageUser } from "@/lib/auth/session";
 import { getCohort, isEnrolmentOpen } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
+import { paymentsPaused } from "@/lib/payments/launch";
 import { formatDate, formatLKR } from "@/lib/format";
 import { getT, localeAttrs } from "@/lib/i18n/server";
 import { CAMPUS_READY, CAMPUS_READY_WEEKS } from "@/lib/content/campus-ready";
@@ -41,7 +42,12 @@ export default async function CampusCohortPage({
     getT(),
     localeAttrs(),
   ]);
-  const bankSlipOn = isBankSlipEnabled(paymentSettings);
+  // Trial-only launch — see `lib/payments/launch.ts`. A cohort seat is a
+  // Rs 30,000 one-off, so it is not given away with the trial; the panel says
+  // enrolment has not opened instead.
+  const paused = paymentsPaused();
+  const cardPaymentsOn = !paused && payhere.configured;
+  const bankSlipOn = !paused && isBankSlipEnabled(paymentSettings);
 
   // Server Component: renders once per request, so reading the clock here is
   // deterministic for that render. The purity rule targets client renders.
@@ -60,12 +66,14 @@ export default async function CampusCohortPage({
           <Card variant="feature" radius="panel" className="p-6">
             <Eyebrow>{CAMPUS_READY.certificateTitle}</Eyebrow>
             <p className="mt-3 flex flex-wrap items-center gap-2">
-              <StatusChip tone={enrolled ? "success" : open ? "brand" : "neutral"}>
+              <StatusChip tone={enrolled ? "success" : open && !paused ? "brand" : "neutral"}>
                 {enrolled
                   ? t("campus.enrolled")
-                  : open
-                    ? t("campus.enrolBy", { date: formatDate(term.enrolmentClosesAt) })
-                    : t("campus.closed")}
+                  : paused
+                    ? t("launch.eyebrow")
+                    : open
+                      ? t("campus.enrolBy", { date: formatDate(term.enrolmentClosesAt) })
+                      : t("campus.closed")}
               </StatusChip>
               <Badge tone="neutral">{t("campus.weeks", { count: CAMPUS_READY.weeks })}</Badge>
             </p>
@@ -83,19 +91,25 @@ export default async function CampusCohortPage({
             ) : null}
 
             {!enrolled && open ? (
-              <div className="mt-5 flex flex-wrap items-center gap-3">
-                {payhere.configured ? (
-                  <SubscribeButton subjectId={subject.id} sandbox={payhere.mode === "sandbox"} />
-                ) : null}
-                {bankSlipOn ? (
-                  <Link
-                    href={`/pay/slip?subject=${subject.id}`}
-                    className="text-sm font-semibold text-ict-orange-400 underline-offset-4 hover:underline"
-                  >
-                    {t("dash.payByBank")}
-                  </Link>
-                ) : null}
-              </div>
+              paused ? (
+                <div className="mt-5">
+                  <Notice tone="info">{t("launch.body")}</Notice>
+                </div>
+              ) : (
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  {cardPaymentsOn ? (
+                    <SubscribeButton subjectId={subject.id} sandbox={payhere.mode === "sandbox"} />
+                  ) : null}
+                  {bankSlipOn ? (
+                    <Link
+                      href={`/pay/slip?subject=${subject.id}`}
+                      className="text-sm font-semibold text-ict-orange-400 underline-offset-4 hover:underline"
+                    >
+                      {t("dash.payByBank")}
+                    </Link>
+                  ) : null}
+                </div>
+              )
             ) : null}
           </Card>
 
@@ -131,7 +145,9 @@ export default async function CampusCohortPage({
               {formatLKR(term.feeLKR)}
             </p>
             <p className="mt-1 text-sm text-ict-ink-300">
-              {t("campus.onePayment", { price: formatLKR(term.feeLKR) })}
+              {enrolled || !paused
+                ? t("campus.onePayment", { price: formatLKR(term.feeLKR) })
+                : t("launch.waitlist")}
             </p>
           </Card>
 

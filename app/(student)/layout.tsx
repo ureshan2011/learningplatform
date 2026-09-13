@@ -1,6 +1,7 @@
 import { resolveSession } from "@/lib/auth/session";
 import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
+import { paymentsPaused } from "@/lib/payments/launch";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
 import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
@@ -144,8 +145,11 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const promo: ShellPromo | undefined =
     activeIds.size === 0 && !isStaff && primary
       ? {
-          title: t("promo.title"),
-          body: t("promo.body"),
+          // The rail is on every screen, so during the trial-only launch it is
+          // the one place that tells a student, everywhere, that nothing is
+          // being charged — see `lib/payments/launch.ts`.
+          title: paymentsPaused() ? t("promo.launchTitle") : t("promo.title"),
+          body: paymentsPaused() ? t("promo.launchBody") : t("promo.body"),
           href: `/subjects/${primary.id}`,
           cta: t("promo.cta"),
         }
