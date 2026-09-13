@@ -41,6 +41,8 @@ export async function GET(req: NextRequest) {
     status: payment.status,
     receiptNo: payment.receiptNo ?? null,
     subjectId: payment.subjectId,
+    // Absent means monthly — every payment taken before Campus Ready existed.
+    kind: payment.kind ?? "monthly",
     unlocked: Boolean(access?.allowed),
     amountLKR: payment.amountLKR,
     provider: payment.provider,

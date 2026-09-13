@@ -20,11 +20,13 @@ export const dynamic = "force-dynamic";
  */
 const bodySchema = z.object({
   subjectId: z.string().min(1).max(64),
-  kind: z.enum(["notes", "past_paper", "marking_scheme", "replay"]),
+  kind: z.enum(["notes", "past_paper", "marking_scheme", "replay", "pack"]),
   title: z.string().trim().min(1).max(200),
   isPublic: z.boolean(),
   storagePath: z.string().min(1).max(500),
   sizeBytes: z.number().int().min(0).max(1024 * 1024 * 1024).optional(),
+  /** Which pack slot this file fills. Free text so a new slot needs no deploy. */
+  slug: z.string().regex(/^[a-z0-9-]+$/).max(40).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -64,6 +66,7 @@ export async function POST(req: NextRequest) {
     storagePath: body.storagePath,
     sizeBytes: body.sizeBytes,
     isPublic: body.isPublic,
+    ...(body.slug ? { slug: body.slug } : {}),
     createdAt: Date.now(),
   };
 

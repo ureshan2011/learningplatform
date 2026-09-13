@@ -10,7 +10,16 @@ import { Button } from "@/components/ds";
  * The link is minted per click rather than rendered into the page, so a
  * "view source" or a shared screenshot yields nothing reusable.
  */
-export function DownloadButton({ contentId, label }: { contentId: string; label: string }) {
+export function DownloadButton({
+  contentId,
+  label,
+  expiredMessage,
+}: {
+  contentId: string;
+  label: string;
+  /** What "expired" means here. A pack's access ends; it is not a subscription to renew. */
+  expiredMessage?: string;
+}) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +32,7 @@ export function DownloadButton({ contentId, label }: { contentId: string; label:
         const data = await res.json().catch(() => ({}));
         throw new Error(
           data.reason === "expired"
-            ? "Your subscription has ended. Renew to download."
+            ? (expiredMessage ?? "Your subscription has ended. Renew to download.")
             : "You cannot download this yet.",
         );
       }

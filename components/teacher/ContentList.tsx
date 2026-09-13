@@ -22,6 +22,7 @@ const KIND_LABEL: Record<ContentKind, string> = {
   past_paper: "Past paper",
   marking_scheme: "Marking scheme",
   replay: "Class replay",
+  pack: "Pack file",
 };
 
 const KIND_ICON: Record<ContentKind, IconName> = {
@@ -29,6 +30,7 @@ const KIND_ICON: Record<ContentKind, IconName> = {
   past_paper: "receipt_long",
   marking_scheme: "check_circle",
   replay: "videocam",
+  pack: "inventory_2",
 };
 
 /** Everything uploaded so far, newest first, each removable in one tap. */

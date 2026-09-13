@@ -69,6 +69,23 @@ export default async function RefundPolicyPage() {
         </ul>
       </Clause>
 
+      <Clause heading="Digital packs">
+        <p>
+          A pack is a set of files and guides bought once, not a subscription. If you have not
+          downloaded or opened anything in it, ask within 7 days and we refund it in full.
+        </p>
+        <p className="mt-2">
+          Once you have downloaded a file, there is no refund. A file cannot be returned — you
+          still have it. This is why every item in a pack is listed, with what it contains, on the
+          sales page and again on the pack page before you pay. Nothing in a pack is bought
+          unseen.
+        </p>
+        <p className="mt-2">
+          If a file will not open, or a download fails, that is not a refund question — tell us and
+          we will fix it or replace the file.
+        </p>
+      </Clause>
+
       <Clause heading="How to ask">
         <p>
           Message {settings.contactPhone || <Blank>your phone</Blank>}

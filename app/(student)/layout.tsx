@@ -1,5 +1,5 @@
 import { resolveSession } from "@/lib/auth/session";
-import { listCohorts, listEnrollments, listSubjects } from "@/lib/queries";
+import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
@@ -29,10 +29,11 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const { user } = await resolveSession();
   if (!user) return <>{children}</>;
 
-  const [enrollments, subjects, cohorts, t, locale] = await Promise.all([
+  const [enrollments, subjects, cohorts, products, t, locale] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
     listCohorts(),
+    listProducts(),
     getT(),
     getLocale(),
   ]);
@@ -91,11 +92,19 @@ export default async function StudentLayout({ children }: { children: React.Reac
   // someone who has not enrolled: the dashboard card is where an intake is sold,
   // and a permanent nav link to something you cannot open is noise.
   const myCohort = cohorts.find((c) => activeIds.has(c.id)) ?? (isStaff ? cohorts[0] : undefined);
-  if (myCohort) {
-    groups.push({
-      label: t("campus.title"),
-      items: [{ href: `/campus/${myCohort.id}`, label: t("nav.campus"), icon: "school" }],
-    });
+  // Same rule for a pack the student owns. Both live under one Campus Ready
+  // heading rather than two, so owning the pack alone does not put a
+  // one-item group in the rail.
+  const myPack = products.find((p) => activeIds.has(p.id)) ?? (isStaff ? products[0] : undefined);
+  if (myCohort || myPack) {
+    const campusItems: NavItem[] = [];
+    if (myCohort) {
+      campusItems.push({ href: `/campus/${myCohort.id}`, label: t("nav.campus"), icon: "school" });
+    }
+    if (myPack) {
+      campusItems.push({ href: `/packs/${myPack.id}`, label: t("nav.pack"), icon: "inventory_2" });
+    }
+    groups.push({ label: t("campus.title"), items: campusItems });
   }
 
   groups.push({

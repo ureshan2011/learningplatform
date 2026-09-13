@@ -26,6 +26,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/`, lastModified, changeFrequency: "daily", priority: 1 },
     { url: `${base}/al-ict-classes`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/campus-ready`, lastModified, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${base}/campus-survival-pack`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    {
+      url: `${base}/campus/academic-email`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     { url: `${base}/dr-yasas`, lastModified, changeFrequency: "monthly", priority: 0.85 },
     { url: `${base}/past-papers`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/syllabus`, lastModified, changeFrequency: "weekly", priority: 0.9 },
