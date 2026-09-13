@@ -6,6 +6,7 @@ import { addMonths, DAY_MS } from "@/lib/payments/entitlements";
 import { notifyTeacher } from "@/lib/payments/activity";
 import { payableLKR } from "@/lib/payments/pricing";
 import { getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
+import { PAYMENTS_PAUSED_ERROR, paymentsPaused } from "@/lib/payments/launch";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -25,6 +26,13 @@ const bodySchema = z.object({
  * approves it, never on upload.
  */
 export async function POST(req: NextRequest) {
+  // Trial-only launch: no student is asked to deposit anything, so a slip
+  // submitted from a stale tab is refused rather than left pending against a
+  // deposit that should never have been made.
+  if (paymentsPaused()) {
+    return NextResponse.json({ error: PAYMENTS_PAUSED_ERROR }, { status: 503 });
+  }
+
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
 

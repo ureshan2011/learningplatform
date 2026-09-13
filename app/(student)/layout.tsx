@@ -1,6 +1,7 @@
 import { resolveSession } from "@/lib/auth/session";
 import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
+import { paymentsPaused } from "@/lib/payments/launch";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
 import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
@@ -56,6 +57,10 @@ export default async function StudentLayout({ children }: { children: React.Reac
     enrollments.filter((e) => e.status === "active" && e.currentPeriodEnd > now).map((e) => e.subjectId),
   );
   const primary = subjects.find((s) => activeIds.has(s.id)) ?? (isStaff ? subjects[0] : undefined);
+  // Any enrollment document at all spends the trial for that subject — the rule
+  // `startFreeTrial` enforces — so this asks whether one is still untouched.
+  const enrolledIds = new Set(enrollments.map((e) => e.subjectId));
+  const trialStillAvailable = subjects.some((s) => !enrolledIds.has(s.id));
 
   const groups: NavGroup[] = [];
   const mobileTabs: NavItem[] = [{ href: "/dashboard", label: t("nav.home"), icon: "home" }];
@@ -144,8 +149,21 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const promo: ShellPromo | undefined =
     activeIds.size === 0 && !isStaff && primary
       ? {
-          title: t("promo.title"),
-          body: t("promo.body"),
+          // The rail is on every screen, so during the trial-only launch it is
+          // the one place that tells a student, everywhere, that nothing is
+          // being charged — see `lib/payments/launch.ts`. It must not keep
+          // offering a free trial to someone who has already spent theirs and
+          // has no way to pay, so it switches to "soon" once one exists.
+          title: !paymentsPaused()
+            ? t("promo.title")
+            : trialStillAvailable
+              ? t("promo.launchTitle")
+              : t("launch.trialEndedEyebrow"),
+          body: !paymentsPaused()
+            ? t("promo.body")
+            : trialStillAvailable
+              ? t("promo.launchBody")
+              : t("launch.short"),
           href: `/subjects/${primary.id}`,
           cta: t("promo.cta"),
         }

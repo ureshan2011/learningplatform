@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { getProduct } from "@/lib/queries";
 import { formatLKR } from "@/lib/format";
+import { LAUNCH_NOTE, paymentsPaused } from "@/lib/payments/launch";
 import { AI_NOTE, PACK_ITEMS, SURVIVAL_PACK } from "@/lib/content/survival-pack";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteHeader } from "@/components/nav/SiteHeader";
@@ -95,6 +96,10 @@ export default async function CampusSurvivalPackPage() {
   const product = await getProduct(SURVIVAL_PACK.id).catch(() => null);
   const feeLKR = product?.product?.feeLKR ?? SURVIVAL_PACK.feeLKR;
   const fee = formatLKR(feeLKR);
+  // Trial-only launch — see `lib/payments/launch.ts`. The pack is not on sale
+  // today, so the buy buttons say what is actually true and the page keeps
+  // selling the contents rather than a checkout that will refuse.
+  const paused = paymentsPaused();
 
   const downloads = PACK_ITEMS.filter((i) => i.kind === "download");
   const guides = PACK_ITEMS.filter((i) => i.kind === "guide");
@@ -139,10 +144,12 @@ export default async function CampusSurvivalPackPage() {
               href={`/packs/${SURVIVAL_PACK.id}`}
               className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
             >
-              Get the pack — {fee}
+              {paused ? "See what's inside" : `Get the pack — ${fee}`}
             </Link>
             <span className="text-sm text-(--lp-ink-500)">
-              One payment · Instant access · Yours for three years
+              {paused
+                ? LAUNCH_NOTE.short
+                : "One payment · Instant access · Yours for three years"}
             </span>
           </div>
 
@@ -280,7 +287,7 @@ export default async function CampusSurvivalPackPage() {
             href={`/packs/${SURVIVAL_PACK.id}`}
             className="mt-6 inline-flex h-12 items-center rounded-full bg-(--lp-orange-500) px-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
           >
-            Pack එක ගන්න — {fee}
+            {paused ? "ඇතුළේ මොනවද කියලා බලන්න" : `Pack එක ගන්න — ${fee}`}
           </Link>
         </section>
 

@@ -67,6 +67,8 @@ const en = {
   "promo.title": "Unlock the full class",
   "promo.body": "Live classes, practice, mock exams and every paper.",
   "promo.cta": "See details",
+  "promo.launchTitle": "Try the class free",
+  "promo.launchBody": "We are still launching, so nothing is being charged. No payment required.",
 
   /* ---- dashboard ---- */
   "dash.greeting": "Hi {name},",
@@ -100,6 +102,23 @@ const en = {
   "dash.open": "Open",
   "dash.payByBank": "Pay by bank deposit",
   "dash.liveBadge": "Live now",
+
+  /* ---- trial-only launch (see lib/payments/launch.ts) ---- */
+  "launch.eyebrow": "Final phase of launch",
+  "launch.title": "Free trial is open. Payments are not.",
+  "launch.body":
+    "We are in the final phase of launch, so no payments are being taken yet. Start the free trial now — no payment required — and we will tell you the day paid classes open.",
+  "launch.short": "We are not taking payments yet. We will tell you the day they open.",
+  "launch.trialEndedEyebrow": "Your free trial has ended",
+  "launch.trialEnded":
+    "Your free 7 days are up. We are not taking payments yet, so paid classes are not open — we will tell you the day they are, and everything you did is saved until then.",
+  "launch.openingSoon": "Opens soon",
+  "launch.cta": "Start free — no payment required",
+  "launch.freeNow": "Free during launch",
+  "launch.priceAfter": "{price} after launch",
+  "launch.waitlist": "Not on sale yet. We will tell you when it opens.",
+  "launch.seeDetails": "See the details",
+  "launch.noTimetable": "Start the free trial and your class timetable appears here.",
 
   /* ---- Campus Ready ---- */
   "campus.title": "Campus Ready",
@@ -328,6 +347,8 @@ const si: Record<MessageKey, string> = {
   "promo.title": "සම්පූර්ණ පන්තිය ලබාගන්න",
   "promo.body": "Live පන්ති, පුහුණුව, mock exam සහ සියලු පේපර්.",
   "promo.cta": "විස්තර බලන්න",
+  "promo.launchTitle": "පන්තිය free විදියට බලන්න",
+  "promo.launchBody": "අපි තාම launch වෙනවා, ඒ නිසා කිසිම ගාස්තුවක් අය කරන්නේ නෑ. ගෙවීමක් ඕන නෑ.",
 
   "dash.greeting": "ආයුබෝවන් {name},",
   "dash.liveNow": "ඔබේ පන්තිය\nදැන් live",
@@ -360,6 +381,22 @@ const si: Record<MessageKey, string> = {
   "dash.open": "විවෘත කරන්න",
   "dash.payByBank": "බැංකුවට ගෙවන්න",
   "dash.liveBadge": "දැන් live",
+
+  "launch.eyebrow": "Launch එකේ අන්තිම අදියර",
+  "launch.title": "Free trial එක open. ගෙවීම් තාම නෑ.",
+  "launch.body":
+    "අපි දැන් ඉන්නේ launch එකේ අන්තිම අදියරේ, ඒ නිසා තාම කිසිම ගෙවීමක් ගන්නේ නෑ. දැන්ම free trial එක පටන් ගන්න — ගෙවීමක් ඕන නෑ — ගෙවන පන්ති පටන් ගන්න දවස අපි ඔයාට කියනවා.",
+  "launch.short": "අපි තාම ගෙවීම් ගන්නේ නෑ. Open වුණාම අපි ඔයාට කියනවා.",
+  "launch.trialEndedEyebrow": "Free trial එක ඉවරයි",
+  "launch.trialEnded":
+    "ඔයාගේ free දවස් 7 ඉවරයි. අපි තාම ගෙවීම් ගන්නේ නෑ, ඒ නිසා ගෙවන පන්ති තාම open නෑ — open වෙන දවස අපි කියනවා. ඔයා කරපු හැම දෙයක්ම එතෙක් save වෙලා තියෙනවා.",
+  "launch.openingSoon": "ළඟදීම open වෙනවා",
+  "launch.cta": "Free විදියට පටන් ගන්න — ගෙවීමක් ඕන නෑ",
+  "launch.freeNow": "Launch කාලෙට free",
+  "launch.priceAfter": "Launch වුණාට පස්සේ {price}",
+  "launch.waitlist": "තාම විකුණන්නේ නෑ. Open වුණාම අපි කියනවා.",
+  "launch.seeDetails": "විස්තර බලන්න",
+  "launch.noTimetable": "Free trial එක පටන් ගත්තම ඔයාගේ පන්ති timetable එක මෙතන පේනවා.",
 
   "campus.title": "Campus Ready",
   "campus.sectionHint": "campus එකට යන්න කලින් තියෙන කාලෙට",

@@ -20,6 +20,7 @@ import { CampusReadyMark } from "@/components/marketing/CampusReadyLogo";
 import { CAMPUS_READY } from "@/lib/content/campus-ready";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { faqJsonLd } from "@/lib/seo/json-ld";
+import { LAUNCH_NOTE, paymentsPaused } from "@/lib/payments/launch";
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -232,7 +233,15 @@ export default async function LandingPage() {
   const nextSession = sessions[0];
   const nextSessionSubject = nextSession ? subjects.find((s) => s.id === nextSession.subjectId) : undefined;
 
-  const startHref = user ? "/dashboard" : "/signin";
+  // Trial-only launch: every "Start free" on this page carries the trial intent
+  // through sign-in rather than dropping a new student on the dashboard to find
+  // it themselves — see `lib/payments/launch.ts` and `app/(student)/go`.
+  const paused = paymentsPaused();
+  const startHref = user
+    ? "/dashboard"
+    : paused
+      ? `/go?do=trial&subject=${SUBJECT_ID}`
+      : "/signin";
   const startLabel = user ? "Go to dashboard" : "Sign up with your phone";
 
   return (
@@ -521,18 +530,43 @@ export default async function LandingPage() {
                     </div>
                     <p className="mt-2 text-sm text-(--lp-ink-400)">{subject.description}</p>
                     <p className="mt-4 font-[family-name:var(--lp-font-display)] text-xl font-extrabold text-(--lp-ink-900)">
-                      {formatLKR(subject.priceLKR)}
-                      <span className="text-sm font-normal text-(--lp-ink-400)"> / month</span>
+                      {paused ? "Free during launch" : formatLKR(subject.priceLKR)}
+                      {paused ? null : (
+                        <span className="text-sm font-normal text-(--lp-ink-400)"> / month</span>
+                      )}
                     </p>
-                    <p className="mt-1 text-xs font-semibold text-(--lp-green-500)">First 7 days free</p>
+                    <p className="mt-1 text-xs font-semibold text-(--lp-green-500)">
+                      {paused
+                        ? `No payment required · ${formatLKR(subject.priceLKR)} / month after launch`
+                        : "First 7 days free"}
+                    </p>
                   </div>
                 ))}
               </div>
             )}
-            <p className="mt-6 flex items-center gap-1.5 text-xs text-(--lp-ink-400)">
-              <CheckCircleIcon className="size-4 text-(--lp-green-500)" />
-              Secure payments via PayHere, or pay by bank deposit slip.
-            </p>
+            {paused ? (
+              <div className="mt-6 rounded-[var(--lp-radius-card)] border border-(--lp-border-subtle) bg-(--lp-paper-0) p-5">
+                <div className={EYEBROW}>{LAUNCH_NOTE.eyebrow}</div>
+                <p className="mt-2 font-[family-name:var(--lp-font-display)] text-lg font-extrabold text-(--lp-ink-900)">
+                  {LAUNCH_NOTE.title}
+                </p>
+                <p className="mt-2 max-w-[62ch] text-sm text-(--lp-ink-400)">{LAUNCH_NOTE.body}</p>
+                <Link
+                  href={startHref}
+                  className="mt-4 inline-flex h-11 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-2 pl-5 text-sm font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
+                >
+                  {LAUNCH_NOTE.cta}
+                  <span className="grid size-7 place-items-center overflow-hidden rounded-full bg-white text-(--lp-orange-500)">
+                    <ArrowRightIcon className="size-3.5" />
+                  </span>
+                </Link>
+              </div>
+            ) : (
+              <p className="mt-6 flex items-center gap-1.5 text-xs text-(--lp-ink-400)">
+                <CheckCircleIcon className="size-4 text-(--lp-green-500)" />
+                Secure payments via PayHere, or pay by bank deposit slip.
+              </p>
+            )}
           </div>
         </section>
 

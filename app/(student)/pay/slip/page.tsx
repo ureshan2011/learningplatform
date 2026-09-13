@@ -1,9 +1,11 @@
 import { requirePageUser } from "@/lib/auth/session";
-import { listSellableSubjects } from "@/lib/queries";
+import { listEnrollments, listSellableSubjects } from "@/lib/queries";
 import { payableLKR } from "@/lib/payments/pricing";
 import { formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import { bankDetailsReady, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
+import { LAUNCH_NOTE, paymentsPaused } from "@/lib/payments/launch";
+import { ButtonLink } from "@/components/ds";
 import { BankDetailsCard } from "@/components/payments/BankDetailsCard";
 import { SlipUploadForm } from "@/components/payments/SlipUploadForm";
 import { Icon } from "@/components/ui/Icon";
@@ -28,6 +30,56 @@ export default async function SlipPage({
   const user = await requirePageUser("/pay/slip");
 
   const { subject: preferredSubject } = await searchParams;
+
+  // Trial-only launch. Checked before the settings are read, and before any
+  // bank account number is rendered: nobody should be able to reach a deposit
+  // instruction for a fee we are not charging. The API refuses the upload too.
+  //
+  // Nothing links here any more, so whoever arrives has an old bookmark — quite
+  // possibly the student whose trial is already spent. Offering them "start
+  // free" would be a button that silently does nothing, so the trial is only
+  // named when one is genuinely still theirs to take.
+  if (paymentsPaused()) {
+    const enrollments = await listEnrollments(user.uid);
+    const trialAvailable = preferredSubject
+      ? !enrollments.some((e) => e.subjectId === preferredSubject)
+      : enrollments.length === 0;
+
+    return (
+      <main className="mx-auto max-w-md px-4 py-5 sm:px-6 sm:py-6">
+        <PageHeader
+          title={trialAvailable ? LAUNCH_NOTE.title : "Paid classes are not open yet"}
+          subtitle={LAUNCH_NOTE.body}
+        />
+        <Card radius="card" className="mt-5 p-5">
+          <p className="flex items-center gap-2 font-semibold text-ict-paper-50">
+            <Icon name="info" className="!text-lg text-ict-orange-400" />
+            Do not deposit anything yet
+          </p>
+          <p className="mt-1.5 text-sm text-ict-ink-300">
+            {trialAvailable
+              ? "Start the free trial instead — it opens the class immediately, and we will tell you the day paid classes begin."
+              : "We are not taking bank deposits or card payments during launch. We will tell you the day paid classes open."}
+          </p>
+          <ButtonLink
+            // Straight through `/go`, which starts the trial and lands them in
+            // the class, rather than back to a page with one more button on it.
+            href={
+              trialAvailable && preferredSubject
+                ? `/go?do=trial&subject=${encodeURIComponent(preferredSubject)}`
+                : "/dashboard"
+            }
+            size="sm"
+            arrow="right"
+            className="mt-4"
+          >
+            {trialAvailable ? LAUNCH_NOTE.cta : "Back to my dashboard"}
+          </ButtonLink>
+        </Card>
+      </main>
+    );
+  }
+
   const [subjects, settings] = await Promise.all([listSellableSubjects(), getPaymentSettings()]);
 
   const chosen =

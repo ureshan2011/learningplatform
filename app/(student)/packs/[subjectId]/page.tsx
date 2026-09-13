@@ -4,6 +4,7 @@ import { requirePageUser } from "@/lib/auth/session";
 import { getProduct, listContent } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
+import { paymentsPaused } from "@/lib/payments/launch";
 import { formatDate, formatLKR } from "@/lib/format";
 import { getT, getLocale, localeAttrs } from "@/lib/i18n/server";
 import {
@@ -65,7 +66,12 @@ export default async function PackPage({
   ]);
 
   const owned = access.allowed;
-  const bankSlipOn = isBankSlipEnabled(paymentSettings);
+  // Trial-only launch — see `lib/payments/launch.ts`. The pack is a one-off
+  // download, so it is not handed out with the trial: the panel says it is not
+  // on sale yet rather than quoting a price nobody can pay.
+  const paused = paymentsPaused();
+  const cardPaymentsOn = !paused && payhere.configured;
+  const bankSlipOn = !paused && isBankSlipEnabled(paymentSettings);
   const fee = formatLKR(product.feeLKR);
 
   // One file per slot, newest wins — `listContent` is already newest-first, so
@@ -109,29 +115,35 @@ export default async function PackPage({
             </>
           ) : (
             <>
-              <Eyebrow>{subject.name}</Eyebrow>
+              <Eyebrow>{paused ? t("launch.eyebrow") : subject.name}</Eyebrow>
               <p className="mt-3 font-display text-3xl font-extrabold text-ict-paper-50">{fee}</p>
               <p className="mt-1 text-sm text-ict-paper-200">
-                {t("pack.onePayment", { price: fee })}
+                {paused ? t("launch.waitlist") : t("pack.onePayment", { price: fee })}
               </p>
-              <div className="mt-5 flex flex-wrap items-center gap-3">
-                {payhere.configured ? (
-                  <SubscribeButton
-                    subjectId={subject.id}
-                    sandbox={payhere.mode === "sandbox"}
-                    label={t("pack.buy", { price: fee })}
-                    kind="product"
-                  />
-                ) : null}
-                {bankSlipOn ? (
-                  <Link
-                    href={`/pay/slip?subject=${subject.id}`}
-                    className="text-sm font-semibold text-ict-paper-50 underline-offset-4 hover:underline"
-                  >
-                    {t("dash.payByBank")}
-                  </Link>
-                ) : null}
-              </div>
+              {paused ? (
+                <div className="mt-5">
+                  <Notice tone="info">{t("launch.body")}</Notice>
+                </div>
+              ) : (
+                <div className="mt-5 flex flex-wrap items-center gap-3">
+                  {cardPaymentsOn ? (
+                    <SubscribeButton
+                      subjectId={subject.id}
+                      sandbox={payhere.mode === "sandbox"}
+                      label={t("pack.buy", { price: fee })}
+                      kind="product"
+                    />
+                  ) : null}
+                  {bankSlipOn ? (
+                    <Link
+                      href={`/pay/slip?subject=${subject.id}`}
+                      className="text-sm font-semibold text-ict-paper-50 underline-offset-4 hover:underline"
+                    >
+                      {t("dash.payByBank")}
+                    </Link>
+                  ) : null}
+                </div>
+              )}
             </>
           )}
         </Card>
