@@ -1,12 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
-import { col } from "@/lib/firebase/admin";
+import { col, enrollmentId } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
 import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/payhere";
-import { addMonths } from "@/lib/payments/entitlements";
+import { addMonths, DAY_MS } from "@/lib/payments/entitlements";
 import { getPayHereConfig } from "@/lib/payments/records";
+import { PAYMENTS_PAUSED_ERROR, paymentsPaused } from "@/lib/payments/launch";
 import { payableLKR } from "@/lib/payments/pricing";
-import type { Payment, Subject } from "@/lib/types";
+import { ensureSurvivalPack } from "@/lib/content/ensure-product";
+import type { Enrollment, Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
 
@@ -20,6 +22,14 @@ const bodySchema = z.object({ subjectId: z.string().min(1).max(64) });
  * that can name its own price is a client that pays Rs 1.
  */
 export async function POST(req: NextRequest) {
+  // Trial-only launch: refused here, not merely hidden in the UI. The button is
+  // gone from every screen, but a checkout that still minted a signed PayHere
+  // form for anyone who kept an old tab open would take real money during a
+  // launch we have told students is free.
+  if (paymentsPaused()) {
+    return NextResponse.json({ error: PAYMENTS_PAUSED_ERROR }, { status: 503 });
+  }
+
   // Card payments not connected yet — students can still send a bank slip.
   const config = await getPayHereConfig();
   if (!config.configured) {
@@ -39,6 +49,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
 
+  // A student can reach checkout on a cold instance that has not rendered a
+  // page which creates the pack yet. Cheap, and once per instance.
+  await ensureSurvivalPack();
+
   const subjectSnap = await col.subjects().doc(subjectId).get();
   if (!subjectSnap.exists) {
     return NextResponse.json({ error: "subject_not_found" }, { status: 404 });
@@ -50,6 +64,7 @@ export async function POST(req: NextRequest) {
 
   const now = Date.now();
   const cohort = subject.cohort;
+  const product = subject.product;
 
   // The enrolment window is enforced here, before money moves, and nowhere
   // downstream. `grantCohortAccess` deliberately does not re-check it: once
@@ -57,6 +72,18 @@ export async function POST(req: NextRequest) {
   // up with nothing. The gate has to be in front of the payment, not behind it.
   if (cohort && now > cohort.enrolmentClosesAt) {
     return NextResponse.json({ error: "enrolment_closed" }, { status: 409 });
+  }
+
+  // Same front-of-the-payment reasoning for a pack, refusing a second purchase
+  // rather than a closed window. The enrollment is read directly instead of
+  // through `hasAccess()` on purpose: `hasAccess` says yes to a teacher, which
+  // would stop the owner ever rehearsing a purchase of their own product.
+  if (product) {
+    const snap = await col.enrollments().doc(enrollmentId(user.uid, subjectId)).get();
+    const existing = snap.exists ? (snap.data() as Enrollment) : undefined;
+    if (existing && existing.status === "active" && existing.currentPeriodEnd > now) {
+      return NextResponse.json({ error: "already_owned" }, { status: 409 });
+    }
   }
 
   // Unique per attempt: an abandoned checkout leaves a pending row rather than
@@ -74,9 +101,13 @@ export async function POST(req: NextRequest) {
     provider: "payhere",
     amountLKR,
     status: "pending",
-    ...(cohort ? { kind: "cohort" as const } : {}),
+    ...(product ? { kind: "product" as const } : cohort ? { kind: "cohort" as const } : {}),
     periodStart: now,
-    periodEnd: cohort ? cohort.endsAt : addMonths(now, 1),
+    periodEnd: product
+      ? now + product.accessDays * DAY_MS
+      : cohort
+        ? cohort.endsAt
+        : addMonths(now, 1),
     createdAt: now,
     updatedAt: now,
   };
@@ -86,7 +117,7 @@ export async function POST(req: NextRequest) {
     config,
     orderId,
     amountLKR,
-    itemName: cohort ? subject.name : `${subject.name} — 1 month`,
+    itemName: product || cohort ? subject.name : `${subject.name} — 1 month`,
     studentName: user.name,
     phone: user.phone,
     uid: user.uid,

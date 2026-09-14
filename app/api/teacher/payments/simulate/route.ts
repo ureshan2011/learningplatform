@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { col } from "@/lib/firebase/admin";
 import { requireTeacher } from "@/lib/auth/session";
-import { addMonths } from "@/lib/payments/entitlements";
+import { addMonths, DAY_MS } from "@/lib/payments/entitlements";
 import { getPayHereConfig } from "@/lib/payments/records";
 import {
   PAYHERE_STATUS,
@@ -80,8 +80,8 @@ export async function POST(req: NextRequest) {
   const subject = subjectSnap.data() as Subject;
 
   // The same pending row a real checkout writes before redirecting — including
-  // the cohort branch. A rehearsal that bills a cohort like a monthly class
-  // proves nothing about the route it is standing in for.
+  // the cohort and product branches. A rehearsal that bills either like a
+  // monthly class proves nothing about the route it is standing in for.
   const now = Date.now();
   const orderId = buildOrderId(student.uid, subject.id, now);
   const amountLKR = payableLKR(subject);
@@ -93,9 +93,17 @@ export async function POST(req: NextRequest) {
     provider: "payhere",
     amountLKR,
     status: "pending",
-    ...(subject.cohort ? { kind: "cohort" as const } : {}),
+    ...(subject.product
+      ? { kind: "product" as const }
+      : subject.cohort
+        ? { kind: "cohort" as const }
+        : {}),
     periodStart: now,
-    periodEnd: subject.cohort ? subject.cohort.endsAt : addMonths(now, 1),
+    periodEnd: subject.product
+      ? now + subject.product.accessDays * DAY_MS
+      : subject.cohort
+        ? subject.cohort.endsAt
+        : addMonths(now, 1),
     note: "Sandbox test payment",
     createdAt: now,
     updatedAt: now,

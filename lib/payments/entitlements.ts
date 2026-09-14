@@ -1,7 +1,11 @@
 import "server-only";
 
 import { col, enrollmentId } from "@/lib/firebase/admin";
+import { listProducts } from "@/lib/queries";
 import type { AccessResult, Enrollment, Payment, Subject, User } from "@/lib/types";
+
+/** One day in milliseconds — access periods here are exact days, never calendar months. */
+export const DAY_MS = 24 * 60 * 60 * 1000;
 
 /**
  * THE access check. Every gated resource goes through this function:
@@ -182,6 +186,38 @@ export async function grantCohortAccess(params: {
   source: Enrollment["source"];
   paymentId?: string;
 }): Promise<Enrollment> {
+  return grantUntil(params);
+}
+
+/**
+ * Grants access to a one-off digital product — the Campus Survival Pack.
+ *
+ * Same absolute, non-stacking end date as a cohort, for a different reason:
+ * the end is computed at checkout as now + `accessDays`, so re-buying after
+ * expiry starts a fresh period from that purchase rather than adding another
+ * three years to a period nobody was using.
+ */
+export async function grantProductAccess(params: {
+  uid: string;
+  subjectId: string;
+  tenantId: string;
+  /** Purchase time plus `Subject.product.accessDays`, decided at checkout. */
+  endsAt: number;
+  source: Enrollment["source"];
+  paymentId?: string;
+}): Promise<Enrollment> {
+  return grantUntil(params);
+}
+
+/** The fixed-end, non-stacking write both `grantCohortAccess` and `grantProductAccess` do. */
+async function grantUntil(params: {
+  uid: string;
+  subjectId: string;
+  tenantId: string;
+  endsAt: number;
+  source: Enrollment["source"];
+  paymentId?: string;
+}): Promise<Enrollment> {
   const ref = col.enrollments().doc(enrollmentId(params.uid, params.subjectId));
   const now = Date.now();
 
@@ -226,8 +262,8 @@ export async function grantForPayment(params: {
 }): Promise<Enrollment> {
   const { payment } = params;
 
-  if (payment.kind === "cohort") {
-    return grantCohortAccess({
+  if (payment.kind === "product") {
+    return grantProductAccess({
       uid: payment.uid,
       subjectId: payment.subjectId,
       tenantId: payment.tenantId,
@@ -235,6 +271,19 @@ export async function grantForPayment(params: {
       source: params.source,
       paymentId: payment.id,
     });
+  }
+
+  if (payment.kind === "cohort") {
+    const enrollment = await grantCohortAccess({
+      uid: payment.uid,
+      subjectId: payment.subjectId,
+      tenantId: payment.tenantId,
+      endsAt: payment.periodEnd,
+      source: params.source,
+      paymentId: payment.id,
+    });
+    await grantBundledProducts(payment, params.source);
+    return enrollment;
   }
 
   return grantAccess({
@@ -245,6 +294,37 @@ export async function grantForPayment(params: {
     source: params.source,
     paymentId: payment.id,
   });
+}
+
+/**
+ * Hands a cohort student every product marked `includedWithCohorts`.
+ *
+ * Lives inside `grantForPayment` rather than beside each caller so the webhook,
+ * slip approval and manual entry cannot disagree about what a seat includes.
+ * A failure here must not take the cohort grant with it — the student has paid
+ * for the programme, and a missing bonus pack is a thing the teacher can fix
+ * from the console; a refused cohort grant is not.
+ */
+async function grantBundledProducts(payment: Payment, source: Enrollment["source"]): Promise<void> {
+  try {
+    const bundled = (await listProducts()).filter((s) => s.product?.includedWithCohorts);
+    const now = Date.now();
+
+    await Promise.all(
+      bundled.map((subject) =>
+        grantProductAccess({
+          uid: payment.uid,
+          subjectId: subject.id,
+          tenantId: payment.tenantId,
+          endsAt: now + (subject.product?.accessDays ?? 0) * DAY_MS,
+          source,
+          paymentId: payment.id,
+        }),
+      ),
+    );
+  } catch (err) {
+    console.error("[payments] could not grant bundled products", err);
+  }
 }
 
 /**
@@ -284,12 +364,14 @@ export const FREE_TRIAL_DAYS = 7;
  * would also satisfy and could otherwise re-trigger a free trial every time
  * their paid access expires.
  *
- * Refuses outright on a fixed-term cohort. The trial is built for an ongoing
- * monthly class a student can sample and then keep paying for; a cohort is one
- * fixed programme bought once, so a "free week" of it is just the first two
- * weeks of a Rs 30,000 course given away. The check reads the subject rather
- * than trusting the caller, because both callers reach here from a route that
- * could gain a cohort id without anyone remembering this rule.
+ * Refuses outright on a fixed-term cohort or a one-off product. The trial is
+ * built for an ongoing monthly class a student can sample and then keep paying
+ * for; a cohort is one fixed programme bought once, so a "free week" of it is
+ * just the first two weeks of a Rs 30,000 course given away, and a week of a
+ * pack is long enough to download every file in it and never come back. The
+ * check reads the subject rather than trusting the caller, because both callers
+ * reach here from a route that could gain one of those ids without anyone
+ * remembering this rule.
  */
 export async function startFreeTrial(params: {
   uid: string;
@@ -297,10 +379,13 @@ export async function startFreeTrial(params: {
   tenantId: string;
 }): Promise<Enrollment> {
   const subjectSnap = await col.subjects().doc(params.subjectId).get();
-  if (subjectSnap.exists && (subjectSnap.data() as Subject).cohort) {
-    const err = new Error("TRIAL_NOT_AVAILABLE") as Error & { reason?: string };
-    err.reason = "trial_not_available";
-    throw err;
+  if (subjectSnap.exists) {
+    const subject = subjectSnap.data() as Subject;
+    if (subject.cohort || subject.product) {
+      const err = new Error("TRIAL_NOT_AVAILABLE") as Error & { reason?: string };
+      err.reason = "trial_not_available";
+      throw err;
+    }
   }
 
   const ref = col.enrollments().doc(enrollmentId(params.uid, params.subjectId));

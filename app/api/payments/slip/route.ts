@@ -2,10 +2,11 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { col } from "@/lib/firebase/admin";
 import { getSessionUser } from "@/lib/auth/session";
-import { addMonths } from "@/lib/payments/entitlements";
+import { addMonths, DAY_MS } from "@/lib/payments/entitlements";
 import { notifyTeacher } from "@/lib/payments/activity";
 import { payableLKR } from "@/lib/payments/pricing";
 import { getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
+import { PAYMENTS_PAUSED_ERROR, paymentsPaused } from "@/lib/payments/launch";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -25,6 +26,13 @@ const bodySchema = z.object({
  * approves it, never on upload.
  */
 export async function POST(req: NextRequest) {
+  // Trial-only launch: no student is asked to deposit anything, so a slip
+  // submitted from a stale tab is refused rather than left pending against a
+  // deposit that should never have been made.
+  if (paymentsPaused()) {
+    return NextResponse.json({ error: PAYMENTS_PAUSED_ERROR }, { status: 503 });
+  }
+
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
 
@@ -48,6 +56,7 @@ export async function POST(req: NextRequest) {
 
   const now = Date.now();
   const cohort = subject.cohort;
+  const product = subject.product;
 
   // Closed means closed on this route too, or slips pile up against a cohort
   // that started weeks ago and get approved by reflex. A student who genuinely
@@ -67,9 +76,13 @@ export async function POST(req: NextRequest) {
     provider: "bank_slip",
     amountLKR,
     status: "pending",
-    ...(cohort ? { kind: "cohort" as const } : {}),
+    ...(product ? { kind: "product" as const } : cohort ? { kind: "cohort" as const } : {}),
     periodStart: now,
-    periodEnd: cohort ? cohort.endsAt : addMonths(now, 1),
+    periodEnd: product
+      ? now + product.accessDays * DAY_MS
+      : cohort
+        ? cohort.endsAt
+        : addMonths(now, 1),
     slipUrl: body.slipUrl,
     createdAt: now,
     updatedAt: now,

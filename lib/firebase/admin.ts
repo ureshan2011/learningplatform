@@ -125,6 +125,8 @@ export const col = {
   counters: () => adminDb().collection("counters"),
   /** The teacher's money notifications, one small document per event. */
   teacherActivity: () => adminDb().collection("teacherActivity"),
+  /** One document per user per day. See `ActivityDay` for why it is batched. */
+  activity: () => adminDb().collection("activity"),
 } as const;
 
 export function enrollmentId(uid: string, subjectId: string): string {

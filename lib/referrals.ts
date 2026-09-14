@@ -21,15 +21,15 @@ const REFERRAL_BONUS_DAYS = 3;
  * referred, or the code they signed up with does not resolve to a real
  * account (typo, or the referrer's account was since disabled).
  *
- * Does nothing for a fixed-term cohort payment, and must not. Bonus days are
- * measured against a rolling period end, which a cohort does not have: they
- * would push the student past the cohort's own last day, and — worse — hand
- * the *referrer* three days of a Rs 30,000 programme they never enrolled in,
- * by minting an enrollment on the cohort's subject id. Rewarding a cohort
- * referral needs its own currency, not days.
+ * Does nothing for a fixed-term cohort or a one-off product payment, and must
+ * not. Bonus days are measured against a rolling period end, which neither
+ * has: they would push the student past the cohort's own last day, and — worse
+ * — hand the *referrer* three days of a Rs 30,000 programme, or of a pack,
+ * they never bought, by minting an enrollment on that subject id. Rewarding
+ * either referral needs its own currency, not days.
  */
 export async function applyReferralBonus(payment: Payment): Promise<void> {
-  if (payment.kind === "cohort") return;
+  if (payment.kind === "cohort" || payment.kind === "product") return;
 
   const studentRef = col.users().doc(payment.uid);
   const studentSnap = await studentRef.get();

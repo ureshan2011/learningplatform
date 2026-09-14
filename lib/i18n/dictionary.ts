@@ -44,6 +44,7 @@ const en = {
   "nav.syllabus": "Syllabus",
   "nav.certificate": "Certificate",
   "nav.campus": "Campus Ready",
+  "nav.pack": "Survival Pack",
   "nav.freeNotes": "Free notes",
   "nav.pastPapers": "Past papers",
   "nav.commandWords": "Command words",
@@ -66,6 +67,8 @@ const en = {
   "promo.title": "Unlock the full class",
   "promo.body": "Live classes, practice, mock exams and every paper.",
   "promo.cta": "See details",
+  "promo.launchTitle": "Try the class free",
+  "promo.launchBody": "We are still launching, so nothing is being charged. No payment required.",
 
   /* ---- dashboard ---- */
   "dash.greeting": "Hi {name},",
@@ -100,6 +103,23 @@ const en = {
   "dash.payByBank": "Pay by bank deposit",
   "dash.liveBadge": "Live now",
 
+  /* ---- trial-only launch (see lib/payments/launch.ts) ---- */
+  "launch.eyebrow": "Final phase of launch",
+  "launch.title": "Free trial is open. Payments are not.",
+  "launch.body":
+    "We are in the final phase of launch, so no payments are being taken yet. Start the free trial now — no payment required — and we will tell you the day paid classes open.",
+  "launch.short": "We are not taking payments yet. We will tell you the day they open.",
+  "launch.trialEndedEyebrow": "Your free trial has ended",
+  "launch.trialEnded":
+    "Your free 7 days are up. We are not taking payments yet, so paid classes are not open — we will tell you the day they are, and everything you did is saved until then.",
+  "launch.openingSoon": "Opens soon",
+  "launch.cta": "Start free — no payment required",
+  "launch.freeNow": "Free during launch",
+  "launch.priceAfter": "{price} after launch",
+  "launch.waitlist": "Not on sale yet. We will tell you when it opens.",
+  "launch.seeDetails": "See the details",
+  "launch.noTimetable": "Start the free trial and your class timetable appears here.",
+
   /* ---- Campus Ready ---- */
   "campus.title": "Campus Ready",
   "campus.sectionHint": "For the wait before university",
@@ -116,6 +136,40 @@ const en = {
   "campus.week": "Week {n}",
   "campus.laptopNeeded": "You need a laptop for this programme. Power BI does not run on a phone.",
   "campus.notStarted": "Starts {date}. Your materials open on the first day.",
+
+  /* ---- Campus Survival Pack ---- */
+  "pack.onePayment": "{price}, one payment",
+  "pack.buy": "Buy — {price}",
+  "pack.open": "Open my pack",
+  "pack.yoursUntil": "Yours until {date}",
+  "pack.inside": "What's inside",
+  "pack.seeInside": "See what's inside",
+  "pack.comingSoon": "Coming soon",
+  "pack.locked": "Locked",
+  "pack.download": "Download",
+  "pack.read": "Read it",
+  "pack.moreFiles": "More files",
+  "pack.expired": "Your pack access has ended.",
+  "pack.seeReceipt": "See the receipt",
+  "pack.guides": "Guides",
+  "pack.downloads": "Downloads",
+  "pack.phoneOk":
+    "The guides work on a phone. The Word and Excel files need a laptop or the mobile Office apps.",
+  "pack.aiNote":
+    "Drafted with AI and reviewed by Dr. Yasas Sri Wickramasinghe. Not accredited by any university.",
+  "pack.copy": "Copy",
+  "pack.copied": "Copied",
+  "pack.declareHeading": "Write your declaration",
+  "pack.declareTool": "Which tool did you use",
+  "pack.declareToolPlaceholder": "e.g. Claude, ChatGPT, Gemini",
+  "pack.declareUses": "What did you use it for",
+  "pack.declareOutput": "Your declaration",
+  "pack.declareEmpty": "Tick at least one thing above and your paragraph appears here.",
+  "pack.useBrainstorming": "Brainstorming ideas and planning the structure",
+  "pack.useGrammar": "Checking grammar and spelling",
+  "pack.useSummarising": "Summarising sources I had already read myself",
+  "pack.useCode": "Explaining and debugging code I wrote",
+  "pack.useTranslation": "Translating my own notes into English",
 
   /* ---- study tools ---- */
   "tool.practice": "Practice",
@@ -271,6 +325,7 @@ const si: Record<MessageKey, string> = {
   "nav.syllabus": "සිලබස්",
   "nav.certificate": "සර්ටිෆිකට්",
   "nav.campus": "Campus Ready",
+  "nav.pack": "Survival Pack",
   "nav.freeNotes": "නොමිලේ නෝට්ස්",
   "nav.pastPapers": "පසුගිය පේපර්",
   "nav.commandWords": "Command words",
@@ -292,6 +347,8 @@ const si: Record<MessageKey, string> = {
   "promo.title": "සම්පූර්ණ පන්තිය ලබාගන්න",
   "promo.body": "Live පන්ති, පුහුණුව, mock exam සහ සියලු පේපර්.",
   "promo.cta": "විස්තර බලන්න",
+  "promo.launchTitle": "පන්තිය free විදියට බලන්න",
+  "promo.launchBody": "අපි තාම launch වෙනවා, ඒ නිසා කිසිම ගාස්තුවක් අය කරන්නේ නෑ. ගෙවීමක් ඕන නෑ.",
 
   "dash.greeting": "ආයුබෝවන් {name},",
   "dash.liveNow": "ඔබේ පන්තිය\nදැන් live",
@@ -325,6 +382,22 @@ const si: Record<MessageKey, string> = {
   "dash.payByBank": "බැංකුවට ගෙවන්න",
   "dash.liveBadge": "දැන් live",
 
+  "launch.eyebrow": "Launch එකේ අන්තිම අදියර",
+  "launch.title": "Free trial එක open. ගෙවීම් තාම නෑ.",
+  "launch.body":
+    "අපි දැන් ඉන්නේ launch එකේ අන්තිම අදියරේ, ඒ නිසා තාම කිසිම ගෙවීමක් ගන්නේ නෑ. දැන්ම free trial එක පටන් ගන්න — ගෙවීමක් ඕන නෑ — ගෙවන පන්ති පටන් ගන්න දවස අපි ඔයාට කියනවා.",
+  "launch.short": "අපි තාම ගෙවීම් ගන්නේ නෑ. Open වුණාම අපි ඔයාට කියනවා.",
+  "launch.trialEndedEyebrow": "Free trial එක ඉවරයි",
+  "launch.trialEnded":
+    "ඔයාගේ free දවස් 7 ඉවරයි. අපි තාම ගෙවීම් ගන්නේ නෑ, ඒ නිසා ගෙවන පන්ති තාම open නෑ — open වෙන දවස අපි කියනවා. ඔයා කරපු හැම දෙයක්ම එතෙක් save වෙලා තියෙනවා.",
+  "launch.openingSoon": "ළඟදීම open වෙනවා",
+  "launch.cta": "Free විදියට පටන් ගන්න — ගෙවීමක් ඕන නෑ",
+  "launch.freeNow": "Launch කාලෙට free",
+  "launch.priceAfter": "Launch වුණාට පස්සේ {price}",
+  "launch.waitlist": "තාම විකුණන්නේ නෑ. Open වුණාම අපි කියනවා.",
+  "launch.seeDetails": "විස්තර බලන්න",
+  "launch.noTimetable": "Free trial එක පටන් ගත්තම ඔයාගේ පන්ති timetable එක මෙතන පේනවා.",
+
   "campus.title": "Campus Ready",
   "campus.sectionHint": "campus එකට යන්න කලින් තියෙන කාලෙට",
   "campus.onePayment": "{price}, එක ගෙවීමක්",
@@ -340,6 +413,40 @@ const si: Record<MessageKey, string> = {
   "campus.week": "සතිය {n}",
   "campus.laptopNeeded": "මේකට laptop එකක් ඕනේ. Power BI phone එකේ වැඩ කරන්නේ නෑ.",
   "campus.notStarted": "පටන් ගන්නේ {date}. ඒ දවසේ ඉඳන් ඔබට හැම දෙයක්ම බලන්න පුළුවන්.",
+
+  /* ---- Campus Survival Pack ---- */
+  "pack.onePayment": "{price}, එක ගෙවීමක්",
+  "pack.buy": "ගන්න — {price}",
+  "pack.open": "මගේ pack එක open කරන්න",
+  "pack.yoursUntil": "{date} වෙනකම් ඔයාගේ",
+  "pack.inside": "ඇතුළේ තියෙන්නේ මොනවද",
+  "pack.seeInside": "ඇතුළේ මොනවද කියලා බලන්න",
+  "pack.comingSoon": "ළඟදීම",
+  "pack.locked": "වහලා",
+  "pack.download": "Download කරන්න",
+  "pack.read": "කියවන්න",
+  "pack.moreFiles": "තව files",
+  "pack.expired": "ඔයාගේ pack access එක ඉවරයි.",
+  "pack.seeReceipt": "Receipt එක බලන්න",
+  "pack.guides": "Guides",
+  "pack.downloads": "Downloads",
+  "pack.phoneOk":
+    "Guides phone එකේ වැඩ කරනවා. Word සහ Excel files වලට laptop එකක් හරි mobile Office apps හරි ඕන.",
+  "pack.aiNote":
+    "AI එක්ක draft කරලා Dr. Yasas Sri Wickramasinghe review කරපු එකක්. කිසිම university එකකින් accredited නෑ.",
+  "pack.copy": "Copy කරන්න",
+  "pack.copied": "Copy වුණා",
+  "pack.declareHeading": "ඔයාගේ declaration එක හදාගන්න",
+  "pack.declareTool": "පාවිච්චි කළේ මොන tool එකද",
+  "pack.declareToolPlaceholder": "උදා: Claude, ChatGPT, Gemini",
+  "pack.declareUses": "මොකටද පාවිච්චි කළේ",
+  "pack.declareOutput": "ඔයාගේ declaration එක",
+  "pack.declareEmpty": "උඩින් අඩුම තරමේ එකක් tick කරන්න, ඔයාගේ paragraph එක මෙතන එනවා.",
+  "pack.useBrainstorming": "අදහස් හොයාගන්න සහ structure එක plan කරන්න",
+  "pack.useGrammar": "Grammar සහ spelling බලන්න",
+  "pack.useSummarising": "මමම කලින් කියවපු sources summarise කරන්න",
+  "pack.useCode": "මම ලියපු code එක explain කරන්න සහ debug කරන්න",
+  "pack.useTranslation": "මගේම notes English වලට translate කරන්න",
 
   "tool.practice": "පුහුණුව",
   "tool.practiceBlurb": "ඔබට අමාරු තැන් ඉලක්ක කරන ප්‍රශ්න",

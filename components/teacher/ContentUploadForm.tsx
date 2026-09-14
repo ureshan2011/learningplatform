@@ -8,6 +8,7 @@ import { clientAuth } from "@/lib/firebase/client";
 import { Icon } from "@/components/ui/Icon";
 import { fetchWithSession } from "@/lib/auth/session-client";
 import { Button, Card, Field, Input, Notice } from "@/components/ds";
+import { PACK_DOWNLOADS } from "@/lib/content/survival-pack";
 import type { ContentKind } from "@/lib/types";
 
 const MAX_BYTES = 200 * 1024 * 1024;
@@ -17,7 +18,12 @@ const KIND_OPTIONS: { value: ContentKind; label: string }[] = [
   { value: "past_paper", label: "Past paper" },
   { value: "marking_scheme", label: "Marking scheme" },
   { value: "replay", label: "Class replay" },
+  { value: "pack", label: "Pack file" },
 ];
+
+/** Office documents, notebooks and bibliography files, beyond the PDF/image/video the rest takes. */
+const PACK_ACCEPT =
+  ".docx,.xlsx,.pptx,.ipynb,.csv,.ris,.bib,.zip,.txt,application/pdf,image/*";
 
 /**
  * Uploads a note or past paper straight from the teacher's browser to
@@ -32,6 +38,7 @@ export function ContentUploadForm({ subjects }: { subjects: Array<{ id: string; 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
   const [kind, setKind] = useState<ContentKind>("notes");
+  const [slug, setSlug] = useState(PACK_DOWNLOADS[0]?.key ?? "");
   const [title, setTitle] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -89,6 +96,7 @@ export function ContentUploadForm({ subjects }: { subjects: Array<{ id: string; 
           isPublic,
           storagePath,
           sizeBytes: file.size,
+          ...(kind === "pack" ? { slug } : {}),
         }),
       });
       if (!res.ok) throw new Error("Could not save it. Try again.");
@@ -153,6 +161,29 @@ export function ContentUploadForm({ subjects }: { subjects: Array<{ id: string; 
           </Field>
         </div>
 
+        {kind === "pack" ? (
+          <>
+            <Field label="Which slot">
+              <select
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                className="h-12 w-full rounded-full border border-ict-border-dark bg-ict-ink-800 px-4 text-base text-ict-paper-50 outline-none focus:border-ict-orange-500"
+              >
+                {PACK_DOWNLOADS.map((item) => (
+                  <option key={item.key} value={item.key}>
+                    {item.title.en}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Notice tone="info">
+              One file per slot. If the upload is refused, the Storage rules have not been pasted
+              in yet — Firebase console, Storage, Rules, then paste the block from storage.rules
+              and publish.
+            </Notice>
+          </>
+        ) : null}
+
         <label className="flex items-center gap-2.5 text-sm font-medium text-ict-ink-300">
           <input
             type="checkbox"
@@ -186,12 +217,16 @@ export function ContentUploadForm({ subjects }: { subjects: Array<{ id: string; 
               {fileName ?? "Click to upload or drag & drop"}
             </span>
             <span className="text-xs text-ict-ink-300">
-              {fileName ? "Tap to choose a different file" : "PDF, image or video (max. 200MB)"}
+              {fileName
+                ? "Tap to choose a different file"
+                : kind === "pack"
+                  ? "Word, Excel, notebook, PDF or Zotero file (max. 200MB)"
+                  : "PDF, image or video (max. 200MB)"}
             </span>
             <input
               ref={fileInputRef}
               type="file"
-              accept="application/pdf,image/*,video/*"
+              accept={kind === "pack" ? PACK_ACCEPT : "application/pdf,image/*,video/*"}
               required
               className="sr-only"
               onChange={(e) => acceptFiles(e.target.files)}

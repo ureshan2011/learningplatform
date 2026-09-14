@@ -149,6 +149,23 @@ export interface SubjectCohort {
   feeLKR: number;
 }
 
+/**
+ * A digital product bought once and kept — the Campus Survival Pack.
+ *
+ * Distinct from `SubjectCohort` because a pack has no start, no end and no
+ * enrolment window: it is on sale every day of the year and its access period
+ * is measured from the moment of purchase. Carrying its own block rather than
+ * reusing the cohort's is what lets "is this a pack?" stay a single check.
+ */
+export interface SubjectProduct {
+  /** One-off price in LKR rupees. Not `Subject.priceLKR`, which is monthly. */
+  feeLKR: number;
+  /** How long access lasts from the moment of purchase. */
+  accessDays: number;
+  /** Granted free with every cohort seat. */
+  includedWithCohorts?: boolean;
+}
+
 export interface Subject {
   id: string;
   tenantId: TenantId;
@@ -165,6 +182,11 @@ export interface Subject {
    * ongoing monthly subjects, which is what makes it the cohort test.
    */
   cohort?: SubjectCohort;
+  /**
+   * Present only on one-off digital products. Absent everywhere else, which is
+   * what makes it the product test. Never set alongside `cohort`.
+   */
+  product?: SubjectProduct;
 }
 
 export type EnrollmentStatus = "active" | "expired" | "pending_payment" | "suspended";
@@ -289,7 +311,7 @@ export interface Payment {
    * cohort's end date must not retroactively change what an already-captured
    * payment bought.
    */
-  kind?: "monthly" | "cohort";
+  kind?: "monthly" | "cohort" | "product";
   /** Billing period this payment buys. For a cohort, `periodEnd` is the cohort's own last day. */
   periodStart: number;
   periodEnd: number;
@@ -406,7 +428,52 @@ export interface PaymentSettings {
   updatedBy?: string;
 }
 
-export type ContentKind = "notes" | "past_paper" | "marking_scheme" | "replay";
+export type ContentKind = "notes" | "past_paper" | "marking_scheme" | "replay" | "pack";
+
+/**
+ * What a student did. Kept small and closed — a free-text kind cannot be
+ * rendered. Distinct from `ActivityKind` in `lib/payments/activity.ts`, which
+ * is the teacher's money feed and has nothing to do with this.
+ */
+export type ActivityEventKind = "page" | "download" | "signin";
+
+export interface ActivityEvent {
+  kind: ActivityEventKind;
+  /**
+   * The route, with every dynamic segment left in — `/subjects/al-ict/practice`.
+   * Never the query string: it is where a token or a search term would be, and
+   * neither belongs in a log a teacher reads.
+   */
+  path: string;
+  at: number;
+  /** For a download, the file's own name. Absent on a page view. */
+  label?: string;
+}
+
+/**
+ * One person's activity for one day.
+ *
+ * A day per document rather than a document per event, and the reason is the
+ * whole design: a page view is the highest-volume thing that happens on this
+ * platform, and Firestore bills per write. At a document each, a thousand
+ * students browsing normally would spend the free daily quota before lunch
+ * (see the cost rules in docs/PLAN.md). Batched into a day, the same browsing
+ * costs a handful of writes per student.
+ *
+ * Id is `${uid}_${YYYY-MM-DD}` in Colombo time, so a teacher looking at
+ * "yesterday" sees the day the student actually had.
+ */
+export interface ActivityDay {
+  id: string;
+  tenantId: TenantId;
+  uid: string;
+  /** `YYYY-MM-DD`, Colombo. Sorts lexicographically, which is why it is a string. */
+  date: string;
+  events: ActivityEvent[];
+  /** Set when `events` hit the per-day cap and later ones were dropped. */
+  truncated?: boolean;
+  updatedAt: number;
+}
 
 /**
  * One official syllabus competency level, nested inside its `Unit` document
@@ -474,6 +541,7 @@ export interface ContentItem {
   sizeBytes?: number;
   /** Public items are indexable and power the free SEO acquisition channel. */
   isPublic: boolean;
+  /** On a `pack` item, the slot it fills on the pack page — an item key from `PACK_ITEMS`. */
   slug?: string;
   createdAt: number;
 }

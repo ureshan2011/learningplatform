@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { requirePageUser } from "@/lib/auth/session";
 import { getSubject } from "@/lib/queries";
 import { startFreeTrial } from "@/lib/payments/entitlements";
+import { paymentsPaused } from "@/lib/payments/launch";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +37,11 @@ export default async function GoPage({
   const subject = await getSubject(subjectId);
   if (!subject) redirect("/dashboard");
 
-  if (action === "trial") {
+  // Trial-only launch: a "subscribe" intent is honoured as a trial. The CTA
+  // that carried it here cannot charge anybody today, and dropping the visitor
+  // on a subject page with no payment button is how a sign-up is lost — see
+  // `lib/payments/launch.ts`.
+  if (action === "trial" || paymentsPaused()) {
     try {
       await startFreeTrial({ uid: user.uid, subjectId, tenantId: user.tenantId });
     } catch (err) {

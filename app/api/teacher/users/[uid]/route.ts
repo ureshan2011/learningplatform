@@ -4,6 +4,9 @@ import { adminAuth, col } from "@/lib/firebase/admin";
 import { requireTeacher, type SessionUser } from "@/lib/auth/session";
 import { releaseDevice, revokeAllSessions } from "@/lib/auth/devices";
 import { publicEnv } from "@/lib/env";
+import { clearActivity, listActivity } from "@/lib/activity/record";
+import { describeEvent } from "@/lib/activity/describe";
+import { summariseActivity } from "@/lib/activity/summarise";
 import type { Enrollment, Payment, Role, User } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -24,6 +27,7 @@ const actionSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("enable") }),
   z.object({ action: z.literal("sign_out") }),
   z.object({ action: z.literal("release_devices"), deviceHash: z.string().trim().max(64).optional() }),
+  z.object({ action: z.literal("clear_activity") }),
 ]);
 
 /**
@@ -33,7 +37,14 @@ const actionSchema = z.discriminatedUnion("action", [
  * admin, and any teacher can do it.
  */
 function requiresAdmin(action: string): boolean {
-  return action === "set_role" || action === "disable" || action === "enable";
+  return (
+    action === "set_role" ||
+    action === "disable" ||
+    action === "enable" ||
+    // Erasing a record is not day-to-day class admin, and the privacy policy
+    // promises it can be done — so it is one person's decision, not four's.
+    action === "clear_activity"
+  );
 }
 
 async function staffOr(res: { status: number }): Promise<SessionUser | null> {
@@ -57,9 +68,15 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ uid
 
   // Single equality filters only — narrowed and sorted in memory so no
   // composite index is needed. See the note at the top of lib/queries.ts.
-  const [enrollSnap, paySnap] = await Promise.all([
+  const [enrollSnap, paySnap, activityDays] = await Promise.all([
     col.enrollments().where("uid", "==", uid).limit(50).get(),
     col.payments().where("uid", "==", uid).limit(100).get(),
+    // Never allowed to take the panel down: activity is the least important
+    // thing on this screen and the most recently added.
+    listActivity(uid).catch((err) => {
+      console.error("[teacher] activity read failed", err);
+      return [];
+    }),
   ]);
 
   const payments = paySnap.docs
@@ -98,6 +115,18 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ uid
     totalPaidLKR: payments
       .filter((p) => p.status === "paid")
       .reduce((sum, p) => sum + p.amountLKR, 0),
+    // Described here, on the server, so the browser is sent sentences rather
+    // than a list of routes and a copy of the rules for reading them.
+    activity: activityDays.map((day) => ({
+      date: day.date,
+      truncated: Boolean(day.truncated),
+      events: day.events.map((event) => ({
+        at: event.at,
+        kind: event.kind,
+        ...describeEvent(event),
+      })),
+    })),
+    activitySummary: summariseActivity(activityDays),
   });
 }
 
@@ -191,6 +220,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ uid
       const targets = body.deviceHash ? [body.deviceHash] : devices.map((d) => d.deviceHash);
       for (const hash of targets) await releaseDevice(uid, hash);
       return NextResponse.json({ ok: true, released: targets.length });
+    }
+
+    case "clear_activity": {
+      const cleared = await clearActivity(uid);
+      return NextResponse.json({ ok: true, cleared });
     }
   }
 }

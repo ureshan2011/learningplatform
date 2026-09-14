@@ -140,7 +140,32 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="10. Liability">
+      <Clause heading="10. Digital packs">
+        <p>
+          A pack — such as the Campus Survival Pack — is a set of files and in-app guides bought
+          with a single payment, not a subscription. The access period is stated on the pack page
+          before you pay, and it runs from the day you buy it.
+        </p>
+        <p>
+          Your licence is personal. You may keep and use the files for your own study and your own
+          coursework, including after the access period ends for anything you have already
+          downloaded. You may not resell them, upload them anywhere, or pass them to anyone else,
+          including in group chats. The account-closure rule in clause 6 applies here in the same
+          way.
+        </p>
+        <p>
+          The contents of a pack were drafted with the help of AI and reviewed by us before
+          release. A pack is not accredited or recognised by any university, carries no
+          certificate, and is not a substitute for your own department&apos;s handbook — where a
+          pack and your module handbook disagree, the handbook governs your work.
+        </p>
+        <p>
+          We may add files to a pack or replace a file with a corrected version. We will not remove
+          the substance of what you bought during your access period.
+        </p>
+      </Clause>
+
+      <Clause heading="11. Liability">
         <p>
           Nothing here limits liability that cannot be limited by Sri Lankan law. Beyond that, our
           liability for any claim is limited to the fees you paid us in the three months before it
@@ -148,7 +173,7 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="11. Changes and governing law">
+      <Clause heading="12. Changes and governing law">
         <p>
           We may update these terms; the date at the top shows when. Material changes are announced
           in class and on the site before they take effect. These terms are governed by the laws of
@@ -156,7 +181,7 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="12. Contact">
+      <Clause heading="13. Contact">
         <p>
           Questions about these terms: {settings.contactPhone || <Blank>your phone</Blank>}
           {settings.contactEmail ? `, ${settings.contactEmail}` : null}.

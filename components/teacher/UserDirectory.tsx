@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Icon } from "@/components/ui/Icon";
+import { Icon, type IconName } from "@/components/ui/Icon";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { formatDate, formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
@@ -40,6 +40,24 @@ interface UserDetail {
   enrollments: Enrollment[];
   payments: Payment[];
   totalPaidLKR: number;
+  /** Newest day first, newest event first. Described on the server. */
+  activity: ActivityDayView[];
+  activitySummary: ActivitySummaryView;
+}
+
+interface ActivityDayView {
+  date: string;
+  truncated: boolean;
+  events: { at: number; kind: string; label: string; group: string; icon: IconName }[];
+}
+
+interface ActivitySummaryView {
+  activeDays: number;
+  studyActions: number;
+  downloads: number;
+  lastActiveAt: number | null;
+  topAreas: { group: string; count: number }[];
+  currentStreak: number;
 }
 
 const ROLE_TONE: Record<Role, "accent" | "neutral" | "success" | "warn"> = {
@@ -298,7 +316,7 @@ function UserPanel({
     );
   }
 
-  const { user, enrollments, payments, totalPaidLKR } = detail;
+  const { user, enrollments, payments, totalPaidLKR, activity, activitySummary } = detail;
 
   return (
     <div className="border-t border-(--color-awaken-line) bg-(--color-awaken-bg) p-4 text-sm">
@@ -360,6 +378,14 @@ function UserPanel({
           </ul>
         )}
       </Section>
+
+      <ActivitySection
+        days={activity ?? []}
+        summary={activitySummary}
+        canClear={canSetRole}
+        busy={busy}
+        onClear={() => act({ action: "clear_activity" }, "Activity history deleted.")}
+      />
 
       <Section title={`Devices (${user.devices.length})`}>
         {user.devices.length === 0 ? (
@@ -491,6 +517,125 @@ function Row({ label, value }: { label: string; value: string }) {
       <dd className="truncate text-right font-medium">{value}</dd>
     </div>
   );
+}
+
+/**
+ * What this person actually did, newest first.
+ *
+ * The summary comes before the rows on purpose. The question someone opens a
+ * student's record to answer is almost always "are they using it" rather than
+ * "what did they click", and a wall of timestamps answers the second while
+ * hiding the first. Days active is the honest measure — 200 views in one
+ * panicked evening is not the same as showing up twice a week.
+ *
+ * Days are collapsed to the most recent three, with the rest behind a toggle:
+ * a month of study is hundreds of rows, and a panel that long buries the
+ * devices and payments underneath it.
+ */
+function ActivitySection({
+  days,
+  summary,
+  canClear,
+  busy,
+  onClear,
+}: {
+  days: ActivityDayView[];
+  summary: ActivitySummaryView | undefined;
+  canClear: boolean;
+  busy: boolean;
+  onClear: () => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const shown = expanded ? days : days.slice(0, 3);
+
+  return (
+    <Section title="Activity (last 30 days)">
+      {!summary || days.length === 0 ? (
+        <p className="text-(--color-awaken-ink-soft)">
+          Nothing recorded yet. Only study actions are logged — practice, mock exams, the Code
+          Lab, live classes and downloads — so simply browsing the site leaves no rows here.
+        </p>
+      ) : (
+        <>
+          <dl className="mb-3 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
+            <Row label="Days active" value={String(summary.activeDays)} />
+            <Row label="Run" value={summary.currentStreak > 1 ? `${summary.currentStreak} days` : "—"} />
+            {/* Study actions, not page views: ordinary browsing is no longer
+                logged at all. See lib/activity/policy.ts. */}
+            <Row label="Study actions" value={String(summary.studyActions)} />
+            <Row label="Downloads" value={String(summary.downloads)} />
+          </dl>
+
+          {summary.topAreas.length > 0 ? (
+            <p className="mb-3 flex flex-wrap gap-1.5">
+              {summary.topAreas.map((area) => (
+                <span
+                  key={area.group}
+                  className="rounded-full border border-(--color-awaken-line) px-2.5 py-0.5 text-xs"
+                >
+                  {area.group} · {area.count}
+                </span>
+              ))}
+            </p>
+          ) : null}
+
+          <div className="space-y-3">
+            {shown.map((day) => (
+              <div key={day.date}>
+                <p className="mb-1 text-xs font-semibold text-(--color-awaken-ink-soft)">
+                  {formatDate(Date.parse(`${day.date}T12:00:00+05:30`))}
+                  {day.truncated ? " · busiest hours only" : ""}
+                </p>
+                <ul className="space-y-1">
+                  {day.events.map((event, i) => (
+                    <li key={`${event.at}-${i}`} className="flex items-baseline gap-2">
+                      <Icon
+                        name={event.icon}
+                        className="!text-sm shrink-0 translate-y-0.5 text-(--color-awaken-ink-soft)"
+                      />
+                      <span className="min-w-0 flex-1 break-words">{event.label}</span>
+                      <span className="shrink-0 text-xs tabular-nums text-(--color-awaken-ink-soft)">
+                        {clockTime(event.at)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {days.length > 3 ? (
+              <button onClick={() => setExpanded(!expanded)} className={smallButton}>
+                {expanded ? "Show less" : `Show all ${days.length} days`}
+              </button>
+            ) : null}
+            {canClear ? (
+              <button
+                onClick={() => {
+                  if (window.confirm("Delete this person's activity history? This cannot be undone."))
+                    onClear();
+                }}
+                disabled={busy}
+                className={smallButton}
+              >
+                Delete activity history
+              </button>
+            ) : null}
+          </div>
+        </>
+      )}
+    </Section>
+  );
+}
+
+/** Colombo wall-clock, because that is the clock the student was looking at. */
+function clockTime(at: number): string {
+  return new Date(at).toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Asia/Colombo",
+  });
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {

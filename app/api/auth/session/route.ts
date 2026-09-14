@@ -17,6 +17,7 @@ import {
   SIGNED_IN_HINT_COOKIE,
 } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
+import { recordQuietly } from "@/lib/activity/record";
 import type { User } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -143,6 +144,11 @@ export async function POST(req: NextRequest) {
   const sessionCookie = await adminAuth().createSessionCookie(parsed.idToken, {
     expiresIn: SESSION_MAX_AGE_MS,
   });
+
+  // A real sign-in, not the daily silent renewal below — the renewal happens
+  // without the student doing anything, so logging it would fill their record
+  // with rows they were not present for.
+  recordQuietly(user, { kind: "signin", path: "/signin", at: Date.now() });
 
   const res = NextResponse.json({
     ok: true,

@@ -217,6 +217,39 @@ export function courseJsonLd(course: CourseOffering) {
 }
 
 /**
+ * A one-off digital product, as a `Product` with an `Offer`.
+ *
+ * `Course` is wrong for this: the pack teaches nothing on a schedule and has no
+ * instance a student can enrol in, which is the field Google's course results
+ * turn on. A downloadable kit with a fixed price is a product, and describing it
+ * as one is what lets a price appear in the result.
+ */
+export function productJsonLd(product: {
+  name: string;
+  description: string;
+  path: string;
+  priceLKR: number;
+}) {
+  return {
+    "@type": "Product",
+    "@id": `${base()}${product.path}#product`,
+    name: product.name,
+    description: product.description,
+    url: `${base()}${product.path}`,
+    brand: { "@id": ORG_ID() },
+    category: "Educational resources",
+    offers: {
+      "@type": "Offer",
+      price: String(product.priceLKR),
+      priceCurrency: "LKR",
+      availability: "https://schema.org/InStock",
+      url: `${base()}${product.path}`,
+      seller: { "@id": ORG_ID() },
+    },
+  };
+}
+
+/**
  * Wraps a set of nodes in a single `@graph`. One script tag per page holding
  * one graph beats several disconnected scripts: the `@id` references above
  * only resolve into one coherent picture when the nodes ship together.

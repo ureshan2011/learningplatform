@@ -82,6 +82,10 @@ export default async function TeacherLayout({ children }: { children: React.Reac
         )
       }
     >
+      {/* No ActivityRecorder here on purpose. Nobody reads the teacher's own
+          history — there is one teacher, and they know what they did — and
+          every console page view used to cost a Firestore write. See
+          lib/activity/policy.ts. */}
       {children}
     </AppShell>
   );

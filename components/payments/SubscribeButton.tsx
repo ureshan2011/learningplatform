@@ -16,10 +16,16 @@ import { PolicyNote } from "@/components/payments/PolicyNote";
 export function SubscribeButton({
   subjectId,
   sandbox,
+  label = "Pay monthly",
+  kind = "monthly",
 }: {
   subjectId: string;
   /** Test mode. Said out loud so nobody types a real card into a rehearsal. */
   sandbox?: boolean;
+  /** What the button says. A one-payment product names its price here. */
+  label?: string;
+  /** Reported to analytics so monthly, cohort and pack checkouts can be told apart. */
+  kind?: string;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +33,7 @@ export function SubscribeButton({
   async function start() {
     setBusy(true);
     setError(null);
-    track("begin_checkout", { subjectId, payment_type: "payhere" });
+    track("begin_checkout", { subjectId, payment_type: "payhere", kind });
     try {
       const res = await fetchWithSession("/api/payments/payhere/checkout", {
         method: "POST",
@@ -62,7 +68,7 @@ export function SubscribeButton({
   return (
     <div>
       <Button onClick={start} disabled={busy} size="sm" arrow="right">
-        {busy ? "Opening…" : "Pay monthly"}
+        {busy ? "Opening…" : label}
       </Button>
       {sandbox ? <p className="mt-1.5 text-xs font-semibold text-ict-amber-500">Sandbox — test cards only</p> : null}
       {error ? <p className="mt-1.5 text-xs text-[#f0685a]">{error}</p> : null}

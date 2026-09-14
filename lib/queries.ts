@@ -113,14 +113,43 @@ export async function getCohort(subjectId: string): Promise<Subject | null> {
   return subject.grade === "CAMPUS" && subject.cohort ? subject : null;
 }
 
+/**
+ * The one-off digital products on sale — the mirror of `listCohorts` for packs.
+ *
+ * A third pair of accessors for the same reason the cohort pair exists: a pack
+ * is a CAMPUS subject, so `listSubjects` already excludes it from the landing
+ * page, the syllabus and the sitemap, and nothing there has to learn about it.
+ * Requires `product` to be present, which is what separates a pack from a
+ * cohort — the two blocks are never set together.
+ */
+export const listProducts = cache(async (): Promise<Subject[]> => {
+  const snap = await col
+    .subjects()
+    .where("tenantId", "==", publicEnv.tenantId)
+    .where("active", "==", true)
+    .get();
+  return snap.docs
+    .map((d) => d.data() as Subject)
+    .filter((s) => s.grade === "CAMPUS" && s.product)
+    .sort((a, b) => a.name.localeCompare(b.name));
+});
+
+/** One product. Requires `product`, so callers can treat the fee and access period as guaranteed. */
+export async function getProduct(subjectId: string): Promise<Subject | null> {
+  const snap = await col.subjects().doc(subjectId).get();
+  if (!snap.exists) return null;
+  const subject = snap.data() as Subject;
+  return subject.grade === "CAMPUS" && subject.product ? subject : null;
+}
+
 /** Whether a cohort is still taking students. The one place that rule is written. */
 export function isEnrolmentOpen(subject: Subject, at: number = Date.now()): boolean {
   return subject.cohort !== undefined && at <= subject.cohort.enrolmentClosesAt;
 }
 
 /**
- * Everything a student can pay for — the A/L class and every open or running
- * cohort.
+ * Everything a student can pay for — the A/L class, every open or running
+ * cohort, and every product on sale.
  *
  * The money screens need this rather than `listSubjects`. They resolve a
  * payment's `subjectId` to a name, so a list that omits cohorts does not merely
@@ -139,7 +168,9 @@ export const listSellableSubjects = cache(async (): Promise<Subject[]> => {
     .get();
   return snap.docs
     .map((d) => d.data() as Subject)
-    .filter((s) => s.grade === "AL" || (s.grade === "CAMPUS" && s.cohort));
+    .filter(
+      (s) => s.grade === "AL" || (s.grade === "CAMPUS" && (s.cohort || s.product)),
+    );
 });
 
 export const listEnrollments = cache(async (uid: string): Promise<Enrollment[]> => {

@@ -105,6 +105,16 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // What each person did, one document per person per day. Closed to clients
+    // in both directions and deliberately so: a student must not be able to
+    // read anyone's history including their own from the browser, and must
+    // certainly not be able to write their own — a log a student can edit is
+    // not a log. Written by /api/activity and the download routes, read by the
+    // teacher console, both through the Admin SDK.
+    match /activity/{activityId} {
+      allow read, write: if false;
+    }
+
     // ---- content ----------------------------------------------------------
     match /content/{contentId} {
       // Public items power the SEO funnel. Gated items are checked server-side

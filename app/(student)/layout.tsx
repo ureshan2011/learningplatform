@@ -1,6 +1,10 @@
 import { resolveSession } from "@/lib/auth/session";
-import { listCohorts, listEnrollments, listSubjects } from "@/lib/queries";
+import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
+import { paymentsPaused } from "@/lib/payments/launch";
+import { ensureSurvivalPack } from "@/lib/content/ensure-product";
+import { shouldRecordRole } from "@/lib/activity/policy";
+import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { Chip } from "@/components/ds";
@@ -29,10 +33,15 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const { user } = await resolveSession();
   if (!user) return <>{children}</>;
 
-  const [enrollments, subjects, cohorts, t, locale] = await Promise.all([
+  // The pack has to exist before anything can list or sell it, and nobody is
+  // going to create it from the console. Once per server instance.
+  await ensureSurvivalPack();
+
+  const [enrollments, subjects, cohorts, products, t, locale] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
     listCohorts(),
+    listProducts(),
     getT(),
     getLocale(),
   ]);
@@ -49,6 +58,10 @@ export default async function StudentLayout({ children }: { children: React.Reac
     enrollments.filter((e) => e.status === "active" && e.currentPeriodEnd > now).map((e) => e.subjectId),
   );
   const primary = subjects.find((s) => activeIds.has(s.id)) ?? (isStaff ? subjects[0] : undefined);
+  // Any enrollment document at all spends the trial for that subject — the rule
+  // `startFreeTrial` enforces — so this asks whether one is still untouched.
+  const enrolledIds = new Set(enrollments.map((e) => e.subjectId));
+  const trialStillAvailable = subjects.some((s) => !enrolledIds.has(s.id));
 
   const groups: NavGroup[] = [];
   const mobileTabs: NavItem[] = [{ href: "/dashboard", label: t("nav.home"), icon: "home" }];
@@ -91,11 +104,19 @@ export default async function StudentLayout({ children }: { children: React.Reac
   // someone who has not enrolled: the dashboard card is where an intake is sold,
   // and a permanent nav link to something you cannot open is noise.
   const myCohort = cohorts.find((c) => activeIds.has(c.id)) ?? (isStaff ? cohorts[0] : undefined);
-  if (myCohort) {
-    groups.push({
-      label: t("campus.title"),
-      items: [{ href: `/campus/${myCohort.id}`, label: t("nav.campus"), icon: "school" }],
-    });
+  // Same rule for a pack the student owns. Both live under one Campus Ready
+  // heading rather than two, so owning the pack alone does not put a
+  // one-item group in the rail.
+  const myPack = products.find((p) => activeIds.has(p.id)) ?? (isStaff ? products[0] : undefined);
+  if (myCohort || myPack) {
+    const campusItems: NavItem[] = [];
+    if (myCohort) {
+      campusItems.push({ href: `/campus/${myCohort.id}`, label: t("nav.campus"), icon: "school" });
+    }
+    if (myPack) {
+      campusItems.push({ href: `/packs/${myPack.id}`, label: t("nav.pack"), icon: "inventory_2" });
+    }
+    groups.push({ label: t("campus.title"), items: campusItems });
   }
 
   groups.push({
@@ -129,8 +150,21 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const promo: ShellPromo | undefined =
     activeIds.size === 0 && !isStaff && primary
       ? {
-          title: t("promo.title"),
-          body: t("promo.body"),
+          // The rail is on every screen, so during the trial-only launch it is
+          // the one place that tells a student, everywhere, that nothing is
+          // being charged — see `lib/payments/launch.ts`. It must not keep
+          // offering a free trial to someone who has already spent theirs and
+          // has no way to pay, so it switches to "soon" once one exists.
+          title: !paymentsPaused()
+            ? t("promo.title")
+            : trialStillAvailable
+              ? t("promo.launchTitle")
+              : t("launch.trialEndedEyebrow"),
+          body: !paymentsPaused()
+            ? t("promo.body")
+            : trialStillAvailable
+              ? t("promo.launchBody")
+              : t("launch.short"),
           href: `/subjects/${primary.id}`,
           cta: t("promo.cta"),
         }
@@ -157,6 +191,11 @@ export default async function StudentLayout({ children }: { children: React.Reac
         )
       }
     >
+      {/* Students only. The owner opens these same screens on a laptop, a phone
+          and a second browser to check what students see, and logging that
+          would put their own browsing on the bill — see lib/activity/policy.ts.
+          The route enforces this too; this just stops the requests. */}
+      {shouldRecordRole(user.role) ? <ActivityRecorder /> : null}
       {children}
     </AppShell>
   );
