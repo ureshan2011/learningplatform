@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import {
   Activity,
+  ArrowDownRight,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
@@ -117,6 +118,11 @@ const ICONS = {
   arrow_back: ArrowLeft,
   arrow_forward: ArrowRight,
   north_east: ArrowUpRight,
+  // A cut-off moving between rounds. Three weights of the same line family, so
+  // a trend never reads as a different icon set.
+  trending_up: ArrowUpRight,
+  trending_down: ArrowDownRight,
+  trending_flat: ArrowRight,
   event: Calendar,
   calendar_month: CalendarDays,
   videocam: Video,

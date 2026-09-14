@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
 import { Icon } from "@/components/ui/Icon";
+import { Suspense } from "react";
+import { FreeChecker } from "@/components/campus-match/FreeChecker";
 import { EligibilityExplorer } from "@/components/university-pathways/EligibilityExplorer";
+import districtData from "@/lib/content/ugc/districts.json";
+import streamData from "@/lib/content/ugc/streams.json";
 import { ALSO_WORTH_KNOWING } from "@/lib/content/university-pathways";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
@@ -81,7 +85,35 @@ export default function UniversityPathwaysPage() {
             </div>
           </section>
 
-          {/* Interactive eligibility explorer */}
+          {/* The checker. Every state it can be in lives in the URL, so this is
+              also the thing a student shares and the thing that carries their
+              answers into the paid report. */}
+          <section id="check" className="w-full pb-[clamp(32px,6vw,72px)]">
+            <div className={CONTAINER}>
+              <Eyebrow className="lp-reveal">Check your Z-score</Eyebrow>
+              <h2 className="lp-reveal mt-2.5 mb-[clamp(20px,3vw,30px)] font-display text-[clamp(26px,4vw,38px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ict-ink-900">
+                What your district&rsquo;s cut-offs were last round
+              </h2>
+              {/* useSearchParams needs a boundary; without one the whole route
+                  opts out of static rendering. */}
+              <Suspense fallback={<p className="text-sm text-ict-ink-400">Loading the checker…</p>}>
+                <FreeChecker
+                  districts={districtData.districts.map((d) => ({ key: d.key, name: d.name }))}
+                  streams={streamData.streams.map((s) => ({
+                    key: s.key,
+                    name: s.name,
+                    subjects: s.subjects,
+                  }))}
+                  zMin={streamData.zScoreRange.min}
+                  zMax={streamData.zScoreRange.max}
+                />
+              </Suspense>
+            </div>
+          </section>
+
+          {/* The older ICT-only explorer, kept below the checker: it answers a
+              different question — which degrees an ICT background opens at all —
+              and it is what this page has ranked for. */}
           <section className="w-full pb-[clamp(32px,6vw,72px)]">
             <div className={CONTAINER}>
               <Eyebrow className="lp-reveal">Check your combination</Eyebrow>
