@@ -247,3 +247,35 @@ old-syllabus tables are recorded in the manifest and left out of the series, and
 Eight rounds, 2018/2019 through 2025/2026, all still downloadable from `ugc.ac.lk`. The five-round
 minimum in §2.1 is met with three to spare, and the newest round is the current admission cycle, so
 neither stop condition in §8 step 1 fired.
+
+### A.4 What the backtest found about the trend (step 3)
+
+Both calibration bars in §4 are met comfortably — Likely clears 87.4% against a
+bar of 70, Unlikely 5.7% against a bar of 10 — at every damping and sigma floor
+in the sweep, so the bars do not choose between them.
+
+Held-out error does, and it says the trend term is not earning its place: error
+rises steadily as more of the recent trend is carried forward and is lowest with
+none of it. Cut-offs move with the size and strength of one cohort rather than
+along a path, so last round's figure is on its own the best single guess. The
+difference is about 4% of error across the whole sweep, and no claim the report
+makes depends on it, so the shipped damping stays at the 0.5 §1 specifies —
+§4 asks for tuning until the bars are met, and they are. `DAMPING` in
+`lib/campus-match/forecast.ts` is one constant if that is ever revisited.
+
+The sigma floor matters more than the damping, and for the opposite reason: it
+is what stops a course whose recent years happened to land close together being
+handed a confidence it has not earned. The specified 0.08 leaves the bands
+slightly wider than nominal, which is the direction §4 asks to err in.
+
+### A.5 How much of a report is a real trend (step 3)
+
+Across all 11,775 course-and-district cells, forecasting the coming round from
+every published round: **36.6%** have enough history to read a trend from,
+**48.9%** are too short and hold last round's figure with a widened band, and
+**14.4%** have no cut-off to forecast from at all and are shown as
+"no cut-off was published for your district last round".
+
+Pooling sigma across districts, which §4 describes as what makes a thin district
+usable, is therefore load-bearing rather than a refinement: it is what the
+middle half of every report rests on.
