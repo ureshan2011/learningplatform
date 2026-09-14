@@ -25,3 +25,6 @@ ui-debug.log
 next-env.d.ts
 .vercel
 coverage/
+
+# Campus Match source PDFs — fetched by scripts/campus-match/fetch.mjs, never committed
+.campus-match-pdfs/
