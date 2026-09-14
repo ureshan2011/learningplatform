@@ -61,7 +61,7 @@ export async function GET(
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
-  recordQuietly(user.uid, user.tenantId, {
+  recordQuietly(user, {
     kind: "download",
     path: `/packs/${subjectId}`,
     at: Date.now(),

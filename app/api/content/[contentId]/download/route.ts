@@ -40,7 +40,7 @@ export async function GET(
   // Recorded here rather than in the browser: this is the moment access was
   // actually granted, and it is the row a teacher most often wants — "did they
   // ever get the paper". Never allowed to fail the download.
-  recordQuietly(user.uid, user.tenantId, {
+  recordQuietly(user, {
     kind: "download",
     path: `/subjects/${item.subjectId}`,
     at: Date.now(),

@@ -53,7 +53,7 @@ interface ActivityDayView {
 
 interface ActivitySummaryView {
   activeDays: number;
-  pageViews: number;
+  studyActions: number;
   downloads: number;
   lastActiveAt: number | null;
   topAreas: { group: string; count: number }[];
@@ -552,14 +552,17 @@ function ActivitySection({
     <Section title="Activity (last 30 days)">
       {!summary || days.length === 0 ? (
         <p className="text-(--color-awaken-ink-soft)">
-          Nothing recorded yet. Activity starts building the next time they open the site.
+          Nothing recorded yet. Only study actions are logged — practice, mock exams, the Code
+          Lab, live classes and downloads — so simply browsing the site leaves no rows here.
         </p>
       ) : (
         <>
           <dl className="mb-3 grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4">
             <Row label="Days active" value={String(summary.activeDays)} />
             <Row label="Run" value={summary.currentStreak > 1 ? `${summary.currentStreak} days` : "—"} />
-            <Row label="Pages" value={String(summary.pageViews)} />
+            {/* Study actions, not page views: ordinary browsing is no longer
+                logged at all. See lib/activity/policy.ts. */}
+            <Row label="Study actions" value={String(summary.studyActions)} />
             <Row label="Downloads" value={String(summary.downloads)} />
           </dl>
 
