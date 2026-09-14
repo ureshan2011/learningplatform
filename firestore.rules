@@ -167,6 +167,15 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ---- campusMatch (a student's own Campus Match answers) ---------------
+    // Written only by /api/campus-match/inputs through the Admin SDK, behind
+    // hasAccess(). Spelled out rather than left to the catch-all below because
+    // this holds a student's Z-score and district: the one collection where a
+    // rule added by reflex later would leak something personal.
+    match /campusMatch/{inputsId} {
+      allow read, write: if false;
+    }
+
     // Anything not matched above is denied.
     match /{document=**} {
       allow read, write: if false;

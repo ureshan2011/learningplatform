@@ -666,6 +666,55 @@ export interface PredictedPaperSettings {
 }
 
 /**
+ * The publish switch for one cycle of Campus Match.
+ *
+ * Same shape and same default as the predicted paper's: absent means
+ * unpublished. The owner reads the source manifest, the backtest and a sample
+ * of degree profiles before a student can be charged for a forecast.
+ */
+export interface CampusMatchSettings {
+  tenantId: TenantId;
+  subjectId: string;
+  published: boolean;
+  publishedAt?: number;
+  publishedBy?: string;
+}
+
+/**
+ * What a student told Campus Match about themselves, kept so the report opens
+ * already filled in.
+ *
+ * Written only by the server, only after `hasAccess`. A student who could write
+ * this could not forge access — the enrollment is what grants that — but they
+ * could put another student's results in their own record, and the outcome
+ * field below is the only ground truth next cycle's backtest will have.
+ */
+export interface CampusMatchInputs {
+  id: string;
+  tenantId: TenantId;
+  uid: string;
+  /** The subject id of the cycle these inputs belong to. */
+  cycle: string;
+  z: number;
+  district: string;
+  stream: string;
+  /** Subject keys the student passed at C or better. */
+  passes: string[];
+  /** True when they can study in English medium. */
+  medium: boolean;
+  /** Course keys in the order the student would list them on the form. */
+  preferences: string[];
+  /**
+   * What they were actually offered, asked once after selection results.
+   * The only real check the next cycle's forecast can be scored against.
+   */
+  outcome?: string;
+  outcomeAt?: number;
+  createdAt: number;
+  updatedAt: number;
+}
+
+/**
  * One student's spaced-repetition state for one question.
  *
  * Deterministic id `${uid}_${questionId}` for the same reason enrollment ids

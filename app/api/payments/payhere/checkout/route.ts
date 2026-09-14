@@ -8,6 +8,9 @@ import { getPayHereConfig } from "@/lib/payments/records";
 import { PAYMENTS_PAUSED_ERROR, paymentsPaused } from "@/lib/payments/launch";
 import { payableLKR } from "@/lib/payments/pricing";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
+import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
+import { getCampusMatchSettings } from "@/lib/campus-match/settings";
+import { dataFreshness } from "@/lib/campus-match/data";
 import type { Enrollment, Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -72,6 +75,30 @@ export async function POST(req: NextRequest) {
   // up with nothing. The gate has to be in front of the payment, not behind it.
   if (cohort && now > cohort.enrolmentClosesAt) {
     return NextResponse.json({ error: "enrolment_closed" }, { status: 409 });
+  }
+
+  // Campus Match sells a forecast, so it has two gates a pack does not — both
+  // in front of the payment, for the same reason the cohort window is.
+  if (subjectId === CAMPUS_MATCH_ID) {
+    // Nothing is sold until the owner has read the source manifest and the
+    // backtest and looked at the degree profiles. A missing settings document
+    // reads as unpublished.
+    const settings = await getCampusMatchSettings();
+    if (!settings.published) {
+      return NextResponse.json({ error: "not_published" }, { status: 409 });
+    }
+
+    // The product is scoped to one admission cycle. Once the dataset is older
+    // than the window it was built for, a new round has been published that
+    // this report does not know about, and its forecast is of a cut-off the
+    // student could already look up for real.
+    const freshness = dataFreshness(now);
+    if (freshness.stale) {
+      return NextResponse.json(
+        { error: "stale_data", round: freshness.round, ageDays: freshness.ageDays },
+        { status: 409 },
+      );
+    }
   }
 
   // Same front-of-the-payment reasoning for a pack, refusing a second purchase

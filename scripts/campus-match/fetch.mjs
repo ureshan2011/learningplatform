@@ -29,6 +29,8 @@ const outFlag = process.argv.indexOf("--out");
 /** Where the PDFs land. Outside the repo by default: they are not committed. */
 const PDF_DIR = outFlag > -1 ? process.argv[outFlag + 1] : join(REPO, ".campus-match-pdfs");
 const MANIFEST = join(REPO, "lib", "content", "ugc", "SOURCES.md");
+/** The same facts as SOURCES.md, for code rather than for a reader. */
+const MANIFEST_JSON = join(REPO, "lib", "content", "ugc", "manifest.json");
 
 async function download(url, dest) {
   // curl rather than fetch: these are 1–3MB PDFs from a slow origin behind a
@@ -131,6 +133,29 @@ async function main() {
 
   await writeFile(MANIFEST, renderManifest(entries, problems, fetchedAt), "utf8");
   console.log(`\nmanifest -> ${MANIFEST}`);
+
+  // The staleness check in the checkout route reads this rather than the
+  // markdown: a product that refuses to sell must not depend on a regex over a
+  // document written for a person.
+  const newest = entries.find((e) => e.newest);
+  await writeFile(
+    MANIFEST_JSON,
+    JSON.stringify(
+      {
+        generatedAt: fetchedAt,
+        newestRound: newest?.round ?? null,
+        newestCoverYear: newest?.coverYear ?? null,
+        newestBasis: newest?.basis ?? null,
+        newestFetchedAt: newest?.fetchedAt ?? null,
+        seriesRounds: entries.filter((e) => e.kind === "cutoff" && e.series).map((e) => e.round),
+        handbookCoverYear: entries.find((e) => e.kind === "handbook")?.coverYear ?? null,
+      },
+      null,
+      1,
+    ) + "\n",
+    "utf8",
+  );
+  console.log(`manifest -> ${MANIFEST_JSON}`);
 
   if (problems.length > 0) {
     console.error(`\n${problems.length} problem(s):`);

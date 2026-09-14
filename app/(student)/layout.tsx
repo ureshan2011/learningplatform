@@ -3,6 +3,7 @@ import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/
 import { getLocale, getT } from "@/lib/i18n/server";
 import { paymentsPaused } from "@/lib/payments/launch";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
+import { ensureCampusMatch } from "@/lib/campus-match/ensure";
 import { shouldRecordRole } from "@/lib/activity/policy";
 import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
@@ -33,9 +34,10 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const { user } = await resolveSession();
   if (!user) return <>{children}</>;
 
-  // The pack has to exist before anything can list or sell it, and nobody is
-  // going to create it from the console. Once per server instance.
-  await ensureSurvivalPack();
+  // Both products have to exist before anything can list or sell them, and the
+  // console has no screen that creates one. Once per server instance each;
+  // Campus Match is created inactive until the owner publishes it.
+  await Promise.all([ensureSurvivalPack(), ensureCampusMatch()]);
 
   const [enrollments, subjects, cohorts, products, t, locale] = await Promise.all([
     listEnrollments(user.uid),

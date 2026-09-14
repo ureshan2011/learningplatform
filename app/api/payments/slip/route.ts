@@ -7,6 +7,9 @@ import { notifyTeacher } from "@/lib/payments/activity";
 import { payableLKR } from "@/lib/payments/pricing";
 import { getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { PAYMENTS_PAUSED_ERROR, paymentsPaused } from "@/lib/payments/launch";
+import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
+import { getCampusMatchSettings } from "@/lib/campus-match/settings";
+import { dataFreshness } from "@/lib/campus-match/data";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -64,6 +67,18 @@ export async function POST(req: NextRequest) {
   // it by hand from the console, which is an override by design.
   if (cohort && now > cohort.enrolmentClosesAt) {
     return NextResponse.json({ error: "enrolment_closed" }, { status: 409 });
+  }
+
+  // The same two gates the card checkout applies. A slip is the other way money
+  // reaches this product, so a check only on the card route is not a check.
+  if (subject.id === CAMPUS_MATCH_ID) {
+    if (!(await getCampusMatchSettings()).published) {
+      return NextResponse.json({ error: "not_published" }, { status: 409 });
+    }
+    const freshness = dataFreshness(now);
+    if (freshness.stale) {
+      return NextResponse.json({ error: "stale_data", round: freshness.round }, { status: 409 });
+    }
   }
 
   const amountLKR = payableLKR(subject);
