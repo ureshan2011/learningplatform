@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { getSessionUser } from "@/lib/auth/session";
 import { recordActivity } from "@/lib/activity/record";
+import { isMainActivity, shouldRecordRole } from "@/lib/activity/policy";
 import type { ActivityEvent } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -50,6 +51,12 @@ export async function POST(req: NextRequest) {
   // closes can outlive the cookie, and the browser has nowhere to show a 401.
   if (!user) return new NextResponse(null, { status: 204 });
 
+  // Students only. The recorder is not mounted for anyone else, so this
+  // normally catches just a tab open from before a role change or a deploy —
+  // but it is the line that makes "students only" true rather than merely
+  // intended, and it costs nothing: no read, no write, not even a parsed body.
+  if (!shouldRecordRole(user.role)) return new NextResponse(null, { status: 204 });
+
   let body: z.infer<typeof bodySchema>;
   try {
     body = bodySchema.parse(await req.json());
@@ -58,16 +65,27 @@ export async function POST(req: NextRequest) {
   }
 
   const now = Date.now();
-  const events: ActivityEvent[] = body.events.map((event) => ({
-    kind: "page",
-    path: event.path,
-    // A phone with a wrong clock is common here; trusting it would file a
-    // student's evening under a day that has not happened yet.
-    at: Math.abs(event.at - now) > DRIFT_MS ? now : event.at,
-  }));
+  const events: ActivityEvent[] = body.events
+    // Filtered again here, not only in the browser. The client already drops
+    // everything that is not a study action, so this normally removes nothing —
+    // but the body is the part a student controls, and without this a crafted
+    // batch could still fill their own record (and the bill) with whatever it
+    // liked. See `lib/activity/policy.ts`.
+    .filter((event) => isMainActivity(event.path))
+    .map((event) => ({
+      kind: "page",
+      path: event.path,
+      // A phone with a wrong clock is common here; trusting it would file a
+      // student's evening under a day that has not happened yet.
+      at: Math.abs(event.at - now) > DRIFT_MS ? now : event.at,
+    }));
+
+  // Nothing worth writing. Costs no read and no write — the common case now
+  // that ordinary browsing is not logged.
+  if (events.length === 0) return new NextResponse(null, { status: 204 });
 
   try {
-    await recordActivity(user.uid, user.tenantId, events);
+    await recordActivity(user.uid, user.tenantId, user.role, events);
   } catch (err) {
     // Losing a page view must never surface to a student mid-navigation.
     console.error("[activity] batch rejected", err);

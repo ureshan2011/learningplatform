@@ -148,7 +148,7 @@ export async function POST(req: NextRequest) {
   // A real sign-in, not the daily silent renewal below — the renewal happens
   // without the student doing anything, so logging it would fill their record
   // with rows they were not present for.
-  recordQuietly(user.uid, user.tenantId, { kind: "signin", path: "/signin", at: Date.now() });
+  recordQuietly(user, { kind: "signin", path: "/signin", at: Date.now() });
 
   const res = NextResponse.json({
     ok: true,

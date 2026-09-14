@@ -3,6 +3,7 @@ import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/
 import { getLocale, getT } from "@/lib/i18n/server";
 import { paymentsPaused } from "@/lib/payments/launch";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
+import { shouldRecordRole } from "@/lib/activity/policy";
 import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
@@ -190,7 +191,11 @@ export default async function StudentLayout({ children }: { children: React.Reac
         )
       }
     >
-      <ActivityRecorder />
+      {/* Students only. The owner opens these same screens on a laptop, a phone
+          and a second browser to check what students see, and logging that
+          would put their own browsing on the bill — see lib/activity/policy.ts.
+          The route enforces this too; this just stops the requests. */}
+      {shouldRecordRole(user.role) ? <ActivityRecorder /> : null}
       {children}
     </AppShell>
   );

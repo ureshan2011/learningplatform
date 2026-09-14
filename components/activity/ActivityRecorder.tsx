@@ -2,9 +2,18 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { isMainActivity } from "@/lib/activity/policy";
 
 /**
- * Records which pages this person opened.
+ * Records the study actions this student took.
+ *
+ * Not every page they opened: `isMainActivity` drops the dashboard, the
+ * account screen, the syllabus and every free resource page before anything
+ * is buffered, so a student who spends an evening reading notes costs nothing
+ * at all. See `lib/activity/policy.ts` for what is kept and why.
+ *
+ * Mounted only for a student — the layouts decide that, and the route checks
+ * the role again before it writes anything.
  *
  * Buffers in memory and flushes on a timer, when the tab is hidden, and when
  * the page goes away. That batching is the point: a page view is the most
@@ -27,8 +36,16 @@ import { usePathname } from "next/navigation";
  * route answers 204 rather than 401 for the same reason.
  */
 
-/** Long enough that a fast reader costs one write, short enough to survive a crash. */
-const FLUSH_MS = 30_000;
+/**
+ * Long enough that a whole study session usually costs one write, short enough
+ * to survive a crash.
+ *
+ * Raised from 30s once ordinary page views stopped being logged. Study actions
+ * are minutes apart, not seconds, so a 30-second window flushed each one on its
+ * own and turned a batching mechanism into one-write-per-event. The tab-hidden
+ * and page-hide flushes are what actually bound the loss, not this timer.
+ */
+const FLUSH_MS = 3 * 60_000;
 
 /** Matches the route's own cap. A buffer at this size flushes immediately. */
 const MAX_BUFFER = 40;
@@ -46,6 +63,10 @@ export function ActivityRecorder() {
     // updates search params or refreshes logs the same line repeatedly.
     if (lastPath.current === pathname) return;
     lastPath.current = pathname;
+
+    // Browsing is not studying. Dropped here rather than at the route, so an
+    // evening of reading notes sends no request at all.
+    if (!isMainActivity(pathname)) return;
 
     buffer.current.push({ path: pathname, at: Date.now() });
     if (buffer.current.length >= MAX_BUFFER) flush(buffer.current.splice(0));

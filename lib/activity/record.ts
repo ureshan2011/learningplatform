@@ -1,7 +1,8 @@
 import "server-only";
 
 import { col } from "@/lib/firebase/admin";
-import type { ActivityDay, ActivityEvent } from "@/lib/types";
+import { shouldRecordRole } from "@/lib/activity/policy";
+import type { ActivityDay, ActivityEvent, Role } from "@/lib/types";
 
 /**
  * Writing and reading a person's activity.
@@ -20,6 +21,14 @@ import type { ActivityDay, ActivityEvent } from "@/lib/types";
  *
  * Only the server writes these. The uid always comes from the session, never
  * from a request body, or a student could write history for somebody else.
+ *
+ * ## Who gets written
+ *
+ * Students, and nobody else. Every writer here takes the person's role, and
+ * anyone who is not a student is dropped before any Firestore call — see
+ * `policy.ts` for why. The check lives in `recordActivity` rather than at each
+ * call site on purpose: there are three writers today, and a fourth that forgot
+ * would put the owner's own browsing back on the bill without anyone noticing.
  */
 
 /**
@@ -62,8 +71,12 @@ function dayId(uid: string, date: string): string {
 export async function recordActivity(
   uid: string,
   tenantId: string,
+  role: Role,
   events: ActivityEvent[],
 ): Promise<void> {
+  // The one gate. A teacher testing the student experience must not cost a
+  // write, and this is the line that guarantees it however they got here.
+  if (!shouldRecordRole(role)) return;
   if (events.length === 0) return;
 
   const byDate = new Map<string, ActivityEvent[]>();
@@ -118,9 +131,10 @@ export async function recordActivity(
 export async function recordOne(
   uid: string,
   tenantId: string,
+  role: Role,
   event: ActivityEvent,
 ): Promise<void> {
-  await recordActivity(uid, tenantId, [event]);
+  await recordActivity(uid, tenantId, role, [event]);
 }
 
 /**
@@ -130,8 +144,14 @@ export async function recordOne(
  * student who paid and got nothing, which is far worse than a gap in a log the
  * teacher reads occasionally.
  */
-export function recordQuietly(uid: string, tenantId: string, event: ActivityEvent): void {
-  void recordOne(uid, tenantId, event).catch((err) => {
+export function recordQuietly(
+  // The whole session user rather than loose ids, so the role cannot be left
+  // off at a call site — the one mistake that would quietly restore the cost
+  // this logging was trimmed to avoid.
+  user: { uid: string; tenantId: string; role: Role },
+  event: ActivityEvent,
+): void {
+  void recordOne(user.uid, user.tenantId, user.role, event).catch((err) => {
     console.error("[activity] could not record", err);
   });
 }

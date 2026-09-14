@@ -12,7 +12,12 @@ import { describeEvent, type ActivityGroup } from "@/lib/activity/describe";
 export interface ActivitySummary {
   /** Days in the window on which they did anything at all. */
   activeDays: number;
-  pageViews: number;
+  /**
+   * Study actions in the window — practice, a mock exam, the Code Lab, a live
+   * class. Not page views: ordinary browsing is not logged (see
+   * `lib/activity/policy.ts`), so this counts things done, not screens opened.
+   */
+  studyActions: number;
   downloads: number;
   lastActiveAt: number | null;
   /** Where their time went, most-used first. Empty when there is nothing yet. */
@@ -22,7 +27,7 @@ export interface ActivitySummary {
 }
 
 export function summariseActivity(days: ActivityDay[]): ActivitySummary {
-  let pageViews = 0;
+  let studyActions = 0;
   let downloads = 0;
   let lastActiveAt: number | null = null;
   const areas = new Map<ActivityGroup, number>();
@@ -30,7 +35,7 @@ export function summariseActivity(days: ActivityDay[]): ActivitySummary {
   for (const day of days) {
     for (const event of day.events) {
       if (event.kind === "download") downloads += 1;
-      else if (event.kind === "page") pageViews += 1;
+      else if (event.kind === "page") studyActions += 1;
 
       if (lastActiveAt === null || event.at > lastActiveAt) lastActiveAt = event.at;
 
@@ -41,7 +46,7 @@ export function summariseActivity(days: ActivityDay[]): ActivitySummary {
 
   return {
     activeDays: days.filter((d) => d.events.length > 0).length,
-    pageViews,
+    studyActions,
     downloads,
     lastActiveAt,
     topAreas: [...areas]

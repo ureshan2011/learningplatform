@@ -1,7 +1,6 @@
 import { resolveSession, isStaff } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";
-import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { getLocale } from "@/lib/i18n/server";
@@ -83,7 +82,10 @@ export default async function TeacherLayout({ children }: { children: React.Reac
         )
       }
     >
-      <ActivityRecorder />
+      {/* No ActivityRecorder here on purpose. Nobody reads the teacher's own
+          history — there is one teacher, and they know what they did — and
+          every console page view used to cost a Firestore write. See
+          lib/activity/policy.ts. */}
       {children}
     </AppShell>
   );
