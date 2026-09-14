@@ -11,10 +11,14 @@ import { schemeRule, schemeUnstated } from "@/lib/campus-match/scheme";
 import { ADMISSION_ROUND, CAMPUS_MATCH_ID, CAMPUS_MATCH_NAME } from "@/lib/campus-match/cycle";
 import { Badge, Card, Eyebrow, Notice, PageHeader, StatCard } from "@/components/ds";
 import { Bands } from "@/components/campus-match/Bands";
-import { OrderBuilder, type OrderCandidate } from "@/components/campus-match/OrderBuilder";
+import {
+  OrderBuilder,
+  type OrderCandidate,
+  type OrderLabels,
+} from "@/components/campus-match/OrderBuilder";
 import { ChangeAnswers } from "@/components/campus-match/ChangeAnswers";
 import { PrintReport } from "@/components/campus-match/PrintReport";
-import { ReportInputs } from "@/components/campus-match/ReportInputs";
+import { ReportInputs, type InputLabels } from "@/components/campus-match/ReportInputs";
 import districts from "@/lib/content/ugc/districts.json";
 import streams from "@/lib/content/ugc/streams.json";
 
@@ -282,8 +286,16 @@ export default async function CampusMatchReportPage({
   );
 }
 
-/** The strings the two client components need, since the dictionary stays on the server. */
-function inputLabels(t: Translator, zMin: number, zMax: number) {
+/**
+ * The strings the client components need, since the dictionary stays on the
+ * server.
+ *
+ * Both return types are written out on purpose. Every field is a `string`, so
+ * accidentally putting a `(x) => t(...)` in one of these is a typecheck error
+ * rather than a 500 in production — React cannot serialise a function to a
+ * Client Component, and it throws while rendering the page when you try.
+ */
+function inputLabels(t: Translator, zMin: number, zMax: number): InputLabels {
   return {
     z: t("match.zLabel"),
     zHint: t("match.zHint", { min: zMin, max: zMax }),
@@ -300,13 +312,16 @@ function inputLabels(t: Translator, zMin: number, zMax: number) {
   };
 }
 
-function orderLabels(t: Translator) {
+function orderLabels(t: Translator): OrderLabels {
   return {
     title: t("match.orderTitle"),
     intro: t("match.orderIntro"),
     empty: t("match.orderEmpty"),
-    nothing: (pct: number) => t("match.orderNothing", { pct }),
-    count: (n: number, max: number) => t("match.orderCount", { n, max }),
+    // Templates, not functions: a Server Component cannot hand a function to a
+    // Client Component, and `interpolate` leaves `{pct}` in place when it is
+    // given no variables. The browser fills them in.
+    nothing: t("match.orderNothing"),
+    count: t("match.orderCount"),
     add: t("match.orderAdd"),
     choose: t("match.choose"),
     save: t("match.orderSave"),
@@ -316,9 +331,9 @@ function orderLabels(t: Translator) {
     unstated: t("match.orderUnstated"),
     assumed: t("match.orderRule"),
     independence: t("match.independence"),
-    quote: (text: string) => t("match.orderQuote", { text }),
-    up: (course: string) => t("match.orderUp", { course }),
-    down: (course: string) => t("match.orderDown", { course }),
-    remove: (course: string) => t("match.orderRemove", { course }),
+    quote: t("match.orderQuote"),
+    up: t("match.orderUp"),
+    down: t("match.orderDown"),
+    remove: t("match.orderRemove"),
   };
 }
