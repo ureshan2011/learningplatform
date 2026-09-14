@@ -28,12 +28,21 @@ export interface OrderCandidate {
 /** As many as the screen can hold honestly; the form's own limit is unpublished. */
 const MAX_PREFERENCES = 15;
 
+/**
+ * Every label arrives as a finished string, and the ones with a number or a
+ * course name in them arrive as templates carrying `{pct}`, `{course}` and so
+ * on. They cannot arrive as functions: this is a Client Component, and React
+ * will not serialise a function across that boundary — it throws while
+ * rendering the page, which is exactly how this went out broken once.
+ */
 export interface OrderLabels {
   title: string;
   intro: string;
   empty: string;
-  nothing: (pct: number) => string;
-  count: (n: number, max: number) => string;
+  /** Carries `{pct}`. */
+  nothing: string;
+  /** Carries `{n}` and `{max}`. */
+  count: string;
   add: string;
   choose: string;
   save: string;
@@ -45,10 +54,19 @@ export interface OrderLabels {
   /** Said when it does. */
   assumed: string;
   independence: string;
-  quote: (text: string) => string;
-  up: (course: string) => string;
-  down: (course: string) => string;
-  remove: (course: string) => string;
+  /** Carries `{text}`. */
+  quote: string;
+  /** These three carry `{course}`. */
+  up: string;
+  down: string;
+  remove: string;
+}
+
+/** The browser half of `interpolate` — same placeholders, same behaviour. */
+function fill(template: string, vars: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (match, key: string) =>
+    key in vars ? String(vars[key]) : match,
+  );
 }
 
 export function OrderBuilder({
@@ -145,7 +163,7 @@ export function OrderBuilder({
                   type="button"
                   onClick={() => move(i, -1)}
                   disabled={i === 0}
-                  aria-label={labels.up(c.course)}
+                  aria-label={fill(labels.up, { course: c.course })}
                   className="grid size-8 place-items-center rounded-full border border-ict-border-dark text-ict-ink-200 disabled:opacity-40"
                 >
                   <Icon name="expand_less" className="!text-sm" />
@@ -154,7 +172,7 @@ export function OrderBuilder({
                   type="button"
                   onClick={() => move(i, 1)}
                   disabled={i === chosen.length - 1}
-                  aria-label={labels.down(c.course)}
+                  aria-label={fill(labels.down, { course: c.course })}
                   className="grid size-8 place-items-center rounded-full border border-ict-border-dark text-ict-ink-200 disabled:opacity-40"
                 >
                   <Icon name="expand_more" className="!text-sm" />
@@ -162,7 +180,7 @@ export function OrderBuilder({
                 <button
                   type="button"
                   onClick={() => change(order.filter((k) => k !== c.key))}
-                  aria-label={labels.remove(c.course)}
+                  aria-label={fill(labels.remove, { course: c.course })}
                   className="grid size-8 place-items-center rounded-full border border-ict-border-dark text-ict-ink-200"
                 >
                   <Icon name="close" className="!text-sm" />
@@ -175,8 +193,8 @@ export function OrderBuilder({
 
       {chosen.length > 0 ? (
         <p className="mt-4 flex flex-wrap items-center gap-2">
-          <Badge tone={nothing > 50 ? "warning" : "neutral"}>{labels.nothing(nothing)}</Badge>
-          <Badge tone="neutral">{labels.count(chosen.length, MAX_PREFERENCES)}</Badge>
+          <Badge tone={nothing > 50 ? "warning" : "neutral"}>{fill(labels.nothing, { pct: nothing })}</Badge>
+          <Badge tone="neutral">{fill(labels.count, { n: chosen.length, max: MAX_PREFERENCES })}</Badge>
         </p>
       ) : null}
 
@@ -220,7 +238,7 @@ export function OrderBuilder({
         {orderRuleUnstated ? labels.unstated : labels.assumed} {labels.independence}
       </p>
       {sourceQuote ? (
-        <p className="mt-2 text-xs leading-relaxed text-ict-ink-400">{labels.quote(sourceQuote)}</p>
+        <p className="mt-2 text-xs leading-relaxed text-ict-ink-400">{fill(labels.quote, { text: sourceQuote })}</p>
       ) : null}
     </Card>
   );
