@@ -21,6 +21,7 @@
    "duration": "04 years",
    "intake": 820,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination. (i) Chemistry; Physics; and Biology (ii) Chemistry; Physics or Mathematics; Biology or Agricultural Science (iii) Chemistry; Biology; Agricultural Science or Mathematics  Degree Programmes & : Bachelor of Science in Agriculture Available Universities Sabaragamuwa University of Sri Lanka Bachelor of Science Honours in Agriculture Eastern University, Sri Lanka University of Jaffna Rajarata University of Sri Lanka Wayamba University of Sri Lanka",
    "eligibilityVerify": true
   },
@@ -39,6 +40,7 @@
    "duration": "04 years",
    "intake": 165,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination. (i) Chemistry; Physics; and Biology (ii) Chemistry; Physics or Mathematics; Biology or Agricultural Science (iii) Chemistry; Biology; Agricultural Science or Mathematics",
    "eligibilityVerify": true
   },
@@ -64,6 +66,13 @@
    "duration": "",
    "intake": 1683,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Higher Mathematics",
+    "Mathematics",
+    "Combined Mathematics",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Agricultural Science  Higher Mathematics  Mathematics  Combined Mathematics  Physics",
    "eligibilityVerify": true
   },
@@ -84,6 +93,13 @@
    "duration": "03 years",
    "intake": 425,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Higher Mathematics",
+    "Mathematics",
+    "Combined Mathematics",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Agricultural Science  Higher Mathematics  Mathematics  Combined Mathematics  Physics Names of the Universities and the degree programmes offered by them are given below: Sabaragamuwa University of Sri Lanka  Bachelor of Science (Applied Sciences) in Environmental Sciences and Natural Resources Management",
    "eligibilityVerify": true
   },
@@ -107,6 +123,26 @@
    "duration": "",
    "intake": 2238,
    "aptitudeTest": false,
+   "subjects": [
+    "Civil Engineering",
+    "Chemical & Process Engineering",
+    "Computer Engineering",
+    "Electrical & Electronic Engineering",
+    "Mechanical Engineering",
+    "Manufacturing & Industrial Engineering",
+    "Biomedical Engineering",
+    "Electrical Engineering",
+    "Electronic and Telecommunication Engineering",
+    "Computer Science & Engineering",
+    "Materials Science & Engineering",
+    "Civil and Environmental Engineering",
+    "Electrical and Information Engineering",
+    "Mechanical and Manufacturing Engineering",
+    "Marine Engineering & Naval Architecture",
+    "Electrical and Electronic Engineering",
+    "Electrical Engineering #",
+    "Electronic Engineering #"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Combined Mathematics and Physics at the G.C.E. (Advanced Level) Examination. Fields of specialization available in each university are : University of Peradeniya:  Civil Engineering  Chemical & Process Engineering  Computer Engineering  Electrical & Electronic Engineering  Mechanical Engineering  Manufacturing & Industrial Engineering University of Moratuwa:  Biomedical Engineering  Electrical Engineering  Chemical & Process Engineering  Electronic and Telecommunication Engineering  Civil Engineering  Mechanical Engineering  Computer Science & Engineering  Materials Science & Engineering University of Ruhuna:  Civil and Environmental Engineering  Electrical and Information Engineering  Mechanical and Manufacturing Engineering  Marine Engineering & Naval Architecture  Computer Engineering University of Jaffna:  Civil Engineering  Electrical and Electronic Engineering  Mechanical Engineering  Computer Engineering South Eastern University of Sri Lanka:  Civil Engineering  Electrical Engineering #  Electronic Engineering #  Mechanical Engineering # For the time being Electrical Engineering and Electronic Engineering will be combined and offered as ‘Electrical & Electronic Engineering’. ACADEMIC YEAR 2025/2026 - 68 - UNIVERSITY GRANTS COMMISSION University of Sri Jayewardenepura:  Civil Engineering  Computer Engineering  Electrical and Electronic Engineering  Mechanical Engineering Selection for a particular field of specialization specified above would be done by the University to which the candidate has been admitted. 2.2.4.2 Engineering (EM) - Earth Resources Engineering",
    "eligibilityVerify": true
   },
@@ -125,6 +161,7 @@
    "duration": "04 years",
    "intake": 80,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Combined Mathematics and Physics at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -143,6 +180,7 @@
    "duration": "04 years",
    "intake": 98,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Combined Mathematics and Physics at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -161,6 +199,17 @@
    "duration": "04 years",
    "intake": 152,
    "aptitudeTest": false,
+   "subjects": [
+    "Combined Mathematics",
+    "Higher Mathematics",
+    "Accounting",
+    "Economics",
+    "Business Statistics",
+    "Business Studies",
+    "Physics",
+    "Chemistry",
+    "Information & Communication Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : Should have obtained a minimum of ‘S’ grade in at least one of the following subjects at the G.C.E.(Advanced Level) Examination;  Combined Mathematics  Higher Mathematics and other subject/subjects from the following list;  Accounting  Economics  Business Statistics  Business Studies  Physics  Chemistry  Information & Communication Technology In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (a) At least a Credit Pass (C) in Mathematics (b) At least an Ordinary Pass (S) in Science (c) At least a Credit Pass (C) in English Language",
    "eligibilityVerify": true
   },
@@ -185,6 +234,14 @@
    "duration": "03 years",
    "intake": 716,
    "aptitudeTest": false,
+   "subjects": [
+    "Combined Mathematics",
+    "Higher Mathematics",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Information & Communication Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘C’ grade in Combined Mathematics or Physics or Higher Mathematics; and At least ‘S’ grades in two other subjects listed below at the G.C.E. (Advanced Level) Examination;  Combined Mathematics  Higher Mathematics  Mathematics  Physics  Chemistry  Information & Communication Technology",
    "eligibilityVerify": true
   },
@@ -210,6 +267,14 @@
    "duration": "",
    "intake": 2312,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Combined Mathematics",
+    "Biology",
+    "Higher Mathematics",
+    "Chemistry",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in following three subjects at the G.C.E. (Advanced Level) Examination and the three subjects must include; 1. Combined Mathematics or Higher Mathematics and 2. Chemistry or Physics and 3. The third subject from the list given below;  Agricultural Science  Combined Mathematics  Biology  Higher Mathematics  Chemistry  Physics",
    "eligibilityVerify": true
   },
@@ -228,6 +293,7 @@
    "duration": "04 years",
    "intake": 165,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Physics, Combined Mathematics and in any other subject available at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -250,6 +316,16 @@
    "duration": "03 years",
    "intake": 778,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Combined Mathematics",
+    "Biology",
+    "Higher Mathematics",
+    "Chemistry",
+    "Physics",
+    "Information & Communication Technology",
+    "Bachelor of Science in Applied Sciences"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in following three subjects at the G.C.E. (Advanced Level) Examination and the three subjects must include; 1. Combined Mathematics or Higher Mathematics and 2. Chemistry or Physics and 3. The third subject from the list given below;  Agricultural Science  Combined Mathematics  Biology  Higher Mathematics  Chemistry  Physics  Information & Communication Technology Details of the degree programmes under Applied Sciences (Physical Science) in different universities are given below: Rajarata University of Sri Lanka:  Bachelor of Science in Applied Sciences",
    "eligibilityVerify": true
   },
@@ -266,6 +342,7 @@
    "duration": "",
    "intake": 5474,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -282,6 +359,7 @@
    "duration": "",
    "intake": 70,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -310,6 +388,7 @@
    "duration": "",
    "intake": 884,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -337,6 +416,7 @@
    "duration": "",
    "intake": 6983,
    "aptitudeTest": true,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -355,6 +435,7 @@
    "duration": "",
    "intake": 350,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -374,6 +455,7 @@
    "duration": "",
    "intake": 462,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -392,6 +474,44 @@
    "duration": "05 years",
    "intake": 100,
    "aptitudeTest": true,
+   "subjects": [
+    "Art",
+    "Chemistry",
+    "Higher Mathematics",
+    "Biology",
+    "Combined Mathematics",
+    "Physics",
+    "Geography",
+    "Accounting",
+    "Mathematics",
+    "Hindu Civilization",
+    "Sanskrit",
+    "Business Statistics",
+    "German",
+    "Islamic Civilization",
+    "Information & Communication",
+    "Greek & Roman Civilization Technology",
+    "Political Science",
+    "Arabic",
+    "English",
+    "History",
+    "Sinhala",
+    "Business Studies",
+    "Communication & Media Studies",
+    "Japanese",
+    "Christian Civilization",
+    "Economics",
+    "Hindi",
+    "Pali",
+    "Buddhist Civilization",
+    "French",
+    "Home Economics",
+    "Tamil",
+    "Chinese",
+    "Agricultural Science",
+    "Logic & Scientific Method",
+    "Korean"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : A candidate should have obtained at least ‘S’ passes at the G.C.E. (Advanced Level) Examination in; (i) At least one of the following subjects;  Art  Chemistry  Higher Mathematics  Biology  Combined Mathematics  Physics  Geography and (ii) The other subject/ subjects from the following list;  Accounting  Mathematics  Hindu Civilization  Sanskrit  Business Statistics  German  Islamic Civilization  Information & Communication  Greek & Roman Civilization Technology  Political Science  Arabic  English  History  Sinhala  Business Studies  Communication & Media Studies  Japanese  Christian Civilization  Economics  Hindi  Pali  Buddhist Civilization  French  Home Economics  Tamil  Chinese  Agricultural Science  Logic & Scientific Method  Korean In addition, candidates must fulfill the following requirements; (a) At least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination (b) At least a Credit Pass (C) in Mathematics at the G.C.E. (Ordinary Level) Examination or an Ordinary Pass (S) in Mathematics at the G.C.E. (Advanced Level) Examination (c) Passed the Aptitude Test, which will be held by the University of Moratuwa",
    "eligibilityVerify": true
   },
@@ -410,6 +530,7 @@
    "duration": "04 years",
    "intake": 87,
    "aptitudeTest": true,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination. In addition to that, candidates must fulfill the following requirements; (a) At least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination (b) At least a Credit Pass (C) in Mathematics at the G.C.E. (Ordinary Level) Examination or an Ordinary Pass (S) in Mathematics at the G.C.E. (Advanced Level) Examination (c) At least a Credit Pass (C) in Science at the G.C.E. (Ordinary Level) Examination (d) Passed the Aptitude Test, which will be conducted by the University of Moratuwa",
    "eligibilityVerify": true
   },
@@ -430,6 +551,42 @@
    "duration": "04 years",
    "intake": 495,
    "aptitudeTest": false,
+   "subjects": [
+    "Accounting",
+    "Political Science",
+    "Agricultural Science",
+    "Geography",
+    "Biology",
+    "Higher Mathematics",
+    "Business Statistics",
+    "History",
+    "Business Studies",
+    "Logic & Scientific Method",
+    "Chemistry",
+    "Economics",
+    "Physics",
+    "Mathematics/Combined Mathematics",
+    "Communication & Media Studies",
+    "Information & Communication",
+    "Buddhism/ Buddhist Civilization",
+    "Islam/ Islamic Civilization",
+    "Christianity/ Christian Civilization",
+    "Chinese",
+    "Greek & Roman Civilization",
+    "English",
+    "Japanese",
+    "French",
+    "Pali",
+    "German",
+    "Sanskrit",
+    "Arabic",
+    "Sinhala",
+    "Hindi",
+    "Tamil",
+    "Russian",
+    "Hinduism/ Hindu Civilization",
+    "Korean"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least two ‘C’ grades and one ‘S’ grade in three subjects selected as follows at the G.C.E. (Advanced Level) Examination; (a) Three subjects from the following list;  Accounting  Political Science  Agricultural Science  Geography  Biology  Higher Mathematics  Business Statistics  History  Business Studies  Logic & Scientific Method  Chemistry  Economics  Physics  Mathematics/Combined Mathematics  Communication & Media Studies  Information & Communication Technology or (b) One or two subjects from the above list and the other subject/ subjects from the following list;  Buddhism/ Buddhist Civilization  Islam/ Islamic Civilization  Christianity/ Christian Civilization  Chinese  Greek & Roman Civilization  English  Japanese  French  Pali  German  Sanskrit  Arabic  Sinhala  Hindi  Tamil  Russian  Hinduism/ Hindu Civilization  Korean In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (i) At least a Credit Pass (C) in English (ii) At least a Credit Pass (C) in Sinhala or Tamil",
    "eligibilityVerify": true
   },
@@ -448,6 +605,12 @@
    "duration": "04 years",
    "intake": 251,
    "aptitudeTest": false,
+   "subjects": [
+    "Higher Mathematics",
+    "Combined Mathematics",
+    "Mathematics",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : Three passes including at least a ‘C’ grade in one of the following subjects at the G.C.E. (Advanced Level) Examination;  Higher Mathematics  Combined Mathematics  Mathematics  Physics",
    "eligibilityVerify": true
   },
@@ -468,6 +631,7 @@
    "duration": "04 years",
    "intake": 119,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : Having obtained at least a ‘C’ grade in one of the subjects; Higher Mathematics, Combined Mathematics, Mathematics or Physics (i). Three subjects at the G.C.E. (Advanced Level) Examination in Biological Science Stream or Physical Science Stream; or (ii). Two subjects from the Biological Science Stream or Physical Science Stream and Information & Communication Technology as the third subject. In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (a) At least a Very Good Pass (B) in Mathematics (b) At least a Credit Pass (C) in English 40% from the proposed intake of this course of study will be selected from the Biological Science Stream and the remaining will be selected from other relevant subject combinations.",
    "eligibilityVerify": true
   },
@@ -484,6 +648,7 @@
    "duration": "",
    "intake": 100,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -502,6 +667,7 @@
    "duration": "",
    "intake": 200,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -521,6 +687,25 @@
    "duration": "04 years",
    "intake": 88,
    "aptitudeTest": false,
+   "subjects": [
+    "Combined Mathematics",
+    "Chemistry",
+    "Physics",
+    "Biology",
+    "Accounting",
+    "Geography",
+    "Agricultural Science",
+    "Higher Mathematics",
+    "Business Studies",
+    "Logic & Scientific Methods",
+    "Business Statistics",
+    "Mathematics",
+    "Information & Communication",
+    "Biosystems Technology",
+    "Economics",
+    "Engineering Technology",
+    "Political Science"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : I At least Ordinary Passes (S) in three subjects from the following subjects at the G.C.E. (Advanced Level) Examination.  Combined Mathematics  Chemistry  Physics  Biology or II One or two subject/s from the above and the other subject/ subjects from the following subjects.  Accounting  Geography  Agricultural Science  Higher Mathematics  Business Studies  Logic & Scientific Methods  Business Statistics  Mathematics  Information & Communication  Biosystems Technology Technology  Science for Technology  Economics  Engineering Technology  Political Science In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (a) At least a Very Good Pass (B) in English (b) At least a Credit Pass (C) in Mathematics",
    "eligibilityVerify": true
   },
@@ -539,6 +724,7 @@
    "duration": "",
    "intake": 33,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -557,6 +743,7 @@
    "duration": "05 years",
    "intake": 383,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -575,6 +762,7 @@
    "duration": "05 years",
    "intake": 89,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -593,6 +781,7 @@
    "duration": "04 years",
    "intake": 79,
    "aptitudeTest": true,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination. In addition to that, candidates must fulfill the following requirements; (a) At least a Credit Pass (C) in English, Mathematics, and Science at the G.C.E. (Ordinary Level) Examination. (b) Pass the Aptitude Test which will be conducted by the University of Moratuwa.",
    "eligibilityVerify": true
   },
@@ -613,6 +802,7 @@
    "duration": "04 years",
    "intake": 220,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -632,6 +822,7 @@
    "duration": "06 years [05 academic years and 01-year (final) internship]",
    "intake": 247,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -655,6 +846,7 @@
    "duration": "",
    "intake": 573,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination. In addition to that, at least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination. The following universities offer a 120 credit curriculum leading to a Bachelor of Science in Nursing;  University of Peradeniya  University of Sri Jayewardenepura  University of Ruhuna  University of Jaffna  Eastern University, Sri Lanka  University of Colombo Guidance and Information  Candidates are required to submit the duly certified copy of the original G.C.E. (Ordinary Level) Examination certificate confirming the above grades along with the application for university admission. Failure to submit it will result in rejection of the application for the course of study in Nursing.  In addition, the candidates should be a minimum of 4ꞌ10ꞌꞌ in height and should not have any kind of deformity. Candidates who fail to satisfy these physical conditions will not be considered for the course of study in Nursing. ACADEMIC YEAR 2025/2026 - 57 - UNIVERSITY GRANTS COMMISSION  These two requirements are given as mandatory requirements in the Nursing Minute of the Nursing Council.  If you get selected for the course of study in Nursing, based on false/ inaccurate information provided in the application, your admission for the course of study in Nursing will be cancelled. 2.2.3.18 Pharmacy",
    "eligibilityVerify": true
   },
@@ -674,6 +866,7 @@
    "duration": "03 years",
    "intake": 285,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘C’ grade in Combined Mathematics or Physics or Information & Communication Technology at the G.C.E. (Advanced Level) Examination; and ‘S’ grades for any other two subjects available at the G.C.E. (Advanced Level) Examination. In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (i) At least a Credit Pass (C) in English (ii) At least a Credit Pass (C) in Mathematics  Degree Programmes & : Bachelor of Science in Information Technology Available Universities [BSc (IT)] Rajarata University of Sri Lanka . Bachelor of Science in Information Technology University of Vavuniya, Sri Lanka",
    "eligibilityVerify": true
   },
@@ -692,6 +885,7 @@
    "duration": "04 years",
    "intake": 221,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination. (i) Chemistry; Physics; and Biology (ii) Chemistry; Physics or Mathematics; Biology or Agricultural Science (iii) Chemistry; Biology; Agricultural Science or Mathematics",
    "eligibilityVerify": true
   },
@@ -710,6 +904,13 @@
    "duration": "03 years",
    "intake": 103,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Higher Mathematics",
+    "Mathematics",
+    "Combined Mathematics",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Agricultural Science  Higher Mathematics  Mathematics  Combined Mathematics  Physics",
    "eligibilityVerify": true
   },
@@ -731,6 +932,7 @@
    "duration": "",
    "intake": 239,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘C’ grade in Chemistry and ‘S’ grades in Physics and Biology at the G.C.E. (Advanced Level) Examination. In addition to that, at least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination. The following universities offer a 120 credit curriculum leading to a Bachelor of Science in Pharmacy.  University of Peradeniya  University of Sri Jayewardenepura  University of Jaffna  University of Ruhuna Candidates are required to submit the duly certified copy of the original G.C.E. (Ordinary Level) Examination certificate confirming the above grades along with the application for university admission. Failure to submit it will result in rejection of the application for the course of study in Pharmacy. 2.2.3.19 Medical Laboratory Sciences",
    "eligibilityVerify": true
   },
@@ -752,6 +954,7 @@
    "duration": "",
    "intake": 226,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination. In addition to that, at least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination. The following universities offer a 120 credit curriculum leading to a Bachelor of Science in Medical Laboratory Sciences;  University of Peradeniya  University of Sri Jayewardenepura  University of Ruhuna  University of Jaffna Candidates are required to submit the duly certified copy of the original G.C.E. (Ordinary Level) Examination certificate confirming the above grade along with the application for university admission. Failure to submit it will result in rejection of the application for the course of study in Medical Laboratory Sciences. ACADEMIC YEAR 2025/2026 - 58 - UNIVERSITY GRANTS COMMISSION 2.2.3.20 Radiography",
    "eligibilityVerify": true
   },
@@ -770,6 +973,7 @@
    "duration": "",
    "intake": 68,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination. In addition to that, at least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination. The University of Peradeniya offers a 120 credit curriculum leading to a Bachelor of Science in Radiography. Candidates are required to submit the duly certified copy of the original G.C.E. (Ordinary Level) Examination certificate confirming the above grade along with the application for university admission. Failure to submit it will result in rejection of the application for the course of study in Radiography. 2.2.3.21 Physiotherapy",
    "eligibilityVerify": true
   },
@@ -789,6 +993,12 @@
    "duration": "",
    "intake": 111,
    "aptitudeTest": false,
+   "subjects": [
+    "Biology",
+    "Mathematics",
+    "Higher Mathematics",
+    "Combined Mathematics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Physics, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Biology  Mathematics  Higher Mathematics  Combined Mathematics In addition to that, at least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination. The following universities offer a 120 credit curriculum leading to a Bachelor of Science in Physiotherapy;  University of Colombo  University of Peradeniya Candidates are required to submit the duly certified copy of the original G.C.E. (Ordinary Level) Examination certificate confirming the above grade along with the application for university admission. Failure to submit it will result in rejection of the application for the course of study in Physiotherapy. ACADEMIC YEAR 2025/2026 - 59 - UNIVERSITY GRANTS COMMISSION 2.2.3.22 Biochemistry & Molecular Biology",
    "eligibilityVerify": true
   },
@@ -807,6 +1017,12 @@
    "duration": "03 years",
    "intake": 109,
    "aptitudeTest": false,
+   "subjects": [
+    "Physics",
+    "Combined Mathematics",
+    "Mathematics",
+    "Agricultural Science"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Physics  Combined Mathematics  Mathematics  Agricultural Science ACADEMIC YEAR 2025/2026 - 60 - UNIVERSITY GRANTS COMMISSION",
    "eligibilityVerify": true
   },
@@ -825,6 +1041,20 @@
    "duration": "04 years",
    "intake": 81,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Geography",
+    "German",
+    "Combined Mathematics",
+    "History",
+    "Political Science",
+    "English",
+    "Logic & Scientific Methods",
+    "French",
+    "Physics",
+    "Information & Communication Technology",
+    "Korean"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : Candidates should have fulfilled the relevant minimum qualifications indicated under one of the following two categories at the G.C.E. (Advanced Level) Examination. Category (A) Should have obtained at least ‘S’ grades in Chemistry, Combined Mathematics and Physics at the G.C.E. (Advanced Level) Examination. Category (B) Should have obtained at least ‘S’ grades in Business Studies, Economics and Accounting at the G.C.E. (Advanced Level) Examination; or Should have obtained at least ‘S’ grades for two subjects including Accounting from the above Category (B) and the other subject from the following subjects.  Agricultural Science  Geography  German  Combined Mathematics  History  Political Science  English  Logic & Scientific Methods  French  Physics  Information & Communication Technology  Korean In addition to fulfilling the minimum requirements under one of the above two categories, the candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (a) At least a Credit Pass (C) in English (b) At least a Credit Pass (C) in Mathematics (c) At least a Credit Pass (C) in Science",
    "eligibilityVerify": true
   },
@@ -843,6 +1073,7 @@
    "duration": "04 years",
    "intake": 91,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Combined Mathematics and Physics at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -861,6 +1092,7 @@
    "duration": "03 years",
    "intake": 80,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -879,6 +1111,7 @@
    "duration": "03 years",
    "intake": 121,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Combined Mathematics and any two subjects given below at the G.C.E. (Advanced Level) Examination; • Higher Mathematics • Physics • Chemistry • Information & Communication Technology ACADEMIC YEAR 2025/2026 - 72 - UNIVERSITY GRANTS COMMISSION",
    "eligibilityVerify": true
   },
@@ -897,6 +1130,7 @@
    "duration": "04 years",
    "intake": 79,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Combined Mathematics and two of the following subjects at the G.C.E. (Advanced Level) Examination; • Biology • Chemistry • Physics • Agricultural Science • Mathematics • Higher Mathematics • Information & Communication Technology",
    "eligibilityVerify": true
   },
@@ -915,6 +1149,7 @@
    "duration": "04 years",
    "intake": 150,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -933,6 +1168,7 @@
    "duration": "",
    "intake": 278,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -951,6 +1187,15 @@
    "duration": "04 years",
    "intake": 107,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Higher Mathematics",
+    "Mathematics",
+    "Combined Mathematics",
+    "Physics",
+    "Biology",
+    "Chemistry"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Agricultural Science  Higher Mathematics  Mathematics  Combined Mathematics  Physics or At least ‘S’ grades in following three subjects at the G.C.E. (Advanced Level) Examination and the three subjects must include; 1. Combined Mathematics or Higher Mathematics and 2. Chemistry or Physics and 3. The third subject from the list given below;  Agricultural Science  Combined Mathematics  Biology  Higher Mathematics  Chemistry  Physics",
    "eligibilityVerify": true
   },
@@ -969,6 +1214,15 @@
    "duration": "04 years",
    "intake": 101,
    "aptitudeTest": false,
+   "subjects": [
+    "Higher Mathematics",
+    "Mathematics",
+    "Combined Mathematics",
+    "Physics",
+    "Biology",
+    "Chemistry",
+    "Information & Communication Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Higher Mathematics  Mathematics  Combined Mathematics  Physics or At least ‘S’ grades in following three subjects at the G.C.E. (Advanced Level) Examination and the three subjects must include; 1. Combined Mathematics or Higher Mathematics and 2. Chemistry or Physics and 3. The third subject from the list given below;  Combined Mathematics  Biology  Higher Mathematics  Chemistry  Physics  Information & Communication Technology",
    "eligibilityVerify": true
   },
@@ -989,6 +1243,7 @@
    "duration": "04 years",
    "intake": 101,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects in the Commerce Stream or Biological Science Stream or Physical Science Stream at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1007,6 +1262,13 @@
    "duration": "04 years",
    "intake": 108,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Higher Mathematics",
+    "Mathematics",
+    "Combined Mathematics",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Agricultural Science  Higher Mathematics  Mathematics  Combined Mathematics  Physics",
    "eligibilityVerify": true
   },
@@ -1025,6 +1287,13 @@
    "duration": "04 years",
    "intake": 105,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Higher Mathematics",
+    "Mathematics",
+    "Combined Mathematics",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Agricultural Science  Higher Mathematics  Mathematics  Combined Mathematics  Physics",
    "eligibilityVerify": true
   },
@@ -1043,6 +1312,7 @@
    "duration": "04 years",
    "intake": 100,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘C’ grade in Combined Mathematics or Physics or Information & Communication Technology at the G.C.E. (Advanced Level) Examination; and ‘S’ grades for any other two subjects available at the G.C.E. (Advanced Level) Examination. In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (i) At least a Credit Pass (C) in English (ii) At least a Credit Pass (C) in Mathematics",
    "eligibilityVerify": true
   },
@@ -1061,6 +1331,7 @@
    "duration": "04 years",
    "intake": 106,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination. (1). Biology, Chemistry, Physics (2). Combined Mathematics, Chemistry, Physics",
    "eligibilityVerify": true
   },
@@ -1079,6 +1350,16 @@
    "duration": "04 years",
    "intake": 80,
    "aptitudeTest": false,
+   "subjects": [
+    "Business Studies",
+    "Economics",
+    "Accounting",
+    "Information & Communication Technology",
+    "Combined Mathematics",
+    "Logic & Scientific Method",
+    "Business Statistics",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for following three subjects at the G.C.E. (Advanced Level) Examination;  Business Studies  Economics  Accounting or At least ‘S’ grades for two subjects given above and the third subject from the subjects given below;  Information & Communication Technology  Combined Mathematics  Logic & Scientific Method  Business Statistics  Physics",
    "eligibilityVerify": true
   },
@@ -1097,6 +1378,7 @@
    "duration": "03 years",
    "intake": 170,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination. This degree programme has combined course units of Management and Information Technology.",
    "eligibilityVerify": true
   },
@@ -1118,6 +1400,7 @@
    "duration": "04 years",
    "intake": 150,
    "aptitudeTest": true,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination. In addition, candidates should have passed the Practical Test conducted in common to the courses of study in ‘Physical Education’, ‘Sports Science & Management’ and ‘Sports Science’.  Degree Programmes & : Bachelor of Science Honours in Physical Education Available Universities Sabaragamuwa University of Sri Lanka Bachelor of Science Honours in Physical Education [BScHons (Physical Ed)] University of Jaffna",
    "eligibilityVerify": true
   },
@@ -1139,6 +1422,7 @@
    "duration": "04 years",
    "intake": 178,
    "aptitudeTest": true,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination. In addition, candidates should have passed the Practical Test conducted in common to the courses of study in ‘Sports Science & Management’, ‘Sports Science’ and ‘Physical Education’.  Degree Programmes & : Bachelor of Science Honours in Sports Science Available Universities & Management Sabaragamuwa University of Sri Lanka Bachelor of Science Honours in Sports Science & Management [BScHons (SSM)] University of Sri Jayewardenepura",
    "eligibilityVerify": true
   },
@@ -1158,6 +1442,7 @@
    "duration": "04 years",
    "intake": 75,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Biology, Physics and Chemistry at the G.C.E. (Advanced Level) Examination. In addition to that, at least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1177,6 +1462,7 @@
    "duration": "",
    "intake": 225,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -1195,6 +1481,7 @@
    "duration": "04 years",
    "intake": 74,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination; (i) Chemistry, Biology and Physics (ii) Chemistry, Biology and Agricultural Science",
    "eligibilityVerify": true
   },
@@ -1213,6 +1500,7 @@
    "duration": "04 years",
    "intake": 140,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination; (i) Chemistry; Physics; and Biology (ii) Chemistry; Physics or Mathematics; Biology or Agricultural Science (iii) Chemistry; Biology; Agricultural Science or Mathematics",
    "eligibilityVerify": true
   },
@@ -1231,6 +1519,13 @@
    "duration": "04 years",
    "intake": 114,
    "aptitudeTest": false,
+   "subjects": [
+    "Agricultural Science",
+    "Higher Mathematics",
+    "Mathematics",
+    "Combined Mathematics",
+    "Physics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Agricultural Science  Higher Mathematics  Mathematics  Combined Mathematics  Physics",
    "eligibilityVerify": true
   },
@@ -1251,6 +1546,7 @@
    "duration": "04 years",
    "intake": 107,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects in the Commerce Stream or Biological Science Stream or Physical Science Stream at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1269,6 +1565,16 @@
    "duration": "04 years",
    "intake": 127,
    "aptitudeTest": false,
+   "subjects": [
+    "Higher Mathematics",
+    "Chemistry",
+    "Combined Mathematics",
+    "Accounting",
+    "Mathematics",
+    "Business Statistics",
+    "Physics",
+    "Information & Communication Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : The candidates should have passed the three subjects with at least ‘C’ grades in two of the following subjects at the G.C.E. (Advanced Level) Examination.  Higher Mathematics  Chemistry  Combined Mathematics  Accounting  Mathematics  Business Statistics  Physics  Information & Communication Technology In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination. (i) At least a Credit Pass (C) in English (ii) At least a Credit Pass (C) in Mathematics",
    "eligibilityVerify": true
   },
@@ -1291,6 +1597,11 @@
    "duration": "04 years",
    "intake": 181,
    "aptitudeTest": false,
+   "subjects": [
+    "Economics",
+    "Geography",
+    "Business Statistics"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination; (i) Any three subjects in the Commerce, Biological Science and Physical Science Streams (ii) At least one of the following subjects and any other two subjects in the Arts Stream selected according to the conditions specified in the Section 2.2.1.1 of this handbook.  Economics  Geography  Business Statistics  Degree Programmes & : Bachelor of Science Honours in Tourism Management Available Universities Bachelor of Science Honours in Hospitality Management Sabaragamuwa University of Sri Lanka Bachelor of Science Honours in Tourism Management Bachelor of Science Honours in Tourism & Hospitality Management Rajarata University of Sri Lanka",
    "eligibilityVerify": true
   },
@@ -1309,6 +1620,7 @@
    "duration": "04 years",
    "intake": 181,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination; (i) Chemistry; Physics; and Biology (ii) Chemistry; Physics or Mathematics; Biology or Agricultural Science (iii) Chemistry; Biology; Agricultural Science or Mathematics",
    "eligibilityVerify": true
   },
@@ -1327,6 +1639,10 @@
    "duration": "04 years",
    "intake": 78,
    "aptitudeTest": false,
+   "subjects": [
+    "Physics",
+    "Agricultural Science"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Physics  Agricultural Science  Food Technology/ Bio - Resource Technology/ Agro Technology ACADEMIC YEAR 2025/2026 - 52 - UNIVERSITY GRANTS COMMISSION",
    "eligibilityVerify": true
   },
@@ -1345,6 +1661,11 @@
    "duration": "04 years",
    "intake": 72,
    "aptitudeTest": false,
+   "subjects": [
+    "Physics",
+    "Agricultural Science",
+    "Food Technology/Bio - Resource Technology/Agro Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Physics  Agricultural Science  Food Technology/Bio - Resource Technology/Agro Technology In addition to that, at least a Credit Pass (C) in English at the G.C.E. (Ordinary Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1366,6 +1687,7 @@
    "duration": "03 years",
    "intake": 350,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘C’ grade in Combined Mathematics or Physics or Information & Communication Technology at the G.C.E. (Advanced Level) Examination; and ‘S’ grades for any other two subjects available at the G.C.E. (Advanced Level) Examination. In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (i) At least a Credit Pass (C) in English (ii) At least a Credit Pass (C) in Mathematics  Degree Programmes & : Bachelor of Science in Information Systems Available Institutions University of Colombo School of Computing (UCSC)",
    "eligibilityVerify": true
   },
@@ -1384,6 +1706,44 @@
    "duration": "04 years",
    "intake": 81,
    "aptitudeTest": true,
+   "subjects": [
+    "Art",
+    "Geography",
+    "Biology",
+    "Higher Mathematics",
+    "Chemistry",
+    "Physics",
+    "Combined Mathematics",
+    "Agricultural Science",
+    "Accounting",
+    "Hindu Civilization",
+    "Arabic",
+    "History",
+    "Buddhist Civilization",
+    "Home Economics",
+    "Business Statistics",
+    "Islamic Civilization",
+    "Business Studies",
+    "Japanese",
+    "Chinese",
+    "Logic & Scientific Method",
+    "Greek & Roman Civilization",
+    "Political Science",
+    "Economics",
+    "Pali",
+    "Mathematics",
+    "Sanskrit",
+    "English",
+    "Sinhala",
+    "French",
+    "Communication & Media Studies",
+    "German",
+    "Information & Communication",
+    "Tamil Technology",
+    "Christian Civilization",
+    "Korean",
+    "Hindi"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : A candidate should have obtained at least ‘S’ passes at the G.C.E. (Advanced Level) Examination in; (i) At least one of the following subjects;  Art  Geography  Biology  Higher Mathematics  Chemistry  Physics  Combined Mathematics  Agricultural Science and (ii) The other subject/ subjects from the following list;  Accounting  Hindu Civilization  Arabic  History  Buddhist Civilization  Home Economics  Business Statistics  Islamic Civilization  Business Studies  Japanese  Chinese  Logic & Scientific Method  Greek & Roman Civilization  Political Science  Economics  Pali  Mathematics  Sanskrit  English  Sinhala  French  Communication & Media Studies  German  Information & Communication  Tamil Technology  Christian Civilization  Korean  Hindi In addition, candidates must fulfill the following requirements; (a) At least an Ordinary Pass (S) in English at the G.C.E. (Ordinary Level) Examination (b) At least a Credit Pass (C) in Mathematics at the G.C.E. (Ordinary Level) Examination or an Ordinary Pass (S) in Mathematics at the G.C.E. (Advanced Level) Examination (c) Passed the Aptitude Test, which will be conducted by the University of Moratuwa",
    "eligibilityVerify": true
   },
@@ -1405,6 +1765,7 @@
    "duration": "04 years",
    "intake": 155,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : Should have passed three subjects with at least a ‘C’ grade for Sinhala or Tamil at the G.C.E. (Advanced Level) Examination; In addition, candidates must fulfill the following requirments; (i). At least ‘B’ grades for one of the following subject combinations at the G.C.E. (Ordinary Level) Examination; (a) Sinhala Language & Lit. and English (b) Tamil Language & Lit. and English or (ii). At least a ‘S’ grade for English Language at the G.C.E. (Advanced Level) Examination.  Degree Programmes & : Bachelor of Arts Honours in Translation Studies Available Universities (English / Sinhala) University of Kelaniya . Bachelor of Arts Honours in Translation Studies (English / Sinhala) Sabaragamuwa University of Sri Lanka ACADEMIC YEAR 2025/2026 - 100 - UNIVERSITY GRANTS COMMISSION Bachelor of Arts Honours in Translation Studies (English / Tamil) University of Jaffna Bachelor of Arts Honours in Translation Studies (English / Tamil) Eastern University, Sri Lanka",
    "eligibilityVerify": true
   },
@@ -1425,6 +1786,11 @@
    "duration": "04 years",
    "intake": 186,
    "aptitudeTest": false,
+   "subjects": [
+    "Chemistry",
+    "Higher Mathematics",
+    "Information & Communication Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : A candidate should have obtained at least ‘S’ grades in Combined Mathematics, Physics and third subject from the following list at the G.C.E. (Advanced Level) Examination;  Chemistry  Higher Mathematics  Information & Communication Technology  Degree Programmes & : Bachelor of Science Honours in Software Engineering Available Universities University of Kelaniya Sabaragamuwa University of Sri Lanka Bachelor of Computing Honours in Software Engineering [BCompHons (Soft Eng)] University of Sri Jayewardenepura",
    "eligibilityVerify": true
   },
@@ -1443,6 +1809,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": true,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination. In addition, candidates should have passed the Aptitude Test, which will be conducted by the University of Kelaniya based on specific skills in Film & Television. Therefore, the candidates who are interested in Film & Television disciplines and posses specific skills are expected to apply. The Aptitude Test may consist of either an interview, practical test or a written test or of all three components as decided by the University.",
    "eligibilityVerify": true
   },
@@ -1463,6 +1830,19 @@
    "duration": "",
    "intake": 101,
    "aptitudeTest": false,
+   "subjects": [
+    "Accounting",
+    "Mathematics/Combined Mathematics",
+    "Business Studies",
+    "Biology",
+    "Business Statistics",
+    "Agricultural Science",
+    "Economics",
+    "Engineering Technology",
+    "Geography",
+    "Biosystems Technology",
+    "Information & Communication"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : The candidates should have passed the three subjects with at least ‘C’ grades in two of the following subjects at the G.C.E. (Advanced Level) Examination;  Accounting  Mathematics/Combined Mathematics  Business Studies  Biology  Business Statistics  Agricultural Science  Economics  Engineering Technology  Geography  Biosystems Technology  Information & Communication Technology ACADEMIC YEAR 2025/2026 - 101 - UNIVERSITY GRANTS COMMISSION",
    "eligibilityVerify": true
   },
@@ -1489,7 +1869,20 @@
    "duration": "",
    "intake": 1331,
    "aptitudeTest": false,
-   "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for Engineering Technology (ET), Science for Technology (SFT) and for third subject from among;  Economics  Geography  Home Economics  English  Communication and Media Studies  Information & Communication Technology  Art  Business Studies  Agricultural Science  Accountancy  Mathematics Bachelor of Engineering Technology Honours [BET(Hons)] degree programme is available in following Universities; University of Sri Jayewardenepura Bachelor of Engineering Technology Honours University of Kelaniya Bachelor of Engineering Technology Honours University of Jaffna Bachelor of Engineering Technology Honours University of Ruhuna Bachelor of Engineering Technology Honours Rajarata University of Sri Lanka Bachelor of Engineering Technology Honours Wayamba University of Sri Lanka Bachelor of Engineering Technology Honours Uva Wellassa University of Sri Lanka Bachelor of Engineering Technology Honours in Mechanical Engineering Technology University of Colombo Bachelor of Engineering Technology Honours in Instrumentation and Automation Sabaragamuwa University of Sri Lanka Bachelor of Engineering Technology Honours ACADEMIC YEAR 2025/2026 - 77 - UNIVERSITY GRANTS COMMISSION Candidates who have offered subjects in the Engineering Technology Stream at the G.C.E. (Advanced Level) Examination could also seek admission to the following courses of study offered by different universities, provided that they have fulfilled the entry requirements for those courses of study.  Management Studies (TV)  Information Technology (IT)  Peace and Conflict Resolution  Information and Communication Technology (ICT)  Sports Science & Management  Sports Science  Physical Education  Fashion Design & Product Development  Design  Industrial Information Technology  Management and Information Technology (SEUSL)  Film & Television Studies  Project Management  Teaching English as a Second Language (TESL)  Human Resource Development  English Language and Applied Linguistics  Creative Music Technology and Production  Primary Education  Information Systems ACADEMIC YEAR 2025/2026 - 78 - UNIVERSITY GRANTS COMMISSION 2.2.6 BIOSYSTEMS TECHNOLOGY STREAM 2.2.6.1 Biosystems Technology (BST)",
+   "subjects": [
+    "Economics",
+    "Geography",
+    "Home Economics",
+    "English",
+    "Communication and Media Studies",
+    "Information & Communication Technology",
+    "Art",
+    "Business Studies",
+    "Agricultural Science",
+    "Accountancy",
+    "Mathematics"
+   ],
+   "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for Engineering Technology (ET), Science for Technology (SFT) and for third subject from among;  Economics  Geography  Home Economics  English  Communication and Media Studies  Information & Communication Technology  Art  Business Studies  Agricultural Science  Accountancy  Mathematics",
    "eligibilityVerify": true
   },
   {
@@ -1517,7 +1910,20 @@
    "duration": "",
    "intake": 1320,
    "aptitudeTest": false,
-   "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for Biosystems Technology (BST), Science for Technology (SFT) and for third subject from among;  Economics  Geography  Home Economics  English  Communication and Media Studies  Information & Communication Technology  Art  Business Studies  Agricultural Science  Accountancy  Mathematics Bachelor of Biosystems Technology Honours [BBST(Hons)] degree programme is available in following universities; University of Sri Jayewardenepura Bachelor of Biosystems Technology Honours University of Jaffna Bachelor of Biosystems Technology Honours in Commercial Green Farming Bachelor of Biosystems Technology Honours in Food Production Eastern University, Sri Lanka Bachelor of Biosystems Technology Honours in Agricultural Technology and Entrepreneurship South Eastern University of Sri Lanka Bachelor of Biosystems Technology Honours in Agricultural Technology Rajarata University of Sri Lanka Bachelor of Biosystems Technology Honours Wayamba University of Sri Lanka Bachelor of Biosystems Technology Honours Uva Wellassa University of Sri Lanka Bachelor of Biosystems Technology Honours University of Colombo Bachelor of Biosystems Technology Honours in Environmental Technology Bachelor of Biosystems Technology Honours in Agriculture ACADEMIC YEAR 2025/2026 - 79 - UNIVERSITY GRANTS COMMISSION Sabaragamuwa University of Sri Lanka Bachelor of Biosystems Technology Honours University of Ruhuna Bachelor of Biosystems Technology Honours University of Kelaniya Bachelor of Biosystems Technology Honours Candidates who have offered subjects in the Biosystems Technology Stream at the G.C.E. (Advanced Level) Examination could also seek admission to the following courses of study offered by different universities, provided that they have fulfilled the entry requirements for those courses of study.  Management Studies (TV)  Information Technology (IT)  Peace and Conflict Resolution  Information and Communication Technology (ICT)  Sports Science & Management  Sports Science  Physical Education  Fashion Design & Product Development  Design  Industrial Information Technology  Management and Information Technology (SEUSL)  Film & Television Studies  Project Management  Teaching English as a Second Language (TESL)  Human Resource Development  English Language and Applied Linguistics  Creative Music Technology and Production  Primary Education  Information Systems ACADEMIC YEAR 2025/2026 - 80 - UNIVERSITY GRANTS COMMISSION 2.2.7 Information Communication Technology",
+   "subjects": [
+    "Economics",
+    "Geography",
+    "Home Economics",
+    "English",
+    "Communication and Media Studies",
+    "Information & Communication Technology",
+    "Art",
+    "Business Studies",
+    "Agricultural Science",
+    "Accountancy",
+    "Mathematics"
+   ],
+   "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for Biosystems Technology (BST), Science for Technology (SFT) and for third subject from among;  Economics  Geography  Home Economics  English  Communication and Media Studies  Information & Communication Technology  Art  Business Studies  Agricultural Science  Accountancy  Mathematics Bachelor of Biosystems Technology Honours [BBST(Hons)] degree programme is available in following universities; University of Sri Jayewardenepura Bachelor of Biosystems Technology Honours University of Jaffna Bachelor of Biosystems Technology Honours in Commercial Green Farming Bachelor of Biosystems Technology Honours in Food Production Eastern University, Sri Lanka Bachelor of Biosystems Technology Honours in Agricultural Technology and Entrepreneurship South Eastern University of Sri Lanka Bachelor of Biosystems Technology Honours in Agricultural Technology Rajarata University of Sri Lanka Bachelor of Biosystems Technology Honours Wayamba University of Sri Lanka Bachelor of Biosystems Technology Honours Uva Wellassa University of Sri Lanka Bachelor of Biosystems Technology Honours University of Colombo Bachelor of Biosystems Technology Honours in Environmental Technology Bachelor of Biosystems Technology Honours in Agriculture ACADEMIC YEAR 2025/2026 - 79 - UNIVERSITY GRANTS COMMISSION Sabaragamuwa University of Sri Lanka Bachelor of Biosystems Technology Honours University of Ruhuna Bachelor of Biosystems Technology Honours University of Kelaniya Bachelor of Biosystems Technology Honours Candidates who have offered subjects in the Biosystems Technology Stream at the G.C.E.",
    "eligibilityVerify": true
   },
   {
@@ -1545,7 +1951,8 @@
    "duration": "",
    "intake": 1023,
    "aptitudeTest": false,
-   "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for Information & Communication Technology (ICT), Science for Technology (SFT) and Engineering Technology (ET) or Biosystems Technology (BST). Bachelor of Information and Communication Technology Honours [BICT(Hons)] degree programme is available in following Universities; University of Sri Jayewardenepura Bachelor of Information and Communication Technology Honours University of Kelaniya Bachelor of Information and Communication Technology Honours University of Vavuniya, Sri Lanka Bachelor of Information and Communication Technology Honours University of Ruhuna Bachelor of Information and Communication Technology Honours South Eastern University of Sri Lanka Bachelor of Information and Communication Technology Honours Rajarata University of Sri Lanka Bachelor of Information and Communication Technology Honours University of Colombo Bachelor of Information and Communication Technology Honours Uva Wellassa University of Sri Lanka Bachelor of Information and Communication Technology Honours Eastern University, Sri Lanka Bachelor of Information and Communication Technology Honours Candidates who are eligible for the course of study in Information Communication Technology at the G.C.E. (Advanced Level) Examination could also seek admission to the following courses of study offered by different universities, provided that they have fulfilled the entry requirements for those courses of study.  Management Studies (TV)  Peace and Conflict Resolution  Information and Communication Technology (ICT)  Sports Science & Management  Sports Science  Physical Education ACADEMIC YEAR 2025/2026 - 81 - UNIVERSITY GRANTS COMMISSION  Fashion Design & Product Development  Design  Industrial Information Technology  Management and Information Technology (SEUSL)  Film & Television Studies  Project Management  Human Resource Development  English Language and Applied Linguistics  Creative Music Technology and Production  Primary Education  Information Systems Three specific degree programmes are offered under the Technology Stream. They are Bachelor of Engineering Technology Honours [BET(Hons)], Bachelor of Biosystems Technology Honours [BBST(Hons)] and Bachelor of Information and Communication Technology Honours [BICT(Hons)]. All these degrees are designed to satisfy the market and industrial needs of the country. The Bachelor of Engineering Technology Honours [BET(Hons)] degrees are designed based on the Accreditation Manual prepared by the Institution of Engineers, Sri Lanka following the attributes of the Sydney Accord. The Bachelor of Information and Communication Technology Honours [BICT(Hons)] degrees are formulated according to the guidelines given by the Computer Society of Sri Lanka. With the commencement of the National Biotechnology Industry Association (NBIA) in September 2016, University Grants Commission identified National Biotechnology Industry Association (NBIA) as the relevant professional body for this sector in Sri Lanka to accredit Biosystems Technology degree programmes. All these courses contain a minimum of 120 credits. ACADEMIC YEAR 2025/2026 - 82 - UNIVERSITY GRANTS COMMISSION 2.2.8 COURSES OF STUDY FOR WHICH STUDENTS FROM DIFFERENT SUBJECT STREAMS ARE ELIGIBLE 2.2.8.1 Information Technology (IT)",
+   "subjects": [],
+   "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for Information & Communication Technology (ICT), Science for Technology (SFT) and Engineering Technology (ET) or Biosystems Technology (BST). Bachelor of Information and Communication Technology Honours [BICT(Hons)] degree programme is available in following Universities; University of Sri Jayewardenepura Bachelor of Information and Communication Technology Honours University of Kelaniya Bachelor of Information and Communication Technology Honours University of Vavuniya, Sri Lanka Bachelor of Information and Communication Technology Honours University of Ruhuna Bachelor of Information and Communication Technology Honours South Eastern University of Sri Lanka Bachelor of Information and Communication Technology Honours Rajarata University of Sri Lanka Bachelor of Information and Communication Technology Honours University of Colombo Bachelor of Information and Communication Technology Honours Uva Wellassa University of Sri Lanka Bachelor of Information and Communication Technology Honours Eastern University, Sri Lanka Bachelor of Information and Communication Technology Honours Candidates who are eligible for the course of study in Information Communication",
    "eligibilityVerify": true
   },
   {
@@ -1567,6 +1974,7 @@
    "duration": "",
    "intake": 150,
    "aptitudeTest": true,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -1585,6 +1993,7 @@
    "duration": "04 years",
    "intake": 100,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for the three subjects in one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination; (i) Chemistry, Physics and Biology or (ii) Chemistry, Physics and Combined Mathematics",
    "eligibilityVerify": true
   },
@@ -1605,6 +2014,7 @@
    "duration": "04 years",
    "intake": 135,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : Candidates should have fulfilled the relevant minimum qualifications indicated under one of the following two categories at the G.C.E. (Advanced Level) Examination. Category (A) Should have sat for the G.C.E. (Advanced Level) Examination from Biological Science Stream or Physical Science Stream and obtained at least ‘S’ grades for any three subjects from Chemistry, Biology, Physics, Combined Mathematics or Agriculture. Category (B) Should have sat for the G.C.E. (Advanced Level) Examination from Commerce Stream and obtained at least ‘S’ grades for Business Studies, Economics and Accounting. 50% of the total number of students admitted for this programme will be selected from Category (A) where as remaining 50% will be selected from category (B). In addition to that, candidates should have obtained at least Credit Passes (C) in English, Mathematics and Science at the G.C.E. (Ordinary Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1624,6 +2034,7 @@
    "duration": "03 years",
    "intake": 156,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Combined Mathematics, Physics and Information & Communication Technology at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1644,6 +2055,7 @@
    "duration": "04 years",
    "intake": 150,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in the three subjects in Physical Science Stream or Commerce Stream at the G.C.E. (Advanced Level) Examination or At least ‘S’ grades in the two subjects in Physical Science Stream or Commerce Stream and at least ‘S’ grade in Information & Communication Technology as the third subject at the G.C.E. (Advanced Level) Examination. In addition to the above, candidates should have obtained at least a Credit Pass (C) in Mathematics at the G.C.E. (Ordinary Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1662,6 +2074,18 @@
    "duration": "04 years",
    "intake": 80,
    "aptitudeTest": false,
+   "subjects": [
+    "Business Studies",
+    "Combined Mathematics",
+    "Information & Communication Technology",
+    "History",
+    "Business Statistics",
+    "Political Science",
+    "Agricultural Science",
+    "Physics",
+    "Geography",
+    "Logic & Scientific Method"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Economics, Accounting and one of the following subjects at the G.C.E. (Advanced Level) Examination;  Business Studies  Combined Mathematics  Information & Communication Technology  History  Business Statistics  Political Science  Agricultural Science  Physics  Geography  Logic & Scientific Method In addition to that, candidates should have satisfied the following requirements at the G.C.E. (Ordinary Level) Examination; (i) At least a Credit Pass (C) in English (ii) At least a Credit Pass (C) in Mathematics",
    "eligibilityVerify": true
   },
@@ -1682,6 +2106,7 @@
    "duration": "04 years",
    "intake": 75,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects in the Arts Stream selected according to the conditions specified in the Section 2.2.1.1 of this handbook, Biological Science Stream or Physical Science Stream at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1698,6 +2123,7 @@
    "duration": "",
    "intake": 101,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -1716,6 +2142,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades for Combined Mathematics and any other two subjects at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1734,6 +2161,7 @@
    "duration": "04 years",
    "intake": 85,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1752,6 +2180,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Physics, Biology and Chemistry at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1770,6 +2199,7 @@
    "duration": "04 years",
    "intake": 60,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1788,6 +2218,14 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [
+    "Combined Mathematics",
+    "Higher Mathematics",
+    "Mathematics",
+    "Physics",
+    "Chemistry",
+    "Information & Communication Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘C’ grade in Combined Mathematics or Physics or Higher Mathematics; and At least ‘S’ grades in two other subjects listed below at the G.C.E. (Advanced Level) Examination;  Combined Mathematics  Higher Mathematics  Mathematics  Physics  Chemistry  Information & Communication Technology",
    "eligibilityVerify": true
   },
@@ -1806,6 +2244,13 @@
    "duration": "04 years",
    "intake": 60,
    "aptitudeTest": false,
+   "subjects": [
+    "Biology",
+    "Combined Mathematics",
+    "Mathematics",
+    "Higher Mathematics",
+    "Agricultural Science"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination.  Biology  Combined Mathematics  Mathematics  Higher Mathematics  Agricultural Science",
    "eligibilityVerify": true
   },
@@ -1824,6 +2269,12 @@
    "duration": "03 years",
    "intake": 80,
    "aptitudeTest": false,
+   "subjects": [
+    "Chemistry",
+    "Combined Mathematics",
+    "Higher Mathematics",
+    "Information & Communication Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘C’ grade in Combined Mathematics or Physics or Higher Mathematics and; Should have passed the three subjects at the G.C.E. (Advanced Level) Examination including Physics and Combined Mathematics or Higher Mathematics and the third subject from the list given below,  Chemistry  Combined Mathematics  Higher Mathematics  Information & Communication Technology",
    "eligibilityVerify": true
   },
@@ -1842,6 +2293,9 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [
+    "Economics or Business Studies"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘S’ grade in Accounting and at least ‘S’ grades for two subjects from the following subjects combinations at the G.C.E. (Advanced Level) Examination;  Economics or Business Studies and  Business Statistics or Information & Communication Technology",
    "eligibilityVerify": true
   },
@@ -1858,6 +2312,7 @@
    "duration": "",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "",
    "eligibilityVerify": true
   },
@@ -1876,6 +2331,7 @@
    "duration": "03 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Biological Science Stream at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1894,6 +2350,7 @@
    "duration": "03 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Biological Science Stream at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1912,6 +2369,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘B’ grade in Economics and at least ‘S’ grades for any other two subjects in Art Stream or Commerce Stream at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1930,6 +2388,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1961,6 +2420,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Accounting and Economics and the third subject from any other subjects within the Commerce Stream at the G.C.E. (Advanced Level) Examination;",
    "eligibilityVerify": true
   },
@@ -1979,6 +2439,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -1997,6 +2458,7 @@
    "duration": "04 years",
    "intake": 216,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination; (1). Biology, Chemistry, Physics or Agricultural Science (2). Combined Mathematics, Chemistry, Physics",
    "eligibilityVerify": true
   },
@@ -2013,6 +2475,13 @@
    "duration": "04 years",
    "intake": 65,
    "aptitudeTest": false,
+   "subjects": [
+    "Combined Mathematics",
+    "Physics",
+    "Higher Mathematics",
+    "Chemistry",
+    "Information & Communication Technology"
+   ],
    "eligibility": "Minimum eligibility requirements for admission : At least a ‘C’ grade in Combined Mathematics or Physics or Higher Mathematics; and At least ‘S’ grades for two of the following subjects at the G.C.E. (Advanced Level) E xamination;  Combined Mathematics  Physics  Higher Mathematics  Chemistry  Information & Communication Technology In addition to that, the candidates should have obtained at least a Credit Pass (C) in English at the G.C.E. (Ordinary Level) Examination.",
    "eligibilityVerify": true
   },
@@ -2031,6 +2500,7 @@
    "duration": "04 years",
    "intake": 125,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -2049,6 +2519,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Physics, Biology and Chemistry at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -2067,6 +2538,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades for one of the following combinations of subjects at the G.C.E. (Advanced Level) Examination; (1). Biology, Physics, Chemistry (2). Combined Mathematics, Physics, Chemistry",
    "eligibilityVerify": true
   },
@@ -2088,6 +2560,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": true,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects at the G.C.E. (Advanced Level) Examination. In addition, candidates should have passed the Practical Test conducted in common to the courses of study in ‘Sports Science’, ‘Sports Science & Management’ and ‘Physical Education’.",
    "eligibilityVerify": true
   },
@@ -2108,6 +2581,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in any three subjects in the Arts Stream selected according to the conditions specified in the Section 2.2.1.1 of this handbook, Biological Science Stream or Physical Science Stream at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   },
@@ -2126,6 +2600,7 @@
    "duration": "04 years",
    "intake": 50,
    "aptitudeTest": false,
+   "subjects": [],
    "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Combined Mathematics, Physics and Chemistry at the G.C.E. (Advanced Level) Examination.",
    "eligibilityVerify": true
   }

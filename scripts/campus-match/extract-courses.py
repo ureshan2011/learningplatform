@@ -23,7 +23,7 @@ from pathlib import Path
 
 import pdfplumber
 
-from ugc_names import universities_mentioned
+from ugc_names import canonical_university, universities_mentioned
 
 # 2.2.X is a stream; 2.2.X.Y is a course inside it.
 HEADING = re.compile(r"^(2\.2\.\d+(?:\.\d+)?)\s+(.{3,100})$")
@@ -32,7 +32,7 @@ INTAKE = re.compile(r"\(\s*Proposed Intake\s*[-–]\s*([0-9,]{1,7})\s*\)", re.I)
 # Labelled fields are set against a Wingdings bullet that arrives as U+F0A7.
 BULLET = ""
 FIELD = re.compile(
-    rf"^[{BULLET}\s•\-]*(Available Universit(?:y|ies)|Medium|Duration|Degree Programmes?)"
+    rf"^[{BULLET}\s•\-]*(Available Universit(?:y|ies)|Medium|Duration|Degree Programmes?|Fields of Specializations?)"
     r"\s*:\s*(.*)$",
     re.I,
 )
@@ -111,6 +111,68 @@ def blocks(pdf):
     return found
 
 
+DEGREE_LIST = re.compile(r"degree programme[s]? (is|are) available", re.I)
+# Several sections follow the rules with a list of *courses* a stream may also
+# apply for. Those are bulleted too, and they are not A/L subjects.
+COURSE_LIST = re.compile(
+    r"could also seek admission|following courses of study|courses of study offered", re.I
+)
+
+
+def eligibility_lines(lines):
+    """
+    The rule lines only.
+
+    Ends at the first labelled field, or — for the handful of courses that list
+    their universities as plain lines with no label at all — at the sentence
+    that introduces that list. Without the second cut, Engineering Technology's
+    rules ran on through six universities and their degree names.
+    """
+    start = None
+    for i, line in enumerate(lines):
+        if "Minimum eligibility requirements" in line:
+            start = i
+            break
+    if start is None:
+        return []
+
+    out = []
+    for line in lines[start:]:
+        if FIELD.match(line) or DEGREE_LIST.search(line) or COURSE_LIST.search(line):
+            break
+        out.append(line)
+    return out
+
+
+def subjects_from_bullet(line):
+    """
+    The acceptable A/L subjects a bulleted line names.
+
+    Plural: the handbook sets these lists in two columns, and the text layer
+    joins a row into one line — "Accounting  Geography" is two subjects, not a
+    subject called "Accounting Geography". A run of spaces is the column gap.
+    """
+    if not line.startswith(BULLET):
+        return []
+    body = line[len(BULLET) :].strip(" .;,")
+    out = []
+    # Split on the bullet too: a two-column row carries the second column's own
+    # bullet inline, so "Higher Mathematics <bullet> Biology" is two subjects.
+    for part in re.split(rf"[{BULLET}]|\s{{2,}}", body):
+        name = part.strip(" .;,")
+        # Rules also appear as bullets ("At least a Credit Pass in ..."), and
+        # those are sentences rather than subject names.
+        if not name or len(name.split()) > 6 or not name[0].isupper():
+            continue
+        if re.search(r"\bat least\b|\bgrade\b|\bpass\b|\bexamination\b", name, re.I):
+            continue
+        # A university in a rule block is the start of the list that follows it.
+        if canonical_university(name):
+            continue
+        out.append(name)
+    return out
+
+
 def parse_block(block):
     text = "\n".join(block["lines"])
     code = COURSE_CODE.search(text)
@@ -132,16 +194,15 @@ def parse_block(block):
 
     # Where the eligibility prose begins. Everything above it is the heading
     # block; everything below is the rules and then the labelled fields.
-    start = text.find("Minimum eligibility requirements")
-    body = text[start:] if start >= 0 else ""
-    # Ends at the first labelled field. The rules are a bulleted list and the
-    # fields are bulleted too, so the bullet cannot mark the boundary.
-    cut = len(body)
-    for line in body.split("\n"):
-        if FIELD.match(line):
-            cut = body.find(line)
-            break
-    eligibility = body[:cut].strip()
+    # Worked on the lines rather than the joined text, so the bullets that mark
+    # each acceptable subject are still there to read.
+    rule_lines = eligibility_lines(block["lines"])
+    subjects = []
+    for line in rule_lines:
+        for name in subjects_from_bullet(line):
+            if name not in subjects:
+                subjects.append(name)
+    eligibility = "\n".join(rule_lines)
     eligibility = re.sub(r"\s*\n\s*", " ", eligibility)
     eligibility = re.sub(r"\s{2,}", " ", eligibility).strip()
 
@@ -164,7 +225,12 @@ def parse_block(block):
         "duration": (fields.get("duration") or [""])[0],
         **({"intake": int(intake.group(1).replace(",", ""))} if intake else {}),
         "aptitudeTest": bool(APTITUDE.search(text)),
-        "eligibility": eligibility,
+        # The A/L subjects this course's own rules name, read from the bullets
+        # inside the rule block. Not an eligibility rule — the prose around them
+        # decides how many are needed and in what combination — but it is the
+        # list a student should be offered as toggles.
+        "subjects": subjects,
+        "eligibility": re.sub(r"\s{2,}", " ", eligibility.replace("\n", " ")).strip(),
         # The prose is not reduced to a machine rule anywhere here, so every
         # course carries the flag and the report says "check handbook".
         "eligibilityVerify": True,

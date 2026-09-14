@@ -77,72 +77,75 @@ def build_districts():
     }
 
 
-def build_streams(pdf, cover_year, source):
-    """Streams from the handbook headings, subjects from its eligibility bullets."""
-    subjects = {key: {} for key, _ in STREAM_SECTIONS.values()}
-    section = ""
-    # Only collect between "Minimum eligibility requirements" and the first
-    # labelled field. Outside that window the same bullet introduces degree
-    # names, universities and the lists of courses open to any stream, and
-    # collecting those put "Fashion Design & Product Development" into the ICT
-    # stream's A/L subjects.
-    in_rules = False
-    for page in pdf.pages:
-        for raw in (page.extract_text() or "").split("\n"):
-            line = raw.strip()
-            heading = HEADING.match(line)
-            if heading:
-                section = heading.group(1)
-                if section.count(".") == 3:
-                    section = section.rsplit(".", 1)[0]
-                in_rules = False
-            if "Minimum eligibility requirements" in line:
-                in_rules = True
-                continue
-            if FIELD_LABEL.search(line):
-                in_rules = False
-            stream = STREAM_SECTIONS.get(section)
-            if not in_rules or not stream or NOT_SUBJECT.search(line):
-                continue
-            match = SUBJECT_LINE.match(line)
-            if not match:
-                continue
-            name = re.sub(r"\s{2,}", " ", match.group(1)).strip(" ,")
-            if len(name.split()) > 5:
-                continue
-            bucket = subjects[stream[0]]
-            bucket[name.lower()] = bucket.get(name.lower(), 0) + 1
+# The handbook spells a few subjects two ways across its own pages. Folded, or
+# a student sees the same subject twice in one list of toggles.
+SUBJECT_ALIASES = {
+    "Communication and Media Studies": "Communication & Media Studies",
+    "Logic & Scientific Methods": "Logic & Scientific Method",
+    "Information & Communication": "Information & Communication Technology",
+}
+# Not subjects: an "either/or" written into one cell of a two-column list.
+SUBJECT_DROP = {"Mathematics/Combined Mathematics"}
+
+
+def build_streams(courses, cover_year, source):
+    """
+    The seven streams, each with the A/L subjects its own courses ask for.
+
+    Taken from `courses.json` rather than re-read from the PDF, so the subjects
+    are the ones inside a course's own eligibility rules and nothing else.
+
+    A subject has to be named by at least two courses to be offered as a toggle.
+    That threshold is what separates a real A/L subject — every one of them is
+    asked for repeatedly across the handbook — from the debris of a two-column
+    list or a field of specialisation that slipped through. A toggle nobody's
+    eligibility depends on is noise; a wrong one tells a student they cannot sit
+    something they can.
+    """
+    per_subject_courses = {}
+    per_stream = {key: set() for key, _ in STREAM_SECTIONS.values()}
+
+    for course in courses:
+        names = set()
+        for raw in course.get("subjects", []):
+            # The handbook sets these lists in two columns and the text layer
+            # joins a row into one line, so a run of spaces is a column gap.
+            for part in re.split(rf"[{BULLET}]|\s{{2,}}", raw):
+                name = part.strip(" .;,")
+                name = SUBJECT_ALIASES.get(name, name)
+                if name and name not in SUBJECT_DROP:
+                    names.add(name)
+        for name in names:
+            per_subject_courses.setdefault(name, set()).add(course["code"])
+        for stream in course.get("streams", []):
+            if stream in per_stream:
+                per_stream[stream] |= names
+
+    keep = {name for name, codes in per_subject_courses.items() if len(codes) >= 2}
 
     return {
         "coverYear": cover_year,
         "source": source,
         "note": (
-            "Stream names are the handbook's own section headings and are reliable. "
-            "Subject lists are deliberately empty: §2.4 asks for the Department of "
-            "Examinations' subject lists, which are not in this document, and the "
-            "handbook's own bullets mix acceptable A/L subjects with degree names and "
-            "university lists in a way that cannot be told apart reliably. A wrong "
-            "subject toggle on the free checker would tell a student they are "
-            "ineligible for a course they can sit, so nothing is shipped rather than "
-            "a guess. Fill from doenets.lk before building the checker."
+            "Stream names are the handbook's own section headings. Subjects are "
+            "the ones named inside the eligibility rules of that stream's courses, "
+            "kept only where at least two courses ask for them — see "
+            "scripts/campus-match/extract-reference.py for why the threshold is "
+            "there. These are the subjects a student's eligibility actually turns "
+            "on, not the Department of Examinations' full stream definitions, "
+            "which are not in this document."
         ),
-        "subjectsSource": None,
         "streams": [
             {
                 "key": key,
                 "name": label,
-                "subjects": [],
-                # What the handbook's bullets gave for this stream, kept only so
-                # the next session can see why they were not good enough to ship.
-                "handbookBulletsSample": [
-                    title_case(name)
-                    for name, _ in sorted(
-                        subjects[key].items(), key=lambda kv: (-kv[1], kv[0])
-                    )[:12]
-                ],
+                "subjects": sorted(
+                    name for name in per_stream[key] if name in keep
+                ),
             }
             for key, label in STREAM_SECTIONS.values()
         ],
+        "allSubjects": sorted(keep),
         "zScoreRange": Z_RANGE,
     }
 
@@ -210,6 +213,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pdf", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--courses", required=True)
     ap.add_argument("--cover-year", default="2025/2026")
     ap.add_argument("--source", default="")
     args = ap.parse_args()
@@ -217,9 +221,10 @@ def main():
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
+    courses = json.loads(Path(args.courses).read_text())["courses"]
     with pdfplumber.open(args.pdf) as pdf:
-        streams = build_streams(pdf, args.cover_year, args.source)
         scheme = build_scheme(pdf, args.cover_year, args.source)
+    streams = build_streams(courses, args.cover_year, args.source)
 
     for name, payload in [
         ("districts.json", build_districts()),
@@ -229,6 +234,7 @@ def main():
         (out / name).write_text(json.dumps(payload, indent=1, ensure_ascii=False) + "\n")
         print(f"wrote {name}")
 
+    print(f"  {len(streams['allSubjects'])} subjects kept overall")
     for stream in streams["streams"]:
         print(f"  {stream['key']}: {len(stream['subjects'])} subjects")
     print(f"  scheme: {len(scheme['rules'])} rules found, {len(scheme['notFound'])} not in the document")
