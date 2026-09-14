@@ -3,6 +3,75 @@
  "source": "https://admission.ugc.ac.lk/static/media/courses_of_study_English.a047e84b.pdf",
  "courses": [
   {
+   "code": "001",
+   "name": "Medicine",
+   "section": "2.2.3.1",
+   "handbookPage": 34,
+   "streams": [
+    "biological-science"
+   ],
+   "universities": [
+    "Sabaragamuwa University of Sri Lanka",
+    "Uva Wellassa University of Sri Lanka",
+    "University of Sri Jayewardenepura",
+    "Rajarata University of Sri Lanka",
+    "Wayamba University of Sri Lanka",
+    "Eastern University, Sri Lanka",
+    "University of Peradeniya",
+    "University of Moratuwa",
+    "University of Kelaniya",
+    "University of Colombo",
+    "University of Ruhuna",
+    "University of Jaffna"
+   ],
+   "medium": "",
+   "duration": "05 Years",
+   "intake": 2095,
+   "aptitudeTest": false,
+   "subjects": [],
+   "eligibility": "Minimum eligibility requirements for admission : At least two ‘C’ grades and a ‘S’ grade in Biology, Chemistry and Physics at the G.C.E. (Advanced Level) Examination. The course of study in Medicine is available at the following universities.  Faculty of Medicine - University of Colombo Location - Colombo  Faculty of Medicine - University of Peradeniya Location - Peradeniya  Faculty of Medicine - University of Jaffna Location - Jaffna  Faculty of Medicine - University of Ruhuna Location - Karapitiya, Galle  Faculty of Medicine - University of Kelaniya Location - Ragama  Faculty of Medical Sciences - University of Sri Jayewardenepura Location - Gangodawila  Faculty of Medicine & Allied Sciences - Rajarata University of Sri Lanka Location - Saliyapura, Anuradhapura  Faculty of Health - Care Sciences - Eastern University, Sri Lanka Location - Batticaloa  Faculty of Medicine - Wayamba University of Sri Lanka Location - Kuliyapitiya  Faculty of Medicine - Sabaragamuwa University of Sri Lanka Location - Ratnapura  Faculty of Medicine - University of Moratuwa Location - Kalutara  Faculty of Medicine - Uva Wellassa University of Sri Lanka Location - Badulla",
+   "eligibilityVerify": true
+  },
+  {
+   "code": "002",
+   "name": "Dental Surgery",
+   "section": "2.2.3.2",
+   "handbookPage": 35,
+   "streams": [
+    "biological-science"
+   ],
+   "universities": [
+    "University of Sri Jayewardenepura",
+    "University of Peradeniya"
+   ],
+   "medium": "",
+   "duration": "05 Years",
+   "intake": 130,
+   "aptitudeTest": false,
+   "subjects": [],
+   "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination. The course of study in Dental Surgery is available at the following universities.  Faculty of Dental Sciences - University of Peradeniya Location - Peradeniya  Faculty of Dental Sciences - University of Sri Jayewardenepura Location - Gangodawila",
+   "eligibilityVerify": true
+  },
+  {
+   "code": "003",
+   "name": "Veterinary Science",
+   "section": "2.2.3.3",
+   "handbookPage": 35,
+   "streams": [
+    "biological-science"
+   ],
+   "universities": [
+    "University of Peradeniya"
+   ],
+   "medium": "",
+   "duration": "05 Years",
+   "intake": 110,
+   "aptitudeTest": false,
+   "subjects": [],
+   "eligibility": "Minimum eligibility requirements for admission : At least three ‘S’ grades in Chemistry, Physics and Biology at the G.C.E. (Advanced Level) Examination. The course of study in Veterinary Science is available at the following university.  Faculty of Veterinary Medicine and Animal Science - University of Peradeniya Location - Peradeniya",
+   "eligibilityVerify": true
+  },
+  {
    "code": "004",
    "name": "Agriculture",
    "section": "2.2.3.5",
@@ -422,7 +491,7 @@
   },
   {
    "code": "021",
-   "name": "Course of Study in Arts offered by the Sabaragamuwa University of Sri Lanka -Arts (SAB)",
+   "name": "Arts",
    "section": "2.2.1.1",
    "handbookPage": 20,
    "streams": [
@@ -711,7 +780,7 @@
   },
   {
    "code": "031",
-   "name": "Course of Study in Peace and Conflict Resolution offered by the University of Kelaniya",
+   "name": "Peace and Conflict Resolution",
    "section": "2.2.1.1",
    "handbookPage": 21,
    "streams": [
@@ -1155,7 +1224,7 @@
   },
   {
    "code": "063",
-   "name": "Course of Study in Islamic Studies offered by the South Eastern University of Sri Lanka",
+   "name": "Islamic Studies",
    "section": "2.2.1.1",
    "handbookPage": 21,
    "streams": [
@@ -1270,6 +1339,26 @@
     "Physics"
    ],
    "eligibility": "Minimum eligibility requirements for admission : At least ‘S’ grades in Biology, Chemistry and the third subject from the following subjects at the G.C.E. (Advanced Level) Examination;  Agricultural Science  Higher Mathematics  Mathematics  Combined Mathematics  Physics",
+   "eligibilityVerify": true
+  },
+  {
+   "code": "068",
+   "name": "Music",
+   "section": "2.2.1.1",
+   "handbookPage": 24,
+   "streams": [
+    "arts"
+   ],
+   "universities": [
+    "University of Sri Jayewardenepura",
+    "University of Peradeniya"
+   ],
+   "medium": "",
+   "duration": "",
+   "intake": 50,
+   "aptitudeTest": true,
+   "subjects": [],
+   "eligibility": "",
    "eligibilityVerify": true
   },
   {
@@ -1448,7 +1537,7 @@
   },
   {
    "code": "084",
-   "name": "Course of Study in Arabic Language offered by the South Eastern University of Sri Lanka",
+   "name": "Arabic Language",
    "section": "2.2.1.1",
    "handbookPage": 21,
    "streams": [
@@ -1967,7 +2056,6 @@
     "University of the Visual & Performing Arts",
     "University of Sri Jayewardenepura",
     "Eastern University, Sri Lanka",
-    "University of Peradeniya",
     "University of Jaffna"
    ],
    "medium": "",
@@ -2402,19 +2490,7 @@
    ],
    "universities": [
     "The Gampaha Wickramarachchi University of Indigenous Medicine, Sri Lanka",
-    "Sabaragamuwa University of Sri Lanka",
-    "Uva Wellassa University of Sri Lanka",
-    "University of Sri Jayewardenepura",
-    "University of Vavuniya, Sri Lanka",
-    "Rajarata University of Sri Lanka",
-    "Wayamba University of Sri Lanka",
-    "Eastern University, Sri Lanka",
-    "University of Peradeniya",
-    "University of Moratuwa",
-    "University of Kelaniya",
-    "University of Colombo",
-    "University of Ruhuna",
-    "University of Jaffna"
+    "University of Vavuniya, Sri Lanka"
    ],
    "medium": "English",
    "duration": "04 years",

@@ -27,8 +27,8 @@ from ugc_names import canonical_university, universities_mentioned
 
 # 2.2.X is a stream; 2.2.X.Y is a course inside it.
 HEADING = re.compile(r"^(2\.2\.\d+(?:\.\d+)?)\s+(.{3,100})$")
-COURSE_CODE = re.compile(r"\(\s*Course Code\s*[-–]\s*([0-9]{2,4})\s*\)", re.I)
-INTAKE = re.compile(r"\(\s*Proposed Intake\s*[-–]\s*([0-9,]{1,7})\s*\)", re.I)
+COURSE_CODE = re.compile(r"\(\s*Course Code\s*[-–:]\s*([0-9]{2,4})\s*\)", re.I)
+INTAKE = re.compile(r"\(\s*Proposed Intake\s*[-–:]\s*([0-9,]{1,7})\s*\)", re.I)
 # Labelled fields are set against a Wingdings bullet that arrives as U+F0A7.
 BULLET = ""
 FIELD = re.compile(
@@ -100,6 +100,12 @@ def blocks(pdf):
                 break
         title = re.sub(r"^\d+(\.\d+)*\.?\s+", "", title)
         title = re.sub(r"\s+\d{1,3}$", "", title).strip()
+        # The Arts section wraps several titles as "Course of Study in X offered
+        # by Y". The cut-off tables print only X, so the wrapper has to come off
+        # or those courses never join to their own cut-offs.
+        wrapper = re.match(r"^Course of Study in (.+?)(?:\s+offered by .*)?$", title, re.I)
+        if wrapper:
+            title = wrapper.group(1).strip()
         found.append(
             {
                 "section": section,

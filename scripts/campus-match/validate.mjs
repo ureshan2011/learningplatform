@@ -133,12 +133,12 @@ async function main() {
     await readFile(join(CUTOFFS, files[files.length - 1]), "utf8"),
   );
   const names = [...new Set(newest.rows.map((r) => r.course))];
-  const matched = names.filter((n) => handbook.has(normaliseCourse(n)));
+  const matched = names.filter((n) => matches(handbook, n));
   const courseJoin = {
     total: names.length,
     matched: matched.length,
     pct: Math.round((matched.length / names.length) * 100),
-    unmatched: names.filter((n) => !handbook.has(normaliseCourse(n))).sort(),
+    unmatched: names.filter((n) => !matches(handbook, n)).sort(),
   };
 
   await writeFile(QA, renderQa(rounds, joins, errors, courseJoin), "utf8");
@@ -171,7 +171,26 @@ function normaliseCourse(name) {
     .toLowerCase()
     .replace(/\([^)]*\)/g, " ")
     .replace(/[*#]/g, " ")
+    // Joining words are the commonest difference: the tables print "BANKING &
+    // INSURANCE" where the handbook writes "Banking and Insurance".
+    .replace(/\b(and|the|of|in|for)\b/g, " ")
     .replace(/[^a-z0-9]/g, "");
+}
+
+/**
+ * The same lookup `lib/campus-match/check.ts` uses, so the figure reported here
+ * is the one the product achieves rather than a stricter one nobody runs.
+ */
+function matches(keys, title) {
+  const key = normaliseCourse(title);
+  if (keys.has(key)) return true;
+  if (key.length < 12) return false;
+  let found = 0;
+  for (const candidate of keys) {
+    if (candidate.startsWith(key) || key.startsWith(candidate)) found += 1;
+    if (found > 1) return false;
+  }
+  return found === 1;
 }
 
 async function readHandbook() {

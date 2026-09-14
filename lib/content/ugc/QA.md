@@ -41,43 +41,19 @@ find its handbook entry is one the checker can price but cannot say who may
 apply for. Titles are matched with brackets, footnote markers and punctuation
 removed, because the two documents set the same course differently.
 
-**74 of 108 course titles (69%)** in the newest round match a handbook entry.
+**98 of 108 course titles (91%)** in the newest round match a handbook entry.
 
 Unmatched:
 
-- `AGRICULTURAL RESOURCE MANAGEMENT AND`
-- `ARABIC LANGUAGE *`
 - `ART & DESIGN #`
-- `ARTS (SP) / MASS MEDIA* #`
-- `ARTS (SP) / PERFORMING ARTS * #`
-- `ARTS-INFORMATION TECHNOLOGY *`
-- `AYURVEDA MEDICINE & SURGERY`
-- `BANKING & INSURANCE`
 - `COMMUNICATION STUDIES *`
-- `CREATIVE MUSIC TECHNOLOGY & PRODUCTION`
 - `DANCE #`
-- `DENTAL SURGERY`
 - `DRAMA & THEATRE #`
-- `ENVIRONMENTAL CONSERVATION &`
-- `FOOD PRODUCTION`
-- `HOSPITALITY, TOURISM`
-- `INDUSTRIAL INFORMATION`
-- `INDUSTRIAL STATISTICS &`
-- `ISLAMIC STUDIES *`
 - `MANAGEMENT AND INFORMATION`
 - `MANAGEMENT STUDIES (TV) - A`
 - `MANAGEMENT STUDIES (TV) - B`
-- `MEDICINE`
-- `MINERAL RESOURCES AND`
-- `MUSIC #`
-- `PEACE & CONFLICT RESOLUTION *`
-- `PHYSICAL SCIENCE -ICT`
-- `REAL ESTATE MANAGEMENT & VALUATION`
-- `SIDDHA MEDICINE & SURGERY`
 - `SOCIAL WORK *`
 - `TEACHING ENGLISH AS A SECOND`
-- `UNANI MEDICINE & SURGERY`
-- `VETERINARY SCIENCE`
 - `VISUAL & TECHNOLOGICAL ARTS #`
 
 ## Checked by eye against the rendered page
