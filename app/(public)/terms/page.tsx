@@ -165,7 +165,30 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="11. Liability">
+      <Clause heading="11. Campus Match">
+        <p>
+          Campus Match is a report bought with a single payment. It estimates your chance at each
+          course from cut-off figures the University Grants Commission has already published, and
+          from its Courses of Study handbook. Every figure in it is an estimate, not a promise:
+          cut-offs move each year with who applies, and nobody can know the coming round&apos;s
+          figures before the UGC publishes them.
+        </p>
+        <p>
+          ICT Campus has no connection to the University Grants Commission or to any university,
+          and does not speak for them. Who may apply for a course is decided by the UGC handbook
+          and by the UGC&apos;s own admission process — where our summary and the handbook
+          disagree, the handbook governs.
+        </p>
+        <p>
+          To build your report we store the answers you give us: your Z-score, district, stream,
+          the subjects you say you passed, your application order, and — if you choose to tell us —
+          which course you were finally offered. They are used to render your report and to check
+          how well our method worked. You can delete them at any time from Account, and clause 12
+          applies to this report as it does to everything else.
+        </p>
+      </Clause>
+
+      <Clause heading="12. Liability">
         <p>
           Nothing here limits liability that cannot be limited by Sri Lankan law. Beyond that, our
           liability for any claim is limited to the fees you paid us in the three months before it
@@ -173,7 +196,7 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="12. Changes and governing law">
+      <Clause heading="13. Changes and governing law">
         <p>
           We may update these terms; the date at the top shows when. Material changes are announced
           in class and on the site before they take effect. These terms are governed by the laws of
@@ -181,7 +204,7 @@ export default async function TermsPage() {
         </p>
       </Clause>
 
-      <Clause heading="13. Contact">
+      <Clause heading="14. Contact">
         <p>
           Questions about these terms: {settings.contactPhone || <Blank>your phone</Blank>}
           {settings.contactEmail ? `, ${settings.contactEmail}` : null}.

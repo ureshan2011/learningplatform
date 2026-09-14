@@ -666,3 +666,50 @@ body {
     transform: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Printing a Campus Match report.
+
+   Students print this and take it home to argue about with a parent, so the
+   printed page has to carry the whole list, not the four headings a folded
+   disclosure would show. Everything interactive is dropped and the dark world
+   is inverted, because nobody is printing a near-black page on an inkjet.
+   --------------------------------------------------------------------------- */
+@media print {
+  .ict-print-hide {
+    display: none !important;
+  }
+
+  /* The nav rail and the bottom tab bar belong to the screen. */
+  .ict-app nav,
+  .ict-app aside {
+    display: none !important;
+  }
+
+  /* A folded disclosure prints as its heading alone, losing most of the
+     report. `PrintReport` opens them all before the dialog; this is the
+     belt-and-braces for browsers that support it. */
+  .ict-print details:not([open])::details-content {
+    content-visibility: visible;
+  }
+  .ict-print details > summary {
+    list-style: none;
+  }
+
+  .ict-print,
+  .ict-print * {
+    background: #fff !important;
+    color: #111 !important;
+    box-shadow: none !important;
+    border-color: #d4d4d4 !important;
+  }
+
+  .ict-print li,
+  .ict-print section {
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 14mm;
+  }
+}

@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import {
   Activity,
+  ArrowDownRight,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
@@ -15,6 +16,7 @@ import {
   Check,
   CheckCircle2,
   ChevronDown,
+  ChevronUp,
   ChevronLeft,
   ChevronRight,
   ChevronsDownUp,
@@ -117,6 +119,11 @@ const ICONS = {
   arrow_back: ArrowLeft,
   arrow_forward: ArrowRight,
   north_east: ArrowUpRight,
+  // A cut-off moving between rounds. Three weights of the same line family, so
+  // a trend never reads as a different icon set.
+  trending_up: ArrowUpRight,
+  trending_down: ArrowDownRight,
+  trending_flat: ArrowRight,
   event: Calendar,
   calendar_month: CalendarDays,
   videocam: Video,
@@ -169,6 +176,7 @@ const ICONS = {
   auto_awesome: Sparkles,
   assignment: FileCheck2,
   expand_more: ChevronDown,
+  expand_less: ChevronUp,
   unfold_more: ChevronsUpDown,
   unfold_less: ChevronsDownUp,
   grid_view: Grid2x2,

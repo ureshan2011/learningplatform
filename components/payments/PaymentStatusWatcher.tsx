@@ -103,11 +103,18 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
     // A pack buyer has no class to go to — sending them to a subject page they
     // are not enrolled in is the one place this screen can still lose someone.
     const isProduct = kind === "product";
+    // Campus Match is a product too, but its report lives on its own route and
+    // a buyer sent to /packs/campus-match-2027 would find nothing.
+    const isMatch = isProduct && (subjectId?.startsWith("campus-match") ?? false);
     return (
       <div className={clsx("rounded-ict-card border p-5 text-sm", "border-ict-green-500/30 bg-ict-green-50")}>
         <p className="flex items-center justify-center gap-2 font-semibold text-ict-green-500">
           <Icon name="check_circle" className="!text-lg" />
-          {isProduct ? "Your pack is ready" : "Your class is open"}
+          {isMatch
+            ? "Your Campus Match is ready"
+            : isProduct
+              ? "Your pack is ready"
+              : "Your class is open"}
         </p>
         {receiptNo ? (
           <p className="mt-1 text-center text-ict-ink-400">Receipt {receiptNo}</p>
@@ -115,11 +122,13 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
         <div className="mt-4 flex flex-col gap-2">
           <ButtonLink
             href={
-              subjectId
-                ? isProduct
-                  ? `/packs/${subjectId}`
-                  : `/subjects/${subjectId}`
-                : "/dashboard"
+              isMatch
+                ? "/campus-match/report"
+                : subjectId
+                  ? isProduct
+                    ? `/packs/${subjectId}`
+                    : `/subjects/${subjectId}`
+                  : "/dashboard"
             }
             variant="primary"
             size="md"
@@ -127,8 +136,11 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
             className="justify-center"
           >
             <span className="inline-flex items-center gap-1.5">
-              <Icon name={isProduct ? "inventory_2" : "school"} className="!text-base" />
-              {isProduct ? "Open my pack" : "Go to my class"}
+              <Icon
+                name={isMatch ? "insights" : isProduct ? "inventory_2" : "school"}
+                className="!text-base"
+              />
+              {isMatch ? "Open my report" : isProduct ? "Open my pack" : "Go to my class"}
             </span>
           </ButtonLink>
           <a href="/account" className="text-xs text-ict-ink-400 underline">

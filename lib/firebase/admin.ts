@@ -127,6 +127,8 @@ export const col = {
   teacherActivity: () => adminDb().collection("teacherActivity"),
   /** One document per user per day. See `ActivityDay` for why it is batched. */
   activity: () => adminDb().collection("activity"),
+  /** One document per student per Campus Match cycle. Server-written only. */
+  campusMatch: () => adminDb().collection("campusMatch"),
 } as const;
 
 export function enrollmentId(uid: string, subjectId: string): string {

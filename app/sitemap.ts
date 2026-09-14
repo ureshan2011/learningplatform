@@ -27,6 +27,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/al-ict-classes`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/campus-ready`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/campus-survival-pack`, lastModified, changeFrequency: "weekly", priority: 0.9 },
+    // Signed out this route renders the public sales page; the report behind it
+    // is `noindex` and is never listed here.
+    { url: `${base}/campus-match`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     {
       url: `${base}/campus/academic-email`,
       lastModified,
@@ -51,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.9,
     },
-    { url: `${base}/university-pathways`, lastModified, changeFrequency: "yearly", priority: 0.8 },
+    { url: `${base}/university-pathways`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/command-words`, lastModified, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/distinguish-between`, lastModified, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/number-systems`, lastModified, changeFrequency: "monthly", priority: 0.75 },

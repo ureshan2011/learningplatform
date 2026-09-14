@@ -1,0 +1,83 @@
+{
+  "note": "Every document Campus Match is built from. Nothing enters lib/content/ugc/ that is not listed here. See docs/campus-match-handoff.md §2. `coverYear` is the string that must appear on the document's own first page; fetch.mjs refuses a file whose cover does not carry it, which is what stops a silently re-pointed URL becoming next year's data.",
+  "cutoffs": [
+    {
+      "round": "2018-2019",
+      "coverYear": "2018/2019",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2019/COP_2018_2019-ENGLISH.pdf",
+      "series": true
+    },
+    {
+      "round": "2019-2020",
+      "coverYear": "2019/2020",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2020/2019_2020-NEW_SYLLABUS_ENGLISH.pdf",
+      "series": true,
+      "syllabus": "new",
+      "note": "This round publishes two tables. The new-syllabus one carries the series; see handoff Appendix A.2."
+    },
+    {
+      "round": "2019-2020-old-syllabus",
+      "coverYear": "2019/2020",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2020/2019_2020-OLD_SYLLABUS_ENGLISH.pdf",
+      "series": false,
+      "syllabus": "old",
+      "note": "Recorded for provenance. Deliberately not in the series."
+    },
+    {
+      "round": "2020-2021",
+      "coverYear": "2020/2021",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2021/COP_2020_2021-ENGLISH_NEW_SYLLABUS.pdf",
+      "series": true,
+      "syllabus": "new",
+      "note": "Two tables again. New syllabus carries the series."
+    },
+    {
+      "round": "2020-2021-old-syllabus",
+      "coverYear": "2020/2021",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2021/COP_2020_2021-ENGLISH_OLD_SYLLABUS.pdf",
+      "series": false,
+      "syllabus": "old",
+      "note": "Recorded for provenance. Deliberately not in the series."
+    },
+    {
+      "round": "2021-2022",
+      "coverYear": "2021/2022",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2022/COP_2021_2022-ENGLISH.pdf",
+      "series": true,
+      "note": "Not the _AR_FINAL_A4 variant in the same folder: that one is image-only on all 8 pages and would need OCR for no gain. This one carries a full text layer."
+    },
+    {
+      "round": "2022-2023",
+      "coverYear": "2022/2023",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2023/COP_2022_2023-ENGLISH_AR_A4.pdf",
+      "series": true
+    },
+    {
+      "round": "2023-2024",
+      "coverYear": "2023/2024",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2024/COP_2023_2024-ENGLISH_AR_A4.pdf",
+      "series": true
+    },
+    {
+      "round": "2024-2025",
+      "coverYear": "2024/2025",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2025/COP_2024_2025-ENGLISH_Final.pdf",
+      "series": true
+    },
+    {
+      "round": "2025-2026",
+      "coverYear": "2025/2026",
+      "url": "https://www.ugc.ac.lk/downloads/admissions/cutoff_2026/COP_2025_2026-ENGLISH_Final.pdf",
+      "series": true,
+      "newest": true
+    }
+  ],
+  "handbook": [
+    {
+      "key": "courses-of-study-en",
+      "coverYear": "2025/2026",
+      "url": "https://admission.ugc.ac.lk/static/media/courses_of_study_English.a047e84b.pdf",
+      "note": "The admission handbook's Section 2 — course titles and A/L subject pre-requisites. Linked from the UGC admissions app at admission.ugc.ac.lk."
+    }
+  ]
+}

@@ -33,6 +33,7 @@ import {
 import type { MessageKey } from "@/lib/i18n/dictionary";
 import type { ClassSession, Subject } from "@/lib/types";
 import { CAMPUS_READY } from "@/lib/content/campus-ready";
+import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
 
 export const dynamic = "force-dynamic";
 
@@ -265,15 +266,30 @@ export default async function DashboardPage() {
                       t={t}
                     />
                   ))}
-                  {products.map((product) => (
-                    <PackCard
-                      key={product.id}
-                      subject={product}
-                      owned={activeSubjectIds.includes(product.id)}
-                      paused={paused}
-                      t={t}
-                    />
-                  ))}
+                  {/* Campus Match is a product but not a pack: it has nothing
+                      at `/packs/{id}` and its own card links to the report. */}
+                  {products
+                    .filter((p) => p.id !== CAMPUS_MATCH_ID)
+                    .map((product) => (
+                      <PackCard
+                        key={product.id}
+                        subject={product}
+                        owned={activeSubjectIds.includes(product.id)}
+                        paused={paused}
+                        t={t}
+                      />
+                    ))}
+                  {products
+                    .filter((p) => p.id === CAMPUS_MATCH_ID)
+                    .map((product) => (
+                      <MatchCard
+                        key={product.id}
+                        subject={product}
+                        owned={activeSubjectIds.includes(product.id)}
+                        paused={paused}
+                        t={t}
+                      />
+                    ))}
                 </div>
               </section>
             );
@@ -405,6 +421,58 @@ function PackCard({
       <div className="mt-4">
         <ButtonLink href={`/packs/${subject.id}`} variant="outline" size="sm" arrow="right">
           {owned ? t("pack.open") : t("pack.seeInside")}
+        </ButtonLink>
+      </div>
+    </Card>
+  );
+}
+
+/**
+ * Campus Match on the dashboard.
+ *
+ * Owned, it is the way back to the report. Not owned, it goes to the sales
+ * page — which is also where a student lands from the free checker, so the two
+ * routes into it agree. Outline button in both states, like the pack: the
+ * banner above already carries this screen's one orange call to action.
+ */
+function MatchCard({
+  subject,
+  owned,
+  paused,
+  t,
+}: {
+  subject: Subject;
+  owned: boolean;
+  paused: boolean;
+  t: Translator;
+}) {
+  const product = subject.product;
+  if (!product) return null;
+
+  return (
+    <Card radius="card" className="flex flex-col p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-display text-base font-extrabold text-ict-paper-50">{subject.name}</p>
+          <p className="mt-1 text-sm text-ict-ink-300">
+            {owned
+              ? t("match.cardOwned")
+              : paused
+                ? t("launch.waitlist")
+                : t("match.cardBlurb", { price: formatLKR(product.feeLKR) })}
+          </p>
+        </div>
+        {owned ? <Badge tone="success">{t("campus.enrolled")}</Badge> : null}
+      </div>
+
+      <div className="mt-4">
+        <ButtonLink
+          href={owned ? "/campus-match/report" : "/campus-match"}
+          variant="outline"
+          size="sm"
+          arrow="right"
+        >
+          {owned ? t("match.open") : t("match.see")}
         </ButtonLink>
       </div>
     </Card>

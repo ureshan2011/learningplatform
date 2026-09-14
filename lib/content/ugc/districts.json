@@ -1,0 +1,130 @@
+{
+ "source": "The district columns of the UGC cut-off tables in lib/content/ugc/cutoffs/.",
+ "districts": [
+  {
+   "key": "colombo",
+   "name": "Colombo",
+   "printed": "COLOMBO"
+  },
+  {
+   "key": "gampaha",
+   "name": "Gampaha",
+   "printed": "GAMPAHA"
+  },
+  {
+   "key": "kalutara",
+   "name": "Kalutara",
+   "printed": "KALUTARA"
+  },
+  {
+   "key": "matale",
+   "name": "Matale",
+   "printed": "MATALE"
+  },
+  {
+   "key": "kandy",
+   "name": "Kandy",
+   "printed": "KANDY"
+  },
+  {
+   "key": "nuwara-eliya",
+   "name": "Nuwara Eliya",
+   "printed": "NUWARA ELIYA"
+  },
+  {
+   "key": "galle",
+   "name": "Galle",
+   "printed": "GALLE"
+  },
+  {
+   "key": "matara",
+   "name": "Matara",
+   "printed": "MATARA"
+  },
+  {
+   "key": "hambantota",
+   "name": "Hambantota",
+   "printed": "HAMBANTOTA"
+  },
+  {
+   "key": "jaffna",
+   "name": "Jaffna",
+   "printed": "JAFFNA"
+  },
+  {
+   "key": "kilinochchi",
+   "name": "Kilinochchi",
+   "printed": "KILINOCHCHI"
+  },
+  {
+   "key": "mannar",
+   "name": "Mannar",
+   "printed": "MANNAR"
+  },
+  {
+   "key": "mullaitivu",
+   "name": "Mullaitivu",
+   "printed": "MULLAITIVU"
+  },
+  {
+   "key": "vavuniya",
+   "name": "Vavuniya",
+   "printed": "VAVUNIYA"
+  },
+  {
+   "key": "batticaloa",
+   "name": "Batticaloa",
+   "printed": "BATTICALOA"
+  },
+  {
+   "key": "ampara",
+   "name": "Ampara",
+   "printed": "AMPARA"
+  },
+  {
+   "key": "trincomalee",
+   "name": "Trincomalee",
+   "printed": "TRINCOMALEE"
+  },
+  {
+   "key": "kurunegala",
+   "name": "Kurunegala",
+   "printed": "KURUNEGALA"
+  },
+  {
+   "key": "puttalam",
+   "name": "Puttalam",
+   "printed": "PUTTALAM"
+  },
+  {
+   "key": "anuradhapura",
+   "name": "Anuradhapura",
+   "printed": "ANURADHAPURA"
+  },
+  {
+   "key": "polonnaruwa",
+   "name": "Polonnaruwa",
+   "printed": "POLONNARUWA"
+  },
+  {
+   "key": "badulla",
+   "name": "Badulla",
+   "printed": "BADULLA"
+  },
+  {
+   "key": "monaragala",
+   "name": "Monaragala",
+   "printed": "MONARAGALA"
+  },
+  {
+   "key": "ratnapura",
+   "name": "Ratnapura",
+   "printed": "RATNAPURA"
+  },
+  {
+   "key": "kegalle",
+   "name": "Kegalle",
+   "printed": "KEGALLE"
+  }
+ ]
+}

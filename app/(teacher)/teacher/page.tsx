@@ -421,6 +421,7 @@ const SHORTCUTS: Array<{ href: string; title: string; blurb: string; icon: IconN
   { href: "/teacher/insights", title: "Insights", blurb: "Who needs a nudge", icon: "insights" },
   { href: "/teacher/mock-exams", title: "Mock exams", blurb: "Set a timed paper", icon: "schedule" },
   { href: "/teacher/predicted-paper", title: "2027 predicted paper", blurb: "Review before it goes live", icon: "auto_awesome" },
+  { href: "/teacher/campus-match", title: "Campus Match", blurb: "Check the data, then put it on sale", icon: "insights" },
   { href: "/teacher/leads", title: "Subscribers", blurb: "Emails from the free hub", icon: "mail" },
 ];
 

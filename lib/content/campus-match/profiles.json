@@ -1,0 +1,637 @@
+{
+ "note": "Plain-language descriptions of what each subject area is about, written for ICT Campus. NOT UGC text and NOT a syllabus: no duration, no intake, no career or salary claim, and no figure of any kind. Everything with a number on a degree profile comes from lib/content/ugc/. The handbook and the university's own prospectus are the authority on what is actually taught.",
+ "faculties": [
+  {
+   "key": "medicine-health",
+   "en": "Medicine and health sciences",
+   "si": "වෛද්‍ය හා සෞඛ්‍ය"
+  },
+  {
+   "key": "veterinary",
+   "en": "Veterinary science",
+   "si": "පශු වෛද්‍ය"
+  },
+  {
+   "key": "engineering",
+   "en": "Engineering",
+   "si": "Engineering"
+  },
+  {
+   "key": "computing",
+   "en": "Computing and information technology",
+   "si": "Computing සහ IT"
+  },
+  {
+   "key": "science",
+   "en": "Science and mathematics",
+   "si": "විද්‍යාව සහ ගණිතය"
+  },
+  {
+   "key": "agriculture-food",
+   "en": "Agriculture and food",
+   "si": "කෘෂිකර්මය සහ ආහාර"
+  },
+  {
+   "key": "environment-earth",
+   "en": "Environment, earth and water",
+   "si": "පරිසරය, භූමිය සහ ජලය"
+  },
+  {
+   "key": "built-environment",
+   "en": "Architecture and the built environment",
+   "si": "ගොඩනැගිලි සහ නිර්මාණ"
+  },
+  {
+   "key": "management-commerce",
+   "en": "Management and commerce",
+   "si": "කළමනාකරණය සහ වාණිජ"
+  },
+  {
+   "key": "arts-social",
+   "en": "Arts and social sciences",
+   "si": "කලා සහ සමාජ විද්‍යා"
+  },
+  {
+   "key": "aesthetic-sport",
+   "en": "Performing arts and sport",
+   "si": "රංග කලා සහ ක්‍රීඩා"
+  },
+  {
+   "key": "law",
+   "en": "Law",
+   "si": "නීතිය"
+  }
+ ],
+ "profiles": {
+  "001": {
+   "faculty": "medicine-health",
+   "en": "The study of the human body, how disease affects it, and how patients are diagnosed and treated.",
+   "si": "මිනිස් සිරුර, රෝග ඒකට බලපාන හැටි, සහ රෝගීන් හඳුනාගෙන ප්‍රතිකාර කරන ක්‍රම ගැන ඉගෙන ගන්නවා."
+  },
+  "002": {
+   "faculty": "medicine-health",
+   "en": "The study and treatment of the teeth, mouth and jaw, including surgery.",
+   "si": "දත්, කට සහ හක්ක ගැන — රෝග හඳුනාගැනීම, ප්‍රතිකාර සහ surgery ඇතුළුව."
+  },
+  "003": {
+   "faculty": "veterinary",
+   "en": "The health and treatment of animals, from pets and farm animals to wildlife.",
+   "si": "සතුන්ගේ සෞඛ්‍යය සහ ප්‍රතිකාර — ගෙදර සතුන්, ගොවිපොළ සතුන් සහ වන සතුන් දක්වා."
+  },
+  "004": {
+   "faculty": "agriculture-food",
+   "en": "How crops and livestock are grown, managed and improved, and the science behind farming.",
+   "si": "බෝග සහ සත්ත්ව පාලනය, ඒවා වැඩි දියුණු කරන විදිය සහ ගොවිතැන පිටුපස තියෙන විද්‍යාව."
+  },
+  "005": {
+   "faculty": "agriculture-food",
+   "en": "What food is made of, what it does in the body, and how diet affects health.",
+   "si": "ආහාරවල තියෙන්නේ මොනවද, ඒවා ශරීරයට කරන දේ, සහ කෑම සෞඛ්‍යයට බලපාන හැටි."
+  },
+  "006": {
+   "faculty": "science",
+   "en": "The study of living things — cells, plants, animals and how they work.",
+   "si": "ජීවීන් ගැන අධ්‍යයනය — සෛල, ශාක, සතුන් සහ ඒවා ක්‍රියා කරන ආකාරය."
+  },
+  "007": {
+   "faculty": "science",
+   "en": "A broad science degree built on biology, usually taken across several subjects rather than one.",
+   "si": "ජීව විද්‍යාව පදනම් කරගත් පුළුල් science degree එකක්. විෂය කීපයක් එකට ඉගෙන ගන්නවා."
+  },
+  "008": {
+   "faculty": "engineering",
+   "en": "Designing, building and maintaining physical systems — structures, machines, power and electronics.",
+   "si": "ව්‍යුහ, යන්ත්‍ර, විදුලිය සහ electronics වගේ දේවල් design කරලා හදලා නඩත්තු කරන එක."
+  },
+  "009": {
+   "faculty": "engineering",
+   "en": "The engineering of mining and earth resources — how minerals are found, extracted and processed.",
+   "si": "පතල් සහ භූ සම්පත් engineering — ඛනිජ හොයාගෙන, කපාගෙන, process කරන හැටි."
+  },
+  "010": {
+   "faculty": "engineering",
+   "en": "The engineering behind textiles and clothing manufacture, from fibre to finished garment.",
+   "si": "රෙදිපිළි සහ ඇඳුම් නිෂ්පාදනයේ engineering — නූලේ ඉඳන් ඇඳුම දක්වා."
+  },
+  "011": {
+   "faculty": "built-environment",
+   "en": "Measuring, costing and controlling the money side of a construction project.",
+   "si": "ඉදිකිරීම් project එකක මුදල් පැත්ත — මැනීම, ගණන් බැලීම සහ පාලනය."
+  },
+  "012": {
+   "faculty": "computing",
+   "en": "How computers and software work at a fundamental level: algorithms, data structures and programming.",
+   "si": "Computer සහ software ක්‍රියා කරන මූලික ආකාරය — algorithms, data structures සහ programming."
+  },
+  "013": {
+   "faculty": "science",
+   "en": "A broad science degree in physics, chemistry and mathematics, usually across several subjects.",
+   "si": "භෞතික විද්‍යාව, රසායන විද්‍යාව සහ ගණිතය ඇතුළත් පුළුල් science degree එකක්."
+  },
+  "014": {
+   "faculty": "environment-earth",
+   "en": "Measuring land precisely — boundaries, levels and maps — and the law and instruments behind it.",
+   "si": "ඉඩම් නිවැරදිව මැනීම — මායිම්, මට්ටම් සහ සිතියම් — සහ ඒකට අදාළ නීතිය සහ උපකරණ."
+  },
+  "015": {
+   "faculty": "science",
+   "en": "A broad science degree built on physics and chemistry, taken across several subjects.",
+   "si": "භෞතික සහ රසායන විද්‍යාව පදනම් කරගත් පුළුල් science degree එකක්."
+  },
+  "016": {
+   "faculty": "management-commerce",
+   "en": "How organisations are run: people, money, operations and strategy.",
+   "si": "ආයතන කළමනාකරණය — මිනිස්සු, මුදල්, operations සහ strategy."
+  },
+  "017": {
+   "faculty": "built-environment",
+   "en": "How land and buildings are valued, bought, sold and managed as property.",
+   "si": "ඉඩම් සහ ගොඩනැගිලි වල වටිනාකම තක්සේරු කිරීම, විකිණීම සහ property කළමනාකරණය."
+  },
+  "018": {
+   "faculty": "management-commerce",
+   "en": "The business subjects together: accounting, finance, economics and trade.",
+   "si": "ව්‍යාපාර විෂයයන් එකට — accounting, finance, economics සහ වෙළඳාම."
+  },
+  "019": {
+   "faculty": "arts-social",
+   "en": "A broad humanities and social sciences degree, taken across a combination of subjects.",
+   "si": "මානව ශාස්ත්‍ර සහ සමාජ විද්‍යා විෂය කිහිපයක් එකට ඉගෙන ගන්න පුළුල් degree එකක්."
+  },
+  "021": {
+   "faculty": "arts-social",
+   "en": "A broad humanities and social sciences degree, taken across a combination of subjects.",
+   "si": "මානව ශාස්ත්‍ර සහ සමාජ විද්‍යා විෂය කිහිපයක් එකට ඉගෙන ගන්න පුළුල් degree එකක්."
+  },
+  "022": {
+   "faculty": "management-commerce",
+   "en": "Management taught through the technology and vocational stream.",
+   "si": "Technology සහ වෘත්තීය ධාරාව හරහා ඉගෙන ගන්න කළමනාකරණය."
+  },
+  "023": {
+   "faculty": "built-environment",
+   "en": "Designing buildings and the spaces between them, and the drawing, history and technology behind it.",
+   "si": "ගොඩනැගිලි සහ ඒවා අතර අවකාශය design කිරීම — ඇඳීම, ඉතිහාසය සහ technology සමඟ."
+  },
+  "024": {
+   "faculty": "built-environment",
+   "en": "Design as a discipline: objects, images and spaces, and how they are made.",
+   "si": "Design විෂයක් ලෙස — වස්තු, රූප සහ අවකාශ, ඒවා නිර්මාණය වන ආකාරය."
+  },
+  "025": {
+   "faculty": "law",
+   "en": "The law of the country and how it is read, argued and applied.",
+   "si": "රටේ නීතිය, ඒක කියවන, තර්ක කරන සහ යොදන ආකාරය."
+  },
+  "026": {
+   "faculty": "computing",
+   "en": "Building and running software and computer systems for organisations.",
+   "si": "ආයතන සඳහා software සහ computer systems හදලා ක්‍රියාත්මක කරන එක."
+  },
+  "027": {
+   "faculty": "computing",
+   "en": "Information technology together with management — systems, data and the business that uses them.",
+   "si": "IT සහ කළමනාකරණය එකට — systems, data සහ ඒවා පාවිච්චි කරන ව්‍යාපාරය."
+  },
+  "028": {
+   "faculty": "management-commerce",
+   "en": "How public decisions are made and how government and public bodies are managed.",
+   "si": "රාජ්‍ය තීරණ ගන්නා ආකාරය සහ රජයේ ආයතන කළමනාකරණය."
+  },
+  "029": {
+   "faculty": "arts-social",
+   "en": "How media and messages work — journalism, broadcasting, and communication in society.",
+   "si": "Media සහ පණිවිඩ ක්‍රියා කරන හැටි — journalism, broadcasting සහ සමාජයේ සන්නිවේදනය."
+  },
+  "030": {
+   "faculty": "environment-earth",
+   "en": "Planning towns and cities using data about how people live and move in them.",
+   "si": "නගර සැලසුම් කිරීම — මිනිස්සු ජීවත් වෙන, යන එන විදිය ගැන data පාවිච්චි කරලා."
+  },
+  "031": {
+   "faculty": "arts-social",
+   "en": "Why conflicts happen and the study of how they are ended and prevented.",
+   "si": "ගැටුම් ඇතිවෙන්නේ ඇයි කියලා සහ ඒවා නවත්වන, වළක්වන ක්‍රම ගැන අධ්‍යයනය."
+  },
+  "032": {
+   "faculty": "medicine-health",
+   "en": "Ayurveda medicine and surgery — the traditional system of treatment, studied formally.",
+   "si": "ආයුර්වේද වෛද්‍ය ක්‍රමය සහ ශල්‍ය කර්මය විධිමත්ව ඉගෙන ගැනීම."
+  },
+  "033": {
+   "faculty": "medicine-health",
+   "en": "Unani medicine and surgery — the traditional system of treatment, studied formally.",
+   "si": "යුනානි වෛද්‍ය ක්‍රමය සහ ශල්‍ය කර්මය විධිමත්ව ඉගෙන ගැනීම."
+  },
+  "034": {
+   "faculty": "built-environment",
+   "en": "Designing clothing and products, and taking a design through to something that can be made.",
+   "si": "ඇඳුම් සහ නිෂ්පාදන design කිරීම, සහ design එකක් හදන්න පුළුවන් දෙයක් දක්වා ගෙන යාම."
+  },
+  "035": {
+   "faculty": "agriculture-food",
+   "en": "The science of food — how it is processed, preserved and kept safe.",
+   "si": "ආහාර විද්‍යාව — process කිරීම, ආරක්ෂා කිරීම සහ නරක් නොවී තබාගැනීම."
+  },
+  "036": {
+   "faculty": "medicine-health",
+   "en": "Siddha medicine and surgery — the traditional system of treatment, studied formally.",
+   "si": "සිද්ධ වෛද්‍ය ක්‍රමය සහ ශල්‍ය කර්මය විධිමත්ව ඉගෙන ගැනීම."
+  },
+  "037": {
+   "faculty": "medicine-health",
+   "en": "The care of patients: clinical skills, and the science and practice of nursing.",
+   "si": "රෝගීන් රැකබලා ගැනීම — clinical හැකියාවන් සහ hospital එකේ nursing ක්‍රියාවලිය."
+  },
+  "038": {
+   "faculty": "computing",
+   "en": "Information and communication technology: software, networks and the systems built from them.",
+   "si": "ICT — software, networks සහ ඒවායින් හදන systems."
+  },
+  "039": {
+   "faculty": "agriculture-food",
+   "en": "Farming technology and the management of an agricultural operation.",
+   "si": "ගොවිතැන් technology සහ කෘෂි ව්‍යාපාරයක කළමනාකරණය."
+  },
+  "050": {
+   "faculty": "medicine-health",
+   "en": "How communities are kept healthy, and how health behaviour is changed at population scale.",
+   "si": "ප්‍රජාවක් නීරෝගීව තබාගන්නා ආකාරය සහ සෞඛ්‍ය පුරුදු වෙනස් කරන ක්‍රම."
+  },
+  "051": {
+   "faculty": "medicine-health",
+   "en": "Medicines: what they are made of, what they do in the body, and how they are dispensed safely.",
+   "si": "ඖෂධ — ඒවා හදන්නේ මොනවයින්ද, ශරීරයට කරන්නේ මොකක්ද, සහ ආරක්ෂිතව දෙන හැටි."
+  },
+  "052": {
+   "faculty": "medicine-health",
+   "en": "The laboratory work behind a diagnosis — testing blood, tissue and samples.",
+   "si": "රෝග විනිශ්චය පිටුපස තියෙන laboratory වැඩ — ලේ, පටක සහ sample පරීක්ෂාව."
+  },
+  "053": {
+   "faculty": "medicine-health",
+   "en": "Producing medical images with X-ray and related equipment, and the safety around them.",
+   "si": "X-ray වගේ උපකරණ පාවිච්චි කරලා වෛද්‍ය රූප ගැනීම සහ ඒවායේ ආරක්ෂාව."
+  },
+  "054": {
+   "faculty": "medicine-health",
+   "en": "Restoring movement after injury or illness, through exercise and physical treatment.",
+   "si": "තුවාලයකින් හෝ රෝගයකින් පස්සේ චලනය නැවත ගොඩනගන එක — ව්‍යායාම සහ physical ප්‍රතිකාර හරහා."
+  },
+  "055": {
+   "faculty": "environment-earth",
+   "en": "Protecting ecosystems and managing natural resources, and the science behind both.",
+   "si": "පරිසර පද්ධති ආරක්ෂා කිරීම සහ ස්වාභාවික සම්පත් කළමනාකරණය, ඒවා පිටුපස තියෙන විද්‍යාව එක්ක."
+  },
+  "056": {
+   "faculty": "built-environment",
+   "en": "Running buildings once they are built — services, maintenance, safety and space.",
+   "si": "ගොඩනැගිල්ලක් හදාගෙන ඉවර වුණාට පස්සේ ඒක නඩත්තු කරන එක — services, maintenance, ආරක්ෂාව සහ අවකාශය."
+  },
+  "057": {
+   "faculty": "engineering",
+   "en": "Moving people and goods: transport systems, logistics and the engineering behind them.",
+   "si": "මිනිස්සු සහ බඩු ගෙනයාම — transport systems, logistics සහ ඒවායේ engineering."
+  },
+  "058": {
+   "faculty": "science",
+   "en": "The chemistry of living things, down to molecules, genes and proteins.",
+   "si": "ජීවීන්ගේ රසායනය — molecules, gene සහ protein මට්ටම දක්වා."
+  },
+  "059": {
+   "faculty": "science",
+   "en": "Statistics applied to industry and finance, including the mathematics of risk and pricing.",
+   "si": "කර්මාන්ත සහ finance සඳහා statistics — risk සහ මිල ගැන ගණිතය ඇතුළුව."
+  },
+  "060": {
+   "faculty": "science",
+   "en": "Statistics and the mathematics of making better decisions with limited resources.",
+   "si": "Statistics සහ සීමිත සම්පත් එක්ක හොඳ තීරණ ගන්න ගණිතය."
+  },
+  "062": {
+   "faculty": "environment-earth",
+   "en": "The sea and inland waters as a resource: fish stocks, marine life and how they are managed.",
+   "si": "මුහුද සහ අභ්‍යන්තර ජලය සම්පතක් ලෙස — මසුන්, සමුද්‍ර ජීවීන් සහ ඒවා කළමනාකරණය."
+  },
+  "063": {
+   "faculty": "arts-social",
+   "en": "The study of Islam — its texts, history, law and thought.",
+   "si": "ඉස්ලාම් අධ්‍යයනය — ග්‍රන්ථ, ඉතිහාසය, නීතිය සහ චින්තනය."
+  },
+  "064": {
+   "faculty": "science",
+   "en": "A combined science and technology degree taken across several applied subjects.",
+   "si": "විද්‍යාව සහ technology එකට — applied විෂය කිහිපයක් හරහා."
+  },
+  "065": {
+   "faculty": "computing",
+   "en": "Computer science with an applied technology focus.",
+   "si": "Computer science, applied technology පැත්තට වැඩි අවධානයක් එක්ක."
+  },
+  "066": {
+   "faculty": "management-commerce",
+   "en": "Starting and running a business, and the management that keeps one going.",
+   "si": "ව්‍යාපාරයක් පටන් අරගෙන ගෙන යන එක සහ ඒකට ඕන කළමනාකරණය."
+  },
+  "067": {
+   "faculty": "agriculture-food",
+   "en": "Livestock production and turning what it produces into food.",
+   "si": "සත්ත්ව නිෂ්පාදනය සහ ඒවායින් ලැබෙන දේ ආහාර බවට හරවන එක."
+  },
+  "068": {
+   "faculty": "aesthetic-sport",
+   "en": "Music as a discipline: performance, theory and its history.",
+   "si": "සංගීතය විෂයක් ලෙස — වාදනය, න්‍යාය සහ ඉතිහාසය."
+  },
+  "073": {
+   "faculty": "agriculture-food",
+   "en": "The crops Sri Lanka exports — tea, spices and others — and how they are grown and traded.",
+   "si": "ශ්‍රී ලංකාව export කරන බෝග — තේ, කුළුබඩු වගේ — වවන සහ වෙළඳාම් කරන හැටි."
+  },
+  "075": {
+   "faculty": "computing",
+   "en": "Information technology applied to industry and manufacturing.",
+   "si": "කර්මාන්ත සහ නිෂ්පාදනය සඳහා යොදන IT."
+  },
+  "076": {
+   "faculty": "environment-earth",
+   "en": "Mineral resources: how they are found, valued and turned into usable material.",
+   "si": "ඛනිජ සම්පත් — හොයාගන්න, වටිනාකම බලන සහ පාවිච්චි කරන්න පුළුවන් දෙයක් කරන හැටි."
+  },
+  "077": {
+   "faculty": "computing",
+   "en": "The information systems a business runs on, and how they are designed and managed.",
+   "si": "ව්‍යාපාරයක් ක්‍රියාත්මක වෙන information systems — design කිරීම සහ කළමනාකරණය."
+  },
+  "079": {
+   "faculty": "computing",
+   "en": "Information technology together with management — systems, data and the business that uses them.",
+   "si": "IT සහ කළමනාකරණය එකට — systems, data සහ ඒවා පාවිච්චි කරන ව්‍යාපාරය."
+  },
+  "081": {
+   "faculty": "aesthetic-sport",
+   "en": "Teaching and coaching physical activity, and the science of how the body moves.",
+   "si": "ශාරීරික ක්‍රියාකාරකම් උගන්වන සහ පුහුණු කරන එක, සහ සිරුර චලනය වන විදිය ගැන විද්‍යාව."
+  },
+  "082": {
+   "faculty": "aesthetic-sport",
+   "en": "The science of sport performance together with the management of sport as a business.",
+   "si": "ක්‍රීඩා performance පිටුපස විද්‍යාව සහ ක්‍රීඩාව ව්‍යාපාරයක් ලෙස කළමනාකරණය."
+  },
+  "083": {
+   "faculty": "medicine-health",
+   "en": "Speech, language and hearing — how they work and how difficulties with them are treated.",
+   "si": "කථනය, භාෂාව සහ ශ්‍රවණය — ඒවා ක්‍රියා කරන හැටි සහ ගැටලුවලට ප්‍රතිකාර."
+  },
+  "084": {
+   "faculty": "arts-social",
+   "en": "The Arabic language, its literature and how it is taught.",
+   "si": "අරාබි භාෂාව, ඒකේ සාහිත්‍යය සහ උගන්වන ක්‍රම."
+  },
+  "086": {
+   "faculty": "agriculture-food",
+   "en": "Animal production together with fisheries, as two sides of food from living resources.",
+   "si": "සත්ත්ව නිෂ්පාදනය සහ ධීවර කර්මාන්තය — ජීවී සම්පත් වලින් ආහාර."
+  },
+  "087": {
+   "faculty": "agriculture-food",
+   "en": "Producing food at scale and managing the technology and process behind it.",
+   "si": "විශාල පරිමාණයෙන් ආහාර නිෂ්පාදනය සහ ඒ පිටුපස technology සහ process කළමනාකරණය."
+  },
+  "088": {
+   "faculty": "environment-earth",
+   "en": "The technology of using water resources — aquaculture, fisheries and processing.",
+   "si": "ජල සම්පත් පාවිච්චි කරන technology — aquaculture, ධීවර සහ processing."
+  },
+  "090": {
+   "faculty": "management-commerce",
+   "en": "Running hotels, tourism businesses and events as commercial operations.",
+   "si": "හෝටල්, tourism ව්‍යාපාර සහ events වාණිජ මට්ටමින් කළමනාකරණය."
+  },
+  "091": {
+   "faculty": "computing",
+   "en": "Information technology together with the management of the organisation that uses it.",
+   "si": "IT සහ ඒක පාවිච්චි කරන ආයතනයේ කළමනාකරණය."
+  },
+  "092": {
+   "faculty": "management-commerce",
+   "en": "The tourism and hospitality industry and how its businesses are managed.",
+   "si": "Tourism සහ hospitality කර්මාන්තය සහ ඒකේ ව්‍යාපාර කළමනාකරණය."
+  },
+  "093": {
+   "faculty": "agriculture-food",
+   "en": "Managing the land, water and inputs a farm depends on, with the technology to do it.",
+   "si": "ගොවිපොළක් රඳා පවතින ඉඩම්, ජලය සහ inputs කළමනාකරණය, ඒකට ඕන technology එක්ක."
+  },
+  "094": {
+   "faculty": "agriculture-food",
+   "en": "Agriculture as a business: markets, supply chains and the money side of farming.",
+   "si": "කෘෂිකර්මය ව්‍යාපාරයක් ලෙස — වෙළඳපොළ, supply chain සහ ගොවිතැනේ මුදල් පැත්ත."
+  },
+  "095": {
+   "faculty": "agriculture-food",
+   "en": "Technology that reduces environmental harm — cleaner energy, materials and processes.",
+   "si": "පරිසර හානිය අඩු කරන technology — පිරිසිදු බලශක්තිය, ද්‍රව්‍ය සහ process."
+  },
+  "096": {
+   "faculty": "computing",
+   "en": "How organisations store, move and use information, and the systems that do it.",
+   "si": "ආයතන තොරතුරු තියාගන්න, යවන සහ පාවිච්චි කරන ආකාරය සහ ඒකට තියෙන systems."
+  },
+  "097": {
+   "faculty": "built-environment",
+   "en": "Designing outdoor space — gardens, parks and the land around buildings.",
+   "si": "එළිමහන් අවකාශය design කිරීම — උයන්, park සහ ගොඩනැගිලි වටේ ඉඩම."
+  },
+  "098": {
+   "faculty": "arts-social",
+   "en": "Moving meaning between languages, in writing and in speech.",
+   "si": "භාෂා අතර අර්ථය ගෙන යාම — ලිඛිතව සහ කථනයෙන්."
+  },
+  "099": {
+   "faculty": "computing",
+   "en": "Building software properly: design, testing and the engineering of large systems.",
+   "si": "Software හරියට හදන එක — design, testing සහ විශාල systems වල engineering."
+  },
+  "100": {
+   "faculty": "aesthetic-sport",
+   "en": "Film and television: how they are made, and how they are read as a form.",
+   "si": "Film සහ television — හදන ක්‍රමය සහ ඒවා කලා ආකෘතියක් ලෙස කියවන හැටි."
+  },
+  "101": {
+   "faculty": "management-commerce",
+   "en": "Planning and controlling projects — scope, time, cost and the people on them.",
+   "si": "Project සැලසුම් කිරීම සහ පාලනය — scope, කාලය, වියදම සහ කණ්ඩායම."
+  },
+  "102": {
+   "faculty": "engineering",
+   "en": "Applied engineering through the technology stream, with a practical focus.",
+   "si": "Technology ධාරාව හරහා applied engineering — practical පැත්තට වැඩි අවධානයක් එක්ක."
+  },
+  "103": {
+   "faculty": "agriculture-food",
+   "en": "Technology applied to living systems — agriculture, food and biological processes.",
+   "si": "ජීවී පද්ධති සඳහා technology — කෘෂිකර්මය, ආහාර සහ biological process."
+  },
+  "104": {
+   "faculty": "computing",
+   "en": "Information and communication technology taken through the technology stream.",
+   "si": "Technology ධාරාව හරහා ඉගෙන ගන්න ICT."
+  },
+  "105": {
+   "faculty": "arts-social",
+   "en": "Teaching English to people who speak another language first, and the linguistics behind it.",
+   "si": "වෙන භාෂාවක් කතා කරන අයට English උගන්වන එක සහ ඒ පිටුපස linguistics."
+  },
+  "106": {
+   "faculty": "environment-earth",
+   "en": "The science of the sea and of rivers and lakes, and the life in them.",
+   "si": "මුහුද, ගංගා සහ වැව් ගැන විද්‍යාව සහ ඒවායේ ජීවීන්."
+  },
+  "107": {
+   "faculty": "management-commerce",
+   "en": "The food industry as a business — production, markets and management.",
+   "si": "ආහාර කර්මාන්තය ව්‍යාපාරයක් ලෙස — නිෂ්පාදනය, වෙළඳපොළ සහ කළමනාකරණය."
+  },
+  "108": {
+   "faculty": "computing",
+   "en": "A physical science degree taken with information and communication technology.",
+   "si": "Physical science degree එකක්, ICT එක්ක."
+  },
+  "109": {
+   "faculty": "management-commerce",
+   "en": "Business studied with a quantitative, mathematical approach.",
+   "si": "ව්‍යාපාරය ගණිතමය, quantitative ක්‍රමයකින් ඉගෙන ගැනීම."
+  },
+  "110": {
+   "faculty": "management-commerce",
+   "en": "The mathematics and computing behind financial products, pricing and risk.",
+   "si": "Financial products, මිල සහ risk පිටුපස ගණිතය සහ computing."
+  },
+  "111": {
+   "faculty": "environment-earth",
+   "en": "Mapping and analysing anything tied to a place, using spatial data and GIS.",
+   "si": "ස්ථානයකට සම්බන්ධ ඕනෑම දෙයක් සිතියම්ගත කරලා විශ්ලේෂණය කිරීම — spatial data සහ GIS එක්ක."
+  },
+  "112": {
+   "faculty": "arts-social",
+   "en": "Working with people and communities facing hardship, and the social science behind it.",
+   "si": "අමාරුවේ ඉන්න මිනිස්සු සහ ප්‍රජාවන් එක්ක වැඩ කරන එක සහ ඒ පිටුපස සමාජ විද්‍යාව."
+  },
+  "113": {
+   "faculty": "science",
+   "en": "Mathematics and statistics applied to finance and to industry.",
+   "si": "Finance සහ කර්මාන්ත සඳහා යොදන ගණිතය සහ statistics."
+  },
+  "114": {
+   "faculty": "management-commerce",
+   "en": "Developing the people in an organisation — training, performance and careers.",
+   "si": "ආයතනයක මිනිස්සු දියුණු කරන එක — පුහුණුව, performance සහ වෘත්තීය ගමන."
+  },
+  "115": {
+   "faculty": "medicine-health",
+   "en": "Helping people regain everyday activities after injury, illness or disability.",
+   "si": "තුවාලයකින්, රෝගයකින් හෝ ආබාධයකින් පස්සේ දෛනික වැඩ නැවත කරන්න උදව් කිරීම."
+  },
+  "116": {
+   "faculty": "medicine-health",
+   "en": "Eyes and vision — testing sight and correcting it.",
+   "si": "ඇස් සහ පෙනීම — පරීක්ෂා කිරීම සහ නිවැරදි කිරීම."
+  },
+  "117": {
+   "faculty": "computing",
+   "en": "How machines are made to learn from data and act on it.",
+   "si": "Data වලින් ඉගෙන ගන්න සහ ඒ අනුව ක්‍රියා කරන්න machine හදන හැටි."
+  },
+  "118": {
+   "faculty": "science",
+   "en": "Chemistry put to work in industry, materials and analysis.",
+   "si": "කර්මාන්ත, ද්‍රව්‍ය සහ විශ්ලේෂණය සඳහා යොදන රසායන විද්‍යාව."
+  },
+  "119": {
+   "faculty": "computing",
+   "en": "Electronics together with computer science — hardware and the software that drives it.",
+   "si": "Electronics සහ computer science එකට — hardware සහ ඒක ධාවනය කරන software."
+  },
+  "127": {
+   "faculty": "management-commerce",
+   "en": "Accounting together with the systems that record and report it.",
+   "si": "Accounting සහ ඒක සටහන් කරලා වාර්තා කරන systems."
+  },
+  "128": {
+   "faculty": "arts-social",
+   "en": "An arts degree taken together with information technology.",
+   "si": "කලා degree එකක්, IT එක්ක එකට."
+  },
+  "129": {
+   "faculty": "environment-earth",
+   "en": "The living resources of water — how they are studied, used and protected.",
+   "si": "ජලයේ ජීවී සම්පත් — අධ්‍යයනය, පාවිච්චිය සහ ආරක්ෂාව."
+  },
+  "130": {
+   "faculty": "environment-earth",
+   "en": "The living resources of a city — its plants, soil, water and the space around them.",
+   "si": "නගරයක ජීවී සම්පත් — ශාක, පස, ජලය සහ ඒවා වටේ අවකාශය."
+  },
+  "131": {
+   "faculty": "management-commerce",
+   "en": "Economics applied to financial markets and decisions.",
+   "si": "Financial වෙළඳපොළ සහ තීරණ සඳහා යොදන economics."
+  },
+  "132": {
+   "faculty": "arts-social",
+   "en": "The English language itself — how it works, and how language is studied.",
+   "si": "English භාෂාව — ඒක ක්‍රියා කරන හැටි සහ භාෂාව අධ්‍යයනය කරන ක්‍රම."
+  },
+  "133": {
+   "faculty": "management-commerce",
+   "en": "How banks and insurers work, and the money and risk they handle.",
+   "si": "බැංකු සහ රක්ෂණ ආයතන ක්‍රියා කරන හැටි, ඒවා හසුරුවන මුදල් සහ risk."
+  },
+  "134": {
+   "faculty": "aesthetic-sport",
+   "en": "Making and producing music with technology, in the studio and on stage.",
+   "si": "Technology එක්ක සංගීතය නිර්මාණය සහ production — studio එකේ සහ වේදිකාවේ."
+  },
+  "135": {
+   "faculty": "agriculture-food",
+   "en": "Running a plantation — the crop, the land, the workforce and the technology.",
+   "si": "වතුයායක් කළමනාකරණය — බෝගය, ඉඩම, සේවකයෝ සහ technology."
+  },
+  "136": {
+   "faculty": "computing",
+   "en": "Finding patterns in data with statistics and programming.",
+   "si": "Statistics සහ programming පාවිච්චි කරලා data වල රටා හොයන එක."
+  },
+  "137": {
+   "faculty": "arts-social",
+   "en": "Teaching children in the early school years, and how young children learn.",
+   "si": "පාසලේ මුල් අවුරුදුවල දරුවන්ට උගන්වන එක සහ පොඩි ළමයි ඉගෙන ගන්න විදිය."
+  },
+  "138": {
+   "faculty": "medicine-health",
+   "en": "The technology behind medical scans and images, and how they are produced.",
+   "si": "වෛද්‍ය scan සහ රූප පිටුපස තියෙන technology සහ ඒවා ගන්නා ක්‍රම."
+  },
+  "139": {
+   "faculty": "science",
+   "en": "Polymers and plastics — the science of the material and the management of making it.",
+   "si": "Polymer සහ plastic — ද්‍රව්‍යයේ විද්‍යාව සහ නිෂ්පාදනයේ කළමනාකරණය."
+  },
+  "141": {
+   "faculty": "aesthetic-sport",
+   "en": "The science of sport: how the body performs, trains and recovers.",
+   "si": "ක්‍රීඩා විද්‍යාව — සිරුර performance කරන, පුහුණු වෙන සහ නැවත ගොඩ එන හැටි."
+  },
+  "142": {
+   "faculty": "environment-earth",
+   "en": "Mapping and analysing anything tied to a place, using spatial data and GIS.",
+   "si": "ස්ථානයකට සම්බන්ධ ඕනෑම දෙයක් සිතියම්ගත කරලා විශ්ලේෂණය කිරීම — spatial data සහ GIS එක්ක."
+  },
+  "143": {
+   "faculty": "engineering",
+   "en": "Electronic engineering with intelligent and embedded systems.",
+   "si": "Electronic engineering — intelligent සහ embedded systems එක්ක."
+  }
+ }
+}
