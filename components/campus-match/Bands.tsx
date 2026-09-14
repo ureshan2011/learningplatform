@@ -135,13 +135,14 @@ export function Bands({ report }: { report: Report }) {
               </span>
               <span className="text-xs font-semibold text-ict-ink-300">Show</span>
             </summary>
-            {/* Not a band: these are courses your stream may apply for where
-                your district has no published history to forecast from. Giving
-                them a percentage would be inventing one. */}
+            {/* Not a band: these are courses your stream may apply for with no
+                published history to forecast from. Giving them a percentage
+                would be inventing one. */}
             <p className="mt-1.5 text-sm text-ict-ink-300">
-              These admit your stream, but {report.districtName} has no recent published cut-off for
-              them — often because nobody from the district applied. No estimate can be made, which
-              is not the same as no chance.
+              These admit your stream, but there is no recent published cut-off to estimate from.
+              Some are admitted on all-island merit and have no district column at all; for others
+              nobody from {report.districtName} applied recently. No estimate can be made, which is
+              not the same as no chance.
             </p>
             <ul className="mt-3">
               {report.noCutoff.map((row) => (
@@ -149,7 +150,16 @@ export function Bands({ report }: { report: Report }) {
                   key={row.key}
                   className="border-t border-ict-border-dark py-3 text-sm first:border-t-0"
                 >
-                  <span className="font-semibold text-ict-paper-50">{row.course}</span>
+                  {row.code ? (
+                    <Link
+                      href={`/campus-match/degree/${row.code}`}
+                      className="font-semibold text-ict-paper-50 underline-offset-4 hover:underline"
+                    >
+                      {row.course}
+                    </Link>
+                  ) : (
+                    <span className="font-semibold text-ict-paper-50">{row.course}</span>
+                  )}
                   {row.university ? (
                     <span className="mt-0.5 block text-xs text-ict-ink-300">{row.university}</span>
                   ) : null}

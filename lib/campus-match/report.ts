@@ -9,6 +9,7 @@ import r2024 from "@/lib/content/ugc/cutoffs/2023-2024.json";
 import r2025 from "@/lib/content/ugc/cutoffs/2024-2025.json";
 import r2026 from "@/lib/content/ugc/cutoffs/2025-2026.json";
 import districts from "@/lib/content/ugc/districts.json";
+import handbook from "@/lib/content/ugc/courses.json";
 import { admitsStream, findCourse } from "@/lib/campus-match/courses";
 import {
   NQC,
@@ -126,6 +127,7 @@ export function buildReport(input: { z: number; district: string; stream: string
   const bands: Record<Band, ReportRow[]> = { likely: [], possible: [], reach: [], unlikely: [] };
   const noCutoff: ReportRow[] = [];
   const moves: number[] = [];
+  const listed = new Set<string>();
 
   for (const row of r2026.rows) {
     const match = findCourse(row.course, row.university);
@@ -133,6 +135,7 @@ export function buildReport(input: { z: number; district: string; stream: string
     // Commerce course to a Biological Science student is worse than omitting it.
     if (!match || !admitsStream(match.course, input.stream)) continue;
     const course = match.course;
+    listed.add(course.code);
 
     const key = `${row.course}||${row.university}`;
     const cells = series.get(key) ?? [];
@@ -166,6 +169,30 @@ export function buildReport(input: { z: number; district: string; stream: string
     base.band = bandOf(base.chance);
     bands[base.band].push(base);
     moves.push(forecast.sigma);
+  }
+
+  // Courses the cut-off tables never list at all — Law and Optometry among
+  // them. The published tables carry the district columns, and a course admitted
+  // on all-island merit alone has none. Shown so a student learns the course
+  // exists rather than concluding from its absence that it does not.
+  for (const course of handbook.courses) {
+    if (listed.has(course.code) || !admitsStream(course, input.stream)) continue;
+    noCutoff.push({
+      key: `code:${course.code}`,
+      course: course.name,
+      university: "",
+      code: course.code,
+      forecast: null,
+      sigma: 0,
+      chance: null,
+      band: null,
+      lastCutoff: null,
+      thin: true,
+      ...(course.aptitudeTest ? { aptitudeTest: true } : {}),
+      checkHandbook: course.eligibilityVerify,
+      handbookPage: course.handbookPage,
+      gap: null,
+    });
   }
 
   // Nearest the forecast first inside each band: those are the ones the

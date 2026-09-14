@@ -29,6 +29,11 @@ from ugc_names import canonical_university, universities_mentioned
 HEADING = re.compile(r"^(2\.2\.\d+(?:\.\d+)?)\s+(.{3,100})$")
 COURSE_CODE = re.compile(r"\(\s*Course Code\s*[-–:]\s*([0-9]{2,4})\s*\)", re.I)
 INTAKE = re.compile(r"\(\s*Proposed Intake\s*[-–:]\s*([0-9,]{1,7})\s*\)", re.I)
+# A title always opens with its own number, either the section number or the
+# position in a plain list. Reaching one means the title is complete.
+TITLE_START = re.compile(r"^\d+(\.\d+)*\.?\s+\S")
+# The running header the handbook prints across the top of every page.
+FOOTER = re.compile(r"ACADEMIC YEAR|UNIVERSITY GRANTS COMMISSION", re.I)
 # Labelled fields are set against a Wingdings bullet that arrives as U+F0A7.
 BULLET = ""
 FIELD = re.compile(
@@ -91,13 +96,21 @@ def blocks(pdf):
     found = []
     for position, (index, pageno, section) in enumerate(starts):
         end = starts[position + 1][0] if position + 1 < len(starts) else len(lines)
-        # The title is the line above the code, minus any contents-page number.
-        title = ""
+        # The title can wrap across two lines — "... offered by the University"
+        # then "of Kelaniya, University of Sri Jayewardenepura and ..." — so it is
+        # read backwards until its own number is reached. Taking only the nearest
+        # line named five courses after a university instead of a subject.
+        parts = []
         for back in range(index - 1, max(index - 4, -1), -1):
             candidate = lines[back][1]
-            if candidate and not INTAKE.search(candidate):
-                title = candidate
+            if not candidate or INTAKE.search(candidate) or FOOTER.search(candidate):
+                continue
+            parts.insert(0, candidate)
+            if TITLE_START.match(" ".join(parts)):
                 break
+        # No numbered line within reach: keep the old behaviour of the nearest
+        # line alone rather than gluing three unrelated ones together.
+        title = " ".join(parts) if TITLE_START.match(" ".join(parts)) else (parts[-1] if parts else "")
         title = re.sub(r"^\d+(\.\d+)*\.?\s+", "", title)
         title = re.sub(r"\s+\d{1,3}$", "", title).strip()
         # The Arts section wraps several titles as "Course of Study in X offered

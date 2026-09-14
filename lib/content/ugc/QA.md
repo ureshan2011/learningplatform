@@ -41,16 +41,13 @@ find its handbook entry is one the checker can price but cannot say who may
 apply for. Titles are matched with brackets, footnote markers and punctuation
 removed, because the two documents set the same course differently.
 
-**247 of 260 rows (95%)** in the newest round reach a handbook entry.
+**254 of 260 rows (98%)** in the newest round reach a handbook entry.
 
 Unmatched:
 
 - `ART & DESIGN #`
-- `COMMUNICATION STUDIES *`
 - `DANCE #`
 - `DRAMA & THEATRE #`
-- `SOCIAL WORK *`
-- `TEACHING ENGLISH AS A SECOND`
 - `VISUAL & TECHNOLOGICAL ARTS #`
 
 These titles reach only the nearest handbook entry, not their own, because the
@@ -59,7 +56,6 @@ so no course code or handbook page is carried for them.
 
 - `ARTS (SP) / MASS MEDIA* #`
 - `ARTS (SP) / PERFORMING ARTS * #`
-- `ARTS-INFORMATION TECHNOLOGY *`
 - `MANAGEMENT STUDIES (TV) - A`
 - `MANAGEMENT STUDIES (TV) - B`
 - `PHYSICAL SCIENCE -ICT`
