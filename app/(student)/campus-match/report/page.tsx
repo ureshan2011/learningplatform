@@ -2,10 +2,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requirePageUser } from "@/lib/auth/session";
+import { getT, localeAttrs, type Translator } from "@/lib/i18n/server";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { getInputs, saveInputs } from "@/lib/campus-match/inputs";
 import { buildReport } from "@/lib/campus-match/report";
-import { dataFreshness, handbookCoverYear, roundSpan } from "@/lib/campus-match/data";
+import { dataFreshness, roundSpan } from "@/lib/campus-match/data";
 import { schemeRule, schemeUnstated } from "@/lib/campus-match/scheme";
 import { ADMISSION_ROUND, CAMPUS_MATCH_ID, CAMPUS_MATCH_NAME } from "@/lib/campus-match/cycle";
 import { Badge, Card, Eyebrow, Notice, PageHeader, StatCard } from "@/components/ds";
@@ -112,20 +113,32 @@ export default async function CampusMatchReportPage({
     redirect("/campus-match/report");
   }
 
+  const [t, loc] = await Promise.all([getT(), localeAttrs()]);
   const freshness = dataFreshness();
   const span = roundSpan();
-  const sourceLine = `Estimated from UGC rounds ${span.from ?? "—"} to ${span.to ?? "—"}, and the Courses of Study handbook${handbookCoverYear() ? ` (${handbookCoverYear()})` : ""}. An estimate from published figures, not a promise. ICT Campus is not affiliated with the UGC.`;
+  const sourceLine = [
+    t("match.source", {
+      from: span.from ?? "—",
+      to: span.to ?? "—",
+      date: freshness.coverYear ?? "—",
+    }),
+    t("match.estimate"),
+    t("match.notUgc"),
+  ].join(" ");
 
   /* ---------------------------------------------------------------------- */
   /* Nothing stored yet — bought from the dashboard, not through the checker  */
   /* ---------------------------------------------------------------------- */
   if (!inputs) {
     return (
-      <main className="mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6">
+      <main
+        lang={loc.lang}
+        className={`${loc.className} mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6`}
+      >
         <PageHeader
           eyebrow={`${ADMISSION_ROUND} admission round`}
           title={CAMPUS_MATCH_NAME}
-          subtitle="Three answers and your report is ready."
+          subtitle={t("match.needAnswers")}
         />
         <Card radius="panel" className="mt-5 p-5 sm:p-6">
           <ReportInputs
@@ -133,6 +146,7 @@ export default async function CampusMatchReportPage({
             streams={CHECKER_STREAMS}
             zMin={Z_MIN}
             zMax={Z_MAX}
+            labels={inputLabels(t, Z_MIN, Z_MAX)}
           />
         </Card>
         <p className="mt-5 text-xs leading-relaxed text-ict-ink-400">{sourceLine}</p>
@@ -161,89 +175,88 @@ export default async function CampusMatchReportPage({
     }));
 
   return (
-    <main className="ict-print mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6">
+    <main
+      lang={loc.lang}
+      className={`${loc.className} ict-print mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6`}
+    >
       <PageHeader
         eyebrow={`${ADMISSION_ROUND} admission round`}
         title={CAMPUS_MATCH_NAME}
-        subtitle={`Z-score ${inputs.z}, ${report.districtName} district, ${streamName}.`}
+        subtitle={t("match.sub", {
+          z: inputs.z,
+          district: report.districtName,
+          stream: streamName,
+        })}
       />
 
       {freshness.stale ? (
         <div className="mt-4">
-          <Notice tone="warning">
-            A newer round has probably been published since this report&rsquo;s figures were
-            collected. Check the UGC&rsquo;s own site before you apply.
-          </Notice>
+          <Notice tone="warning">{t("match.stale")}</Notice>
         </div>
       ) : null}
 
       <Card variant="feature" radius="panel" className="mt-5 p-6 sm:p-8">
-        <Eyebrow>Where you stand</Eyebrow>
+        <Eyebrow>{t("match.standing")}</Eyebrow>
         <p className="mt-3 font-display text-3xl font-extrabold tracking-[-0.03em] text-ict-paper-50">
-          {shortlist} {shortlist === 1 ? "course is" : "courses are"} worth putting near the top of
-          your list
+          {shortlist === 1 ? t("match.headlineOne") : t("match.headline", { n: shortlist })}
         </p>
         <p className="mt-2 max-w-[56ch] text-sm text-ict-orange-200">
-          {report.counts.likely} likely and {report.counts.possible} possible, out of{" "}
-          {report.counts.likely +
-            report.counts.possible +
-            report.counts.reach +
-            report.counts.unlikely}{" "}
-          your stream can apply for in {report.districtName}.
+          {t("match.breakdown", {
+            likely: report.counts.likely,
+            possible: report.counts.possible,
+            total:
+              report.counts.likely +
+              report.counts.possible +
+              report.counts.reach +
+              report.counts.unlikely,
+            district: report.districtName,
+          })}
         </p>
         <p className="mt-4 flex flex-wrap gap-2">
-          <Badge tone="neutral">Typical year-to-year move: {report.typicalMove} Z</Badge>
+          <Badge tone="neutral">{t("match.move", { z: report.typicalMove })}</Badge>
           {freshness.coverYear ? (
-            <Badge tone="neutral">Latest published round: {freshness.coverYear}</Badge>
+            <Badge tone="neutral">{t("match.latest", { year: freshness.coverYear })}</Badge>
           ) : null}
         </p>
       </Card>
 
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard icon="check_circle" label="Likely" value={report.counts.likely} />
-        <StatCard icon="flag" label="Possible" value={report.counts.possible} />
-        <StatCard icon="trending_up" label="Reach" value={report.counts.reach} />
-        <StatCard icon="info" label="Unlikely" value={report.counts.unlikely} />
+        <StatCard icon="check_circle" label={t("match.bands.likely")} value={report.counts.likely} />
+        <StatCard icon="flag" label={t("match.bands.possible")} value={report.counts.possible} />
+        <StatCard icon="trending_up" label={t("match.bands.reach")} value={report.counts.reach} />
+        <StatCard icon="info" label={t("match.bands.unlikely")} value={report.counts.unlikely} />
       </div>
 
-      <Bands report={report} />
+      <Bands report={report} t={t} />
 
       <OrderBuilder
         candidates={candidates}
         initial={inputs.preferences}
         orderRuleUnstated={schemeUnstated("preferenceProcessing")}
         sourceQuote={schemeRule("preferencesOnForm")?.text}
+        labels={orderLabels(t)}
       />
 
       <Card radius="panel" className="mt-4 p-5 sm:p-6">
         <p className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-paper-50">
-          How these numbers were worked out
+          {t("match.methodTitle")}
         </p>
         {/* Said plainly and in full, because the whole product rests on a
             student believing a percentage that nobody can verify on the day. */}
-        <p className="mt-2 text-sm leading-relaxed text-ict-ink-300">
-          For each course, the cut-off your district has needed in each published round is carried
-          forward — half of the recent trend, not all of it, because one strong cohort should not
-          become a prediction of more of the same. The spread of past years around that line
-          becomes the chance your Z-score clears it. Courses whose history in your district is two
-          or three years long are marked &ldquo;short history&rdquo; and given a wider spread.
-        </p>
-        <p className="mt-3 text-sm leading-relaxed text-ict-ink-300">
-          No chance is printed above 97% or below 3%. Cut-offs move with who applies each year, and
-          no method reading published figures can be certain either way.
-        </p>
+        <p className="mt-2 text-sm leading-relaxed text-ict-ink-300">{t("match.method1")}</p>
+        <p className="mt-3 text-sm leading-relaxed text-ict-ink-300">{t("match.method2")}</p>
         <p className="mt-4 text-sm">
           <Link
             href="/university-pathways"
             className="font-semibold text-ict-orange-400 underline underline-offset-4"
           >
-            See last round&rsquo;s published cut-offs
+            {t("match.seeFree")}
           </Link>
         </p>
       </Card>
 
       <div className="ict-print-hide mt-5 flex flex-wrap items-center gap-4">
-        <PrintReport />
+        <PrintReport label={t("match.print")} />
         <ChangeAnswers
           districts={CHECKER_DISTRICTS}
           streams={CHECKER_STREAMS}
@@ -256,10 +269,56 @@ export default async function CampusMatchReportPage({
             passes: inputs.passes,
             medium: inputs.medium,
           }}
+          labels={{
+            open: t("match.change"),
+            hint: t("match.changeHint"),
+            inputs: inputLabels(t, Z_MIN, Z_MAX),
+          }}
         />
       </div>
 
       <p className="mt-5 text-xs leading-relaxed text-ict-ink-400">{sourceLine}</p>
     </main>
   );
+}
+
+/** The strings the two client components need, since the dictionary stays on the server. */
+function inputLabels(t: Translator, zMin: number, zMax: number) {
+  return {
+    z: t("match.zLabel"),
+    zHint: t("match.zHint", { min: zMin, max: zMax }),
+    district: t("match.districtLabel"),
+    stream: t("match.streamLabel"),
+    choose: t("match.choose"),
+    passes: t("match.passes"),
+    passesHint: t("match.passesHint"),
+    medium: t("match.medium"),
+    build: t("match.build"),
+    saving: t("match.saving"),
+    error: t("match.saveError"),
+    cancel: t("match.deleteCancel"),
+  };
+}
+
+function orderLabels(t: Translator) {
+  return {
+    title: t("match.orderTitle"),
+    intro: t("match.orderIntro"),
+    empty: t("match.orderEmpty"),
+    nothing: (pct: number) => t("match.orderNothing", { pct }),
+    count: (n: number, max: number) => t("match.orderCount", { n, max }),
+    add: t("match.orderAdd"),
+    choose: t("match.choose"),
+    save: t("match.orderSave"),
+    saved: t("match.orderSaved"),
+    saving: t("match.saving"),
+    error: t("match.orderError"),
+    unstated: t("match.orderUnstated"),
+    assumed: t("match.orderRule"),
+    independence: t("match.independence"),
+    quote: (text: string) => t("match.orderQuote", { text }),
+    up: (course: string) => t("match.orderUp", { course }),
+    down: (course: string) => t("match.orderDown", { course }),
+    remove: (course: string) => t("match.orderRemove", { course }),
+  };
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Badge, Card, StatusDot, type StatusTone } from "@/components/ds";
+import type { Translator } from "@/lib/i18n/server";
 import type { Band } from "@/lib/campus-match/forecast";
 import type { Report, ReportRow } from "@/lib/campus-match/report";
 
@@ -15,20 +16,6 @@ import type { Report, ReportRow } from "@/lib/campus-match/report";
  * are sent.
  */
 
-const BAND_TITLE: Record<Band, string> = {
-  likely: "Likely",
-  possible: "Possible",
-  reach: "Reach",
-  unlikely: "Unlikely",
-};
-
-const BAND_HINT: Record<Band, string> = {
-  likely: "Your Z-score is comfortably above what these have needed.",
-  possible: "These could go either way. This is where your order matters most.",
-  reach: "Below what these usually need, but not out of reach in a soft year.",
-  unlikely: "Well below recent cut-offs. Listed so you can see the whole picture.",
-};
-
 const BAND_TONE: Record<Band, StatusTone> = {
   likely: "success",
   possible: "info",
@@ -39,7 +26,7 @@ const BAND_TONE: Record<Band, StatusTone> = {
 /** Bands below this many rows are open; longer ones start folded. */
 const OPEN_UP_TO = 10;
 
-function Row({ row }: { row: ReportRow }) {
+function Row({ row, t }: { row: ReportRow; t: Translator }) {
   return (
     <li className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-ict-border-dark py-3 first:border-t-0">
       <div className="min-w-0 flex-1">
@@ -63,9 +50,9 @@ function Row({ row }: { row: ReportRow }) {
         ) : null}
         {row.aptitudeTest || row.checkHandbook || row.thin ? (
           <p className="mt-1.5 flex flex-wrap gap-1.5">
-            {row.aptitudeTest ? <Badge tone="warning">Aptitude test</Badge> : null}
-            {row.checkHandbook ? <Badge tone="neutral">Check handbook</Badge> : null}
-            {row.thin ? <Badge tone="neutral">Short history</Badge> : null}
+            {row.aptitudeTest ? <Badge tone="warning">{t("match.aptitude")}</Badge> : null}
+            {row.checkHandbook ? <Badge tone="neutral">{t("match.checkHandbook")}</Badge> : null}
+            {row.thin ? <Badge tone="neutral">{t("match.shortHistory")}</Badge> : null}
           </p>
         ) : null}
       </div>
@@ -75,14 +62,16 @@ function Row({ row }: { row: ReportRow }) {
           {row.chance}%
         </p>
         <p className="mt-0.5 text-xs tabular-nums text-ict-ink-300">
-          {row.forecast !== null ? `Expected around ${row.forecast.toFixed(4)}` : "No estimate"}
+          {row.forecast !== null
+            ? t("match.expected", { z: row.forecast.toFixed(4) })
+            : t("match.noEstimate")}
         </p>
       </div>
     </li>
   );
 }
 
-function BandCard({ band, rows }: { band: Band; rows: ReportRow[] }) {
+function BandCard({ band, rows, t }: { band: Band; rows: ReportRow[]; t: Translator }) {
   if (rows.length === 0) return null;
   const open = rows.length <= OPEN_UP_TO;
 
@@ -95,18 +84,18 @@ function BandCard({ band, rows }: { band: Band; rows: ReportRow[] }) {
           <span className="flex items-center gap-2.5">
             <StatusDot tone={BAND_TONE[band]} />
             <span className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-paper-50">
-              {BAND_TITLE[band]}
+              {t(`match.bands.${band}`)}
             </span>
             <Badge tone="neutral">{rows.length}</Badge>
           </span>
           <span className="text-xs font-semibold text-ict-ink-300">
-            {open ? "Hide" : "Show"}
+            {open ? t("match.hide") : t("match.show")}
           </span>
         </summary>
-        <p className="mt-1.5 text-sm text-ict-ink-300">{BAND_HINT[band]}</p>
+        <p className="mt-1.5 text-sm text-ict-ink-300">{t(`match.hint.${band}`)}</p>
         <ul className="mt-3">
           {rows.map((row) => (
-            <Row key={row.key} row={row} />
+            <Row key={row.key} row={row} t={t} />
           ))}
         </ul>
       </details>
@@ -114,12 +103,12 @@ function BandCard({ band, rows }: { band: Band; rows: ReportRow[] }) {
   );
 }
 
-export function Bands({ report }: { report: Report }) {
+export function Bands({ report, t }: { report: Report; t: Translator }) {
   const order: Band[] = ["likely", "possible", "reach", "unlikely"];
   return (
     <div>
       {order.map((band) => (
-        <BandCard key={band} band={band} rows={report.bands[band]} />
+        <BandCard key={band} band={band} rows={report.bands[band]} t={t} />
       ))}
 
       {report.noCutoff.length > 0 ? (
@@ -129,20 +118,17 @@ export function Bands({ report }: { report: Report }) {
               <span className="flex items-center gap-2.5">
                 <StatusDot tone="neutral" />
                 <span className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-paper-50">
-                  No cut-off to estimate from
+                  {t("match.noneTitle")}
                 </span>
                 <Badge tone="neutral">{report.noCutoff.length}</Badge>
               </span>
-              <span className="text-xs font-semibold text-ict-ink-300">Show</span>
+              <span className="text-xs font-semibold text-ict-ink-300">{t("match.show")}</span>
             </summary>
             {/* Not a band: these are courses your stream may apply for with no
                 published history to forecast from. Giving them a percentage
                 would be inventing one. */}
             <p className="mt-1.5 text-sm text-ict-ink-300">
-              These admit your stream, but there is no recent published cut-off to estimate from.
-              Some are admitted on all-island merit and have no district column at all; for others
-              nobody from {report.districtName} applied recently. No estimate can be made, which is
-              not the same as no chance.
+              {t("match.noneBody", { district: report.districtName })}
             </p>
             <ul className="mt-3">
               {report.noCutoff.map((row) => (

@@ -7,7 +7,7 @@ import { getInputs } from "@/lib/campus-match/inputs";
 import { courseHistory, getProfile, profileCodes } from "@/lib/campus-match/profiles";
 import { handbookCoverYear } from "@/lib/campus-match/data";
 import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
-import { getLocale, localeAttrs } from "@/lib/i18n/server";
+import { getLocale, getT, localeAttrs } from "@/lib/i18n/server";
 import { Badge, Card, Eyebrow, PageHeader } from "@/components/ds";
 import { CutoffHistory } from "@/components/campus-match/CutoffHistory";
 import districts from "@/lib/content/ugc/districts.json";
@@ -44,9 +44,10 @@ export default async function DegreeProfilePage({
   const access = await hasAccess(user.uid, CAMPUS_MATCH_ID);
   if (!access.allowed) redirect("/campus-match");
 
-  const [locale, loc, inputs] = await Promise.all([
+  const [locale, loc, t, inputs] = await Promise.all([
     getLocale(),
     localeAttrs(),
+    getT(),
     getInputs(user.uid),
   ]);
 
@@ -57,7 +58,7 @@ export default async function DegreeProfilePage({
   const history = district ? courseHistory(code, district) : [];
   const districtName = district ? (DISTRICT_NAMES.get(district) ?? district) : null;
   const admits = profile.course.streams.map((s) =>
-    s === "any" ? "Any stream" : (STREAM_NAMES.get(s) ?? s),
+    s === "any" ? t("match.anyStream") : (STREAM_NAMES.get(s) ?? s),
   );
 
   return (
@@ -72,31 +73,32 @@ export default async function DegreeProfilePage({
       />
 
       <Card radius="panel" className="mt-5 p-5 sm:p-6">
-        <Eyebrow>Who may apply</Eyebrow>
+        <Eyebrow>{t("match.who")}</Eyebrow>
         <p className="mt-2.5 flex flex-wrap gap-2">
           {admits.map((name) => (
             <Badge key={name} tone="neutral">
               {name}
             </Badge>
           ))}
-          {profile.course.aptitudeTest ? <Badge tone="warning">Aptitude test</Badge> : null}
+          {profile.course.aptitudeTest ? <Badge tone="warning">{t("match.aptitude")}</Badge> : null}
         </p>
         {/* True of every course today: the handbook writes its subject rules as
             prose with alternatives, and none has been reduced to a machine rule.
             Saying so is the honest version of not having reduced it. */}
         <p className="mt-3 text-sm leading-relaxed text-ict-ink-300">
-          The stream is the only rule applied here. Several courses also ask for particular
-          subjects, and the handbook writes those as prose with alternatives — read the
-          handbook entry before you apply.
+          {t("match.streamOnly")}
           {profile.course.handbookPage
-            ? ` This course is on page ${profile.course.handbookPage} of the ${handbookCoverYear() ?? ""} Courses of Study handbook.`
+            ? ` ${t("match.page", {
+                page: profile.course.handbookPage,
+                year: handbookCoverYear() ?? "—",
+              })}`
             : ""}
         </p>
       </Card>
 
       {profile.universities.length > 0 ? (
         <Card radius="panel" className="mt-4 p-5 sm:p-6">
-          <Eyebrow>Where it is offered</Eyebrow>
+          <Eyebrow>{t("match.where")}</Eyebrow>
           <ul className="mt-2.5">
             {profile.universities.map((name) => (
               <li
@@ -107,42 +109,39 @@ export default async function DegreeProfilePage({
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-xs text-ict-ink-400">
-            As listed in the most recent published cut-off table.
-          </p>
+          <p className="mt-3 text-xs text-ict-ink-400">{t("match.whereNote")}</p>
         </Card>
       ) : null}
 
       {history.length > 0 && districtName ? (
         <Card radius="panel" className="mt-4 p-5 sm:p-6">
-          <Eyebrow>What it has needed in {districtName}</Eyebrow>
+          <Eyebrow>{t("match.needed", { district: districtName })}</Eyebrow>
           <div className="mt-4">
-            <CutoffHistory points={history} districtName={districtName} z={inputs?.z} />
+            <CutoffHistory
+              points={history}
+              note={t("match.historyNote", { district: districtName })}
+              zNote={t("match.historyZ")}
+              z={inputs?.z}
+            />
           </div>
         </Card>
       ) : null}
 
       <Card variant="feature" radius="panel" className="mt-4 p-5 sm:p-6">
-        <Eyebrow>While you wait</Eyebrow>
-        <p className="mt-2.5 text-sm leading-relaxed text-ict-paper-200">
-          Results to registration is a long gap. Campus Ready is a twelve-week programme for
-          exactly that stretch.
-        </p>
+        <Eyebrow>{t("match.waitTitle")}</Eyebrow>
+        <p className="mt-2.5 text-sm leading-relaxed text-ict-paper-200">{t("match.waitBody")}</p>
         <p className="mt-3 text-sm">
           <Link
             href="/campus-ready"
             className="font-semibold text-ict-paper-50 underline underline-offset-4"
           >
-            See what Campus Ready covers
+            {t("match.waitCta")}
           </Link>
         </p>
       </Card>
 
       <p className="mt-5 text-xs leading-relaxed text-ict-ink-400">
-        Cut-offs and eligibility are from the UGC&rsquo;s own published tables and handbook. The
-        description of the subject is ICT Campus&rsquo;s own plain summary, not the UGC&rsquo;s
-        words and not a syllabus — the handbook and the university decide what is taught. ICT
-        Campus is not affiliated with the UGC.
+        {t("match.profileSources")} {t("match.notUgc")}
       </p>
 
       <p className="mt-4 text-sm">
@@ -150,7 +149,7 @@ export default async function DegreeProfilePage({
           href="/campus-match/report"
           className="font-semibold text-ict-orange-400 underline underline-offset-4"
         >
-          Back to my report
+          {t("match.back")}
         </Link>
       </p>
     </main>

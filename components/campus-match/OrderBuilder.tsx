@@ -28,11 +28,35 @@ export interface OrderCandidate {
 /** As many as the screen can hold honestly; the form's own limit is unpublished. */
 const MAX_PREFERENCES = 15;
 
+export interface OrderLabels {
+  title: string;
+  intro: string;
+  empty: string;
+  nothing: (pct: number) => string;
+  count: (n: number, max: number) => string;
+  add: string;
+  choose: string;
+  save: string;
+  saved: string;
+  saving: string;
+  error: string;
+  /** Said when the handbook does not carry the rule these numbers assume. */
+  unstated: string;
+  /** Said when it does. */
+  assumed: string;
+  independence: string;
+  quote: (text: string) => string;
+  up: (course: string) => string;
+  down: (course: string) => string;
+  remove: (course: string) => string;
+}
+
 export function OrderBuilder({
   candidates,
   initial,
   orderRuleUnstated,
   sourceQuote,
+  labels,
 }: {
   candidates: OrderCandidate[];
   initial: string[];
@@ -40,6 +64,8 @@ export function OrderBuilder({
   orderRuleUnstated: boolean;
   /** What the handbook does say about preferences, quoted. */
   sourceQuote?: string;
+  /** The dictionary never reaches the browser, so the strings arrive as props. */
+  labels: OrderLabels;
 }) {
   const byKey = useMemo(() => new Map(candidates.map((c) => [c.key, c])), [candidates]);
   const [order, setOrder] = useState<string[]>(() => initial.filter((k) => byKey.has(k)));
@@ -80,7 +106,7 @@ export function OrderBuilder({
       if (!res.ok) throw new Error("failed");
       setSaved(true);
     } catch {
-      setError("Could not save your order just now. Try again.");
+      setError(labels.error);
     } finally {
       setBusy(false);
     }
@@ -89,18 +115,12 @@ export function OrderBuilder({
   return (
     <Card radius="panel" className="mt-4 p-5 sm:p-6">
       <p className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-paper-50">
-        Your application order
+        {labels.title}
       </p>
-      <p className="mt-1 text-sm text-ict-ink-300">
-        Put them in the order you would write them on the form. The number beside each one is the
-        chance you end up with that course rather than something above it.
-      </p>
+      <p className="mt-1 text-sm text-ict-ink-300">{labels.intro}</p>
 
       {chosen.length === 0 ? (
-        <p className="mt-4 text-sm text-ict-ink-400">
-          Nothing added yet. Start with the ones you actually want, not the ones you are most
-          likely to get — the order is what decides between them.
-        </p>
+        <p className="mt-4 text-sm text-ict-ink-400">{labels.empty}</p>
       ) : (
         <ol className="mt-4">
           {chosen.map((c, i) => (
@@ -125,7 +145,7 @@ export function OrderBuilder({
                   type="button"
                   onClick={() => move(i, -1)}
                   disabled={i === 0}
-                  aria-label={`Move ${c.course} up`}
+                  aria-label={labels.up(c.course)}
                   className="grid size-8 place-items-center rounded-full border border-ict-border-dark text-ict-ink-200 disabled:opacity-40"
                 >
                   <Icon name="expand_less" className="!text-sm" />
@@ -134,7 +154,7 @@ export function OrderBuilder({
                   type="button"
                   onClick={() => move(i, 1)}
                   disabled={i === chosen.length - 1}
-                  aria-label={`Move ${c.course} down`}
+                  aria-label={labels.down(c.course)}
                   className="grid size-8 place-items-center rounded-full border border-ict-border-dark text-ict-ink-200 disabled:opacity-40"
                 >
                   <Icon name="expand_more" className="!text-sm" />
@@ -142,7 +162,7 @@ export function OrderBuilder({
                 <button
                   type="button"
                   onClick={() => change(order.filter((k) => k !== c.key))}
-                  aria-label={`Remove ${c.course}`}
+                  aria-label={labels.remove(c.course)}
                   className="grid size-8 place-items-center rounded-full border border-ict-border-dark text-ict-ink-200"
                 >
                   <Icon name="close" className="!text-sm" />
@@ -155,16 +175,14 @@ export function OrderBuilder({
 
       {chosen.length > 0 ? (
         <p className="mt-4 flex flex-wrap items-center gap-2">
-          <Badge tone={nothing > 50 ? "warning" : "neutral"}>
-            Nothing from this list: {nothing}%
-          </Badge>
-          <Badge tone="neutral">{chosen.length} of {MAX_PREFERENCES}</Badge>
+          <Badge tone={nothing > 50 ? "warning" : "neutral"}>{labels.nothing(nothing)}</Badge>
+          <Badge tone="neutral">{labels.count(chosen.length, MAX_PREFERENCES)}</Badge>
         </p>
       ) : null}
 
       {order.length < MAX_PREFERENCES && available.length > 0 ? (
         <label className="ict-print-hide mt-4 block">
-          <span className="mb-1.5 block text-sm font-medium text-ict-ink-300">Add a course</span>
+          <span className="mb-1.5 block text-sm font-medium text-ict-ink-300">{labels.add}</span>
           <select
             value=""
             onChange={(e) => {
@@ -172,7 +190,7 @@ export function OrderBuilder({
             }}
             className="h-12 w-full rounded-full border border-ict-border-dark bg-ict-ink-800 px-4 text-base text-ict-paper-50 outline-none focus:border-ict-orange-500"
           >
-            <option value="">Choose</option>
+            <option value="">{labels.choose}</option>
             {available.map((c) => (
               <option key={c.key} value={c.key}>
                 {c.course}
@@ -191,7 +209,7 @@ export function OrderBuilder({
 
       <div className="ict-print-hide mt-4 flex items-center gap-3">
         <Button onClick={save} disabled={saved || busy} variant="secondary">
-          {busy ? "Saving" : saved ? "Saved" : "Save my order"}
+          {busy ? labels.saving : saved ? labels.saved : labels.save}
         </Button>
       </div>
 
@@ -199,16 +217,10 @@ export function OrderBuilder({
           carry. Said here rather than in a footnote: a student reading 92%
           deserves to know what it rests on. */}
       <p className="mt-5 text-xs leading-relaxed text-ict-ink-400">
-        {orderRuleUnstated
-          ? "The published part of the handbook does not say how the UGC works down an ordered list. These numbers assume it gives you the first course on your list that you clear. Read them as a comparison between two orders, not as a prediction of the result."
-          : "These numbers assume the UGC gives you the first course on your list that you clear."}{" "}
-        They also treat each course as independent, which overstates certainty a little, because a
-        year that pushes one cut-off up usually pushes others up with it.
+        {orderRuleUnstated ? labels.unstated : labels.assumed} {labels.independence}
       </p>
       {sourceQuote ? (
-        <p className="mt-2 text-xs leading-relaxed text-ict-ink-400">
-          What the handbook does say: &ldquo;{sourceQuote}&rdquo;
-        </p>
+        <p className="mt-2 text-xs leading-relaxed text-ict-ink-400">{labels.quote(sourceQuote)}</p>
       ) : null}
     </Card>
   );

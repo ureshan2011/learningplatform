@@ -17,6 +17,21 @@ import type { CheckerDistrict, CheckerStream } from "@/components/campus-match/F
  * browser has no write on `campusMatch` at all.
  */
 
+export interface InputLabels {
+  z: string;
+  zHint: string;
+  district: string;
+  stream: string;
+  choose: string;
+  passes: string;
+  passesHint: string;
+  medium: string;
+  build: string;
+  saving: string;
+  error: string;
+  cancel: string;
+}
+
 export function ReportInputs({
   districts,
   streams,
@@ -24,6 +39,7 @@ export function ReportInputs({
   zMax,
   initial,
   onDone,
+  labels,
 }: {
   districts: CheckerDistrict[];
   streams: CheckerStream[];
@@ -31,6 +47,8 @@ export function ReportInputs({
   zMax: number;
   initial?: { z: number; district: string; stream: string; passes: string[]; medium: boolean };
   onDone?: () => void;
+  /** The dictionary never reaches the browser, so the strings arrive as props. */
+  labels: InputLabels;
 }) {
   const router = useRouter();
   const [z, setZ] = useState(initial ? String(initial.z) : "");
@@ -76,7 +94,7 @@ export function ReportInputs({
       onDone?.();
       router.refresh();
     } catch {
-      setError("Could not save just now. Try again.");
+      setError(labels.error);
       setBusy(false);
     }
   }
@@ -84,24 +102,24 @@ export function ReportInputs({
   return (
     <div>
       <div className="grid gap-4 sm:grid-cols-3">
-        <Field label="Your Z-score" hint={`Between ${zMin} and ${zMax}`}>
+        <Field label={labels.z} hint={labels.zHint}>
           <Input
             value={z}
             onChange={(e) => setZ(e.target.value)}
             inputMode="decimal"
             placeholder="1.8500"
-            aria-label="Your Z-score"
+            aria-label={labels.z}
           />
         </Field>
 
-        <Field label="Your district">
+        <Field label={labels.district}>
           <select
             value={district}
             onChange={(e) => setDistrict(e.target.value)}
-            aria-label="Your district"
+            aria-label={labels.district}
             className="h-12 w-full rounded-full border border-ict-border-dark bg-ict-ink-800 px-4 text-base text-ict-paper-50 outline-none focus:border-ict-orange-500"
           >
-            <option value="">Choose</option>
+            <option value="">{labels.choose}</option>
             {districts.map((d) => (
               <option key={d.key} value={d.key}>
                 {d.name}
@@ -110,14 +128,14 @@ export function ReportInputs({
           </select>
         </Field>
 
-        <Field label="Your stream">
+        <Field label={labels.stream}>
           <select
             value={stream}
             onChange={(e) => setStream(e.target.value)}
-            aria-label="Your stream"
+            aria-label={labels.stream}
             className="h-12 w-full rounded-full border border-ict-border-dark bg-ict-ink-800 px-4 text-base text-ict-paper-50 outline-none focus:border-ict-orange-500"
           >
-            <option value="">Choose</option>
+            <option value="">{labels.choose}</option>
             {streams.map((s) => (
               <option key={s.key} value={s.key}>
                 {s.name}
@@ -129,13 +147,8 @@ export function ReportInputs({
 
       {chosen && chosen.subjects.length > 0 ? (
         <div className="mt-5">
-          <p className="text-sm font-medium text-ict-ink-300">
-            Subjects you passed at C or better
-          </p>
-          <p className="mt-1 text-xs text-ict-ink-400">
-            Optional. Some courses ask for a particular subject; ticking yours removes the ones you
-            could not apply for anyway.
-          </p>
+          <p className="text-sm font-medium text-ict-ink-300">{labels.passes}</p>
+          <p className="mt-1 text-xs text-ict-ink-400">{labels.passesHint}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {chosen.subjects.map((subject) => {
               const on = passes.has(subject);
@@ -164,7 +177,7 @@ export function ReportInputs({
               onChange={(e) => setMedium(e.target.checked)}
               className="size-4 accent-[var(--color-ict-orange-500)]"
             />
-            I can study in English medium
+            {labels.medium}
           </label>
         </div>
       ) : null}
@@ -177,7 +190,7 @@ export function ReportInputs({
 
       <div className="mt-5 flex items-center gap-3">
         <Button onClick={save} disabled={!ready || busy}>
-          {busy ? "Saving" : "Build my report"}
+          {busy ? labels.saving : labels.build}
         </Button>
         {onDone ? (
           <button
@@ -185,7 +198,7 @@ export function ReportInputs({
             onClick={onDone}
             className="text-sm font-semibold text-ict-ink-300 underline-offset-4 hover:underline"
           >
-            Cancel
+            {labels.cancel}
           </button>
         ) : null}
       </div>

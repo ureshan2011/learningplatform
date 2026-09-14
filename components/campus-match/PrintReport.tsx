@@ -23,7 +23,7 @@ function restore(closed: Element[]) {
   for (const el of closed) el.removeAttribute("open");
 }
 
-export function PrintReport() {
+export function PrintReport({ label }: { label: string }) {
   useEffect(() => {
     let closed: Element[] = [];
     const before = () => {
@@ -50,7 +50,7 @@ export function PrintReport() {
         window.print();
       }}
     >
-      Print this report
+      {label}
     </Button>
   );
 }

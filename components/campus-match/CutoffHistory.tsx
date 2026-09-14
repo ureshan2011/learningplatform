@@ -12,11 +12,15 @@ import type { HistoryPoint } from "@/lib/campus-match/profiles";
 
 export function CutoffHistory({
   points,
-  districtName,
+  note,
+  zNote,
   z,
 }: {
   points: HistoryPoint[];
-  districtName: string;
+  /** What the bars are, in the reader's language. */
+  note: string;
+  /** What the dashed line is. Only shown when there is one. */
+  zNote: string;
   /** The reader's own Z-score, drawn as a line across the bars. */
   z?: number;
 }) {
@@ -70,9 +74,8 @@ export function CutoffHistory({
       </ol>
 
       <p className="mt-3 text-xs text-ict-ink-400">
-        The lowest cut-off published for {districtName} in each round, across every university
-        offering this course. A dash is a round where none was published for the district.
-        {z !== undefined ? " The dashed line is your Z-score." : ""}
+        {note}
+        {z !== undefined ? ` ${zNote}` : ""}
       </p>
     </div>
   );
