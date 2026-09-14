@@ -30,6 +30,9 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
 const CUTOFFS = join(REPO, "lib", "content", "ugc", "cutoffs");
 const OUT = join(REPO, "lib", "content", "ugc", "BACKTEST.md");
+// The same headline for code rather than for a reader: the teacher console
+// prints it, and a console panel must not depend on a regex over prose.
+const SUMMARY = join(REPO, "lib", "content", "ugc", "backtest.json");
 
 /**
  * The two probes the calibration bars are stated in terms of.
@@ -205,6 +208,26 @@ async function main() {
   }
 
   await writeFile(OUT, render(rounds, chosen, sweep, coverage), "utf8");
+  await writeFile(
+    SUMMARY,
+    `${JSON.stringify(
+      {
+        generated: new Date().toISOString().slice(0, 10),
+        heldOut: rounds.slice(2).map((r) => r.round),
+        cells: chosen.cells,
+        mae: Number(chosen.mae.toFixed(4)),
+        likelyPct: Number(chosen.likelyPct.toFixed(1)),
+        likelyBar: LIKELY_BAR,
+        unlikelyPct: Number(chosen.unlikelyPct.toFixed(1)),
+        unlikelyBar: UNLIKELY_BAR,
+        passes: passes(chosen),
+        tuning: chosen.tuning,
+      },
+      null,
+      1,
+    )}\n`,
+    "utf8",
+  );
   console.log(`backtest -> ${OUT}`);
   console.log(
     `defaults: MAE ${chosen.mae.toFixed(4)} over ${chosen.cells} cells | ` +

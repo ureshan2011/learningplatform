@@ -50,6 +50,13 @@ export default async function PrivacyPage() {
             payment, and — if you pay by deposit — the photograph of the slip you upload.
           </li>
           <li>
+            <strong>If you buy Campus Match:</strong> the answers you type into it — your Z-score,
+            district, A/L stream, the subjects you say you passed at C or better, whether you can
+            study in English medium, and the order you would write your course preferences in. If
+            you choose to tell us after selection, we also store which course you were offered.
+            Nothing here is shared with the UGC, with any university, or with anyone else.
+          </li>
+          <li>
             <strong>How you use the site:</strong> which pages you opened and when, which files you
             downloaded, and when you signed in. Your teacher can see this on your record. We do not
             record what you type, what you search for, your location, or anything you do on other
@@ -59,6 +66,16 @@ export default async function PrivacyPage() {
         <p>
           <strong>We never see your card number.</strong> Card details are entered on PayHere&apos;s
           own payment page and never reach this platform.
+        </p>
+      </Clause>
+
+      <Clause heading="Deleting your Campus Match answers">
+        <p>
+          The answers behind your Campus Match report can be deleted on their own, at any time,
+          from Account — you do not have to close your account or write to us. Deleting them
+          removes the report; your purchase is unaffected, and you can type them again if you want
+          the report back. We keep nothing from them once they are deleted, except the payment
+          record itself, which tax law requires us to hold.
         </p>
       </Clause>
 

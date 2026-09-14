@@ -63,6 +63,11 @@ export default async function RefundPolicyPage() {
             focus list built from pattern and syllabus weighting, not a guarantee.
           </li>
           <li>
+            A Campus Match forecast differed from the cut-off the UGC later published. Every screen
+            that shows a number says it is an estimate worked out from figures the UGC has already
+            published, and cut-offs move with who applies in a given year.
+          </li>
+          <li>
             The account was closed for sharing a login or redistributing our material. That is the
             one case with no refund at all.
           </li>

@@ -1,0 +1,23 @@
+{
+ "generated": "2026-09-14",
+ "heldOut": [
+  "2020-2021",
+  "2021-2022",
+  "2022-2023",
+  "2023-2024",
+  "2024-2025",
+  "2025-2026"
+ ],
+ "cells": 22460,
+ "mae": 0.1383,
+ "likelyPct": 87.4,
+ "likelyBar": 70,
+ "unlikelyPct": 5.7,
+ "unlikelyBar": 10,
+ "passes": true,
+ "tuning": {
+  "damping": 0.5,
+  "sigmaFloor": 0.08,
+  "thinWiden": 1.5
+ }
+}

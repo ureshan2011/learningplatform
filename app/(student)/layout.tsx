@@ -4,6 +4,7 @@ import { getLocale, getT } from "@/lib/i18n/server";
 import { paymentsPaused } from "@/lib/payments/launch";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
 import { ensureCampusMatch } from "@/lib/campus-match/ensure";
+import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
 import { shouldRecordRole } from "@/lib/activity/policy";
 import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
@@ -109,14 +110,28 @@ export default async function StudentLayout({ children }: { children: React.Reac
   // Same rule for a pack the student owns. Both live under one Campus Ready
   // heading rather than two, so owning the pack alone does not put a
   // one-item group in the rail.
-  const myPack = products.find((p) => activeIds.has(p.id)) ?? (isStaff ? products[0] : undefined);
-  if (myCohort || myPack) {
+  //
+  // Campus Match is a product too, but it is not a pack and has nothing at
+  // `/packs/{id}` — so it is taken out of this lookup and given its own entry,
+  // or a student who bought it would get a rail link to a page that 404s.
+  const packs = products.filter((p) => p.id !== CAMPUS_MATCH_ID);
+  const myPack = packs.find((p) => activeIds.has(p.id)) ?? (isStaff ? packs[0] : undefined);
+  const ownsMatch = activeIds.has(CAMPUS_MATCH_ID) || isStaff;
+  if (myCohort || myPack || ownsMatch) {
     const campusItems: NavItem[] = [];
     if (myCohort) {
       campusItems.push({ href: `/campus/${myCohort.id}`, label: t("nav.campus"), icon: "school" });
     }
     if (myPack) {
       campusItems.push({ href: `/packs/${myPack.id}`, label: t("nav.pack"), icon: "inventory_2" });
+    }
+    if (ownsMatch) {
+      campusItems.push({
+        href: "/campus-match/report",
+        label: t("nav.match"),
+        icon: "insights",
+        matchPrefix: true,
+      });
     }
     groups.push({ label: t("campus.title"), items: campusItems });
   }

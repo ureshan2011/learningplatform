@@ -45,6 +45,7 @@ const en = {
   "nav.certificate": "Certificate",
   "nav.campus": "Campus Ready",
   "nav.pack": "Survival Pack",
+  "nav.match": "Campus Match",
   "nav.freeNotes": "Free notes",
   "nav.pastPapers": "Past papers",
   "nav.commandWords": "Command words",
@@ -301,6 +302,38 @@ const en = {
   "signin.deviceAskTeacher": "Ask your teacher to free a device slot.",
   "signin.back": "Back",
 
+  /* ---- Campus Match ----
+     "Z-score", "cut-off", "UGC", "campus", "stream" and the four band names
+     stay in English in both languages: they are what the exam, the application
+     form and every student conversation already use. */
+  "match.estimate": "An estimate from published UGC cut-offs, not a promise.",
+  "match.source": "Based on UGC rounds {from} to {to}, published {date}.",
+  "match.notUgc":
+    "ICT Campus is not affiliated with the UGC. The UGC handbook decides eligibility.",
+  "match.checkHandbook": "Check handbook",
+  "match.noCutoff": "No cut-off was published for your district last round.",
+  "match.orderRule":
+    "The UGC gives you the first course on your list that you clear. Put what you want most first, and keep at least two Likely courses on the list.",
+  "match.independence":
+    "This treats each course as independent, so it slightly overstates certainty.",
+  "match.bands.likely": "Likely",
+  "match.bands.possible": "Possible",
+  "match.bands.reach": "Reach",
+  "match.bands.unlikely": "Unlikely",
+  "match.cardBlurb": "Which degrees your Z-score can reach. {price}, once.",
+  "match.cardOwned": "Your bands, your order, and every degree profile.",
+  "match.open": "Open my report",
+  "match.see": "See my chances",
+  "match.deleteTitle": "Your Campus Match answers",
+  "match.deleteBody":
+    "Your Z-score, district, stream, passes and application order. Deleting them removes your report; what you paid for stays, and you can type them again whenever you like.",
+  "match.deleteAction": "Delete my answers",
+  "match.deleteConfirm": "Yes, delete them",
+  "match.deleteCancel": "Keep them",
+  "match.deleteDone": "Deleted. Nothing of your answers is kept.",
+  "match.deleteError": "Could not delete just now. Try again.",
+  "match.deleteWorking": "Deleting",
+
   /* ---- generic ---- */
   "common.loading": "Loading…",
   "common.back": "Back",
@@ -326,6 +359,7 @@ const si: Record<MessageKey, string> = {
   "nav.certificate": "සර්ටිෆිකට්",
   "nav.campus": "Campus Ready",
   "nav.pack": "Survival Pack",
+  "nav.match": "Campus Match",
   "nav.freeNotes": "නොමිලේ නෝට්ස්",
   "nav.pastPapers": "පසුගිය පේපර්",
   "nav.commandWords": "Command words",
@@ -573,6 +607,35 @@ const si: Record<MessageKey, string> = {
     "ඔබ මෑතකදී device එකක් swap කළා. {date} වලින් පස්සේ ආයෙත් swap කරන්න පුළුවන්, නැත්නම් ගුරුතුමාගෙන් slot එකක් ඉල්ලන්න.",
   "signin.deviceAskTeacher": "Device slot එකක් ඉවත් කරන්න ගුරුතුමාගෙන් අහන්න.",
   "signin.back": "ආපසු",
+
+  /* ---- Campus Match ---- */
+  "match.estimate": "UGC එකේ පළ කරපු cut-off වලින් ගත්ත estimate එකක්. පොරොන්දුවක් නෙවෙයි.",
+  "match.source": "UGC rounds {from} සිට {to} දක්වා, {date} දී පළ කළ දත්ත මත.",
+  "match.notUgc":
+    "ICT Campus එකට UGC එක්ක සම්බන්ධයක් නෑ. කාට apply කරන්න පුළුවන්ද කියලා තීරණය කරන්නේ UGC handbook එක.",
+  "match.checkHandbook": "Handbook එක බලන්න",
+  "match.noCutoff": "ගිය round එකේ ඔයාගේ දිස්ත්‍රික්කයට cut-off එකක් පළ කරලා නෑ.",
+  "match.orderRule":
+    "ඔයාගේ list එකේ ඔයා pass වෙන පළවෙනි course එක තමයි UGC එක දෙන්නේ. ඒ නිසා ඔයාට ඇත්තටම ඕන එක මුලින්ම ලියන්න, සහ Likely course දෙකක්වත් list එකේ තියාගන්න.",
+  "match.independence":
+    "මේකේදී හැම course එකක්ම වෙන වෙනම සලකනවා, ඒ නිසා නිශ්චිතභාවය පොඩ්ඩක් වැඩියෙන් පෙන්නනවා.",
+  "match.bands.likely": "Likely",
+  "match.bands.possible": "Possible",
+  "match.bands.reach": "Reach",
+  "match.bands.unlikely": "Unlikely",
+  "match.cardBlurb": "ඔයාගේ Z-score එකෙන් යන්න පුළුවන් degree මොනවද. {price}, එක පාරයි.",
+  "match.cardOwned": "ඔයාගේ bands, order එක සහ හැම degree profile එකක්ම.",
+  "match.open": "මගේ report එක බලන්න",
+  "match.see": "මගේ chances බලන්න",
+  "match.deleteTitle": "ඔයාගේ Campus Match උත්තර",
+  "match.deleteBody":
+    "ඔයාගේ Z-score, දිස්ත්‍රික්කය, stream එක, pass වුණ විෂය සහ application order එක. මේවා delete කළොත් report එකත් යනවා. ගෙවපු එක නම් ඒ විදියටම තියෙනවා, ඕන වෙලාවක ආයෙත් type කරන්න පුළුවන්.",
+  "match.deleteAction": "මගේ උත්තර delete කරන්න",
+  "match.deleteConfirm": "ඔව්, delete කරන්න",
+  "match.deleteCancel": "තියාගන්න",
+  "match.deleteDone": "Delete කළා. ඔයාගේ උත්තර වලින් මොකුත් තියාගෙන නෑ.",
+  "match.deleteError": "දැන් delete කරන්න බැරි වුණා. ආයෙත් try කරන්න.",
+  "match.deleteWorking": "Delete කරමින්",
 
   "common.loading": "පූරණය වෙමින්…",
   "common.back": "ආපසු",

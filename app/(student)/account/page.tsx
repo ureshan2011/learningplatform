@@ -7,6 +7,8 @@ import { formatLocal } from "@/lib/phone";
 import { publicEnv } from "@/lib/env";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
+import { DeleteMatchAnswers } from "@/components/account/DeleteMatchAnswers";
+import { getInputs } from "@/lib/campus-match/inputs";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { getLocale, getT, localeAttrs } from "@/lib/i18n/server";
 import { Icon } from "@/components/ui/Icon";
@@ -44,7 +46,7 @@ export default async function AccountPage() {
 
   const [t, locale, loc] = await Promise.all([getT(), getLocale(), localeAttrs()]);
 
-  const [snap, enrollments, subjects, payments] = await Promise.all([
+  const [snap, enrollments, subjects, payments, matchInputs] = await Promise.all([
     col.users().doc(session.uid).get(),
     listEnrollments(session.uid),
     listSubjects(),
@@ -62,6 +64,8 @@ export default async function AccountPage() {
           .slice(0, 24),
       )
       .catch(() => [] as Payment[]),
+    // Only to decide whether the delete control has anything to delete.
+    getInputs(session.uid).catch(() => undefined),
   ]);
 
   const user = snap.data() as User;
@@ -173,6 +177,29 @@ export default async function AccountPage() {
               <ParentLinkPanel />
             </Card>
           </section>
+
+          {/* Only shown when there is something to delete. The privacy policy
+              promises this control by name, so it has to be here and it has to
+              work for someone whose access has already lapsed. */}
+          {matchInputs ? (
+            <section>
+              <SectionBar title={t("match.deleteTitle")} />
+              <Card radius="card" className="p-5">
+                <DeleteMatchAnswers
+                  labels={{
+                    title: t("match.deleteTitle"),
+                    body: t("match.deleteBody"),
+                    action: t("match.deleteAction"),
+                    confirm: t("match.deleteConfirm"),
+                    cancel: t("match.deleteCancel"),
+                    done: t("match.deleteDone"),
+                    error: t("match.deleteError"),
+                    working: t("match.deleteWorking"),
+                  }}
+                />
+              </Card>
+            </section>
+          ) : null}
         </div>
 
         <aside className="space-y-3">
