@@ -1,0 +1,129 @@
+{
+ "coverYear": "2025/2026",
+ "source": "https://admission.ugc.ac.lk/static/media/courses_of_study_English.a047e84b.pdf",
+ "note": "Stream names are the handbook's own section headings and are reliable. Subject lists are deliberately empty: §2.4 asks for the Department of Examinations' subject lists, which are not in this document, and the handbook's own bullets mix acceptable A/L subjects with degree names and university lists in a way that cannot be told apart reliably. A wrong subject toggle on the free checker would tell a student they are ineligible for a course they can sit, so nothing is shipped rather than a guess. Fill from doenets.lk before building the checker.",
+ "subjectsSource": null,
+ "streams": [
+  {
+   "key": "arts",
+   "name": "Arts",
+   "subjects": [],
+   "handbookBulletsSample": []
+  },
+  {
+   "key": "commerce",
+   "name": "Commerce",
+   "subjects": [],
+   "handbookBulletsSample": [
+    "Accounting",
+    "Business Statistics",
+    "Business Studies",
+    "Combined Mathematics",
+    "Economics",
+    "Economics Or Business Studies",
+    "Information & Communication Technology",
+    "Logic & Scientific Method",
+    "Physics"
+   ]
+  },
+  {
+   "key": "biological-science",
+   "name": "Biological Science",
+   "subjects": [],
+   "handbookBulletsSample": [
+    "Agricultural Science",
+    "Combined Mathematics",
+    "Mathematics",
+    "Physics",
+    "Higher Mathematics",
+    "Location - Peradeniya",
+    "Biology",
+    "Location - Gangodawila",
+    "Guidance And Information",
+    "Location - Badulla",
+    "Location - Batticaloa",
+    "Location - Colombo"
+   ]
+  },
+  {
+   "key": "physical-science",
+   "name": "Physical Science",
+   "subjects": [],
+   "handbookBulletsSample": [
+    "Chemistry",
+    "Combined Mathematics",
+    "Higher Mathematics",
+    "Civil Engineering",
+    "Information & Communication Technology",
+    "Mechanical Engineering",
+    "Physics",
+    "Computer Engineering",
+    "Agricultural Science",
+    "Biology",
+    "Chemical & Process Engineering",
+    "Electrical And Electronic Engineering"
+   ]
+  },
+  {
+   "key": "engineering-technology",
+   "name": "Engineering Technology",
+   "subjects": [],
+   "handbookBulletsSample": [
+    "Accountancy",
+    "Agricultural Science",
+    "Business Studies",
+    "Communication And Media Studies",
+    "Creative Music Technology And Production",
+    "Design",
+    "Economics",
+    "English",
+    "English Language And Applied Linguistics",
+    "Fashion Design & Product Development",
+    "Film & Television Studies",
+    "Geography"
+   ]
+  },
+  {
+   "key": "biosystems-technology",
+   "name": "Biosystems Technology",
+   "subjects": [],
+   "handbookBulletsSample": [
+    "Accountancy",
+    "Agricultural Science",
+    "Business Studies",
+    "Communication And Media Studies",
+    "Creative Music Technology And Production",
+    "Design",
+    "Economics",
+    "English",
+    "English Language And Applied Linguistics",
+    "Fashion Design & Product Development",
+    "Film & Television Studies",
+    "Geography"
+   ]
+  },
+  {
+   "key": "ict",
+   "name": "Information & Communication Technology",
+   "subjects": [],
+   "handbookBulletsSample": [
+    "Creative Music Technology And Production",
+    "Design",
+    "English Language And Applied Linguistics",
+    "Fashion Design & Product Development",
+    "Film & Television Studies",
+    "Human Resource Development",
+    "Industrial Information Technology",
+    "Information Systems",
+    "Peace And Conflict Resolution",
+    "Physical Education",
+    "Primary Education",
+    "Project Management"
+   ]
+  }
+ ],
+ "zScoreRange": {
+  "min": -3.5,
+  "max": 3.5
+ }
+}

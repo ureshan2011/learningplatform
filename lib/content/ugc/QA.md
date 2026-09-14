@@ -34,6 +34,52 @@ mean the series the forecast is fitted on is not the same course year to year.
 | `2023-2024` | `2024-2025` | 162 | 68% |
 | `2024-2025` | `2025-2026` | 211 | 85% |
 
+## Cut-off rows reaching the handbook
+
+Eligibility comes from the handbook, so a course in the newest round that cannot
+find its handbook entry is one the checker can price but cannot say who may
+apply for. Titles are matched with brackets, footnote markers and punctuation
+removed, because the two documents set the same course differently.
+
+**74 of 108 course titles (69%)** in the newest round match a handbook entry.
+
+Unmatched:
+
+- `AGRICULTURAL RESOURCE MANAGEMENT AND`
+- `ARABIC LANGUAGE *`
+- `ART & DESIGN #`
+- `ARTS (SP) / MASS MEDIA* #`
+- `ARTS (SP) / PERFORMING ARTS * #`
+- `ARTS-INFORMATION TECHNOLOGY *`
+- `AYURVEDA MEDICINE & SURGERY`
+- `BANKING & INSURANCE`
+- `COMMUNICATION STUDIES *`
+- `CREATIVE MUSIC TECHNOLOGY & PRODUCTION`
+- `DANCE #`
+- `DENTAL SURGERY`
+- `DRAMA & THEATRE #`
+- `ENVIRONMENTAL CONSERVATION &`
+- `FOOD PRODUCTION`
+- `HOSPITALITY, TOURISM`
+- `INDUSTRIAL INFORMATION`
+- `INDUSTRIAL STATISTICS &`
+- `ISLAMIC STUDIES *`
+- `MANAGEMENT AND INFORMATION`
+- `MANAGEMENT STUDIES (TV) - A`
+- `MANAGEMENT STUDIES (TV) - B`
+- `MEDICINE`
+- `MINERAL RESOURCES AND`
+- `MUSIC #`
+- `PEACE & CONFLICT RESOLUTION *`
+- `PHYSICAL SCIENCE -ICT`
+- `REAL ESTATE MANAGEMENT & VALUATION`
+- `SIDDHA MEDICINE & SURGERY`
+- `SOCIAL WORK *`
+- `TEACHING ENGLISH AS A SECOND`
+- `UNANI MEDICINE & SURGERY`
+- `VETERINARY SCIENCE`
+- `VISUAL & TECHNOLOGICAL ARTS #`
+
 ## Checked by eye against the rendered page
 
 The extractor reads character positions, so a column can silently shift by one

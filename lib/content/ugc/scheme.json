@@ -1,0 +1,47 @@
+{
+ "coverYear": "2025/2026",
+ "source": "https://admission.ugc.ac.lk/static/media/courses_of_study_English.a047e84b.pdf",
+ "note": "Only Section 2 of the handbook is published at admission.ugc.ac.lk. Everything below is quoted from it. Fields under notFound are left out rather than assumed, per the handoff §2.3.",
+ "rules": [
+  {
+   "rule": "allIslandMerit",
+   "text": "Admission to courses of study mentioned in 1 to 10 above will be made on an All Island Merit basis.",
+   "handbookPage": 5
+  },
+  {
+   "rule": "preferencesOnForm",
+   "text": "A candidate who fails a practical or aptitude test is still considered for the other courses of study of his/her preference mentioned in the application form, subject to satisfying the relevant requirements.",
+   "handbookPage": 22
+  }
+ ],
+ "notFound": [
+  {
+   "field": "allIslandMeritShare",
+   "reason": "not stated in the published handbook section"
+  },
+  {
+   "field": "districtShare",
+   "reason": "not stated in the published handbook section"
+  },
+  {
+   "field": "educationallyDisadvantagedShare",
+   "reason": "not stated in the published handbook section"
+  },
+  {
+   "field": "educationallyDisadvantagedDistricts",
+   "reason": "not listed in the published handbook section"
+  },
+  {
+   "field": "preferenceProcessing",
+   "reason": "how the UGC works down an ordered preference list is not stated"
+  },
+  {
+   "field": "preferenceCount",
+   "reason": "the number of preferences the form allows is not stated"
+  },
+  {
+   "field": "applicationWindow",
+   "reason": "application dates are not in this document"
+  }
+ ]
+}
