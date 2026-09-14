@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test \"lib/**/*.test.ts\"",
     "campus-match:backtest": "node --experimental-strip-types scripts/campus-match/backtest.mjs",
-    "campus-match:validate": "node scripts/campus-match/validate.mjs",
+    "campus-match:validate": "node --experimental-strip-types scripts/campus-match/validate.mjs",
     "setup": "node scripts/setup.mjs"
   },
   "repository": {

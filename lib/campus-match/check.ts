@@ -2,9 +2,9 @@ import "server-only";
 
 import newest from "@/lib/content/ugc/cutoffs/2025-2026.json";
 import previous from "@/lib/content/ugc/cutoffs/2022-2023.json";
-import handbook from "@/lib/content/ugc/courses.json";
 import districts from "@/lib/content/ugc/districts.json";
 import { NQC, type CutoffValue } from "@/lib/campus-match/forecast";
+import { admitsStream, findCourse } from "@/lib/campus-match/courses";
 
 /**
  * The free checker's answer: which courses a student's stream can apply for,
@@ -57,53 +57,6 @@ export interface CheckResult {
 
 const DISTRICT_NAMES = new Map(districts.districts.map((d) => [d.key, d.name]));
 
-/**
- * Course titles as the two documents print them, reduced to something joinable.
- *
- * The cut-off tables set titles in capitals with footnote markers and
- * abbreviations; the handbook writes them out in sentence case. Neither
- * spelling is wrong, they just have to meet.
- */
-function normalise(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/\([^)]*\)/g, " ")
-    .replace(/[*#]/g, " ")
-    // Joining words are the commonest difference: the tables print "BANKING &
-    // INSURANCE" where the handbook writes "Banking and Insurance".
-    .replace(/\b(and|the|of|in|for)\b/g, " ")
-    .replace(/[^a-z0-9]/g, "");
-}
-
-/** Built once per server instance — the files are static and never change under it. */
-const byTitle = new Map(handbook.courses.map((c) => [normalise(c.name), c]));
-
-type HandbookCourse = (typeof handbook.courses)[number];
-
-/**
- * The handbook entry behind a cut-off row's title, if there is one.
- *
- * Falls back to a prefix match because the cut-off tables truncate long titles
- * to fit a column — "AGRICULTURAL RESOURCE MANAGEMENT AND" is a real course
- * with its tail cut off. Only accepted when exactly one handbook course starts
- * that way, so a truncation that could be two courses matches neither.
- */
-function findCourse(title: string): HandbookCourse | undefined {
-  const key = normalise(title);
-  const exact = byTitle.get(key);
-  if (exact) return exact;
-  if (key.length < 12) return undefined;
-
-  let found: HandbookCourse | undefined;
-  for (const [candidate, course] of byTitle) {
-    if (candidate.startsWith(key) || key.startsWith(candidate)) {
-      if (found) return undefined;
-      found = course;
-    }
-  }
-  return found;
-}
-
 const previousByKey = new Map(
   previous.rows.map((r) => [`${r.course}||${r.university}`, r.districts as Record<string, CutoffValue>]),
 );
@@ -130,18 +83,19 @@ export function checkEligibility(input: CheckInput): CheckResult {
   let unmatched = 0;
 
   for (const row of newest.rows) {
-    const course = findCourse(row.course);
+    const match = findCourse(row.course, row.university);
 
     // Stream is the filter, and the only one. The handbook writes its subject
     // rules as prose with alternatives, so none of them is reduced to a machine
     // rule — see `eligibilityVerify` in courses.json. Filtering on a guessed
     // subject rule would tell a student they cannot apply for something they
     // can, which is worse than showing a row with "check handbook" on it.
-    if (!course) {
+    if (!match) {
       unmatched += 1;
       continue;
     }
-    if (!course.streams.includes(input.stream) && !course.streams.includes("any")) {
+    const course = match.course;
+    if (!admitsStream(course, input.stream)) {
       continue;
     }
 
@@ -155,8 +109,8 @@ export function checkEligibility(input: CheckInput): CheckResult {
       lastCutoff,
       trend: lastCutoff === null ? "unknown" : trendOf(lastCutoff, before),
       gap: lastCutoff === null ? null : Math.round((input.z - lastCutoff) * 10000) / 10000,
-      code: course.code,
-      handbookPage: course.handbookPage,
+      ...(match.approximate ? {} : { code: course.code }),
+      ...(match.approximate ? {} : { handbookPage: course.handbookPage }),
       // True for every course today: the handbook writes its rules as prose and
       // none of them is reduced to a machine rule.
       checkHandbook: course.eligibilityVerify,

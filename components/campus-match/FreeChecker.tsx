@@ -309,7 +309,12 @@ export function FreeChecker({
                         )}
                       </p>
                     </div>
-                    <p className="mt-0.5 text-[13px] text-ict-ink-400">{row.university}</p>
+                    {/* A handful of rows in the UGC tables set the institution
+                        in a way the extraction could not resolve. Better a
+                        course with no university under it than a guessed one. */}
+                    {row.university ? (
+                      <p className="mt-0.5 text-[13px] text-ict-ink-400">{row.university}</p>
+                    ) : null}
 
                     <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-ict-ink-400">
                       {row.lastCutoff !== null ? (

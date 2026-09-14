@@ -13,6 +13,7 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildJoin } from "../../lib/campus-match/join.ts";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..");
@@ -132,13 +133,33 @@ async function main() {
   const newest = JSON.parse(
     await readFile(join(CUTOFFS, files[files.length - 1]), "utf8"),
   );
-  const names = [...new Set(newest.rows.map((r) => r.course))];
-  const matched = names.filter((n) => matches(handbook, n));
+  const joiner = buildJoin(handbook, [
+    ...new Set(newest.rows.map((r) => r.university).filter(Boolean)),
+  ]);
+  // Counted per row, not per title: the same title at two universities is two
+  // rows a student sees, and one of them can join where the other does not.
+  const joined = newest.rows.filter((r) => joiner.find(r.course, r.university));
+  // A row whose nearest handbook entry is a different course: the stream it
+  // admits is right, its identity is not, so nothing that names the course is
+  // shown for it.
+  const approximate = [
+    ...new Set(
+      newest.rows
+        .filter((r) => joiner.find(r.course, r.university)?.approximate)
+        .map((r) => r.course),
+    ),
+  ].sort();
+  const unmatched = [
+    ...new Set(
+      newest.rows.filter((r) => !joiner.find(r.course, r.university)).map((r) => r.course),
+    ),
+  ].sort();
   const courseJoin = {
-    total: names.length,
-    matched: matched.length,
-    pct: Math.round((matched.length / names.length) * 100),
-    unmatched: names.filter((n) => !matches(handbook, n)).sort(),
+    total: newest.rows.length,
+    matched: joined.length,
+    pct: Math.round((joined.length / newest.rows.length) * 100),
+    unmatched,
+    approximate,
   };
 
   await writeFile(QA, renderQa(rounds, joins, errors, courseJoin), "utf8");
@@ -160,45 +181,17 @@ async function main() {
 }
 
 /**
- * Course titles as the two documents print them, reduced to something joinable.
+ * The join the product itself makes.
  *
- * The cut-off tables set titles in capitals with footnote markers and
- * abbreviations — "APPLIED SCIENCES (BIO.SC) *" — while the handbook writes
- * them out in sentence case. Neither spelling is wrong; they just have to meet.
+ * Imported rather than reimplemented, so the figure printed in QA.md is the one
+ * students get and not a looser match nobody runs.
  */
-function normaliseCourse(name) {
-  return name
-    .toLowerCase()
-    .replace(/\([^)]*\)/g, " ")
-    .replace(/[*#]/g, " ")
-    // Joining words are the commonest difference: the tables print "BANKING &
-    // INSURANCE" where the handbook writes "Banking and Insurance".
-    .replace(/\b(and|the|of|in|for)\b/g, " ")
-    .replace(/[^a-z0-9]/g, "");
-}
-
-/**
- * The same lookup `lib/campus-match/check.ts` uses, so the figure reported here
- * is the one the product achieves rather than a stricter one nobody runs.
- */
-function matches(keys, title) {
-  const key = normaliseCourse(title);
-  if (keys.has(key)) return true;
-  if (key.length < 12) return false;
-  let found = 0;
-  for (const candidate of keys) {
-    if (candidate.startsWith(key) || key.startsWith(candidate)) found += 1;
-    if (found > 1) return false;
-  }
-  return found === 1;
-}
-
 async function readHandbook() {
   try {
     const data = JSON.parse(await readFile(COURSES, "utf8"));
-    return new Set(data.courses.map((c) => normaliseCourse(c.name)));
+    return data.courses;
   } catch {
-    return new Set();
+    return [];
   }
 }
 
@@ -238,9 +231,15 @@ find its handbook entry is one the checker can price but cannot say who may
 apply for. Titles are matched with brackets, footnote markers and punctuation
 removed, because the two documents set the same course differently.
 
-**${courseJoin.matched} of ${courseJoin.total} course titles (${courseJoin.pct}%)** in the newest round match a handbook entry.
+**${courseJoin.matched} of ${courseJoin.total} rows (${courseJoin.pct}%)** in the newest round reach a handbook entry.
 
 ${courseJoin.unmatched.length > 0 ? `Unmatched:\n\n${courseJoin.unmatched.map((n) => `- \`${n}\``).join("\n")}` : "All matched."}
+
+These titles reach only the nearest handbook entry, not their own, because the
+handbook has no separate one. The stream is right; the course identity is not,
+so no course code or handbook page is carried for them.
+
+${courseJoin.approximate.length > 0 ? courseJoin.approximate.map((n) => `- \`${n}\``).join("\n") : "None."}
 
 ## Checked by eye against the rendered page
 
