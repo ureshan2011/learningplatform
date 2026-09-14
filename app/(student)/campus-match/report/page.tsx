@@ -6,10 +6,13 @@ import { hasAccess } from "@/lib/payments/entitlements";
 import { getInputs, saveInputs } from "@/lib/campus-match/inputs";
 import { buildReport } from "@/lib/campus-match/report";
 import { dataFreshness, handbookCoverYear, roundSpan } from "@/lib/campus-match/data";
+import { schemeRule, schemeUnstated } from "@/lib/campus-match/scheme";
 import { ADMISSION_ROUND, CAMPUS_MATCH_ID, CAMPUS_MATCH_NAME } from "@/lib/campus-match/cycle";
 import { Badge, Card, Eyebrow, Notice, PageHeader, StatCard } from "@/components/ds";
 import { Bands } from "@/components/campus-match/Bands";
+import { OrderBuilder, type OrderCandidate } from "@/components/campus-match/OrderBuilder";
 import { ChangeAnswers } from "@/components/campus-match/ChangeAnswers";
+import { PrintReport } from "@/components/campus-match/PrintReport";
 import { ReportInputs } from "@/components/campus-match/ReportInputs";
 import districts from "@/lib/content/ugc/districts.json";
 import streams from "@/lib/content/ugc/streams.json";
@@ -142,8 +145,23 @@ export default async function CampusMatchReportPage({
     CHECKER_STREAMS.find((s) => s.key === inputs.stream)?.name ?? inputs.stream;
   const shortlist = report.counts.likely + report.counts.possible;
 
+  // Everything worth ordering: the long tail of unlikely courses would make the
+  // picker unusable, and a student does not write a 3% course on the form.
+  const candidates: OrderCandidate[] = [
+    ...report.bands.likely,
+    ...report.bands.possible,
+    ...report.bands.reach,
+  ]
+    .filter((row) => row.chance !== null)
+    .map((row) => ({
+      key: row.key,
+      course: row.course,
+      university: row.university,
+      chance: row.chance as number,
+    }));
+
   return (
-    <main className="mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6">
+    <main className="ict-print mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6">
       <PageHeader
         eyebrow={`${ADMISSION_ROUND} admission round`}
         title={CAMPUS_MATCH_NAME}
@@ -190,6 +208,13 @@ export default async function CampusMatchReportPage({
 
       <Bands report={report} />
 
+      <OrderBuilder
+        candidates={candidates}
+        initial={inputs.preferences}
+        orderRuleUnstated={schemeUnstated("preferenceProcessing")}
+        sourceQuote={schemeRule("preferencesOnForm")?.text}
+      />
+
       <Card radius="panel" className="mt-4 p-5 sm:p-6">
         <p className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-paper-50">
           How these numbers were worked out
@@ -217,7 +242,8 @@ export default async function CampusMatchReportPage({
         </p>
       </Card>
 
-      <div className="mt-5">
+      <div className="ict-print-hide mt-5 flex flex-wrap items-center gap-4">
+        <PrintReport />
         <ChangeAnswers
           districts={CHECKER_DISTRICTS}
           streams={CHECKER_STREAMS}

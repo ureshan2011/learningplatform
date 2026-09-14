@@ -65,6 +65,24 @@ export async function saveInputs(params: {
   return inputs;
 }
 
+/**
+ * Saves only the application order.
+ *
+ * Separate from `saveInputs` because the order builder changes nothing else,
+ * and rewriting the whole document to reorder a list would let a stale form on
+ * another tab overwrite a Z-score the student has since corrected.
+ */
+export async function savePreferences(
+  uid: string,
+  preferences: string[],
+  cycle: string = CAMPUS_MATCH_ID,
+): Promise<boolean> {
+  const ref = col.campusMatch().doc(inputsId(uid, cycle));
+  if (!(await ref.get()).exists) return false;
+  await ref.update({ preferences, updatedAt: Date.now() });
+  return true;
+}
+
 /** Records what the student was actually offered. Asked once, after selection. */
 export async function recordOutcome(
   uid: string,

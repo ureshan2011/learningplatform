@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getSessionUser } from "@/lib/auth/session";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
-import { deleteInputs, recordOutcome, saveInputs } from "@/lib/campus-match/inputs";
+import { deleteInputs, recordOutcome, savePreferences, saveInputs } from "@/lib/campus-match/inputs";
 import districts from "@/lib/content/ugc/districts.json";
 import streams from "@/lib/content/ugc/streams.json";
 
@@ -41,6 +41,12 @@ const inputsSchema = z.object({
 
 const outcomeSchema = z.object({ outcome: z.string().min(1).max(120) });
 
+// The order builder changes nothing but the order. `strict()` keeps a full
+// payload from being caught here and losing its other fields.
+const preferencesSchema = z
+  .object({ preferences: z.array(z.string().min(1).max(80)).max(50) })
+  .strict();
+
 export async function POST(req: NextRequest) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
@@ -62,6 +68,14 @@ export async function POST(req: NextRequest) {
   const outcome = outcomeSchema.safeParse(body);
   if (outcome.success) {
     const ok = await recordOutcome(user.uid, outcome.data.outcome);
+    return ok
+      ? NextResponse.json({ ok: true })
+      : NextResponse.json({ error: "no_inputs" }, { status: 409 });
+  }
+
+  const preferences = preferencesSchema.safeParse(body);
+  if (preferences.success) {
+    const ok = await savePreferences(user.uid, preferences.data.preferences);
     return ok
       ? NextResponse.json({ ok: true })
       : NextResponse.json({ error: "no_inputs" }, { status: 409 });
