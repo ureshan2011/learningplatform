@@ -28,3 +28,5 @@ coverage/
 
 # Campus Match source PDFs — fetched by scripts/campus-match/fetch.mjs, never committed
 .campus-match-pdfs/
+__pycache__/
+*.pyc
