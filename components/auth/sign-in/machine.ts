@@ -18,6 +18,7 @@ export type Phase =
   | { kind: "sending" }
   | { kind: "code"; status: "waiting" | "verifying" | "opening" }
   | { kind: "name" }
+  | { kind: "how_heard" }
   | {
       kind: "device_limit";
       devices: BoundDeviceView[];
@@ -87,6 +88,8 @@ export type Action =
   | { type: "NAME_START" }
   | { type: "NAME_FAILED"; notice: Notice }
   | { type: "NAME_DONE" }
+  | { type: "HOW_HEARD_START" }
+  | { type: "HOW_HEARD_DONE" }
   | { type: "CHANGE_NUMBER" };
 
 export function initialState(restoring: boolean): State {
@@ -204,6 +207,15 @@ export function signInReducer(state: State, action: Action): State {
       return { ...state, busy: false, notice: action.notice };
 
     case "NAME_DONE":
+      // One more low-friction question before the account is done being set
+      // up — asked here, not on the way in, for the same reason as the name:
+      // never demanded of a returning student.
+      return { ...state, busy: false, phase: { kind: "how_heard" } };
+
+    case "HOW_HEARD_START":
+      return { ...state, busy: true, notice: null };
+
+    case "HOW_HEARD_DONE":
       return { ...state, busy: false, phase: { kind: "done" } };
 
     case "CHANGE_NUMBER":

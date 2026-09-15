@@ -34,6 +34,8 @@ const bodySchema = z.object({
   idToken: z.string().min(10),
   name: z.string().trim().max(80).optional(),
   referredBy: z.string().trim().max(16).optional(),
+  howHeard: z.enum(["friend", "youtube", "social", "messaging_group", "google", "other"]).optional(),
+  howHeardOther: z.string().trim().max(120).optional(),
   /**
    * Set by the sign-in page after the student confirms "sign out my oldest
    * device and use this one". Never assumed — evicting a device the student
@@ -99,7 +101,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "invalid_token" }, { status: 401 });
   }
 
-  const user = await provisionUser({ uid, phone, name: parsed.name, referredBy: parsed.referredBy });
+  const user = await provisionUser({
+    uid,
+    phone,
+    name: parsed.name,
+    referredBy: parsed.referredBy,
+    howHeard: parsed.howHeard,
+    howHeardOther: parsed.howHeardOther,
+  });
   const signals = parsed.device as DeviceSignals;
 
   let deviceHash: string;

@@ -43,6 +43,14 @@ export interface SignInCopy {
   namePlaceholder: string;
   skip: string;
   continueLabel: string;
+  howHeardTitle: string;
+  howHeardFriend: string;
+  howHeardYoutube: string;
+  howHeardSocial: string;
+  howHeardMessagingGroup: string;
+  howHeardGoogle: string;
+  howHeardOther: string;
+  howHeardOtherPlaceholder: string;
   restoring: string;
   invalidPhone: string;
   offline: string;
@@ -110,6 +118,14 @@ export function buildSignInCopy(t: SignInTranslate): SignInCopy {
     namePlaceholder: t("signin.namePlaceholder"),
     skip: t("signin.skip"),
     continueLabel: t("signin.continue"),
+    howHeardTitle: t("signin.howHeardTitle"),
+    howHeardFriend: t("signin.howHeardFriend"),
+    howHeardYoutube: t("signin.howHeardYoutube"),
+    howHeardSocial: t("signin.howHeardSocial"),
+    howHeardMessagingGroup: t("signin.howHeardMessagingGroup"),
+    howHeardGoogle: t("signin.howHeardGoogle"),
+    howHeardOther: t("signin.howHeardOther"),
+    howHeardOtherPlaceholder: t("signin.howHeardOtherPlaceholder"),
     restoring: t("signin.restoring"),
     invalidPhone: t("signin.invalidPhone"),
     offline: t("signin.offline"),

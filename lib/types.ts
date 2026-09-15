@@ -11,6 +11,15 @@ export type TenantId = string;
 export type Role = "student" | "teacher" | "parent" | "admin";
 export type Medium = "sinhala" | "english" | "tamil";
 
+/** Answers to the one-time "how did you hear about us?" question, asked on first sign-up only. */
+export type HowHeardSource =
+  | "friend"
+  | "youtube"
+  | "social"
+  | "messaging_group"
+  | "google"
+  | "other";
+
 /**
  * What stage of schooling a subject is sold to.
  *
@@ -70,6 +79,15 @@ export interface User {
   referredBy?: string;
   /** Set once the referrer + referred pair have both received their bonus days. Blocks double-claiming on renewal. */
   referralRewarded?: boolean;
+  /**
+   * How this student found the platform, asked once on the sign-in screen
+   * right after a brand-new account is created (same moment as the name
+   * step) and never asked again — present iff answered, absent if skipped or
+   * the account predates this question.
+   */
+  howHeard?: HowHeardSource;
+  /** Free text typed alongside `howHeard: "other"`. */
+  howHeardOther?: string;
   /** Bumped to invalidate every parent view link issued before the bump. */
   parentLinkVersion?: number;
   /**

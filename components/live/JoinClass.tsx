@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ThinkingOrb } from "thinking-orbs";
 import { ZoomEmbed, type ZoomJoinConfig } from "@/components/player/ZoomEmbed";
 import { HlsPlayer } from "@/components/player/HlsPlayer";
 import { fetchWithSession } from "@/lib/auth/session-client";
@@ -63,7 +64,12 @@ export function JoinClass({ sessionId }: { sessionId: string }) {
   }, [sessionId]);
 
   if (state.kind === "loading") {
-    return <Panel>Getting you into class…</Panel>;
+    return (
+      <Panel>
+        <ThinkingOrb state="connecting" theme="dark" size={64} aria-label="Getting you into class…" />
+        <p className="mt-3">Getting you into class…</p>
+      </Panel>
+    );
   }
 
   if (state.kind === "error") {

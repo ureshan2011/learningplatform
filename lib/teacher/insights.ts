@@ -7,6 +7,7 @@ import type {
   AttendanceRecord,
   ClassSession,
   Enrollment,
+  HowHeardSource,
   Payment,
   Progress,
   QuestionAttempt,
@@ -184,6 +185,69 @@ export async function getWeakTopics(subjects: Subject[], limit = 8): Promise<Top
     }))
     .sort((a, b) => a.accuracyPct - b.accuracyPct)
     .slice(0, limit);
+}
+
+const HOW_HEARD_LABEL: Record<HowHeardSource, string> = {
+  friend: "A friend / someone they know",
+  youtube: "YouTube",
+  social: "Facebook / Instagram / TikTok",
+  messaging_group: "A Telegram / WhatsApp group",
+  google: "Google Search",
+  other: "Other",
+};
+
+/** The fixed display order asked in the sign-in question — not sorted by count, so the shape stays recognisable across weeks. */
+const HOW_HEARD_ORDER: HowHeardSource[] = ["friend", "youtube", "social", "messaging_group", "google", "other"];
+
+export interface HowHeardStat {
+  source: HowHeardSource;
+  label: string;
+  count: number;
+  pct: number;
+}
+
+export interface HowHeardBreakdown {
+  answered: number;
+  notAnswered: number;
+  totalStudents: number;
+  bySource: HowHeardStat[];
+}
+
+/**
+ * How students say they found the platform — the roll-up of the one-time
+ * sign-in question, for Teacher console → Insights.
+ *
+ * `notAnswered` covers both a skip and an account that predates the
+ * question, deliberately not split: neither tells the teacher anything
+ * actionable, and both explanations would just add words to the same "we
+ * don't know" bucket.
+ */
+export async function getHowHeardBreakdown(): Promise<HowHeardBreakdown> {
+  const snap = await col.users().where("role", "==", "student").limit(COHORT_SCAN_WINDOW).get();
+  const students = snap.docs.map((d) => d.data() as User).filter((u) => u.tenantId === publicEnv.tenantId);
+
+  const counts = new Map<HowHeardSource, number>();
+  let answered = 0;
+  for (const student of students) {
+    if (!student.howHeard) continue;
+    answered += 1;
+    counts.set(student.howHeard, (counts.get(student.howHeard) ?? 0) + 1);
+  }
+
+  return {
+    answered,
+    notAnswered: students.length - answered,
+    totalStudents: students.length,
+    bySource: HOW_HEARD_ORDER.map((source) => {
+      const count = counts.get(source) ?? 0;
+      return {
+        source,
+        label: HOW_HEARD_LABEL[source],
+        count,
+        pct: answered > 0 ? Math.round((count / answered) * 100) : 0,
+      };
+    }),
+  };
 }
 
 export interface SubjectBreakdown {

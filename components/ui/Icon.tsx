@@ -69,6 +69,7 @@ import {
   Search,
   Send,
   Settings,
+  Share2,
   Sparkles,
   Star,
   Store,
@@ -205,6 +206,7 @@ const ICONS = {
   help: InfoIcon,
   delete: Trash2,
   inventory_2: Package,
+  share: Share2,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;
