@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ThinkingOrb } from "thinking-orbs";
 import { Icon } from "@/components/ui/Icon";
 import { Badge, ButtonLink, Card, StatusDot } from "@/components/ds-cream";
 import { track } from "@/lib/analytics";
@@ -281,7 +282,12 @@ export function FreeChecker({
         ) : error ? (
           <p className="text-sm text-ict-ink-500">{error}</p>
         ) : !result ? (
-          <p className="text-sm text-ict-ink-400">{busy ? "Checking…" : ""}</p>
+          busy ? (
+            <p className="flex items-center gap-2 text-sm text-ict-ink-400">
+              <ThinkingOrb state="searching" theme="light" size={20} aria-label="Checking…" />
+              Checking…
+            </p>
+          ) : null
         ) : result.rows.length === 0 ? (
           <p className="text-sm text-ict-ink-500">
             No published course matched that stream. Check the handbook — it is the authority.
