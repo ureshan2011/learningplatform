@@ -17,9 +17,11 @@ import { readAttempt, writeAttempt, clearAttempt } from "./attempt-store";
 import { sendOtp, verifyAgainstSends, type FirebaseUser } from "./phone-auth";
 import { errorNotice } from "./messages";
 import { reasonText, type SignInCopy } from "./copy";
+import type { HowHeardSource } from "@/lib/types";
 import { PhoneStep } from "./PhoneStep";
 import { CodeStep } from "./CodeStep";
 import { NameStep } from "./NameStep";
+import { HowHeardStep } from "./HowHeardStep";
 import { DeviceLimitStep } from "./DeviceLimitStep";
 import { Spinner } from "./Spinner";
 
@@ -63,6 +65,7 @@ export function SignInScreen({
   const verifyInFlightRef = useRef(false);
   const openInFlightRef = useRef(false);
   const namingRef = useRef(false);
+  const howHeardRef = useRef(false);
   /**
    * Once this tab has verified a code itself, the passive "am I already
    * signed in somewhere?" listener below must stop acting — otherwise it
@@ -422,13 +425,44 @@ export function SignInScreen({
     } finally {
       namingRef.current = false;
       dispatch({ type: "NAME_DONE" });
-      router.replace(next);
-      router.refresh();
     }
   }
 
   function skipName() {
     dispatch({ type: "NAME_DONE" });
+  }
+
+  async function saveHowHeard(source: HowHeardSource, otherText?: string) {
+    const user = firebaseUserRef.current;
+    if (howHeardRef.current) return;
+    howHeardRef.current = true;
+    dispatch({ type: "HOW_HEARD_START" });
+    try {
+      if (user) {
+        const idToken = await user.getIdToken();
+        await fetch("/api/auth/session", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            idToken,
+            howHeard: source,
+            howHeardOther: source === "other" ? otherText : undefined,
+            device: collectDeviceSignals(),
+          }),
+        });
+      }
+    } catch {
+      // The account exists either way — a missing answer must not block entry.
+    } finally {
+      howHeardRef.current = false;
+      dispatch({ type: "HOW_HEARD_DONE" });
+      router.replace(next);
+      router.refresh();
+    }
+  }
+
+  function skipHowHeard() {
+    dispatch({ type: "HOW_HEARD_DONE" });
     router.replace(next);
     router.refresh();
   }
@@ -516,6 +550,15 @@ export function SignInScreen({
 
       {state.phase.kind === "name" ? (
         <NameStep copy={copy} busy={state.busy} onSave={(n) => void saveName(n)} onSkip={skipName} />
+      ) : null}
+
+      {state.phase.kind === "how_heard" ? (
+        <HowHeardStep
+          copy={copy}
+          busy={state.busy}
+          onSave={(source, otherText) => void saveHowHeard(source, otherText)}
+          onSkip={skipHowHeard}
+        />
       ) : null}
 
       {state.phase.kind === "device_limit" ? (

@@ -5,7 +5,7 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { StatusPill } from "@/components/ui/StatusPill";
 import { formatDate, formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
-import type { BoundDevice, Enrollment, Payment, Role } from "@/lib/types";
+import type { BoundDevice, Enrollment, HowHeardSource, Payment, Role } from "@/lib/types";
 import { fetchWithSession } from "@/lib/auth/session-client";
 
 interface DirectoryUser {
@@ -32,6 +32,8 @@ interface UserDetail {
     parentUid?: string;
     childUids: string[];
     referralRewarded: boolean;
+    howHeard?: HowHeardSource;
+    howHeardOther?: string;
     lastDeviceSwapAt?: number;
     disabledAt?: number;
     roleUpdatedBy?: string;
@@ -68,6 +70,15 @@ const ROLE_TONE: Record<Role, "accent" | "neutral" | "success" | "warn"> = {
 };
 
 const ROLES: Role[] = ["student", "parent", "teacher", "admin"];
+
+const HOW_HEARD_LABEL: Record<HowHeardSource, string> = {
+  friend: "A friend / someone they know",
+  youtube: "YouTube",
+  social: "Facebook / Instagram / TikTok",
+  messaging_group: "A Telegram / WhatsApp group",
+  google: "Google Search",
+  other: "Other",
+};
 
 /**
  * Teacher console → People.
@@ -330,6 +341,16 @@ function UserPanel({
         <Row label="Last seen" value={user.lastSeenAt ? formatDate(user.lastSeenAt) : "never"} />
         <Row label="Referral code" value={user.referralCode} />
         <Row label="Invited by" value={user.referredBy || "—"} />
+        <Row
+          label="How they heard about us"
+          value={
+            user.howHeard
+              ? user.howHeard === "other" && user.howHeardOther
+                ? `${HOW_HEARD_LABEL[user.howHeard]} — “${user.howHeardOther}”`
+                : HOW_HEARD_LABEL[user.howHeard]
+              : "Not answered"
+          }
+        />
         <Row label="Total paid" value={formatLKR(totalPaidLKR)} />
         <Row label="Account id" value={user.uid} />
         {user.disabled ? (

@@ -96,6 +96,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ uid
       referralCode: user.referralCode,
       referredBy: user.referredBy,
       referralRewarded: Boolean(user.referralRewarded),
+      howHeard: user.howHeard,
+      howHeardOther: user.howHeardOther,
       parentUid: user.parentUid,
       childUids: user.childUids ?? [],
       createdAt: user.createdAt,

@@ -8,10 +8,12 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import {
   getAtRiskStudents,
   getBusinessOverview,
+  getHowHeardBreakdown,
   getSubjectBreakdown,
   getWeakTopics,
   type AtRiskStudent,
   type BusinessOverview,
+  type HowHeardBreakdown,
   type SubjectBreakdown,
   type TopicStat,
 } from "@/lib/teacher/insights";
@@ -38,7 +40,7 @@ export default async function TeacherInsightsPage() {
 
   const subjects = await section("subjects", () => listSubjects(), []);
 
-  const [overview, atRisk, weakTopics, breakdown] = await Promise.all([
+  const [overview, atRisk, weakTopics, breakdown, howHeard] = await Promise.all([
     section<BusinessOverview>(
       "overview",
       () => getBusinessOverview(subjects),
@@ -47,6 +49,12 @@ export default async function TeacherInsightsPage() {
     section<AtRiskStudent[]>("atRisk", () => getAtRiskStudents(subjects), []),
     section<TopicStat[]>("weakTopics", () => getWeakTopics(subjects), []),
     section<SubjectBreakdown[]>("breakdown", () => getSubjectBreakdown(subjects), []),
+    section<HowHeardBreakdown>("howHeard", () => getHowHeardBreakdown(), {
+      answered: 0,
+      notAnswered: 0,
+      totalStudents: 0,
+      bySource: [],
+    }),
   ]);
 
   return (
@@ -157,6 +165,51 @@ export default async function TeacherInsightsPage() {
           )}
         </section>
 
+        <section className="mt-10">
+          <h2 className="flex items-center gap-2 text-lg font-semibold">
+            <Icon name="search" className="text-(--color-awaken-accent)" />
+            How students found us
+          </h2>
+          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+            {howHeard.totalStudents === 0
+              ? "No students yet."
+              : `${howHeard.answered} of ${howHeard.totalStudents} students answered the sign-up question, asked once, the first time they sign in.`}
+          </p>
+          {howHeard.answered === 0 ? (
+            <p className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
+              Nobody has answered yet — it only shows up for students who sign up from now on.
+            </p>
+          ) : (
+            <ul className="mt-3 space-y-2.5">
+              {howHeard.bySource
+                .filter((s) => s.count > 0)
+                .sort((a, b) => b.count - a.count)
+                .map((s) => (
+                  <li
+                    key={s.source}
+                    className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
+                  >
+                    <div className="flex flex-wrap items-baseline justify-between gap-2">
+                      <p className="font-medium">{s.label}</p>
+                      <span className="text-sm font-semibold text-(--color-awaken-accent)">
+                        {s.count} · {s.pct}%
+                      </span>
+                    </div>
+                    <div className="mt-2">
+                      <ShareBar percent={s.pct} />
+                    </div>
+                  </li>
+                ))}
+              {howHeard.notAnswered > 0 ? (
+                <li className="flex items-center justify-between gap-2 px-1 text-xs text-(--color-awaken-ink-soft)">
+                  <span>Skipped or from before this question existed</span>
+                  <span>{howHeard.notAnswered}</span>
+                </li>
+              ) : null}
+            </ul>
+          )}
+        </section>
+
         <section className="mt-10 pb-4">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
             <Icon name="auto_stories" className="text-(--color-awaken-accent)" />
@@ -203,6 +256,24 @@ function Th({ children }: { children: React.ReactNode }) {
 
 function Td({ children }: { children: React.ReactNode }) {
   return <td className="border-b border-(--color-awaken-line) px-3 py-2">{children}</td>;
+}
+
+/**
+ * A share-of-total bar, deliberately one flat colour — unlike `ProgressBar`,
+ * a bigger slice of "how students found us" is not a better or worse result,
+ * so the red/amber/green accuracy scale next to it would read as a
+ * judgement this number was never making.
+ */
+function ShareBar({ percent }: { percent: number }) {
+  const clamped = Math.max(0, Math.min(100, percent));
+  return (
+    <div className="h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-line)">
+      <div
+        className="h-full rounded-full bg-(--color-awaken-accent) transition-[width]"
+        style={{ width: `${clamped}%` }}
+      />
+    </div>
+  );
 }
 
 function accuracyColor(pct: number): string {

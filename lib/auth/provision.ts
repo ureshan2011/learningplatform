@@ -5,7 +5,7 @@ import { adminAuth, adminDb, col } from "@/lib/firebase/admin";
 import { adminPhones, publicEnv } from "@/lib/env";
 import { POLICY_VERSION } from "@/lib/legal";
 import { toE164 } from "@/lib/phone";
-import type { Role, User } from "@/lib/types";
+import type { HowHeardSource, Role, User } from "@/lib/types";
 
 /** Ambiguous characters (0/O, 1/I) are excluded — codes get read aloud and mistyped. */
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -35,6 +35,8 @@ export async function provisionUser(params: {
   phone: string;
   name?: string;
   referredBy?: string;
+  howHeard?: HowHeardSource;
+  howHeardOther?: string;
 }): Promise<User & { isNewUser: boolean }> {
   const ref = col.users().doc(params.uid);
   const snap = await ref.get();
@@ -60,6 +62,16 @@ export async function provisionUser(params: {
     const patch: Partial<User> = { lastSeenAt: Date.now() };
     if (role !== existing.role) patch.role = role;
     if (name && name !== existing.name) patch.name = name;
+    // Asked once, ever: only written the first time it arrives, on the
+    // account's own first sign-in. A later sign-in can never overwrite it,
+    // which is what makes "only ask once" true even if a client replayed an
+    // old request.
+    if (params.howHeard && !existing.howHeard) {
+      patch.howHeard = params.howHeard;
+      if (params.howHeard === "other" && params.howHeardOther?.trim()) {
+        patch.howHeardOther = params.howHeardOther.trim().slice(0, 120);
+      }
+    }
     // Stamped the first time an existing account signs in through a screen
     // carrying the consent notice, and never rewritten after that — the value
     // worth keeping is the earliest one we can stand behind, not the latest.

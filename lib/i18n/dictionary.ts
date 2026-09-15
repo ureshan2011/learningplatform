@@ -301,6 +301,14 @@ const en = {
     "You already swapped a device recently. You can swap again after {date}, or ask your teacher to free a slot now.",
   "signin.deviceAskTeacher": "Ask your teacher to free a device slot.",
   "signin.back": "Back",
+  "signin.howHeardTitle": "One quick thing — how did you hear about ICT Campus?",
+  "signin.howHeardFriend": "From a friend / someone I know",
+  "signin.howHeardYoutube": "From YouTube",
+  "signin.howHeardSocial": "From Facebook / Instagram / TikTok",
+  "signin.howHeardMessagingGroup": "From a Telegram / WhatsApp group",
+  "signin.howHeardGoogle": "From Google Search",
+  "signin.howHeardOther": "Other",
+  "signin.howHeardOtherPlaceholder": "Tell us where…",
 
   /* ---- Campus Match ----
      "Z-score", "cut-off", "UGC", "campus", "stream" and the four band names
@@ -687,6 +695,14 @@ const si: Record<MessageKey, string> = {
     "ඔබ මෑතකදී device එකක් swap කළා. {date} වලින් පස්සේ ආයෙත් swap කරන්න පුළුවන්, නැත්නම් ගුරුතුමාගෙන් slot එකක් ඉල්ලන්න.",
   "signin.deviceAskTeacher": "Device slot එකක් ඉවත් කරන්න ගුරුතුමාගෙන් අහන්න.",
   "signin.back": "ආපසු",
+  "signin.howHeardTitle": "පොඩි දෙයක් අහන්නම් — ICT Campus ගැන ඔයාට ආරංචි වුණේ කොහොමද?",
+  "signin.howHeardFriend": "යාළුවෙක්ගෙන් / මං දන්නම කෙනෙක්ගෙන්",
+  "signin.howHeardYoutube": "YouTube එකෙන්",
+  "signin.howHeardSocial": "Facebook / Instagram / TikTok එකෙන්",
+  "signin.howHeardMessagingGroup": "Telegram / WhatsApp group එකකින්",
+  "signin.howHeardGoogle": "Google Search එකෙන්",
+  "signin.howHeardOther": "වෙන එකක්",
+  "signin.howHeardOtherPlaceholder": "කොහෙන්ද කියලා කියන්න…",
 
   /* ---- Campus Match ---- */
   "match.estimate": "UGC එකේ පළ කරපු cut-off වලින් ගත්ත estimate එකක්. පොරොන්දුවක් නෙවෙයි.",
