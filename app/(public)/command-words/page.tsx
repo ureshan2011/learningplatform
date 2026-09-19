@@ -1,13 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { COMMAND_WORDS } from "@/lib/content/command-words";
+import { CommandWordsBody } from "@/components/content/CommandWordsBody";
 import { SiteHeader } from "@/components/nav/SiteHeader";
-import { Icon } from "@/components/ui/Icon";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { ResourcePageCta } from "@/components/content/ResourcePageCta";
-import { Badge, Card, PageHeader } from "@/components/ds-cream";
+import { PageHeader } from "@/components/ds-cream";
 
 export const metadata: Metadata = {
   title: "ICT exam command words explained",
@@ -57,30 +57,9 @@ export default function CommandWordsPage() {
             }
           />
 
-          <ul className="mt-8 space-y-4">
-            {COMMAND_WORDS.map((cw) => (
-              <li key={cw.word}>
-                <Card radius="card" className="p-5">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h2 className="font-display text-lg font-extrabold text-ict-ink-900">{cw.word}</h2>
-                    <Badge tone="neutral">{cw.typicalMarks}</Badge>
-                  </div>
-                  <p className="si mt-1 text-sm text-ict-ink-400" lang="si">
-                    {cw.sinhala}
-                  </p>
-                  <p className="mt-3 text-sm text-ict-ink-500">{cw.meaning}</p>
-                  <p className="mt-3 flex items-start gap-2 rounded-ict-md bg-ict-orange-50 p-3 text-sm text-ict-orange-600">
-                    <Icon name="bolt" className="mt-0.5 shrink-0 !text-base" />
-                    {cw.tip}
-                  </p>
-                  <p className="mt-3 text-sm text-ict-ink-500">
-                    <span className="font-semibold text-ict-ink-900">Example: </span>
-                    {cw.example}
-                  </p>
-                </Card>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-8">
+            <CommandWordsBody />
+          </div>
 
           <p className="mt-8 text-sm text-ict-ink-500">
             Want to see &quot;distinguish&quot; done properly, worked example by worked example?{" "}

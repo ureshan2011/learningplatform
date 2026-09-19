@@ -23,6 +23,7 @@ export function UnitStation({
   index,
   weight,
   subjectId,
+  unitHrefBase,
   unitClasses,
   classesByLesson,
   open,
@@ -34,6 +35,13 @@ export function UnitStation({
   /** This unit's periods as a share of the heaviest unit, 0-1. Drives the weight bar. */
   weight: number;
   subjectId: string;
+  /**
+   * Where a unit's own page lives, which differs by world: `/syllabus/{id}`
+   * on the public site, `/subjects/{id}/syllabus` inside the app. Passed down
+   * rather than derived, so this component never has to know which of the two
+   * it is rendering in.
+   */
+  unitHrefBase: string;
   unitClasses: TopicClass[];
   classesByLesson: Record<string, TopicClass[]>;
   open: boolean;
@@ -166,7 +174,7 @@ export function UnitStation({
                   Join the class for any topic below
                 </p>
                 <Link
-                  href={`/syllabus/${subjectId}/${unit.id}`}
+                  href={`${unitHrefBase}/${unit.id}`}
                   className="inline-flex items-center gap-1 text-xs font-semibold hover:underline"
                   style={{ color: tone.ink }}
                 >

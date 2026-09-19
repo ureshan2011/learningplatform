@@ -21,11 +21,19 @@ export function SubjectSyllabusBody({
   subject,
   units,
   sessions,
+  unitHrefBase,
   trialCta = true,
 }: {
   subject: Subject;
   units: Unit[];
   sessions: ClassSession[];
+  /**
+   * Where a unit's own page lives. `/syllabus/{id}` on the public site,
+   * `/subjects/{id}/syllabus` inside the app — the one thing about this screen
+   * that genuinely differs between the two, so it is a prop rather than
+   * something guessed from the pathname.
+   */
+  unitHrefBase: string;
   trialCta?: boolean;
 }) {
   const classIndex = indexClassesBySyllabus(units, sessions);
@@ -52,7 +60,12 @@ export function SubjectSyllabusBody({
             No syllabus breakdown has been loaded for {subject.name} yet.
           </Card>
         ) : (
-          <SyllabusExplorer subjectId={subject.id} units={units} classIndex={classIndex} />
+          <SyllabusExplorer
+            subjectId={subject.id}
+            unitHrefBase={unitHrefBase}
+            units={units}
+            classIndex={classIndex}
+          />
         )}
       </div>
 

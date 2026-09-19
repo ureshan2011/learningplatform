@@ -47,10 +47,13 @@ function fold(text: string): string {
  */
 export function SyllabusExplorer({
   subjectId,
+  unitHrefBase,
   units,
   classIndex,
 }: {
   subjectId: string;
+  /** Where a unit's own page lives — see `UnitStation`. */
+  unitHrefBase: string;
   units: Unit[];
   classIndex: TopicClassIndex;
 }) {
@@ -298,6 +301,7 @@ export function SyllabusExplorer({
                 index={i}
                 weight={unit.periods / maxPeriods}
                 subjectId={subjectId}
+                unitHrefBase={unitHrefBase}
                 unitClasses={classIndex.byUnit[unit.id] ?? []}
                 classesByLesson={classIndex.byLesson}
                 // While searching, matched units open themselves — hiding the

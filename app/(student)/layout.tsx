@@ -82,7 +82,16 @@ export default async function StudentLayout({ children }: { children: React.Reac
       },
       { href: `/subjects/${primary.id}/lab`, label: t("nav.codeLab"), icon: "code" },
       { href: `/subjects/${primary.id}`, label: t("nav.notesPapers"), icon: "description" },
-      { href: `/syllabus/${primary.id}`, label: t("nav.syllabus"), icon: "auto_stories" },
+      {
+        // The in-app roadmap, not the public `/syllabus/{id}` page. The public
+        // one stays for search traffic; sending a signed-in student there
+        // dropped them out of the dark world onto a cream page with a guest
+        // header and no rail.
+        href: `/subjects/${primary.id}/syllabus`,
+        label: t("nav.syllabus"),
+        icon: "auto_stories",
+        matchPrefix: true,
+      },
       {
         href: `/subjects/${primary.id}/certificate`,
         label: t("nav.certificate"),
@@ -97,8 +106,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
     );
   } else {
     mobileTabs.push(
-      { href: "/notes", label: t("nav.notes"), icon: "description" },
-      { href: "/syllabus", label: t("nav.syllabus"), icon: "auto_stories" },
+      { href: "/library", label: t("nav.notes"), icon: "description" },
       { href: "/account", label: t("nav.account"), icon: "account_circle" },
     );
   }
@@ -136,13 +144,13 @@ export default async function StudentLayout({ children }: { children: React.Reac
     groups.push({ label: t("campus.title"), items: campusItems });
   }
 
+  // One in-app destination rather than three links out to the public site.
+  // `/notes`, `/past-papers` and `/command-words` are still there for search
+  // traffic; `/library` is the same material for someone already signed in,
+  // with per-click signed download URLs the cached public page cannot offer.
   groups.push({
     label: t("nav.groupFree"),
-    items: [
-      { href: "/notes", label: t("nav.freeNotes"), icon: "description" },
-      { href: "/past-papers", label: t("nav.pastPapers"), icon: "receipt_long" },
-      { href: "/command-words", label: t("nav.commandWords"), icon: "fact_check" },
-    ],
+    items: [{ href: "/library", label: t("nav.library"), icon: "description" }],
   });
 
   groups.push({

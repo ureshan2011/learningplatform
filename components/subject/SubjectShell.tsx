@@ -46,6 +46,7 @@ export async function SubjectPageShell({
             mockExams: t("nav.mockExams"),
             predictedPaper: t("nav.predictedPaper"),
             codeLab: t("nav.codeLab"),
+            syllabus: t("nav.syllabus"),
             certificate: t("nav.certificate"),
           }}
         />

@@ -116,6 +116,7 @@ export default async function SubjectPage({
             mockExams: t("nav.mockExams"),
             predictedPaper: t("nav.predictedPaper"),
             codeLab: t("nav.codeLab"),
+            syllabus: t("nav.syllabus"),
             certificate: t("nav.certificate"),
           }}
         />
@@ -198,8 +199,8 @@ export default async function SubjectPage({
                 title={t("subject.nothingPublished")}
                 body="Your teacher has not uploaded notes for this subject. Free notes are available meanwhile."
                 action={
-                  <ButtonLink href="/notes" variant="outline" size="sm" arrow="right">
-                    Browse free notes
+                  <ButtonLink href="/library" variant="outline" size="sm" arrow="right">
+                    Browse the free library
                   </ButtonLink>
                 }
               />
@@ -234,14 +235,14 @@ export default async function SubjectPage({
               <SectionBar
                 title="Syllabus"
                 hint={`${units.length} units · ${units.reduce((n, u) => n + u.lessons.length, 0)} lessons`}
-                href={`/syllabus/${subjectId}`}
+                href={`/subjects/${subjectId}/syllabus`}
                 linkLabel="Full breakdown"
               />
               <div className="grid gap-2 sm:grid-cols-2">
                 {units.slice(0, 6).map((unit) => (
                   <CardLink
                     key={unit.id}
-                    href={`/syllabus/${subjectId}/${unit.id}`}
+                    href={`/subjects/${subjectId}/syllabus/${unit.id}`}
                     radius="md"
                     className="flex items-start gap-3 p-4"
                   >

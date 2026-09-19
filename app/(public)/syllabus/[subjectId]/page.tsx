@@ -75,7 +75,12 @@ export default async function SubjectSyllabusPage({
         </Link>
 
         <div className="mt-4">
-          <SubjectSyllabusBody subject={subject} units={units} sessions={sessions} />
+          <SubjectSyllabusBody
+            subject={subject}
+            units={units}
+            sessions={sessions}
+            unitHrefBase={`/syllabus/${subjectId}`}
+          />
         </div>
       </main>
     </>
