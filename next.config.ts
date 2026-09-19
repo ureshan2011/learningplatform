@@ -126,6 +126,14 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
       },
+      {
+        // The service worker decides which version of the app every returning
+        // student runs, so it must never be served from a CDN edge that is a
+        // deploy behind. Browsers already bypass the HTTP cache for a worker
+        // script, but App Hosting's CDN sits in front of them and does not.
+        source: "/sw.js",
+        headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }],
+      },
     ];
   },
 };

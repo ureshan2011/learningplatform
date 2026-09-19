@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { fontVariables } from "@/lib/fonts";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { SessionKeeper } from "@/components/auth/SessionKeeper";
+import { ServiceWorker } from "@/components/pwa/ServiceWorker";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { graphJsonLd, organizationJsonLd, personJsonLd, webSiteJsonLd } from "@/lib/seo/json-ld";
 import { publicEnv } from "@/lib/env";
@@ -113,6 +114,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           WhatsApp link.
         */}
         <SessionKeeper />
+        {/*
+          Also renders nothing. Caches the app shell's static chunks so a
+          returning student is not re-downloading a megabyte of JavaScript over
+          3G, and gives a failed navigation a page that explains itself. It
+          caches no HTML and never touches `/api/` — see `public/sw.js`.
+        */}
+        <ServiceWorker />
         {children}
       </body>
     </html>
