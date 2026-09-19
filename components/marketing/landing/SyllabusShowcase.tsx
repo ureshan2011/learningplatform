@@ -274,7 +274,7 @@ export function SyllabusShowcase({
                     type="button"
                     onClick={() => selectUnit(unit)}
                     aria-pressed={on}
-                    className={`flex w-full items-start gap-3 rounded-[var(--lp-radius-md)] border p-3 text-left transition-all duration-200 ${
+                    className={`flex w-full items-start gap-3 rounded-[var(--lp-radius-md)] border p-3 text-left transition-all duration-[200ms] ease-ict ${
                       on
                         ? "border-transparent bg-(--lp-ink-900) shadow-[var(--lp-shadow-md)]"
                         : "border-(--lp-border-subtle) bg-(--lp-paper-0) hover:-translate-y-0.5 hover:shadow-[var(--lp-shadow-sm)]"
@@ -414,7 +414,7 @@ export function SyllabusShowcase({
                           </span>
                         </span>
                         <span
-                          className={`grid size-7 shrink-0 place-items-center rounded-full border transition-transform duration-300 ${open ? "rotate-90" : ""}`}
+                          className={`grid size-7 shrink-0 place-items-center rounded-full border transition-transform duration-[200ms] ease-ict ${open ? "rotate-90" : ""}`}
                           style={{ borderColor: tone.line, color: tone.ink }}
                         >
                           <ArrowRightIcon className="size-3.5" />
@@ -425,7 +425,7 @@ export function SyllabusShowcase({
                           which is the one way to open variable content smoothly. */}
                       <div
                         id={panelId}
-                        className={`grid transition-[grid-template-rows] duration-[400ms] ease-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                        className={`grid transition-[grid-template-rows] duration-[340ms] ease-ict-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                       >
                         <div className="overflow-hidden">
                           <div className="border-t px-3 pt-3 pb-4" style={{ borderColor: tone.line }}>
