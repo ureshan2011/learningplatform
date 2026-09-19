@@ -2,7 +2,8 @@ import { requirePageUser } from "@/lib/auth/session";
 import { listPublicContent, listSubjects } from "@/lib/queries";
 import { formatDate } from "@/lib/format";
 import { getT } from "@/lib/i18n/server";
-import { DownloadButton } from "@/components/content/DownloadButton";
+import { resourceLabels } from "@/lib/i18n/resource-labels";
+import { ResourceActions } from "@/components/content/ResourceActions";
 import { CommandWordsBody } from "@/components/content/CommandWordsBody";
 import { EmptyState, IconBadge, PageHeader, SectionBar } from "@/components/ds";
 import { PageShell } from "@/components/ds/PageShell";
@@ -18,6 +19,11 @@ const KIND_LABEL: Record<ContentKind, string> = {
   replay: "Class replay",
   pack: "Pack file",
 };
+
+/** Kinds the in-app reader can actually render. A replay is video and a pack
+ *  file is whatever the teacher uploaded, so both stay download-only rather
+ *  than opening a reader that shows nothing. */
+const READABLE_KINDS: ReadonlySet<ContentKind> = new Set(["notes", "past_paper", "marking_scheme"]);
 
 const KIND_ICON: Record<ContentKind, IconName> = {
   notes: "description",
@@ -41,9 +47,9 @@ const KIND_ICON: Record<ContentKind, IconName> = {
  * for everyone rather than rendering per visitor, and a session read here
  * would cost them that (see the comment on `/notes`). This is one in-app
  * screen that serves the same material to someone already signed in, which it
- * can do better than the public page anyway: downloads go through
- * `DownloadButton`, so every file gets its own ten-minute signed URL per click
- * rather than a URL baked into the cached HTML.
+ * can do better than the public page anyway: a student can read a paper here
+ * without downloading it, and a download that is wanted gets its own
+ * ten-minute signed URL per click rather than one baked into cached HTML.
  *
  * One entry in the rail rather than three. A student looking for "the free
  * stuff" has one place to look, and the reference material sits beside the
@@ -87,7 +93,12 @@ export default async function LibraryPage() {
                     </p>
                   </div>
                 </div>
-                <DownloadButton contentId={item.id} label={t("library.download")} />
+                <ResourceActions
+                  contentId={item.id}
+                  title={item.title}
+                  readable={READABLE_KINDS.has(item.kind)}
+                  labels={resourceLabels(t)}
+                />
               </li>
             ))}
           </ul>

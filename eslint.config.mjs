@@ -92,7 +92,18 @@ const config = [
     // or maintains. Linting it fails the build on someone else's snippet
     // (Button.jsx references an `Arrow` it re-exports but never imports) and
     // otherwise only produces advice about a reference file nobody ships.
-    ignores: [".next/**", "node_modules/**", "out/**", "scripts/**", "docs/**"],
+    // `public/pdf.worker.min.mjs` is pdf.js's minified worker, copied in by
+    // `scripts/copy-pdf-worker.mjs` at build time. It is a vendored artifact,
+    // not source — linting it produces 1,500 warnings about somebody else's
+    // minifier output.
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "out/**",
+      "scripts/**",
+      "docs/**",
+      "public/pdf.worker.min.mjs",
+    ],
   },
 ];
 

@@ -4,7 +4,7 @@ import { requirePageUser } from "@/lib/auth/session";
 import { getSubject, listContent, listUnits } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { formatDate, formatLKR, formatSessionTime } from "@/lib/format";
-import { DownloadButton } from "@/components/content/DownloadButton";
+import { ResourceActions } from "@/components/content/ResourceActions";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { SubjectTabs } from "@/components/subject/SubjectTabs";
@@ -25,6 +25,7 @@ import { PageShell } from "@/components/ds/PageShell";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { paymentsPaused } from "@/lib/payments/launch";
 import { getT } from "@/lib/i18n/server";
+import { resourceLabels } from "@/lib/i18n/resource-labels";
 import type { ContentKind } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +37,11 @@ const KIND_LABEL: Record<ContentKind, string> = {
   replay: "Class replay",
   pack: "Pack file",
 };
+
+/** Kinds the in-app reader can actually render. A replay is video and a pack
+ *  file is whatever the teacher uploaded, so both stay download-only rather
+ *  than opening a reader that shows nothing. */
+const READABLE_KINDS: ReadonlySet<ContentKind> = new Set(["notes", "past_paper", "marking_scheme"]);
 
 const KIND_ICON: Record<ContentKind, IconName> = {
   notes: "description",
@@ -223,7 +229,12 @@ export default async function SubjectPage({
                         </p>
                       </div>
                     </div>
-                    <DownloadButton contentId={item.id} label={t("subject.download")} />
+                    <ResourceActions
+                      contentId={item.id}
+                      title={item.title}
+                      readable={READABLE_KINDS.has(item.kind)}
+                      labels={resourceLabels(t)}
+                    />
                   </li>
                 ))}
               </ul>
