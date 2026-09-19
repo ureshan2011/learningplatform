@@ -187,6 +187,91 @@
   --color-awaken-whatsapp: #25d366;
 }
 
+/*
+ * ============================================================================
+ * Role tokens — what a colour is FOR, rather than which colour it is.
+ * ============================================================================
+ *
+ * The palette above says what the colours are. This says what each one does on
+ * a screen: which is a card, which is a hairline, which is body text. The two
+ * worlds disagree about the answer — a card is white on cream and ink-850 on
+ * near-black — so the roles are declared twice, here for the cream world and
+ * again inside `.ict-app` for the dark one, and a component that asks for the
+ * role gets the right answer in both.
+ *
+ * That is what makes a component portable. `components/ds/` is written against
+ * these, so a card built once renders white on `/notes` and near-black on the
+ * dashboard with no branch, no duplicate file, and no `isDark` prop threaded
+ * through twelve levels of tree. It is the same mechanism the legacy
+ * `--color-awaken-*` remap uses further down, but chosen rather than inherited:
+ * those names describe a palette nobody uses any more, these describe a job.
+ *
+ * `static` because the `.ict-app` block below overrides them unconditionally,
+ * and a token Tailwind tree-shook out of `:root` would leave the cream world
+ * resolving against nothing.
+ *
+ * Adding one: it must be a job a screen actually has, and it must have a
+ * sensible answer in BOTH worlds. "The colour of the syllabus rail" is not a
+ * role, it is a call site.
+ */
+@theme static {
+  /* Surfaces, from the page backwards. */
+  --color-ict-surface: var(--color-ict-paper-100);
+  --color-ict-surface-card: var(--color-ict-paper-0);
+  --color-ict-surface-raised: var(--color-ict-paper-50);
+  --color-ict-surface-sunken: var(--color-ict-paper-200);
+  /* The wash under a transparent control on hover. */
+  --color-ict-surface-hover: var(--color-ict-paper-200);
+
+  /* Lines. `line` is the hairline around a card; `line-strong` is a border
+     meant to be read as an edge — an outline button, a selected state. */
+  --color-ict-line: var(--color-ict-paper-300);
+  --color-ict-line-strong: var(--color-ict-ink-900);
+  --color-ict-line-strong-hover: var(--color-ict-orange-500);
+
+  /* Text, in descending order of how much it wants to be read. */
+  --color-ict-fg: var(--color-ict-ink-900);
+  --color-ict-fg-soft: var(--color-ict-ink-500);
+  --color-ict-fg-mute: var(--color-ict-ink-400);
+  --color-ict-fg-dim: var(--color-ict-ink-300);
+
+  /* Orange and red as TEXT, which wants a darker step than the same hue as a
+     fill — the ramp that reads on near-black is washed out on white. */
+  --color-ict-accent-fg: var(--color-ict-orange-600);
+  --color-ict-danger-fg: var(--color-ict-red-500);
+
+  /*
+   * The one surface per screen that steps outside the base palette to carry
+   * the most important thing on it. The system inverts it deliberately
+   * between worlds: cocoa on near-black, near-black on cream.
+   */
+  --color-ict-feature: var(--color-ict-ink-900);
+  --color-ict-feature-line: var(--color-ict-ink-900);
+  --color-ict-on-feature: var(--color-ict-paper-50);
+  --color-ict-on-feature-soft: var(--color-ict-ink-200);
+
+}
+
+/*
+ * Card elevation — the one role that cannot live in `@theme`.
+ *
+ * A drop shadow is how a white card separates from cream; on near-black it
+ * does nothing at all, so there the same role is the inset top highlight
+ * instead. Both mean "this card sits above the page".
+ *
+ * It sits in a plain `:root` rather than the block above because Tailwind
+ * resolves a *shadow* theme value at compile time — `shadow-ict-card` would
+ * have been emitted as a literal `var(--shadow-ict-sm)` and the `.ict-app`
+ * override below would have done nothing, quietly giving every dark card a
+ * drop shadow it cannot show. Colour utilities are emitted as `var(--color-…)`
+ * and do resolve at runtime, which is why every other role works from
+ * `@theme`. Call sites use `shadow-(--shadow-ict-card)`, the arbitrary-property
+ * form, which always indirects.
+ */
+:root {
+  --shadow-ict-card: var(--shadow-ict-sm);
+}
+
 /* Slow, cheap drift for the hero's gradient blobs — pure CSS, GPU-composited,
    no images, so it costs nothing on a slow connection. */
 @keyframes awaken-drift {
@@ -401,6 +486,40 @@ body {
   --color-awaken-warn-soft: rgba(232, 163, 23, 0.15);
   --color-awaken-indigo: var(--color-ict-ink-200);
   --color-awaken-indigo-soft: var(--color-ict-ink-700);
+
+  /*
+   * The dark world's answers to the role tokens declared near the top of this
+   * file. Same jobs, different colours — this is the whole of what makes a
+   * `components/ds/` component render correctly in both worlds.
+   */
+  --color-ict-surface: var(--color-ict-ink-900);
+  --color-ict-surface-card: var(--color-ict-ink-850);
+  --color-ict-surface-raised: var(--color-ict-ink-800);
+  --color-ict-surface-sunken: var(--color-ict-ink-700);
+  --color-ict-surface-hover: var(--color-ict-ink-800);
+
+  --color-ict-line: var(--color-ict-border-dark);
+  --color-ict-line-strong: var(--color-ict-ink-500);
+  --color-ict-line-strong-hover: var(--color-ict-ink-300);
+
+  --color-ict-fg: var(--color-ict-paper-50);
+  --color-ict-fg-soft: var(--color-ict-ink-300);
+  --color-ict-fg-mute: var(--color-ict-ink-400);
+  --color-ict-fg-dim: var(--color-ict-ink-500);
+
+  --color-ict-accent-fg: var(--color-ict-orange-400);
+  /* The system red lightened for near-black; `--color-ict-red-500` itself
+     muddies against it. Was an inline `#f0685a` in four components. */
+  --color-ict-danger-fg: #f0685a;
+
+  /* Cocoa here, near-black on cream — the deliberate inversion. */
+  --color-ict-feature: var(--color-ict-cocoa-700);
+  --color-ict-feature-line: var(--color-ict-cocoa-600);
+  --color-ict-on-feature: var(--color-ict-paper-50);
+  --color-ict-on-feature-soft: var(--color-ict-orange-200);
+
+  /* A drop shadow does not read on near-black; the inset highlight does. */
+  --shadow-ict-card: var(--shadow-ict-inset);
 
   background: var(--color-ict-ink-900);
   color: var(--color-ict-paper-50);
