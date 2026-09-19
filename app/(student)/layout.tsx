@@ -1,3 +1,12 @@
+import type { Viewport } from "next";
+
+/**
+ * The warm near-black behind the Android address bar, so the browser chrome
+ * matches `.ict-app` rather than flashing the public site's cream over a dark
+ * screen. Overrides the root layout's cream for this route group only.
+ */
+export const viewport: Viewport = { themeColor: "#0e0c0b" };
+
 import { resolveSession } from "@/lib/auth/session";
 import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
@@ -69,7 +78,14 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const groups: NavGroup[] = [];
   const mobileTabs: NavItem[] = [{ href: "/dashboard", label: t("nav.home"), icon: "home" }];
 
-  groups.push({ items: [{ href: "/dashboard", label: t("nav.dashboard"), icon: "home" }] });
+  groups.push({
+    items: [
+      { href: "/dashboard", label: t("nav.dashboard"), icon: "home" },
+      // Above the subject group on purpose: "when is my next class" is the
+      // question a student opens this app to answer more often than any other.
+      { href: "/classes", label: t("nav.classes"), icon: "event" },
+    ],
+  });
 
   if (primary) {
     const study: NavItem[] = [
@@ -100,9 +116,9 @@ export default async function StudentLayout({ children }: { children: React.Reac
     ];
     groups.push({ label: primary.name, items: study });
     mobileTabs.push(
+      { href: "/classes", label: t("nav.classes"), icon: "event" },
       { href: study[0].href, label: t("nav.practice"), icon: "quiz" },
       { href: study[1].href, label: t("nav.mocks"), icon: "schedule", matchPrefix: true },
-      { href: study[3].href, label: t("nav.notes"), icon: "description" },
     );
   } else {
     mobileTabs.push(

@@ -233,6 +233,46 @@ export async function listUpcomingSessions(
 }
 
 /**
+ * Classes that have already finished, newest first — the other half of the
+ * student's timetable.
+ *
+ * A student who missed Tuesday has, until now, had no way to find that class
+ * again: `listUpcomingSessions` looks forward only, and a replay was reachable
+ * solely by remembering the session id. This is what makes `/classes` able to
+ * answer "what did I miss, and can I still watch it".
+ *
+ * One range query on `startsAt` descending — self-indexed, same as the forward
+ * one — narrowed in memory. Cancelled classes are dropped: a class that never
+ * happened is not something a student missed.
+ */
+export async function listPastSessions(
+  subjectIds: string[],
+  limit = 30,
+): Promise<ClassSession[]> {
+  if (subjectIds.length === 0) return [];
+
+  // The same three-hour boundary the forward query uses, from the other side,
+  // so a class in progress appears in exactly one of the two lists.
+  const until = Date.now() - 3 * 60 * 60 * 1000;
+  const wanted = new Set(subjectIds);
+
+  const snap = await col
+    .sessions()
+    .where("startsAt", "<", until)
+    .orderBy("startsAt", "desc")
+    .limit(SCAN_WINDOW)
+    .get();
+
+  return snap.docs
+    .map((d) => d.data() as ClassSession)
+    .filter(
+      (s) =>
+        s.tenantId === publicEnv.tenantId && wanted.has(s.subjectId) && s.state !== "cancelled",
+    )
+    .slice(0, limit);
+}
+
+/**
  * Every class for one subject that has not already finished — the timetable
  * behind the syllabus page's per-topic "join this class" buttons.
  *

@@ -80,7 +80,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fafbf9",
+  /*
+   * The cream ground, which is what a visitor to a public page sees behind
+   * the Android address bar. Was `#fafbf9`, the legacy `--color-awaken-bg`:
+   * a cool off-white that is nowhere in the ICTCAMPUS palette.
+   *
+   * The signed-in area overrides this to the warm near-black in its own
+   * route-group layouts, so the browser chrome matches the world the student
+   * is actually in rather than flipping to cream over a dark page.
+   */
+  themeColor: "#fdf4ee",
   width: "device-width",
   initialScale: 1,
   // Students pinch-zoom diagrams and code on small screens. Never lock this.
