@@ -19,6 +19,8 @@ import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { Chip } from "@/components/ds";
+import { SearchTrigger } from "@/components/search/SearchTrigger";
+import type { SearchEntry } from "@/lib/search";
 
 /**
  * The shell for the whole signed-in student area.
@@ -188,6 +190,19 @@ export default async function StudentLayout({ children }: { children: React.Reac
     });
   }
 
+  // Every screen the rail offers, as search entries. Derived from `groups`
+  // rather than written out again: a nav item added above is searchable
+  // without anyone remembering to add it here twice.
+  const searchPages: SearchEntry[] = groups.flatMap((group) =>
+    group.items.map((item) => ({
+      t: item.label,
+      s: group.label ?? t("nav.dashboard"),
+      h: item.href,
+      k: "page" as const,
+      q: `${item.label} ${group.label ?? ""}`.toLowerCase(),
+    })),
+  );
+
   const promo: ShellPromo | undefined =
     activeIds.size === 0 && !isStaff && primary
       ? {
@@ -225,11 +240,31 @@ export default async function StudentLayout({ children }: { children: React.Reac
         signOut: t("nav.signOut"),
       }}
       topbarRight={
-        activeIds.size > 0 ? (
-          <Chip icon="check_circle">{t("status.subscribed")}</Chip>
-        ) : (
-          <Chip icon="lock">{t("status.notSubscribed")}</Chip>
-        )
+        <>
+          {/* The rail's own screens are seeded into search from here, so a
+              student who types "mock" reaches mock exams whether or not the
+              index has loaded — and so search works at all when it cannot. */}
+          <SearchTrigger
+            staticPages={searchPages}
+            labels={{
+              search: t("search.search"),
+              placeholder: t("search.placeholder"),
+              empty: t("search.empty"),
+              hint: t("search.hint"),
+              close: t("search.close"),
+              failed: t("search.failed"),
+            }}
+          />
+          {activeIds.size > 0 ? (
+            <Chip icon="check_circle" className="hidden sm:inline-flex">
+              {t("status.subscribed")}
+            </Chip>
+          ) : (
+            <Chip icon="lock" className="hidden sm:inline-flex">
+              {t("status.notSubscribed")}
+            </Chip>
+          )}
+        </>
       }
     >
       {/* Students only. The owner opens these same screens on a laptop, a phone

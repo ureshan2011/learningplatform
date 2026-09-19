@@ -5,11 +5,11 @@ import { listEnrollments, listSubjects } from "@/lib/queries";
 import { formatDate, formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import { publicEnv } from "@/lib/env";
-import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
 import { DeleteMatchAnswers } from "@/components/account/DeleteMatchAnswers";
 import { getInputs } from "@/lib/campus-match/inputs";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
+import { ReferralCard } from "@/components/account/ReferralCard";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { Icon } from "@/components/ui/Icon";
 import {
@@ -217,21 +217,7 @@ export default async function AccountPage() {
             </div>
           </Card>
 
-          <Card radius="card" className="p-5">
-            <Eyebrow>{t("dash.inviteTitle")}</Eyebrow>
-            <p className="mt-2 text-sm text-ict-ink-300">
-              Share your code — when they subscribe, you both get{" "}
-              <strong className="text-ict-paper-50">3 free days</strong>.
-            </p>
-            <p className="mt-3 truncate rounded-ict-sm border border-ict-border-dark bg-ict-ink-900 px-3 py-2 font-mono text-xs text-ict-ink-300">
-              {referralLink}
-            </p>
-            <div className="mt-3">
-              <WhatsAppShareButton
-                text={`Join me on ICT Campus for A/L ICT tuition — sign up with my code and we both get 3 free days.\n${referralLink}`}
-              />
-            </div>
-          </Card>
+          <ReferralCard link={referralLink} t={t} />
 
           <Card radius="card" className="p-5">
             <div className="flex items-center justify-between">
