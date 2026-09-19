@@ -10,6 +10,7 @@ import { DeleteMatchAnswers } from "@/components/account/DeleteMatchAnswers";
 import { getInputs } from "@/lib/campus-match/inputs";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { ReferralCard } from "@/components/account/ReferralCard";
+import { ReminderToggle } from "@/components/push/ReminderToggle";
 import { getLocale, getT } from "@/lib/i18n/server";
 import { Icon } from "@/components/ui/Icon";
 import {
@@ -216,6 +217,21 @@ export default async function AccountPage() {
               <LanguageToggle current={locale} />
             </div>
           </Card>
+
+          <ReminderToggle
+            vapidKey={publicEnv.vapidKey}
+            labels={{
+              title: t("remind.title"),
+              body: t("remind.body"),
+              on: t("remind.on"),
+              off: t("remind.enable"),
+              enable: t("remind.enable"),
+              disable: t("remind.disable"),
+              blocked: t("remind.blocked"),
+              unsupported: t("remind.unsupported"),
+              notConfigured: t("remind.notConfigured"),
+            }}
+          />
 
           <ReferralCard link={referralLink} t={t} />
 

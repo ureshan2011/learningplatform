@@ -7,6 +7,15 @@ import { getDatabase, type Database } from "firebase/database";
 import { getAnalytics, isSupported, type Analytics } from "firebase/analytics";
 import { publicEnv, isFirebaseConfigured } from "@/lib/env";
 
+/**
+ * Exported as `clientApp` so Cloud Messaging can be initialised from the same
+ * app instance without this module importing `firebase/messaging` — that chunk
+ * is fetched only by the student who turns reminders on.
+ */
+export function clientApp(): FirebaseApp {
+  return app();
+}
+
 function app(): FirebaseApp {
   if (!isFirebaseConfigured()) {
     throw new Error(

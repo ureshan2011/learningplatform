@@ -137,3 +137,60 @@ async function trim(cache) {
   // `keys()` is insertion-ordered, so the front of the list is the oldest.
   await Promise.all(keys.slice(0, keys.length - MAX_ASSET_ENTRIES).map((key) => cache.delete(key)));
 }
+
+/*
+ * Class reminders.
+ *
+ * Sent as a data-only message on purpose (see `lib/push/send.ts`): with a
+ * `notification` block the browser renders its own and this handler never
+ * runs, so a tap would land on the app's start URL rather than on the class
+ * that is about to start.
+ */
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+
+  let payload = {};
+  try {
+    payload = event.data.json().data ?? event.data.json();
+  } catch {
+    return;
+  }
+
+  const title = payload.title || "ICT Campus";
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body: payload.body || "",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      // Replaces rather than stacks: two devices, or a re-send, should not
+      // leave a pile of identical rows in the shade.
+      tag: payload.tag || "ict-campus",
+      renotify: true,
+      data: { path: payload.path || "/dashboard" },
+    }),
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const path = event.notification.data?.path || "/dashboard";
+  const target = new URL(path, self.location.origin).href;
+
+  event.waitUntil(
+    (async () => {
+      const clients = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+      // Reuse a tab that is already open rather than stacking another one —
+      // a student who taps three reminders should not end with three copies
+      // of the app fighting over the same session.
+      for (const client of clients) {
+        if (client.url === target) return client.focus();
+      }
+      const existing = clients[0];
+      if (existing && "navigate" in existing) {
+        await existing.focus();
+        return existing.navigate(target);
+      }
+      return self.clients.openWindow(target);
+    })(),
+  );
+});

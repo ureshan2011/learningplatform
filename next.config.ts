@@ -63,6 +63,10 @@ const firebasePublicEnv: Record<string, string> = {
   // type a measurement ID in by hand.
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID:
     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || injected.measurementId || "",
+  // Not part of FIREBASE_WEBAPP_CONFIG — the Web Push certificate is generated
+  // separately (console → Cloud Messaging) and has to be pasted in once.
+  // Empty simply means class reminders report themselves as not set up.
+  NEXT_PUBLIC_FIREBASE_VAPID_KEY: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || "",
 };
 
 /**
