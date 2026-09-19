@@ -12,7 +12,7 @@ import {
 import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { paymentsPaused } from "@/lib/payments/launch";
-import { getT, localeAttrs, type Translator } from "@/lib/i18n/server";
+import { getT, type Translator } from "@/lib/i18n/server";
 import { LaunchNotice } from "@/components/payments/LaunchNotice";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
@@ -30,6 +30,7 @@ import {
   StatusChip,
   StatusDot,
 } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import type { MessageKey } from "@/lib/i18n/dictionary";
 import type { ClassSession, Subject } from "@/lib/types";
 import { CAMPUS_READY } from "@/lib/content/campus-ready";
@@ -53,13 +54,12 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const user = await requirePageUser("/dashboard");
 
-  const [enrollments, subjects, cohorts, products, t, loc] = await Promise.all([
+  const [enrollments, subjects, cohorts, products, t] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
     listCohorts(),
     listProducts(),
     getT(),
-    localeAttrs(),
   ]);
 
   // Server Component: this renders once per request, so reading the clock here
@@ -99,7 +99,7 @@ export default async function DashboardPage() {
   const firstName = user.name.trim().split(/\s+/)[0] || "there";
 
   return (
-    <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
+    <PageShell>
       {/* ------------------------------------------------------------------ */}
       {/* Feature banner — the system permits exactly one cocoa surface per    */}
       {/* screen, so it carries the single thing that matters most right now.  */}
@@ -343,7 +343,7 @@ export default async function DashboardPage() {
           ) : null}
         </aside>
       </div>
-    </main>
+    </PageShell>
   );
 }
 

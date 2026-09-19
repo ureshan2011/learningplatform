@@ -7,8 +7,9 @@ import { getInputs } from "@/lib/campus-match/inputs";
 import { courseHistory, getProfile, profileCodes } from "@/lib/campus-match/profiles";
 import { handbookCoverYear } from "@/lib/campus-match/data";
 import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
-import { getLocale, getT, localeAttrs } from "@/lib/i18n/server";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { Badge, Card, Eyebrow, PageHeader } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import { CutoffHistory } from "@/components/campus-match/CutoffHistory";
 import districts from "@/lib/content/ugc/districts.json";
 import streams from "@/lib/content/ugc/streams.json";
@@ -44,9 +45,8 @@ export default async function DegreeProfilePage({
   const access = await hasAccess(user.uid, CAMPUS_MATCH_ID);
   if (!access.allowed) redirect("/campus-match");
 
-  const [locale, loc, t, inputs] = await Promise.all([
+  const [locale, t, inputs] = await Promise.all([
     getLocale(),
-    localeAttrs(),
     getT(),
     getInputs(user.uid),
   ]);
@@ -62,10 +62,7 @@ export default async function DegreeProfilePage({
   );
 
   return (
-    <main
-      lang={loc.lang}
-      className={`${loc.className} mx-auto max-w-[760px] px-4 py-5 sm:px-6 sm:py-6`}
-    >
+    <PageShell width="reading">
       <PageHeader
         eyebrow={profile.faculty[locale === "si" ? "si" : "en"]}
         title={profile.course.name}
@@ -152,6 +149,6 @@ export default async function DegreeProfilePage({
           {t("match.back")}
         </Link>
       </p>
-    </main>
+    </PageShell>
   );
 }

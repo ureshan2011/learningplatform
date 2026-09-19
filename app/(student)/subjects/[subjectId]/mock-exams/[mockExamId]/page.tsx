@@ -8,6 +8,7 @@ import { MockExamRunner } from "@/components/mockexams/MockExamRunner";
 import { Icon } from "@/components/ui/Icon";
 import { SubjectLocked } from "@/components/subject/SubjectShell";
 import { Card, PageHeader, ProgressBar, StatCard, StatusChip } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +27,7 @@ export default async function MockExamPage({
   const access = await hasAccess(user.uid, subjectId);
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-5 sm:px-6 sm:py-6">
+    <PageShell width="reading">
       <Link
         href={`/subjects/${subjectId}/mock-exams`}
         className="inline-flex items-center gap-1.5 text-sm font-semibold text-ict-ink-300 transition-colors duration-[120ms] hover:text-ict-orange-400"
@@ -46,7 +47,7 @@ export default async function MockExamPage({
           <MockExamBody uid={user.uid} subjectId={subjectId} mockExamId={mockExamId} />
         )}
       </div>
-    </main>
+    </PageShell>
   );
 }
 

@@ -21,9 +21,10 @@ import {
   SectionBar,
   StatusChip,
 } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { paymentsPaused } from "@/lib/payments/launch";
-import { getT, localeAttrs } from "@/lib/i18n/server";
+import { getT } from "@/lib/i18n/server";
 import type { ContentKind } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -64,11 +65,10 @@ export default async function SubjectPage({
   if (!subject) notFound();
 
   const access = await hasAccess(user.uid, subjectId);
-  const [items, units, t, loc] = await Promise.all([
+  const [items, units, t] = await Promise.all([
     listContent(subjectId),
     listUnits(subjectId),
     getT(),
-    localeAttrs(),
   ]);
 
   // Locked students still see the catalogue — knowing what they are missing is
@@ -88,7 +88,7 @@ export default async function SubjectPage({
   const trialSpent = paused && Boolean(access.enrollment);
 
   return (
-    <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
+    <PageShell>
       <PageHeader
         eyebrow={`${subject.grade} · ${subject.medium} medium`}
         title={subject.name}
@@ -371,7 +371,7 @@ export default async function SubjectPage({
           </Card>
         </aside>
       </div>
-    </main>
+    </PageShell>
   );
 }
 

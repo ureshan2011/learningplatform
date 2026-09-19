@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requirePageUser } from "@/lib/auth/session";
-import { getT, localeAttrs, type Translator } from "@/lib/i18n/server";
+import { getT, type Translator } from "@/lib/i18n/server";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { getInputs, saveInputs } from "@/lib/campus-match/inputs";
 import { buildReport } from "@/lib/campus-match/report";
@@ -10,6 +10,7 @@ import { dataFreshness, roundSpan } from "@/lib/campus-match/data";
 import { schemeRule, schemeUnstated } from "@/lib/campus-match/scheme";
 import { ADMISSION_ROUND, CAMPUS_MATCH_ID, CAMPUS_MATCH_NAME } from "@/lib/campus-match/cycle";
 import { Badge, Card, Eyebrow, Notice, PageHeader, StatCard } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import { Bands } from "@/components/campus-match/Bands";
 import {
   OrderBuilder,
@@ -117,7 +118,7 @@ export default async function CampusMatchReportPage({
     redirect("/campus-match/report");
   }
 
-  const [t, loc] = await Promise.all([getT(), localeAttrs()]);
+  const t = await getT();
   const freshness = dataFreshness();
   const span = roundSpan();
   const sourceLine = [
@@ -135,10 +136,7 @@ export default async function CampusMatchReportPage({
   /* ---------------------------------------------------------------------- */
   if (!inputs) {
     return (
-      <main
-        lang={loc.lang}
-        className={`${loc.className} mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6`}
-      >
+      <PageShell width="reading">
         <PageHeader
           eyebrow={`${ADMISSION_ROUND} admission round`}
           title={CAMPUS_MATCH_NAME}
@@ -154,7 +152,7 @@ export default async function CampusMatchReportPage({
           />
         </Card>
         <p className="mt-5 text-xs leading-relaxed text-ict-ink-400">{sourceLine}</p>
-      </main>
+      </PageShell>
     );
   }
 
@@ -179,10 +177,7 @@ export default async function CampusMatchReportPage({
     }));
 
   return (
-    <main
-      lang={loc.lang}
-      className={`${loc.className} ict-print mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6`}
-    >
+    <PageShell width="reading" className="ict-print">
       <PageHeader
         eyebrow={`${ADMISSION_ROUND} admission round`}
         title={CAMPUS_MATCH_NAME}
@@ -282,7 +277,7 @@ export default async function CampusMatchReportPage({
       </div>
 
       <p className="mt-5 text-xs leading-relaxed text-ict-ink-400">{sourceLine}</p>
-    </main>
+    </PageShell>
   );
 }
 

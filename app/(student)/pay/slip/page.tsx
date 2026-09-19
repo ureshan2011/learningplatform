@@ -10,6 +10,7 @@ import { BankDetailsCard } from "@/components/payments/BankDetailsCard";
 import { SlipUploadForm } from "@/components/payments/SlipUploadForm";
 import { Icon } from "@/components/ui/Icon";
 import { Card, PageHeader } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +47,7 @@ export default async function SlipPage({
       : enrollments.length === 0;
 
     return (
-      <main className="mx-auto max-w-md px-4 py-5 sm:px-6 sm:py-6">
+      <PageShell width="narrow">
         <PageHeader
           title={trialAvailable ? LAUNCH_NOTE.title : "Paid classes are not open yet"}
           subtitle={LAUNCH_NOTE.body}
@@ -76,7 +77,7 @@ export default async function SlipPage({
             {trialAvailable ? LAUNCH_NOTE.cta : "Back to my dashboard"}
           </ButtonLink>
         </Card>
-      </main>
+      </PageShell>
     );
   }
 
@@ -89,7 +90,7 @@ export default async function SlipPage({
 
   if (!bankSlipOn) {
     return (
-      <main className="mx-auto max-w-md px-4 py-5 sm:px-6 sm:py-6">
+      <PageShell width="narrow">
         <PageHeader
           title="Pay by bank deposit"
           subtitle="Bank deposit is switched off right now — pay by card instead."
@@ -104,12 +105,12 @@ export default async function SlipPage({
             to unlock it instantly.
           </p>
         </Card>
-      </main>
+      </PageShell>
     );
   }
 
   return (
-    <main className="mx-auto max-w-md px-4 py-5 sm:px-6 sm:py-6">
+    <PageShell width="narrow">
       <PageHeader
         title="Pay by bank deposit"
         subtitle="Deposit the fee, photograph the slip, and upload it below. Your teacher checks it and your class unlocks — usually the same day."
@@ -148,6 +149,6 @@ export default async function SlipPage({
         }))}
         initialSubjectId={chosen?.id}
       />
-    </main>
+    </PageShell>
   );
 }

@@ -5,6 +5,7 @@ import { formatSessionTime, relativeToNow } from "@/lib/format";
 import { JoinClass } from "@/components/live/JoinClass";
 import { Icon } from "@/components/ui/Icon";
 import { ButtonLink, Card, PageHeader, StatusChip } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,7 @@ export default async function LiveSessionPage({
   const joinable = session.state === "live" || (session.state === "scheduled" && startsSoon);
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-6">
+    <PageShell>
       <PageHeader
         eyebrow={`${subject?.name ?? session.subjectId} · ${session.topic}`}
         title={session.title}
@@ -62,7 +63,7 @@ export default async function LiveSessionPage({
         hand — sharing this layout so simulcast and Zoom students sit in the
         same room.
       */}
-    </main>
+    </PageShell>
   );
 }
 

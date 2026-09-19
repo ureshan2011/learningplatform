@@ -10,7 +10,7 @@ import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
 import { DeleteMatchAnswers } from "@/components/account/DeleteMatchAnswers";
 import { getInputs } from "@/lib/campus-match/inputs";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
-import { getLocale, getT, localeAttrs } from "@/lib/i18n/server";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { Icon } from "@/components/ui/Icon";
 import {
   Badge,
@@ -22,6 +22,7 @@ import {
   SectionBar,
   StatusChip,
 } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import { MAX_DEVICES_PER_USER, type Payment, type User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -44,7 +45,7 @@ const ROLE_LABEL: Record<string, string> = {
 export default async function AccountPage() {
   const session = await requirePageUser("/account");
 
-  const [t, locale, loc] = await Promise.all([getT(), getLocale(), localeAttrs()]);
+  const [t, locale] = await Promise.all([getT(), getLocale()]);
 
   const [snap, enrollments, subjects, payments, matchInputs] = await Promise.all([
     col.users().doc(session.uid).get(),
@@ -77,7 +78,7 @@ export default async function AccountPage() {
     .reduce((sum, p) => sum + p.amountLKR, 0);
 
   return (
-    <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
+    <PageShell>
       <PageHeader
         eyebrow={t("account.title")}
         title={user.name}
@@ -284,6 +285,6 @@ export default async function AccountPage() {
           ) : null}
         </aside>
       </div>
-    </main>
+    </PageShell>
   );
 }

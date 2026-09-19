@@ -6,10 +6,11 @@ import { hasAccess } from "@/lib/payments/entitlements";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { paymentsPaused } from "@/lib/payments/launch";
 import { formatDate, formatLKR } from "@/lib/format";
-import { getT, localeAttrs } from "@/lib/i18n/server";
+import { getT } from "@/lib/i18n/server";
 import { CAMPUS_READY, CAMPUS_READY_WEEKS } from "@/lib/content/campus-ready";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { Badge, Card, Eyebrow, Notice, PageHeader, SectionBar, StatusChip } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 
 /**
  * One Campus Ready intake, for a signed-in student.
@@ -35,12 +36,11 @@ export default async function CampusCohortPage({
   if (!subject?.cohort) notFound();
   const term = subject.cohort;
 
-  const [access, payhere, paymentSettings, t, loc] = await Promise.all([
+  const [access, payhere, paymentSettings, t] = await Promise.all([
     hasAccess(user.uid, subjectId),
     getPayHereConfig(),
     getPaymentSettings(),
     getT(),
-    localeAttrs(),
   ]);
   // Trial-only launch — see `lib/payments/launch.ts`. A cohort seat is a
   // Rs 30,000 one-off, so it is not given away with the trial; the panel says
@@ -58,7 +58,7 @@ export default async function CampusCohortPage({
   const started = now >= term.startsAt;
 
   return (
-    <main lang={loc.lang} className={loc.className}>
+    <PageShell>
       <PageHeader title={subject.name} subtitle={CAMPUS_READY.tagline} />
 
       <div className="mt-5 grid gap-3 lg:grid-cols-[1fr_320px]">
@@ -156,6 +156,6 @@ export default async function CampusCohortPage({
           <Notice tone="warning">{t("campus.laptopNeeded")}</Notice>
         </aside>
       </div>
-    </main>
+    </PageShell>
   );
 }

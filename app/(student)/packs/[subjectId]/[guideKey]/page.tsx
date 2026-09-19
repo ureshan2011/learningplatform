@@ -2,11 +2,12 @@ import { notFound, redirect } from "next/navigation";
 import { requirePageUser } from "@/lib/auth/session";
 import { getProduct } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
-import { getT, getLocale, localeAttrs } from "@/lib/i18n/server";
+import { getT, getLocale } from "@/lib/i18n/server";
 import { AI_NOTE, PACK_GUIDES, pick } from "@/lib/content/survival-pack";
 import { CopyButton } from "@/components/packs/CopyButton";
 import { AiDeclarationGenerator } from "@/components/packs/AiDeclarationGenerator";
 import { Card, PageHeader, SectionHeading } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 
 /**
  * One guide from the pack.
@@ -32,13 +33,13 @@ export default async function PackGuidePage({
   const access = await hasAccess(user.uid, subjectId);
   if (!access.allowed) redirect(`/packs/${subjectId}`);
 
-  const [t, loc, locale] = await Promise.all([getT(), localeAttrs(), getLocale()]);
+  const [t, locale] = await Promise.all([getT(), getLocale()]);
 
   return (
-    <main lang={loc.lang} className={loc.className}>
+    <PageShell width="reading">
       <PageHeader eyebrow={subject.name} title={pick(guide.title, locale)} />
 
-      <div className="mt-5 max-w-3xl space-y-3">
+      <div className="mt-5 space-y-3">
         {guide.sections.map((section, i) => (
           <Card key={i} radius="card" className="p-5">
             <SectionHeading as="h2" className="!text-lg">
@@ -102,6 +103,6 @@ export default async function PackGuidePage({
 
         <p className="pt-2 text-xs text-ict-ink-400">{pick(AI_NOTE, locale)}</p>
       </div>
-    </main>
+    </PageShell>
   );
 }
