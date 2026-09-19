@@ -74,11 +74,11 @@ export function ProcessSchedulingLab({
   }
 
   return (
-    <div className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-50 p-4">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+    <div className="rounded-ict-card border border-ict-line bg-ict-surface-raised p-4">
+      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
         {copy.heading}
       </p>
-      <p className="mt-1.5 text-sm text-ict-ink-500">{copy.intro}</p>
+      <p className="mt-1.5 text-sm text-ict-fg-soft">{copy.intro}</p>
 
       <div className="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="Scheduling algorithm">
         {algorithms.map((a) => {
@@ -93,11 +93,11 @@ export function ProcessSchedulingLab({
               className="ict-press rounded-full border px-3.5 py-2 text-sm font-semibold transition-colors duration-[120ms] ease-ict"
               style={
                 isActive
-                  ? { background: tone.gradTo, borderColor: tone.gradTo, color: "#fff" }
+                  ? { background: tone.accent, borderColor: tone.accent, color: "#fff" }
                   : {
-                      background: "#fff",
-                      borderColor: "var(--color-ict-paper-300)",
-                      color: "var(--color-ict-ink-500)",
+                      background: "var(--color-ict-surface-card)",
+                      borderColor: "var(--color-ict-line)",
+                      color: "var(--color-ict-fg-soft)",
                     }
               }
             >
@@ -107,8 +107,8 @@ export function ProcessSchedulingLab({
         })}
 
         {algorithm.preemptive ? (
-          <span className="flex items-center gap-2 rounded-full border border-ict-paper-300 bg-ict-paper-0 px-3 py-1.5">
-            <span className="text-xs font-semibold text-ict-ink-400">{copy.quantum}</span>
+          <span className="flex items-center gap-2 rounded-full border border-ict-line bg-ict-surface-card px-3 py-1.5">
+            <span className="text-xs font-semibold text-ict-fg-mute">{copy.quantum}</span>
             {QUANTA.map((q) => (
               <button
                 key={q}
@@ -119,7 +119,7 @@ export function ProcessSchedulingLab({
                 style={
                   q === quantum
                     ? { background: tone.soft, color: tone.ink }
-                    : { color: "var(--color-ict-ink-400)" }
+                    : { color: "var(--color-ict-fg-mute)" }
                 }
               >
                 {q}
@@ -129,26 +129,26 @@ export function ProcessSchedulingLab({
         ) : null}
       </div>
 
-      <p key={algorithm.id} className="ict-step-enter mt-2.5 text-sm text-ict-ink-500">
-        <strong className="font-semibold text-ict-ink-900">{algorithm.full}.</strong>{" "}
+      <p key={algorithm.id} className="ict-step-enter mt-2.5 text-sm text-ict-fg-soft">
+        <strong className="font-semibold text-ict-fg">{algorithm.full}.</strong>{" "}
         {algorithm.rule}
       </p>
 
       {/* Gantt chart. Proportional widths, so a long burst looks long. */}
       <div className="mt-4 overflow-x-auto">
         <div className="min-w-[20rem]">
-          <div className="flex h-12 w-full overflow-hidden rounded-xl border border-ict-paper-300">
+          <div className="flex h-12 w-full overflow-hidden rounded-ict-md border border-ict-line">
             {result.segments.map((segment, i) => {
               const width = ((segment.end - segment.start) / totalTime) * 100;
               const isIdle = segment.id === null;
               return (
                 <div
                   key={`${segment.start}-${i}`}
-                  className="flex items-center justify-center border-r border-white/40 font-mono text-xs font-bold last:border-r-0"
+                  className="flex items-center justify-center border-r border-ict-line font-mono text-xs font-bold last:border-r-0"
                   style={{
                     width: `${width}%`,
-                    background: isIdle ? "var(--color-ict-paper-200)" : tone.soft,
-                    color: isIdle ? "var(--color-ict-ink-300)" : tone.ink,
+                    background: isIdle ? "var(--color-ict-surface-sunken)" : tone.soft,
+                    color: isIdle ? "var(--color-ict-fg-mute)" : tone.ink,
                   }}
                   title={`${segment.id ?? copy.idle}: ${segment.start} – ${segment.end}`}
                 >
@@ -163,7 +163,7 @@ export function ProcessSchedulingLab({
             {[0, ...result.segments.map((s) => s.end)].map((tick, i, all) => (
               <span
                 key={i}
-                className="absolute font-mono text-[11px] text-ict-ink-400"
+                className="absolute font-mono text-xs text-ict-fg-mute"
                 style={{
                   left: `${(tick / totalTime) * 100}%`,
                   // The first and last labels are pulled inside the chart rather
@@ -180,10 +180,10 @@ export function ProcessSchedulingLab({
       </div>
 
       {/* The timing table, which is what the marks are actually for. */}
-      <div className="mt-4 overflow-x-auto rounded-ict-md border border-ict-paper-300 bg-ict-paper-0">
+      <div className="mt-4 overflow-x-auto rounded-ict-md border border-ict-line bg-ict-surface-card">
         <table className="w-full min-w-max border-collapse text-left text-sm">
           <thead>
-            <tr className="text-xs font-bold text-ict-ink-400">
+            <tr className="text-xs font-bold text-ict-fg-mute">
               <th scope="col" className="px-3 py-2">{copy.colProcess}</th>
               <th scope="col" className="px-3 py-2">{copy.colArrival}</th>
               <th scope="col" className="px-3 py-2">{copy.colBurst}</th>
@@ -194,9 +194,9 @@ export function ProcessSchedulingLab({
           </thead>
           <tbody>
             {result.metrics.map((m) => (
-              <tr key={m.id} className="border-t border-ict-paper-200">
-                <th scope="row" className="px-3 py-2 font-mono font-bold text-ict-ink-900">{m.id}</th>
-                <td className="px-3 py-2 font-mono text-ict-ink-500">{m.arrival}</td>
+              <tr key={m.id} className="border-t border-ict-line">
+                <th scope="row" className="px-3 py-2 font-mono font-bold text-ict-fg">{m.id}</th>
+                <td className="px-3 py-2 font-mono text-ict-fg-soft">{m.arrival}</td>
                 <td className="px-3 py-2">
                   <label className="flex items-center gap-1.5">
                     <span className="sr-only">{interpolate(copy.burstLabel, { id: m.id })}</span>
@@ -209,13 +209,13 @@ export function ProcessSchedulingLab({
                       className="w-20"
                       // The unit's own accent, not the brand orange: this sits
                       // inside a region that already has one accent colour.
-                      style={{ accentColor: tone.gradTo }}
+                      style={{ accentColor: tone.accent }}
                     />
-                    <span className="w-4 font-mono text-ict-ink-900">{m.burst}</span>
+                    <span className="w-4 font-mono text-ict-fg">{m.burst}</span>
                   </label>
                 </td>
-                <td className="px-3 py-2 font-mono text-ict-ink-500">{m.completion}</td>
-                <td className="px-3 py-2 font-mono text-ict-ink-500">{m.turnaround}</td>
+                <td className="px-3 py-2 font-mono text-ict-fg-soft">{m.completion}</td>
+                <td className="px-3 py-2 font-mono text-ict-fg-soft">{m.turnaround}</td>
                 <td className="px-3 py-2 font-mono font-bold" style={{ color: tone.ink }}>
                   {m.waiting}
                 </td>
@@ -223,8 +223,8 @@ export function ProcessSchedulingLab({
             ))}
           </tbody>
           <tfoot>
-            <tr className="border-t border-ict-paper-300">
-              <td colSpan={4} className="px-3 py-2 text-xs font-bold text-ict-ink-400 uppercase">
+            <tr className="border-t border-ict-line">
+              <td colSpan={4} className="px-3 py-2 text-xs font-bold text-ict-fg-mute uppercase">
                 {copy.average}
               </td>
               <td className="px-3 py-2 font-mono font-bold" style={{ color: tone.ink }}>
@@ -238,17 +238,17 @@ export function ProcessSchedulingLab({
         </table>
       </div>
 
-      <p className="mt-2 text-xs text-ict-ink-400">{copy.formulaNote}</p>
+      <p className="mt-2 text-xs text-ict-fg-mute">{copy.formulaNote}</p>
 
       <p className="mt-3 flex items-start gap-2 rounded-ict-md p-3 text-sm" style={{ background: tone.soft }}>
         <span className="mt-0.5 shrink-0" style={{ color: tone.ink }}>
           <Icon name="info" className="!text-base" />
         </span>
-        <span className="text-ict-ink-500">{algorithm.tradeoff}</span>
+        <span className="text-ict-fg-soft">{algorithm.tradeoff}</span>
       </p>
 
-      <details className="mt-3 rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
-        <summary className="cursor-pointer text-sm font-semibold text-ict-ink-900">
+      <details className="mt-3 rounded-ict-md border border-ict-line bg-ict-surface-card p-3">
+        <summary className="cursor-pointer text-sm font-semibold text-ict-fg">
           {copy.statesSummary}
         </summary>
         <ul className="mt-2.5 space-y-2">
@@ -260,8 +260,8 @@ export function ProcessSchedulingLab({
               >
                 {state.label}
               </span>
-              <span className="mt-1 block text-ict-ink-500">{state.description}</span>
-              <span className="mt-0.5 block text-xs text-ict-ink-400">{state.exits}</span>
+              <span className="mt-1 block text-ict-fg-soft">{state.description}</span>
+              <span className="mt-0.5 block text-xs text-ict-fg-mute">{state.exits}</span>
             </li>
           ))}
         </ul>

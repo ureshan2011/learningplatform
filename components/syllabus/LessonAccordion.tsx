@@ -50,7 +50,7 @@ const LESSON_INTERACTIVES: Partial<
 function LessonContent({ content }: { content: string }) {
   const blocks = content.trim().split(/\n\s*\n/);
   return (
-    <div className="space-y-3 text-sm leading-relaxed text-ict-ink-500">
+    <div className="space-y-3 text-sm leading-relaxed text-ict-fg-soft">
       {blocks.map((block, i) => {
         const lines = block
           .split("\n")
@@ -61,7 +61,7 @@ function LessonContent({ content }: { content: string }) {
             <ul key={i} className="space-y-1.5">
               {lines.map((l, j) => (
                 <li key={j} className="flex items-start gap-2">
-                  <Icon name="chevron_right" className="mt-0.5 !text-sm shrink-0 text-ict-ink-300" />
+                  <Icon name="chevron_right" className="mt-0.5 !text-sm shrink-0 text-ict-fg-mute" />
                   <span>{l.slice(2)}</span>
                 </li>
               ))}
@@ -72,7 +72,7 @@ function LessonContent({ content }: { content: string }) {
           const [heading, ...rest] = lines;
           return (
             <div key={i}>
-              <h3 className="m-0 font-display text-sm font-bold text-ict-ink-900">{heading.slice(3)}</h3>
+              <h3 className="m-0 font-display text-sm font-bold text-ict-fg">{heading.slice(3)}</h3>
               {rest.length ? <p className="mt-1">{rest.join(" ")}</p> : null}
             </div>
           );
@@ -160,7 +160,7 @@ export function LessonAccordion({
         <button
           type="button"
           onClick={() => setOpen(allOpen ? new Set() : new Set(lessons.map((l) => l.id)))}
-          className="ict-press flex items-center gap-1.5 rounded-full border border-ict-paper-300 px-3.5 py-1.5 text-xs font-semibold text-ict-ink-400 transition-colors duration-[120ms] ease-ict hover:text-ict-ink-900"
+          className="ict-press flex items-center gap-1.5 rounded-full border border-ict-line px-3.5 py-1.5 text-xs font-semibold text-ict-fg-mute transition-colors duration-[120ms] ease-ict hover:text-ict-fg"
         >
           <Icon name={allOpen ? "unfold_less" : "unfold_more"} className="!text-base" />
           {allOpen ? collapseAll : expandAll}
@@ -173,7 +173,7 @@ export function LessonAccordion({
           <a
             key={l.id}
             href={`#lesson-${l.id}`}
-            className="rounded-lg px-2 py-1 text-xs font-bold transition-transform duration-200 hover:-translate-y-0.5"
+            className="rounded-ict-sm px-2 py-1 text-xs font-bold transition-transform duration-[120ms] ease-ict hover:-translate-y-0.5"
             style={{ background: tone.soft, color: tone.ink }}
           >
             {l.id}
@@ -189,11 +189,8 @@ export function LessonAccordion({
             <li
               key={lesson.id}
               id={`lesson-${lesson.id}`}
-              className="scroll-mt-24 overflow-hidden rounded-ict-card border bg-ict-paper-0 shadow-ict-sm transition-shadow duration-300"
-              style={{
-                borderColor: isOpen ? tone.line : "var(--color-ict-paper-300)",
-                boxShadow: isOpen ? `0 16px 36px -22px rgba(${tone.rgb}, 0.6)` : undefined,
-              }}
+              className="scroll-mt-24 overflow-hidden rounded-ict-card border bg-ict-surface-card shadow-(--shadow-ict-card) transition-colors duration-[120ms] ease-ict"
+              style={{ borderColor: isOpen ? tone.line : "var(--color-ict-line)" }}
             >
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2 p-4">
                 <button
@@ -204,20 +201,20 @@ export function LessonAccordion({
                   className="flex min-w-[12rem] flex-1 items-center gap-3 text-left"
                 >
                   <span
-                    className="flex size-9 shrink-0 items-center justify-center rounded-xl text-xs font-extrabold"
+                    className="flex size-9 shrink-0 items-center justify-center rounded-ict-md text-xs font-extrabold"
                     style={{ background: tone.soft, color: tone.ink }}
                   >
                     {lesson.id}
                   </span>
                   <span className="min-w-0 flex-1">
                     <h2 className="m-0 block truncate text-base font-semibold">{lesson.title}</h2>
-                    <span className="block text-xs text-ict-ink-400">
+                    <span className="block text-xs text-ict-fg-mute">
                       {interpolate(lessonMeta, { periods: lesson.periods, objectives: lesson.examObjectives.length })}
                     </span>
                   </span>
                   <Icon
                     name="expand_more"
-                    className={`!text-xl shrink-0 text-ict-ink-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+                    className={`!text-xl shrink-0 text-ict-fg-mute transition-transform duration-[200ms] ease-ict ${isOpen ? "rotate-180" : ""}`}
                   />
                 </button>
                 <span className="ml-auto">
@@ -232,12 +229,12 @@ export function LessonAccordion({
 
               <div
                 id={`lesson-panel-${lesson.id}`}
-                className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                className={`grid transition-[grid-template-rows] duration-[340ms] ease-ict-out ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
               >
                 <div className="overflow-hidden">
                   <div className="space-y-4 px-4 pb-4">
                     <div>
-                      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+                      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
                         {objectivesLabel}
                       </p>
                       <ul className="mt-1.5 space-y-1.5">
@@ -254,14 +251,14 @@ export function LessonAccordion({
                     </div>
 
                     <div>
-                      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+                      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
                         {importantLabel}
                       </p>
                       <ul className="mt-1.5 space-y-1.5">
                         {lesson.importantAreas.map((area, index) => (
                           <li
                             key={index}
-                            className="flex items-start gap-2 rounded-xl p-2.5 text-sm"
+                            className="flex items-start gap-2 rounded-ict-md p-2.5 text-sm"
                             style={{ background: tone.soft, color: tone.ink }}
                           >
                             <Icon name="priority_high" className="mt-0.5 !text-base shrink-0" />
@@ -273,13 +270,13 @@ export function LessonAccordion({
 
                     {lessonNotes(lesson, sinhala) ? (
                       <div>
-                        <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">{notesLabel}</p>
+                        <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">{notesLabel}</p>
                         <div className="mt-1.5">
                           <LessonContent content={lessonNotes(lesson, sinhala) as string} />
                         </div>
                       </div>
                     ) : (
-                      <p className="text-xs text-ict-ink-400">{noNotesLabel}</p>
+                      <p className="text-xs text-ict-fg-mute">{noNotesLabel}</p>
                     )}
 
                     {LESSON_INTERACTIVES[lesson.id] ? (

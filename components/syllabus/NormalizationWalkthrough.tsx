@@ -47,11 +47,11 @@ export function NormalizationWalkthrough({
   const isLast = index === stages.length - 1;
 
   return (
-    <div className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-50 p-4">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+    <div className="rounded-ict-card border border-ict-line bg-ict-surface-raised p-4">
+      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
         {copy.heading}
       </p>
-      <p className="mt-1.5 text-sm text-ict-ink-500">{copy.intro}</p>
+      <p className="mt-1.5 text-sm text-ict-fg-soft">{copy.intro}</p>
 
       <div className="mt-3 flex flex-wrap gap-2" role="tablist" aria-label="Normal form">
         {stages.map((s, i) => {
@@ -67,11 +67,11 @@ export function NormalizationWalkthrough({
               className="ict-press flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition-colors duration-[120ms] ease-ict"
               style={
                 isActive
-                  ? { background: tone.gradTo, borderColor: tone.gradTo, color: "#fff" }
+                  ? { background: tone.accent, borderColor: tone.accent, color: "#fff" }
                   : {
-                      background: "#fff",
-                      borderColor: "var(--color-ict-paper-300)",
-                      color: "var(--color-ict-ink-500)",
+                      background: "var(--color-ict-surface-card)",
+                      borderColor: "var(--color-ict-line)",
+                      color: "var(--color-ict-fg-soft)",
                     }
               }
             >
@@ -83,8 +83,8 @@ export function NormalizationWalkthrough({
       </div>
 
       <div key={stage.key} className="ict-step-enter mt-4">
-        <h3 className="m-0 font-display text-base font-bold text-ict-ink-900">{stage.title}</h3>
-        <p className="mt-1 text-sm text-ict-ink-500">{stage.change}</p>
+        <h3 className="m-0 font-display text-base font-bold text-ict-fg">{stage.title}</h3>
+        <p className="mt-1 text-sm text-ict-fg-soft">{stage.change}</p>
 
         <p
           className="mt-2.5 rounded-ict-md p-3 text-sm font-semibold"
@@ -100,26 +100,26 @@ export function NormalizationWalkthrough({
         </div>
 
         {stage.problem ? (
-          <div className="mt-3 rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
-            <p className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+          <div className="mt-3 rounded-ict-md border border-ict-line bg-ict-surface-card p-3">
+            <p className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
               <span aria-hidden className="size-1.5 rounded-full bg-ict-amber-500" />
               {copy.stillWrong}
             </p>
-            <p className="mt-1.5 text-sm text-ict-ink-500">{stage.problem}</p>
+            <p className="mt-1.5 text-sm text-ict-fg-soft">{stage.problem}</p>
             {stage.dependency ? (
               <p className="mt-2 font-mono text-xs break-words" style={{ color: tone.ink }}>
                 {stage.dependency}
               </p>
             ) : null}
 
-            <p className="mt-3 text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+            <p className="mt-3 text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
               {copy.anomaliesTitle}
             </p>
             <ul className="mt-1.5 space-y-1.5">
               {stage.anomalies.map((anomaly) => (
-                <li key={anomaly.kind} className="flex items-start gap-2 text-sm text-ict-ink-500">
+                <li key={anomaly.kind} className="flex items-start gap-2 text-sm text-ict-fg-soft">
                   <span
-                    className="mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold"
+                    className="mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-xs font-bold"
                     style={{ background: tone.soft, color: tone.ink }}
                   >
                     {anomaly.kind}
@@ -130,7 +130,7 @@ export function NormalizationWalkthrough({
             </ul>
           </div>
         ) : (
-          <p className="mt-3 flex items-start gap-2 rounded-ict-md border border-ict-green-500/30 bg-ict-green-50 p-3 text-sm text-ict-ink-500">
+          <p className="mt-3 flex items-start gap-2 rounded-ict-md border border-ict-green-500/30 bg-ict-green-50 p-3 text-sm text-ict-fg-soft">
             <Icon name="check_circle" className="mt-0.5 !text-base shrink-0 text-ict-green-500" />
             <span>{copy.done}</span>
           </p>
@@ -142,7 +142,7 @@ export function NormalizationWalkthrough({
           type="button"
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={index === 0}
-          className="ict-press flex items-center gap-1.5 rounded-full border border-ict-paper-300 bg-ict-paper-0 px-3.5 py-2 text-sm font-semibold text-ict-ink-500 transition-colors duration-[120ms] ease-ict disabled:opacity-40"
+          className="ict-press flex items-center gap-1.5 rounded-full border border-ict-line bg-ict-surface-card px-3.5 py-2 text-sm font-semibold text-ict-fg-soft transition-colors duration-[120ms] ease-ict disabled:opacity-40"
         >
           <Icon name="chevron_left" className="!text-base" />
           {copy.back}
@@ -152,7 +152,7 @@ export function NormalizationWalkthrough({
           onClick={() => setIndex((i) => Math.min(stages.length - 1, i + 1))}
           disabled={isLast}
           className="ict-press flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors duration-[120ms] ease-ict disabled:opacity-40"
-          style={{ background: tone.gradTo }}
+          style={{ background: tone.accent }}
         >
           {isLast ? copy.finish : interpolate(copy.fixIt, { label: stages[index + 1].label })}
           <Icon name="chevron_right" className="!text-base" />
@@ -164,10 +164,10 @@ export function NormalizationWalkthrough({
 
 function TableView({ table, tone }: { table: NormalTable; tone: ToneColors }) {
   return (
-    <div className="rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
+    <div className="rounded-ict-md border border-ict-line bg-ict-surface-card p-3">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <p className="font-mono text-sm font-extrabold text-ict-ink-900">{table.name}</p>
-        <p className="text-xs text-ict-ink-400">{table.keyNote}</p>
+        <p className="font-mono text-sm font-extrabold text-ict-fg">{table.name}</p>
+        <p className="text-xs text-ict-fg-mute">{table.keyNote}</p>
       </div>
 
       {/* A wide table is the one thing allowed its own horizontal scroll. */}
@@ -179,17 +179,17 @@ function TableView({ table, tone }: { table: NormalTable; tone: ToneColors }) {
                 <th
                   key={column.name}
                   scope="col"
-                  className="border-b border-ict-paper-300 px-2.5 py-1.5 text-xs font-bold whitespace-nowrap"
+                  className="border-b border-ict-line px-2.5 py-1.5 text-xs font-bold whitespace-nowrap"
                   style={{
                     background: column.offending ? tone.soft : undefined,
-                    color: column.offending ? tone.ink : "var(--color-ict-ink-500)",
+                    color: column.offending ? tone.ink : "var(--color-ict-fg-soft)",
                   }}
                 >
                   <span className={column.isKey ? "underline underline-offset-4" : undefined}>
                     {column.name}
                   </span>
                   {column.isForeign ? (
-                    <span className="ml-1 text-[10px] font-semibold text-ict-ink-300">FK</span>
+                    <span className="ml-1 text-xs font-semibold text-ict-fg-mute">FK</span>
                   ) : null}
                 </th>
               ))}
@@ -201,7 +201,7 @@ function TableView({ table, tone }: { table: NormalTable; tone: ToneColors }) {
                 {row.map((cell, c) => (
                   <td
                     key={c}
-                    className="border-b border-ict-paper-200 px-2.5 py-1.5 align-top font-mono text-xs whitespace-nowrap text-ict-ink-900"
+                    className="border-b border-ict-line px-2.5 py-1.5 align-top font-mono text-xs whitespace-nowrap text-ict-fg"
                     style={{ background: table.columns[c]?.offending ? tone.soft : undefined }}
                   >
                     {cell.split("\n").map((line, i) => (

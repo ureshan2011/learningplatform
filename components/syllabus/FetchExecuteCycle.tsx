@@ -75,11 +75,11 @@ export function FetchExecuteCycle({
   ];
 
   return (
-    <div className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-50 p-4">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+    <div className="rounded-ict-card border border-ict-line bg-ict-surface-raised p-4">
+      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
         {copy.heading}
       </p>
-      <p className="mt-1.5 text-sm text-ict-ink-500">{copy.intro}</p>
+      <p className="mt-1.5 text-sm text-ict-fg-soft">{copy.intro}</p>
 
       {/* Phase rail — which of the three phases the current micro-operation belongs to. */}
       <div className="mt-3 flex flex-wrap gap-2" aria-label="Cycle phase">
@@ -92,11 +92,11 @@ export function FetchExecuteCycle({
               className="rounded-full border px-3 py-1 text-xs font-semibold transition-colors duration-[120ms] ease-ict"
               style={
                 isActive
-                  ? { background: tone.gradTo, borderColor: tone.gradTo, color: "#fff" }
+                  ? { background: tone.accent, borderColor: tone.accent, color: "#fff" }
                   : {
-                      background: "#fff",
-                      borderColor: "var(--color-ict-paper-300)",
-                      color: "var(--color-ict-ink-400)",
+                      background: "var(--color-ict-surface-card)",
+                      borderColor: "var(--color-ict-line)",
+                      color: "var(--color-ict-fg-mute)",
                     }
               }
             >
@@ -104,7 +104,7 @@ export function FetchExecuteCycle({
             </span>
           );
         })}
-        <span className="ml-auto self-center text-xs font-semibold text-ict-ink-400">
+        <span className="ml-auto self-center text-xs font-semibold text-ict-fg-mute">
           {interpolate(copy.stepCounter, { current: index + 1, total: trace.length })}
         </span>
       </div>
@@ -138,7 +138,7 @@ export function FetchExecuteCycle({
         <div className="flex flex-wrap items-center gap-2">
           <code
             className="rounded-full px-3 py-1 font-mono text-sm font-bold"
-            style={{ background: "#fff", color: tone.ink }}
+            style={{ background: "var(--color-ict-surface-card)", color: tone.ink }}
           >
             {step.operation}
           </code>
@@ -149,7 +149,7 @@ export function FetchExecuteCycle({
             </span>
           ) : null}
         </div>
-        <p className="mt-2 text-sm text-ict-ink-500">{step.explanation}</p>
+        <p className="mt-2 text-sm text-ict-fg-soft">{step.explanation}</p>
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -157,7 +157,7 @@ export function FetchExecuteCycle({
           type="button"
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={index === 0}
-          className="ict-press flex items-center gap-1.5 rounded-full border border-ict-paper-300 bg-ict-paper-0 px-3.5 py-2 text-sm font-semibold text-ict-ink-500 transition-colors duration-[120ms] ease-ict disabled:opacity-40"
+          className="ict-press flex items-center gap-1.5 rounded-full border border-ict-line bg-ict-surface-card px-3.5 py-2 text-sm font-semibold text-ict-fg-soft transition-colors duration-[120ms] ease-ict disabled:opacity-40"
         >
           <Icon name="chevron_left" className="!text-base" />
           {copy.back}
@@ -167,7 +167,7 @@ export function FetchExecuteCycle({
           onClick={() => setIndex((i) => Math.min(trace.length - 1, i + 1))}
           disabled={atEnd}
           className="ict-press flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors duration-[120ms] ease-ict disabled:opacity-40"
-          style={{ background: tone.gradTo }}
+          style={{ background: tone.accent }}
         >
           {copy.next}
           <Icon name="chevron_right" className="!text-base" />
@@ -175,7 +175,7 @@ export function FetchExecuteCycle({
         <button
           type="button"
           onClick={() => setIndex(0)}
-          className="ict-press rounded-full px-3.5 py-2 text-sm font-semibold text-ict-ink-400 underline underline-offset-4 transition-colors duration-[120ms] ease-ict"
+          className="ict-press rounded-full px-3.5 py-2 text-sm font-semibold text-ict-fg-mute underline underline-offset-4 transition-colors duration-[120ms] ease-ict"
         >
           {copy.restart}
         </button>
@@ -208,8 +208,8 @@ function RegisterPanel({
   empty: string;
 }) {
   return (
-    <div className="rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">{title}</p>
+    <div className="rounded-ict-md border border-ict-line bg-ict-surface-card p-3">
+      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">{title}</p>
       <dl className="mt-2 space-y-1.5">
         {metaList.map((meta) => {
           const value = values[meta.key];
@@ -218,30 +218,30 @@ function RegisterPanel({
             <div
               key={meta.key}
               title={meta.role}
-              className="flex items-center gap-2 rounded-xl px-2.5 py-1.5 transition-colors duration-200 ease-ict"
+              className="flex items-center gap-2 rounded-ict-md px-2.5 py-1.5 transition-colors duration-[200ms] ease-ict"
               style={isActive ? { background: tone.soft } : undefined}
             >
               <dt
                 className="w-12 shrink-0 font-mono text-xs font-extrabold"
-                style={{ color: isActive ? tone.ink : "var(--color-ict-ink-400)" }}
+                style={{ color: isActive ? tone.ink : "var(--color-ict-fg-mute)" }}
               >
                 {meta.short}
               </dt>
-              <dd className="m-0 min-w-0 flex-1 truncate font-mono text-sm font-semibold text-ict-ink-900">
-                {value === null ? <span className="text-ict-ink-300">{empty}</span> : String(value)}
+              <dd className="m-0 min-w-0 flex-1 truncate font-mono text-sm font-semibold text-ict-fg">
+                {value === null ? <span className="text-ict-fg-mute">{empty}</span> : String(value)}
               </dd>
               {isActive ? (
                 <span
                   aria-hidden
                   className="size-1.5 shrink-0 rounded-full"
-                  style={{ background: tone.gradTo }}
+                  style={{ background: tone.accent }}
                 />
               ) : null}
             </div>
           );
         })}
       </dl>
-      <p className="mt-2 text-xs text-ict-ink-400">{hint}</p>
+      <p className="mt-2 text-xs text-ict-fg-mute">{hint}</p>
     </div>
   );
 }
@@ -262,8 +262,8 @@ function MemoryPanel({
   hint: string;
 }) {
   return (
-    <div className="rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">{title}</p>
+    <div className="rounded-ict-md border border-ict-line bg-ict-surface-card p-3">
+      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">{title}</p>
       <ol className="mt-2 space-y-1">
         {memory.map((cell) => {
           const isActive = cell.address === activeAddress;
@@ -271,21 +271,21 @@ function MemoryPanel({
           return (
             <li
               key={cell.address}
-              className="flex items-center gap-2 rounded-xl px-2.5 py-1 transition-colors duration-200 ease-ict"
+              className="flex items-center gap-2 rounded-ict-md px-2.5 py-1 transition-colors duration-[200ms] ease-ict"
               style={isActive ? { background: tone.soft } : undefined}
             >
-              <span className="w-6 shrink-0 font-mono text-xs text-ict-ink-300">{cell.address}</span>
+              <span className="w-6 shrink-0 font-mono text-xs text-ict-fg-mute">{cell.address}</span>
               <span
                 className="min-w-0 flex-1 truncate font-mono text-sm"
                 style={{
-                  color: isActive ? tone.ink : "var(--color-ict-ink-900)",
+                  color: isActive ? tone.ink : "var(--color-ict-fg)",
                   fontWeight: isActive ? 700 : 500,
                 }}
               >
                 {cell.label}
               </span>
               {isNext ? (
-                <span className="shrink-0 rounded-full bg-ict-paper-200 px-2 py-0.5 text-[11px] font-bold text-ict-ink-400">
+                <span className="shrink-0 rounded-full bg-ict-surface-sunken px-2 py-0.5 text-xs font-bold text-ict-fg-mute">
                   PC
                 </span>
               ) : null}
@@ -293,7 +293,7 @@ function MemoryPanel({
           );
         })}
       </ol>
-      <p className="mt-2 text-xs text-ict-ink-400">{hint}</p>
+      <p className="mt-2 text-xs text-ict-fg-mute">{hint}</p>
     </div>
   );
 }

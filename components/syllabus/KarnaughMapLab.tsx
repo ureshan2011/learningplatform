@@ -101,11 +101,11 @@ export function KarnaughMapLab({
   }
 
   return (
-    <div className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-50 p-4">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+    <div className="rounded-ict-card border border-ict-line bg-ict-surface-raised p-4">
+      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
         {copy.heading}
       </p>
-      <p className="mt-1.5 text-sm text-ict-ink-500">{copy.intro}</p>
+      <p className="mt-1.5 text-sm text-ict-fg-soft">{copy.intro}</p>
 
       <div className="mt-3 flex flex-wrap gap-2">
         {presets.map((p) => (
@@ -116,11 +116,11 @@ export function KarnaughMapLab({
             className="ict-press rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors duration-[120ms] ease-ict"
             style={
               p.id === presetId
-                ? { background: tone.gradTo, borderColor: tone.gradTo, color: "#fff" }
+                ? { background: tone.accent, borderColor: tone.accent, color: "#fff" }
                 : {
-                    background: "#fff",
-                    borderColor: "var(--color-ict-paper-300)",
-                    color: "var(--color-ict-ink-500)",
+                    background: "var(--color-ict-surface-card)",
+                    borderColor: "var(--color-ict-line)",
+                    color: "var(--color-ict-fg-soft)",
                   }
             }
           >
@@ -133,14 +133,14 @@ export function KarnaughMapLab({
             setValues(new Array(16).fill(0) as CellValue[]);
             setPresetId("");
           }}
-          className="ict-press rounded-full px-3 py-1.5 text-xs font-semibold text-ict-ink-400 underline underline-offset-4"
+          className="ict-press rounded-full px-3 py-1.5 text-xs font-semibold text-ict-fg-mute underline underline-offset-4"
         >
           {copy.clear}
         </button>
       </div>
 
       {preset ? (
-        <p key={preset.id} className="ict-step-enter mt-2.5 text-sm text-ict-ink-500">
+        <p key={preset.id} className="ict-step-enter mt-2.5 text-sm text-ict-fg-soft">
           {preset.description}
         </p>
       ) : null}
@@ -148,14 +148,14 @@ export function KarnaughMapLab({
       {/* The map. Wrapped for overflow because four columns plus headers is wide on a phone. */}
       <div className="mt-4 overflow-x-auto">
         <table className="border-separate border-spacing-1">
-          <caption className="caption-top pb-2 text-left text-xs font-semibold text-ict-ink-400">
+          <caption className="caption-top pb-2 text-left text-xs font-semibold text-ict-fg-mute">
             {copy.axisCaption}
           </caption>
           <thead>
             <tr>
-              <th className="px-2 py-1 text-xs font-bold text-ict-ink-400">{copy.axisHeader}</th>
+              <th className="px-2 py-1 text-xs font-bold text-ict-fg-mute">{copy.axisHeader}</th>
               {GRAY_LABELS.map((label) => (
-                <th key={label} className="w-14 px-1 py-1 font-mono text-xs font-bold text-ict-ink-400">
+                <th key={label} className="w-14 px-1 py-1 font-mono text-xs font-bold text-ict-fg-mute">
                   {label}
                 </th>
               ))}
@@ -164,7 +164,7 @@ export function KarnaughMapLab({
           <tbody>
             {GRAY_LABELS.map((rowLabel, row) => (
               <tr key={rowLabel}>
-                <th className="px-2 py-1 text-right font-mono text-xs font-bold text-ict-ink-400">
+                <th className="px-2 py-1 text-right font-mono text-xs font-bold text-ict-fg-mute">
                   {rowLabel}
                 </th>
                 {GRAY_LABELS.map((colLabel, col) => {
@@ -184,25 +184,25 @@ export function KarnaughMapLab({
                           minterm,
                           value: value === "X" ? copy.dontCareValue : String(value),
                         })}
-                        className="ict-press flex size-14 flex-col items-center justify-center rounded-xl border-2 font-mono text-lg font-bold transition-all duration-200 ease-ict"
+                        className="ict-press flex size-14 flex-col items-center justify-center rounded-ict-md border-2 font-mono text-lg font-bold transition-all duration-[200ms] ease-ict"
                         style={{
                           background: inHovered
                             ? tone.soft
                             : isGrouped
-                              ? "#fff"
-                              : "var(--color-ict-paper-100)",
-                          borderColor: isGrouped || inHovered ? tone.line : "var(--color-ict-paper-300)",
+                              ? "var(--color-ict-surface-card)"
+                              : "var(--color-ict-surface)",
+                          borderColor: isGrouped || inHovered ? tone.line : "var(--color-ict-line)",
                           color:
                             value === 0
-                              ? "var(--color-ict-ink-300)"
+                              ? "var(--color-ict-fg-mute)"
                               : isGrouped
                                 ? tone.ink
-                                : "var(--color-ict-ink-900)",
+                                : "var(--color-ict-fg)",
                           transform: inHovered ? "translateY(-2px)" : undefined,
                         }}
                       >
                         <span>{value === "X" ? "X" : value}</span>
-                        <span className="text-[10px] font-semibold text-ict-ink-300">m{minterm}</span>
+                        <span className="text-xs font-semibold text-ict-fg-mute">m{minterm}</span>
                       </button>
                     </td>
                   );
@@ -214,14 +214,14 @@ export function KarnaughMapLab({
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-3">
-          <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+        <div className="rounded-ict-md border border-ict-line bg-ict-surface-card p-3">
+          <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
             {copy.beforeTitle}
           </p>
-          <p className="mt-1.5 font-mono text-sm break-words text-ict-ink-500">
+          <p className="mt-1.5 font-mono text-sm break-words text-ict-fg-soft">
             {ones.length === 0 ? "0" : `F = ${canonicalExpression(ones)}`}
           </p>
-          <p className="mt-1.5 text-xs text-ict-ink-400">
+          <p className="mt-1.5 text-xs text-ict-fg-mute">
             {interpolate(ones.length === 1 ? copy.mintermCountOne : copy.mintermCountMany, {
               count: ones.length,
             })}
@@ -238,7 +238,7 @@ export function KarnaughMapLab({
           <p className="mt-1.5 font-mono text-base font-bold break-words" style={{ color: tone.ink }}>
             F = {result.expression}
           </p>
-          <p className="mt-1.5 text-xs text-ict-ink-500">
+          <p className="mt-1.5 text-xs text-ict-fg-soft">
             {result.groups.length === 0 ? copy.nothingYet : groupSummary(copy, result)}
           </p>
         </div>
@@ -257,12 +257,12 @@ export function KarnaughMapLab({
                   onMouseLeave={() => setHoveredGroup(null)}
                   onFocus={() => setHoveredGroup(i)}
                   onBlur={() => setHoveredGroup(null)}
-                  className="flex w-full items-center gap-2 rounded-xl border border-ict-paper-300 bg-ict-paper-0 px-3 py-2 text-left transition-colors duration-[120ms] ease-ict"
+                  className="flex w-full items-center gap-2 rounded-ict-md border border-ict-line bg-ict-surface-card px-3 py-2 text-left transition-colors duration-[120ms] ease-ict"
                 >
                   <code className="font-mono text-sm font-bold" style={{ color: tone.ink }}>
                     {termOf(group)}
                   </code>
-                  <span className="text-xs text-ict-ink-400">
+                  <span className="text-xs text-ict-fg-mute">
                     {interpolate(copy.groupCovers, {
                       minterms: mintermsOf(group).join(", m"),
                       size,
@@ -270,7 +270,7 @@ export function KarnaughMapLab({
                   </span>
                   {isEssential ? (
                     <span
-                      className="ml-auto shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold"
+                      className="ml-auto shrink-0 rounded-full px-2 py-0.5 text-xs font-bold"
                       style={{ background: tone.soft, color: tone.ink }}
                     >
                       {copy.forced}
@@ -283,7 +283,7 @@ export function KarnaughMapLab({
         </ul>
       ) : null}
 
-      <p className="mt-3 flex items-start gap-2 text-xs text-ict-ink-400">
+      <p className="mt-3 flex items-start gap-2 text-xs text-ict-fg-mute">
         <Icon name="info" className="mt-0.5 !text-sm shrink-0" />
         <span>{copy.footnote}</span>
       </p>

@@ -5,6 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { isJoinableNow, type TopicClass } from "@/lib/content/topic-classes";
 import type { ToneColors } from "@/lib/content/unit-visuals";
 import { useNow } from "@/components/syllabus/motion";
+import { StatusChip } from "@/components/ds";
 
 /**
  * The button that turns a syllabus topic into a class a student can actually
@@ -61,10 +62,7 @@ export function ClassCta({
         href={`/live/${topicClass.id}`}
         className={`ict-press inline-flex shrink-0 items-center gap-2 rounded-full bg-ict-orange-500 font-semibold text-white shadow-ict-brand transition-colors duration-[120ms] ease-ict hover:bg-ict-orange-600 ${padding}`}
       >
-        <span className="relative flex size-2 shrink-0">
-          <span className="syl-pulse-ring absolute inline-flex size-2 rounded-full bg-white" />
-          <span className="relative inline-flex size-2 rounded-full bg-white" />
-        </span>
+        <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-white" />
         Join live now
       </Link>
     );
@@ -74,7 +72,7 @@ export function ClassCta({
     <Link
       href={`/live/${topicClass.id}`}
       className={`ict-press inline-flex shrink-0 items-center gap-1.5 rounded-full font-semibold text-white transition-transform duration-[120ms] ease-ict ${padding}`}
-      style={{ background: tone.gradTo }}
+      style={{ background: tone.accent }}
     >
       <Icon name="calendar_month" className={small ? "!text-sm" : "!text-base"} />
       Join · {topicClass.startsAtShort}
@@ -131,15 +129,16 @@ function countdownLabel(topicClass: TopicClass, now: number): string {
   return `in ${days} day${days === 1 ? "" : "s"} · ${absolute}`;
 }
 
-/** Pulsing "LIVE" pill for a unit that has a class running right now. */
+/**
+ * "Live now" for a unit with a class running.
+ *
+ * The design system's own status affordance rather than a bespoke pill: a 6px
+ * dot on a neutral chip, which is what "live" looks like on the dashboard and
+ * in the timetable. It used to be a red-tinted pill with a ring pulsing on a
+ * 1.9s loop — a semantic fill and an infinite animation, both of which the
+ * system rules out, and the red tint was a cream-world value that disappeared
+ * on near-black.
+ */
 export function LivePill({ label = "Live now" }: { label?: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-ict-red-50 px-2.5 py-1 text-[11px] font-bold tracking-wide text-ict-red-500 uppercase">
-      <span className="relative flex size-1.5 shrink-0">
-        <span className="syl-pulse-ring absolute inline-flex size-1.5 rounded-full bg-ict-red-500" />
-        <span className="relative inline-flex size-1.5 rounded-full bg-ict-red-500" />
-      </span>
-      {label}
-    </span>
-  );
+  return <StatusChip tone="danger">{label}</StatusChip>;
 }

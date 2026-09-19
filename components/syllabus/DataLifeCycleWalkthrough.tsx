@@ -30,8 +30,8 @@ export function DataLifeCycleWalkthrough({
   const active = stages.find((s) => s.key === activeKey) ?? stages[0];
 
   return (
-    <div className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-50 p-4">
-      <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+    <div className="rounded-ict-card border border-ict-line bg-ict-surface-raised p-4">
+      <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
         {copy.heading}
       </p>
 
@@ -48,12 +48,12 @@ export function DataLifeCycleWalkthrough({
               className="ict-press flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition-colors duration-[120ms] ease-ict"
               style={
                 isActive
-                  ? { background: tone.gradTo, borderColor: tone.gradTo, color: "#fff" }
-                  : { background: "#fff", borderColor: "var(--color-ict-paper-300)", color: "var(--color-ict-ink-500)" }
+                  ? { background: tone.accent, borderColor: tone.accent, color: "#fff" }
+                  : { background: "var(--color-ict-surface-card)", borderColor: "var(--color-ict-line)", color: "var(--color-ict-fg-soft)" }
               }
             >
               <span
-                className="flex size-5 shrink-0 items-center justify-center rounded-full text-[11px] font-extrabold"
+                className="flex size-5 shrink-0 items-center justify-center rounded-full text-xs font-extrabold"
                 style={isActive ? { background: "rgba(255,255,255,0.28)" } : { background: tone.soft, color: tone.ink }}
               >
                 {i + 1}
@@ -74,7 +74,7 @@ export function DataLifeCycleWalkthrough({
         <p className="text-sm font-semibold" style={{ color: tone.ink }}>
           {active.summary}
         </p>
-        <p className="mt-2 text-sm text-ict-ink-500">{active.example}</p>
+        <p className="mt-2 text-sm text-ict-fg-soft">{active.example}</p>
       </div>
     </div>
   );
