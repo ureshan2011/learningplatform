@@ -307,6 +307,10 @@ without a command line.
 - `SETUP.md` — the three-part browser-only setup
 - `docs/services.md` — adding Zoom, PayHere, R2
 - `docs/PLAN.md` — product roadmap and the reasoning behind the architecture
+- `docs/go-to-market.md` — **read this before any product or pricing decision.**
+  What to sell in what order, given that the teacher cannot run live classes and
+  the A/L ICT market is saturated. Newer than PLAN.md and campus-ready-plan.md;
+  where they assume a live class, this file supersedes them.
 - `docs/campus-ready-plan.md` — Campus Ready, the second product: a 12-week paid
   programme for students waiting out the gap between A/Ls and university. Market
   research, positioning and the build list.
