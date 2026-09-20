@@ -23,26 +23,26 @@ export default async function TeacherMockExamsPage() {
 
   return (
       <main className="mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6">
-      <Link href="/teacher" className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline">
+      <Link href="/teacher" className="inline-flex items-center gap-1 text-sm text-ict-fg-soft underline">
         <Icon name="arrow_back" className="!text-base" />
         Teacher console
       </Link>
 
       <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
-        <Icon name="schedule" className="text-(--color-awaken-accent)" />
+        <Icon name="schedule" className="text-ict-accent-fg" />
         Mock exams
       </h1>
-      <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+      <p className="mt-1 text-sm text-ict-fg-soft">
         Full timed papers, scored with negative marking, drawn from your question bank.
       </p>
 
       <section className="mt-8">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Icon name="add_task" className="text-(--color-awaken-accent)" />
+          <Icon name="add_task" className="text-ict-accent-fg" />
           Create a mock exam
         </h2>
         {subjects.length === 0 ? (
-          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">Add a subject first.</p>
+          <p className="mt-3 text-sm text-ict-fg-soft">Add a subject first.</p>
         ) : (
           <div className="mt-4">
             <CreateMockExamForm subjects={subjects.map((s) => ({ id: s.id, name: s.name }))} />
@@ -52,11 +52,11 @@ export default async function TeacherMockExamsPage() {
 
       <section className="mt-10 pb-4">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <Icon name="receipt_long" className="text-(--color-awaken-accent)" />
+          <Icon name="receipt_long" className="text-ict-accent-fg" />
           Existing mock exams
         </h2>
         {exams.length === 0 ? (
-          <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">None yet.</p>
+          <p className="mt-3 text-sm text-ict-fg-soft">None yet.</p>
         ) : (
           <ul className="mt-3 space-y-3">
             {exams.map((exam) => {
@@ -64,19 +64,19 @@ export default async function TeacherMockExamsPage() {
               return (
                 <li
                   key={exam.id}
-                  className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
+                  className="rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <p className="font-medium">{exam.title}</p>
-                    <span className="rounded-full bg-(--color-awaken-indigo-soft) px-2.5 py-0.5 text-xs font-semibold text-(--color-awaken-indigo)">
+                    <span className="rounded-full bg-ict-surface-sunken px-2.5 py-0.5 text-xs font-semibold text-ict-fg-soft">
                       {subjectName.get(exam.subjectId) ?? exam.subjectId}
                     </span>
                   </div>
-                  <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+                  <p className="mt-1 text-sm text-ict-fg-soft">
                     {exam.questionIds.length} questions · {exam.durationMinutes} min
                     {exam.negativeMarking > 0 ? ` · -${exam.negativeMarking} per wrong answer` : " · no negative marking"}
                   </p>
-                  <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+                  <p className="mt-1 text-sm text-ict-fg-soft">
                     {stat ? `${stat.attempts} submitted · average score ${stat.avgScore}` : "No submissions yet"}
                   </p>
                 </li>

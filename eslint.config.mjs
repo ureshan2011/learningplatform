@@ -12,12 +12,15 @@ import typescript from "eslint-config-next/typescript";
  * legitimate exception into a blocked deploy. If you need one, say why in a
  * comment and disable the line.
  *
- * Scoped to the signed-in student surface and the components it is built from
- * — the area this work covers. The teacher console is deliberately outside it:
- * it is still on the legacy `--color-awaken-*` remap that `app/globals.css`
- * calls "a floor, not a licence to skip the redesign", so switching these on
- * there would bury a real regression under forty pre-existing warnings. Widen
- * the glob when that console is migrated.
+ * Scoped to everything behind sign-in and the components it is built from.
+ * The teacher console was outside this until it was migrated off the legacy
+ * `--color-awaken-*` remap — the floor `app/globals.css` describes as "not a
+ * licence to skip the redesign" — because switching these on beforehand would
+ * have buried a real regression under forty pre-existing warnings. It is
+ * inside now, and the whole signed-in surface is at zero.
+ *
+ * Still outside: the public marketing pages, which use their own `--lp-*`
+ * aliases and are not worth failing a lint run over today.
  */
 const designSystemRules = {
   "no-restricted-syntax": [
@@ -71,6 +74,7 @@ const config = [
   {
     files: [
       "app/(student)/**/*.tsx",
+      "app/(teacher)/**/*.tsx",
       "components/ds/**/*.tsx",
       "components/syllabus/**/*.tsx",
       "components/subject/**/*.tsx",
@@ -81,6 +85,13 @@ const config = [
       "components/content/**/*.tsx",
       "components/nav/**/*.tsx",
       "components/payments/**/*.tsx",
+      "components/teacher/**/*.tsx",
+      "components/ui/**/*.tsx",
+      "components/search/**/*.tsx",
+      "components/live/**/*.tsx",
+      "components/push/**/*.tsx",
+      "components/pwa/**/*.tsx",
+      "components/account/**/*.tsx",
     ],
     rules: designSystemRules,
   },

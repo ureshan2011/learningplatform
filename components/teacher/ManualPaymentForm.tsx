@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { fetchWithSession } from "@/lib/auth/session-client";
 
 const inputClass =
-  "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-base outline-none focus:border-(--color-awaken-accent)";
+  "w-full rounded-full border border-ict-line bg-ict-surface-card px-3 py-2.5 text-base outline-none focus:border-ict-orange-500";
 
 /**
  * Records money that arrived outside the platform — cash at class, a direct
@@ -82,7 +82,7 @@ export function ManualPaymentForm({
 
   if (subjects.length === 0) {
     return (
-      <p className="text-sm text-(--color-awaken-ink-soft)">Create a subject first.</p>
+      <p className="text-sm text-ict-fg-soft">Create a subject first.</p>
     );
   }
 
@@ -90,7 +90,7 @@ export function ManualPaymentForm({
     <form onSubmit={submit} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
             Student&apos;s phone
           </span>
           <input
@@ -103,7 +103,7 @@ export function ManualPaymentForm({
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
             Subject
           </span>
           <select
@@ -121,7 +121,7 @@ export function ManualPaymentForm({
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
             Amount received (Rs)
           </span>
           <input
@@ -137,7 +137,7 @@ export function ManualPaymentForm({
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
             Months paid for
           </span>
           <input
@@ -151,14 +151,14 @@ export function ManualPaymentForm({
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
             Date received
           </span>
           <input name="paidOn" type="date" className={inputClass} />
         </label>
 
         <label className="block">
-          <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
             Bank / deposit reference
           </span>
           <input name="bankRef" placeholder="Optional" maxLength={120} className={inputClass} />
@@ -166,7 +166,7 @@ export function ManualPaymentForm({
       </div>
 
       <label className="block">
-        <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+        <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
           Note
         </span>
         <input
@@ -180,14 +180,14 @@ export function ManualPaymentForm({
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-full bg-ict-orange-500 hover:bg-ict-orange-600 px-5 py-2.5 font-semibold text-white disabled:opacity-50"
       >
         <Icon name="check_circle" className="!text-base" />
         {busy ? "Saving…" : "Record payment & unlock"}
       </button>
 
-      {done ? <p className="text-sm font-semibold text-(--color-awaken-success)">{done}</p> : null}
-      {error ? <p className="text-sm text-(--color-awaken-danger)">{error}</p> : null}
+      {done ? <p className="text-sm font-semibold text-ict-green-500">{done}</p> : null}
+      {error ? <p className="text-sm text-ict-danger-fg">{error}</p> : null}
     </form>
   );
 }

@@ -79,10 +79,11 @@ Rules that are easy to break:
 8. Motion is a 8-12px translate plus fade, 120/200/340ms, `--ease-ict`. No
    bounce, no spring, no infinite loops, never scale-from-zero.
 
-Rules 1, 2 and 8 are enforced by `eslint.config.mjs` across the student
-surface and the shared components — gradient fills, off-brand radii, off-scale
-durations and infinite decorative animation are warnings, not prose. The
-teacher console is outside that scope until it is migrated.
+Rules 1, 2 and 8 are enforced by `eslint.config.mjs` across **everything
+behind sign-in** and the components it is built from — gradient fills,
+off-brand radii, off-scale durations and infinite decorative animation are
+warnings, not prose. The whole signed-in surface is at zero. Only the public
+marketing pages, which still use their own `--lp-*` aliases, sit outside it.
 
 **Colour is asked for by role, not by name.** `components/ds/` never writes
 `bg-ict-ink-850`; it writes `bg-ict-surface-card`, `border-ict-line`,
@@ -99,7 +100,10 @@ marketing pages. New shared work comes from `components/ds/`.
 
 The `.ict-app` scope also remaps the legacy `--color-awaken-*` variables to
 their dark equivalents, so a screen nobody has migrated yet still renders
-correctly on near-black. That is a floor, not a licence to skip the redesign.
+correctly on near-black. That is a floor, not a licence to skip the redesign —
+and nothing behind sign-in stands on it any more: the teacher console was the
+last holdout and is on the role tokens now. The remap is kept for the public
+pages and as a safety net for anything pasted in from the old world.
 
 **Navigation is `components/nav/AppShell.tsx`** for both roles: a 232px dark
 rail on desktop, a bottom tab bar plus a "More" sheet on mobile. Route-group

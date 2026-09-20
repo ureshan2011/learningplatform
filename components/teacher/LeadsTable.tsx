@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/Icon";
-import { StatusPill } from "@/components/ui/StatusPill";
+import { Badge } from "@/components/ds";
 
 export interface LeadRow {
   id: string;
@@ -20,8 +20,8 @@ const SOURCE_LABEL: Record<string, string> = {
   landing: "Other",
 };
 
-const SOURCE_TONE: Record<string, "accent" | "success" | "neutral"> = {
-  landing_hero: "accent",
+const SOURCE_TONE: Record<string, "brand" | "success" | "neutral"> = {
+  landing_hero: "brand",
   landing_resources: "success",
   landing_final: "neutral",
 };
@@ -90,10 +90,10 @@ export function LeadsTable({ leads }: { leads: LeadRow[] }) {
 
   if (leads.length === 0) {
     return (
-      <div className="mt-4 flex flex-col items-center rounded-xl border border-dashed border-(--color-awaken-line) bg-(--color-awaken-card) p-10 text-center">
-        <Icon name="inbox" className="!text-3xl text-(--color-awaken-ink-soft)" />
+      <div className="mt-4 flex flex-col items-center rounded-ict-md border border-dashed border-ict-line bg-ict-surface-card p-10 text-center">
+        <Icon name="inbox" className="!text-3xl text-ict-fg-soft" />
         <p className="mt-3 font-semibold">No subscribers yet</p>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-1 text-sm text-ict-fg-soft">
           Signups from the landing page&apos;s email capture forms will show up here.
         </p>
       </div>
@@ -106,19 +106,19 @@ export function LeadsTable({ leads }: { leads: LeadRow[] }) {
         <div className="flex flex-1 flex-col gap-2 sm:flex-row">
           <label className="relative flex-1 sm:max-w-xs">
             <span className="sr-only">Search by email</span>
-            <Icon name="search" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 !text-lg text-(--color-awaken-ink-soft)" />
+            <Icon name="search" className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 !text-lg text-ict-fg-soft" />
             <input
               type="text"
               value={search}
               onChange={(e) => resetAnd(setSearch)(e.target.value)}
               placeholder="Search email…"
-              className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) py-2 pr-3 pl-9 text-sm outline-none focus:border-(--color-awaken-accent)"
+              className="w-full rounded-full border border-ict-line bg-ict-surface-card py-2 pr-3 pl-9 text-sm outline-none focus:border-ict-orange-500"
             />
           </label>
           <select
             value={sourceFilter}
             onChange={(e) => resetAnd(setSourceFilter)(e.target.value)}
-            className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2 text-sm outline-none focus:border-(--color-awaken-accent)"
+            className="rounded-full border border-ict-line bg-ict-surface-card px-3 py-2 text-sm outline-none focus:border-ict-orange-500"
           >
             <option value="all">All sources</option>
             {sources.map((s) => (
@@ -130,7 +130,7 @@ export function LeadsTable({ leads }: { leads: LeadRow[] }) {
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as SortKey)}
-            className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2 text-sm outline-none focus:border-(--color-awaken-accent)"
+            className="rounded-full border border-ict-line bg-ict-surface-card px-3 py-2 text-sm outline-none focus:border-ict-orange-500"
           >
             <option value="newest">Newest first</option>
             <option value="oldest">Oldest first</option>
@@ -140,14 +140,14 @@ export function LeadsTable({ leads }: { leads: LeadRow[] }) {
         <div className="flex gap-2">
           <button
             onClick={copyEmails}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-3 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+            className="inline-flex items-center gap-1.5 rounded-full border border-ict-line px-3 py-2 text-sm font-medium hover:border-ict-orange-500/40"
           >
             <Icon name={copied ? "check_circle" : "content_copy"} className="!text-base" />
             {copied ? "Copied" : "Copy emails"}
           </button>
           <button
             onClick={exportCsv}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-3 py-2 text-sm font-semibold text-white"
+            className="inline-flex items-center gap-1.5 rounded-full bg-ict-orange-500 hover:bg-ict-orange-600 px-3 py-2 text-sm font-semibold text-white"
           >
             <Icon name="download" className="!text-base" />
             Export CSV
@@ -155,18 +155,18 @@ export function LeadsTable({ leads }: { leads: LeadRow[] }) {
         </div>
       </div>
 
-      <p className="mt-3 text-xs text-(--color-awaken-ink-soft)">
+      <p className="mt-3 text-xs text-ict-fg-soft">
         Showing {filtered.length === 0 ? 0 : clampedPage * PAGE_SIZE + 1}–
         {Math.min(filtered.length, clampedPage * PAGE_SIZE + PAGE_SIZE)} of {filtered.length}
         {filtered.length !== leads.length ? ` (${leads.length} total)` : ""}
       </p>
 
       {filtered.length === 0 ? (
-        <p className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 text-center text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-4 rounded-ict-md border border-ict-line bg-ict-surface-card p-5 text-center text-sm text-ict-fg-soft">
           No subscribers match that search.
         </p>
       ) : (
-        <div className="mt-2 overflow-x-auto rounded-xl border border-(--color-awaken-line)">
+        <div className="mt-2 overflow-x-auto rounded-ict-md border border-ict-line">
           <table className="w-full min-w-[480px] border-collapse text-sm">
             <thead>
               <tr>
@@ -177,17 +177,17 @@ export function LeadsTable({ leads }: { leads: LeadRow[] }) {
             </thead>
             <tbody>
               {pageRows.map((row) => (
-                <tr key={row.id} className="odd:bg-(--color-awaken-bg) hover:bg-(--color-awaken-accent-soft)/40">
+                <tr key={row.id} className="odd:bg-ict-surface hover:bg-ict-surface-raised/40">
                   <Td>
                     <span className="font-medium">{row.email}</span>
                   </Td>
                   <Td>
-                    <StatusPill tone={SOURCE_TONE[row.source] ?? "neutral"}>{sourceLabel(row.source)}</StatusPill>
+                    <Badge tone={SOURCE_TONE[row.source] ?? "neutral"}>{sourceLabel(row.source)}</Badge>
                   </Td>
                   <Td>
-                    <span className="text-(--color-awaken-ink-soft)">
+                    <span className="text-ict-fg-soft">
                       {row.signedUp}
-                      {row.resubscribed ? <span className="ml-1.5 text-xs text-(--color-awaken-accent)">· resubscribed</span> : null}
+                      {row.resubscribed ? <span className="ml-1.5 text-xs text-ict-accent-fg">· resubscribed</span> : null}
                     </span>
                   </Td>
                 </tr>
@@ -202,18 +202,18 @@ export function LeadsTable({ leads }: { leads: LeadRow[] }) {
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={clampedPage === 0}
-            className="inline-flex items-center gap-1 rounded-lg border border-(--color-awaken-line) px-3 py-1.5 text-sm font-medium disabled:opacity-40"
+            className="inline-flex items-center gap-1 rounded-full border border-ict-line px-3 py-1.5 text-sm font-medium disabled:opacity-40"
           >
             <Icon name="chevron_left" className="!text-base" />
             Prev
           </button>
-          <span className="text-xs text-(--color-awaken-ink-soft)">
+          <span className="text-xs text-ict-fg-soft">
             Page {clampedPage + 1} of {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
             disabled={clampedPage >= totalPages - 1}
-            className="inline-flex items-center gap-1 rounded-lg border border-(--color-awaken-line) px-3 py-1.5 text-sm font-medium disabled:opacity-40"
+            className="inline-flex items-center gap-1 rounded-full border border-ict-line px-3 py-1.5 text-sm font-medium disabled:opacity-40"
           >
             Next
             <Icon name="chevron_right" className="!text-base" />
@@ -230,12 +230,12 @@ function csvEscape(value: string): string {
 
 function Th({ children }: { children: React.ReactNode }) {
   return (
-    <th className="border-b border-(--color-awaken-line) bg-(--color-awaken-bg) px-3 py-2 text-left text-xs font-semibold tracking-wide text-(--color-awaken-ink-soft) uppercase">
+    <th className="border-b border-ict-line bg-ict-surface px-3 py-2 text-left text-xs font-semibold tracking-wide text-ict-fg-soft uppercase">
       {children}
     </th>
   );
 }
 
 function Td({ children }: { children: React.ReactNode }) {
-  return <td className="border-b border-(--color-awaken-line) px-3 py-2.5">{children}</td>;
+  return <td className="border-b border-ict-line px-3 py-2.5">{children}</td>;
 }

@@ -32,7 +32,7 @@ export function SignOutButton({ className, label }: { className?: string; label?
     <button
       onClick={handleSignOut}
       disabled={busy}
-      className={className ?? "w-full rounded-lg border border-(--color-awaken-line) px-4 py-3 text-sm disabled:opacity-50"}
+      className={className ?? "w-full rounded-full border border-ict-line px-4 py-3 text-sm disabled:opacity-50"}
     >
       {busy ? "…" : (label ?? "Sign out")}
     </button>

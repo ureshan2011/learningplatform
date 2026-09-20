@@ -35,17 +35,17 @@ export default async function TeacherCampusMatchPage() {
     <main className="mx-auto max-w-[900px] px-4 py-5 sm:px-6 sm:py-6">
       <Link
         href="/teacher"
-        className="inline-flex items-center gap-1 text-sm text-(--color-awaken-ink-soft) underline"
+        className="inline-flex items-center gap-1 text-sm text-ict-fg-soft underline"
       >
         <Icon name="arrow_back" className="!text-base" />
         Teacher console
       </Link>
 
       <h1 className="mt-4 flex items-center gap-2 text-2xl font-bold">
-        <Icon name="school" className="text-(--color-awaken-accent)" />
+        <Icon name="school" className="text-ict-accent-fg" />
         {CAMPUS_MATCH_NAME}
       </h1>
-      <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+      <p className="mt-1 text-sm text-ict-fg-soft">
         A one-payment report estimating a student&rsquo;s chance at every state university course
         their stream can apply for, in their own district, for the {ADMISSION_ROUND} round.{" "}
         {formatLKR(CAMPUS_MATCH_FEE_LKR)}, once, for the whole cycle.
@@ -79,9 +79,9 @@ export default async function TeacherCampusMatchPage() {
         />
       </section>
 
-      <section className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
+      <section className="mt-4 rounded-ict-md border border-ict-line bg-ict-surface-card p-5">
         <p className="font-semibold">Backtest</p>
-        <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-1 text-sm text-ict-fg-soft">
           The method replayed against {backtest.heldOut.length} rounds it was not fitted on,{" "}
           {backtest.cells.toLocaleString()} cells. Average miss {backtest.mae} Z.
         </p>
@@ -100,16 +100,16 @@ export default async function TeacherCampusMatchPage() {
         <p className="mt-3 text-sm font-semibold">
           {backtest.passes ? "Both bars met." : "The bars are NOT met — do not put this on sale."}
         </p>
-        <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-3 text-sm text-ict-fg-soft">
           The full working is in <code>lib/content/ugc/BACKTEST.md</code>, every source file and
           its hash in <code>lib/content/ugc/SOURCES.md</code>, and the data checks in{" "}
           <code>lib/content/ugc/QA.md</code>.
         </p>
       </section>
 
-      <section className="mt-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5">
+      <section className="mt-4 rounded-ict-md border border-ict-line bg-ict-surface-card p-5">
         <p className="font-semibold">Before you put it on sale</p>
-        <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm text-(--color-awaken-ink-soft)">
+        <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm text-ict-fg-soft">
           <li>Read SOURCES.md — every figure traces to a UGC file with a hash.</li>
           <li>Read the backtest headline above; both bars have to be met.</li>
           <li>
@@ -125,7 +125,7 @@ export default async function TeacherCampusMatchPage() {
         <CampusMatchPublishToggle published={settings.published} stale={freshness.stale} />
       </div>
 
-      <p className="mt-4 text-sm text-(--color-awaken-ink-soft)">
+      <p className="mt-4 text-sm text-ict-fg-soft">
         Eligibility is summarised from the {handbookCoverYear() ?? "—"} Courses of Study handbook.
         Every student-facing screen says the figures are an estimate from published data and that
         ICT Campus is not affiliated with the UGC.
@@ -146,16 +146,16 @@ function Panel({
   tone?: "ok" | "warn";
 }) {
   return (
-    <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-(--color-awaken-ink-soft)">
+    <div className="rounded-ict-md border border-ict-line bg-ict-surface-card p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-ict-fg-soft">
         {label}
       </p>
       <p className="mt-1.5 text-2xl font-bold">{value}</p>
       <p
         className={
           tone === "warn"
-            ? "mt-0.5 text-sm text-(--color-awaken-danger)"
-            : "mt-0.5 text-sm text-(--color-awaken-ink-soft)"
+            ? "mt-0.5 text-sm text-ict-danger-fg"
+            : "mt-0.5 text-sm text-ict-fg-soft"
         }
       >
         {hint}

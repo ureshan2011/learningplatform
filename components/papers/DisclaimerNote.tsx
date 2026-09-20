@@ -8,9 +8,9 @@ import { PAPER_QUESTION_COUNT } from "@/lib/content/al-ict-2026-paper1";
  */
 export function DisclaimerNote({ lang, replacedCount }: { lang: "en" | "si"; replacedCount: number }) {
   return (
-    <div className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-4 text-xs text-(--color-awaken-ink-soft)">
-      <p className="flex items-start gap-1.5 font-semibold text-(--color-awaken-ink)">
-        <Icon name="info" className="!text-base shrink-0 text-(--color-awaken-accent)" />
+    <div className="rounded-ict-md border border-ict-line bg-ict-surface-raised p-4 text-xs text-ict-fg-soft">
+      <p className="flex items-start gap-1.5 font-semibold text-ict-fg">
+        <Icon name="info" className="!text-base shrink-0 text-ict-accent-fg" />
         {lang === "si" ? "වගකීම් බැහැරවීම" : "Disclaimer"}
       </p>
       <p className="mt-1.5">

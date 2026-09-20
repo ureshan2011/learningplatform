@@ -18,9 +18,9 @@ const ACTIVITY_ICON: Record<ActivityKind, IconName> = {
 
 /** A 6px-dot's worth of colour: money in is green, money reversed is red. */
 const ACTIVITY_TONE: Record<ActivityKind, string> = {
-  payment_paid: "text-(--color-awaken-success)",
-  payment_chargeback: "text-(--color-awaken-danger)",
-  slip_uploaded: "text-(--color-awaken-warn)",
+  payment_paid: "text-ict-green-500",
+  payment_chargeback: "text-ict-danger-fg",
+  slip_uploaded: "text-ict-amber-500",
 };
 
 /**
@@ -92,21 +92,21 @@ export function ActivityBell() {
         type="button"
         onClick={toggle}
         aria-expanded={open}
-        className="relative inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+        className="relative inline-flex items-center gap-1.5 rounded-full border border-ict-line px-4 py-2 text-sm font-medium hover:border-ict-orange-500/40"
       >
         <Icon name="notifications_active" className="!text-base" />
         Activity
         {unseen > 0 ? (
-          <span className="absolute -top-1.5 -right-1.5 grid min-w-5 place-items-center rounded-full bg-(--color-awaken-accent) px-1 text-[11px] font-bold text-white">
+          <span className="absolute -top-1.5 -right-1.5 grid min-w-5 place-items-center rounded-full bg-ict-orange-500 px-1 text-[11px] font-bold text-white">
             {unseen}
           </span>
         ) : null}
       </button>
 
       {open ? (
-        <div className="absolute right-0 z-20 mt-2 w-[min(22rem,80vw)] rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-2 shadow-[0_12px_30px_rgba(0,0,0,0.12)]">
+        <div className="absolute right-0 z-20 mt-2 w-[min(22rem,80vw)] rounded-ict-md border border-ict-line bg-ict-surface-card p-2 shadow-[0_12px_30px_rgba(0,0,0,0.12)]">
           {items.length === 0 ? (
-            <p className="p-3 text-sm text-(--color-awaken-ink-soft)">
+            <p className="p-3 text-sm text-ict-fg-soft">
               Nothing yet. Payments and uploaded slips appear here as they happen.
             </p>
           ) : (
@@ -116,16 +116,16 @@ export function ActivityBell() {
                   <Link
                     href={item.paymentId ? `/teacher/payments` : "/teacher"}
                     onClick={() => setOpen(false)}
-                    className={`block rounded-lg p-2.5 hover:bg-(--color-awaken-bg) ${item.seen ? "" : "bg-(--color-awaken-accent-soft)"}`}
+                    className={`block rounded-ict-md p-2.5 hover:bg-ict-surface ${item.seen ? "" : "bg-ict-surface-raised"}`}
                   >
                     <span className="flex items-start gap-2">
                       <Icon
                         name={ACTIVITY_ICON[item.kind] ?? "receipt_long"}
-                        className={`!text-base ${ACTIVITY_TONE[item.kind] ?? "text-(--color-awaken-warn)"}`}
+                        className={`!text-base ${ACTIVITY_TONE[item.kind] ?? "text-ict-amber-500"}`}
                       />
                       <span className="min-w-0">
                         <span className="block text-sm font-semibold">{item.title}</span>
-                        <span className="block truncate text-xs text-(--color-awaken-ink-soft)">
+                        <span className="block truncate text-xs text-ict-fg-soft">
                           {item.detail}
                         </span>
                       </span>

@@ -4,7 +4,7 @@ import { formatLKR } from "@/lib/format";
 import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { Icon } from "@/components/ui/Icon";
 import { PageHeader, StatCard } from "@/components/ds";
-import { ProgressBar } from "@/components/ui/ProgressBar";
+import { MasteryBar } from "@/components/ui/MasteryBar";
 import {
   getAtRiskStudents,
   getBusinessOverview,
@@ -80,14 +80,14 @@ export default async function TeacherInsightsPage() {
 
         <section className="mt-10">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <Icon name="chat" className="text-(--color-awaken-accent)" />
+            <Icon name="chat" className="text-ict-accent-fg" />
             Reach out before they lapse
           </h2>
-          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+          <p className="mt-1 text-sm text-ict-fg-soft">
             Active subscriptions expiring within two weeks, quietest students first.
           </p>
           {atRisk.length === 0 ? (
-            <p className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
+            <p className="mt-3 rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-ict-fg-soft">
               Nobody&apos;s renewal is coming up in the next two weeks.
             </p>
           ) : (
@@ -95,13 +95,13 @@ export default async function TeacherInsightsPage() {
               {atRisk.map((s) => (
                 <li
                   key={`${s.uid}_${s.subjectName}`}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
                 >
                   <div className="min-w-0">
                     <p className="truncate font-medium">{s.name}</p>
-                    <p className="mt-0.5 text-sm text-(--color-awaken-ink-soft)">
+                    <p className="mt-0.5 text-sm text-ict-fg-soft">
                       {s.subjectName} ·{" "}
-                      <span className={s.daysUntilExpiry <= 3 ? "font-medium text-(--color-awaken-danger)" : ""}>
+                      <span className={s.daysUntilExpiry <= 3 ? "font-medium text-ict-danger-fg" : ""}>
                         renews in {s.daysUntilExpiry}d
                       </span>
                       {" · "}
@@ -117,7 +117,7 @@ export default async function TeacherInsightsPage() {
                       phone={s.phone}
                       text={`Hi ${s.name.split(" ")[0]}, your ${s.subjectName} class access renews in ${s.daysUntilExpiry} day${s.daysUntilExpiry === 1 ? "" : "s"} — let me know if you'd like to continue!`}
                       label="Nudge"
-                      className="shrink-0 rounded-lg bg-[#25D366] px-3 py-2 text-sm font-semibold text-black"
+                      className="shrink-0 rounded-full bg-[#25D366] px-3 py-2 text-sm font-semibold text-black"
                     />
                   ) : null}
                 </li>
@@ -128,15 +128,15 @@ export default async function TeacherInsightsPage() {
 
         <section className="mt-10">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <Icon name="quiz" className="text-(--color-awaken-accent)" />
+            <Icon name="quiz" className="text-ict-accent-fg" />
             Teach this next
           </h2>
-          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+          <p className="mt-1 text-sm text-ict-fg-soft">
             Topics the whole cohort is struggling with, worst first — straight from Practice
             answers, not a guess.
           </p>
           {weakTopics.length === 0 ? (
-            <p className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
+            <p className="mt-3 rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-ict-fg-soft">
               Not enough Practice answers yet to spot a pattern.
             </p>
           ) : (
@@ -144,7 +144,7 @@ export default async function TeacherInsightsPage() {
               {weakTopics.map((t) => (
                 <li
                   key={`${t.subjectId}_${t.topic}`}
-                  className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
+                  className="rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <p className="font-medium">{t.topic}</p>
@@ -152,12 +152,12 @@ export default async function TeacherInsightsPage() {
                       {t.accuracyPct}%
                     </span>
                   </div>
-                  <p className="mt-0.5 text-xs text-(--color-awaken-ink-soft)">
+                  <p className="mt-0.5 text-xs text-ict-fg-soft">
                     {t.subjectName} · {t.studentsSeen} student{t.studentsSeen === 1 ? "" : "s"} ·{" "}
                     {t.timesAnswered} answers
                   </p>
                   <div className="mt-2">
-                    <ProgressBar percent={t.accuracyPct} />
+                    <MasteryBar percent={t.accuracyPct} />
                   </div>
                 </li>
               ))}
@@ -167,16 +167,16 @@ export default async function TeacherInsightsPage() {
 
         <section className="mt-10">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <Icon name="search" className="text-(--color-awaken-accent)" />
+            <Icon name="search" className="text-ict-accent-fg" />
             How students found us
           </h2>
-          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+          <p className="mt-1 text-sm text-ict-fg-soft">
             {howHeard.totalStudents === 0
               ? "No students yet."
               : `${howHeard.answered} of ${howHeard.totalStudents} students answered the sign-up question, asked once, the first time they sign in.`}
           </p>
           {howHeard.answered === 0 ? (
-            <p className="mt-3 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-(--color-awaken-ink-soft)">
+            <p className="mt-3 rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5 text-sm text-ict-fg-soft">
               Nobody has answered yet — it only shows up for students who sign up from now on.
             </p>
           ) : (
@@ -187,11 +187,11 @@ export default async function TeacherInsightsPage() {
                 .map((s) => (
                   <li
                     key={s.source}
-                    className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
+                    className="rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-4"
                   >
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <p className="font-medium">{s.label}</p>
-                      <span className="text-sm font-semibold text-(--color-awaken-accent)">
+                      <span className="text-sm font-semibold text-ict-accent-fg">
                         {s.count} · {s.pct}%
                       </span>
                     </div>
@@ -201,7 +201,7 @@ export default async function TeacherInsightsPage() {
                   </li>
                 ))}
               {howHeard.notAnswered > 0 ? (
-                <li className="flex items-center justify-between gap-2 px-1 text-xs text-(--color-awaken-ink-soft)">
+                <li className="flex items-center justify-between gap-2 px-1 text-xs text-ict-fg-soft">
                   <span>Skipped or from before this question existed</span>
                   <span>{howHeard.notAnswered}</span>
                 </li>
@@ -212,13 +212,13 @@ export default async function TeacherInsightsPage() {
 
         <section className="mt-10 pb-4">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <Icon name="auto_stories" className="text-(--color-awaken-accent)" />
+            <Icon name="auto_stories" className="text-ict-accent-fg" />
             By subject
           </h2>
           {breakdown.length === 0 ? (
-            <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">No subjects yet.</p>
+            <p className="mt-3 text-sm text-ict-fg-soft">No subjects yet.</p>
           ) : (
-            <div className="mt-3 overflow-x-auto rounded-xl border border-(--color-awaken-line)">
+            <div className="mt-3 overflow-x-auto rounded-ict-md border border-ict-line">
               <table className="w-full min-w-[420px] border-collapse text-sm">
                 <thead>
                   <tr>
@@ -230,7 +230,7 @@ export default async function TeacherInsightsPage() {
                 </thead>
                 <tbody>
                   {breakdown.map((b) => (
-                    <tr key={b.subjectId} className="odd:bg-(--color-awaken-bg)">
+                    <tr key={b.subjectId} className="odd:bg-ict-surface">
                       <Td>{b.subjectName}</Td>
                       <Td>{b.activeStudents}</Td>
                       <Td>{b.avgAccuracyPct === null ? "—" : `${b.avgAccuracyPct}%`}</Td>
@@ -248,18 +248,18 @@ export default async function TeacherInsightsPage() {
 
 function Th({ children }: { children: React.ReactNode }) {
   return (
-    <th className="border-b border-(--color-awaken-line) bg-(--color-awaken-bg) px-3 py-2 text-left text-xs font-medium text-(--color-awaken-ink-soft)">
+    <th className="border-b border-ict-line bg-ict-surface px-3 py-2 text-left text-xs font-medium text-ict-fg-soft">
       {children}
     </th>
   );
 }
 
 function Td({ children }: { children: React.ReactNode }) {
-  return <td className="border-b border-(--color-awaken-line) px-3 py-2">{children}</td>;
+  return <td className="border-b border-ict-line px-3 py-2">{children}</td>;
 }
 
 /**
- * A share-of-total bar, deliberately one flat colour — unlike `ProgressBar`,
+ * A share-of-total bar, deliberately one flat colour — unlike `MasteryBar`,
  * a bigger slice of "how students found us" is not a better or worse result,
  * so the red/amber/green accuracy scale next to it would read as a
  * judgement this number was never making.
@@ -267,9 +267,9 @@ function Td({ children }: { children: React.ReactNode }) {
 function ShareBar({ percent }: { percent: number }) {
   const clamped = Math.max(0, Math.min(100, percent));
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-(--color-awaken-line)">
+    <div className="h-1.5 w-full overflow-hidden rounded-full bg-ict-line">
       <div
-        className="h-full rounded-full bg-(--color-awaken-accent) transition-[width]"
+        className="h-full rounded-full bg-ict-orange-500 transition-[width]"
         style={{ width: `${clamped}%` }}
       />
     </div>
@@ -277,7 +277,7 @@ function ShareBar({ percent }: { percent: number }) {
 }
 
 function accuracyColor(pct: number): string {
-  if (pct < 50) return "text-(--color-awaken-danger)";
-  if (pct < 70) return "text-(--color-awaken-accent)";
-  return "text-(--color-awaken-success)";
+  if (pct < 50) return "text-ict-danger-fg";
+  if (pct < 70) return "text-ict-accent-fg";
+  return "text-ict-green-500";
 }
