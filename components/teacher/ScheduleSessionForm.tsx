@@ -99,7 +99,7 @@ export function ScheduleSessionForm({
   }
 
   return (
-    <form onSubmit={submit} className="mt-4 space-y-4 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
+    <form onSubmit={submit} className="mt-4 space-y-4 rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-5">
       <Field label="Subject">
         <select
           name="subjectId"
@@ -113,7 +113,7 @@ export function ScheduleSessionForm({
           className={inputClass}
         >
           {subjects.map((s) => (
-            <option key={s.id} value={s.id} className="bg-(--color-awaken-bg)">
+            <option key={s.id} value={s.id} className="bg-ict-surface">
               {s.name}
             </option>
           ))}
@@ -144,7 +144,7 @@ export function ScheduleSessionForm({
             >
               <option value="">Not tied to a unit</option>
               {units.map((u) => (
-                <option key={u.id} value={u.id} className="bg-(--color-awaken-bg)">
+                <option key={u.id} value={u.id} className="bg-ict-surface">
                   {u.competencyNumber}. {u.title}
                 </option>
               ))}
@@ -160,7 +160,7 @@ export function ScheduleSessionForm({
             >
               <option value="">Whole unit</option>
               {lessons.map((l) => (
-                <option key={l.id} value={l.id} className="bg-(--color-awaken-bg)">
+                <option key={l.id} value={l.id} className="bg-ict-surface">
                   {l.id} {l.title}
                 </option>
               ))}
@@ -178,7 +178,7 @@ export function ScheduleSessionForm({
         </Field>
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-(--color-awaken-ink-soft)">
+      <label className="flex items-center gap-2 text-sm text-ict-fg-soft">
         <input
           type="checkbox"
           checked={simulcast}
@@ -189,7 +189,7 @@ export function ScheduleSessionForm({
       </label>
 
       {simulcast ? (
-        <div className="space-y-4 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-bg) p-4">
+        <div className="space-y-4 rounded-ict-md border border-ict-line bg-ict-surface p-4">
           <Field label="RTMP stream URL" hint="From YouTube Studio → Go live → Stream settings.">
             <input name="streamUrl" placeholder="rtmp://a.rtmp.youtube.com/live2" className={inputClass} />
           </Field>
@@ -202,12 +202,12 @@ export function ScheduleSessionForm({
         </div>
       ) : null}
 
-      <button type="submit" disabled={busy} className="w-full rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-4 py-3 font-semibold text-white disabled:opacity-50">
+      <button type="submit" disabled={busy} className="w-full rounded-full bg-ict-orange-500 hover:bg-ict-orange-600 px-4 py-3 font-semibold text-white disabled:opacity-50">
         {busy ? "Creating…" : "Schedule class"}
       </button>
 
       {message ? (
-        <p className={`text-sm ${message.tone === "ok" ? "text-(--color-awaken-success)" : "text-(--color-awaken-danger)"}`}>
+        <p className={`text-sm ${message.tone === "ok" ? "text-ict-green-500" : "text-ict-danger-fg"}`}>
           {message.text}
         </p>
       ) : null}
@@ -216,7 +216,7 @@ export function ScheduleSessionForm({
 }
 
 const inputClass =
-  "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-base outline-none focus:border-(--color-awaken-accent)";
+  "w-full rounded-full border border-ict-line bg-ict-surface-card px-3 py-2.5 text-base outline-none focus:border-ict-orange-500";
 
 function Field({
   label,
@@ -229,9 +229,9 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-(--color-awaken-ink-soft)">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-ict-fg-soft">{label}</span>
       {children}
-      {hint ? <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">{hint}</span> : null}
+      {hint ? <span className="mt-1 block text-xs text-ict-fg-soft">{hint}</span> : null}
     </label>
   );
 }

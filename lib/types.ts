@@ -76,6 +76,12 @@ export interface User {
   /** Set on a parent to list the students they may view. */
   childUids?: string[];
   referralCode: string;
+  /**
+   * Browsers this student has allowed class reminders on. Written only by the
+   * server, capped at `MAX_PUSH_TOKENS`, and pruned when Cloud Messaging
+   * reports one as dead. Absent until they say yes once.
+   */
+  pushTokens?: Array<{ token: string; at: number }>;
   referredBy?: string;
   /** Set once the referrer + referred pair have both received their bonus days. Blocks double-claiming on renewal. */
   referralRewarded?: boolean;
@@ -249,6 +255,15 @@ export interface ClassSession {
   unitId?: string;
   /** Competency level within that unit, e.g. "3.2". Narrower than `unitId`. */
   lessonId?: string;
+
+  /**
+   * When the "starting soon" reminder for this class was sent.
+   *
+   * Written once by the reminder job and checked before every send, so a
+   * scheduler that fires twice in the window — or retries after a timeout —
+   * cannot notify a thousand students the same thing twice.
+   */
+  remindedAt?: number;
 
   /**
    * Zoom meeting hosting the interactive room.

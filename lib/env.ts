@@ -28,6 +28,13 @@ export const publicEnv = {
     merchantId: process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID ?? "",
     mode: (process.env.NEXT_PUBLIC_PAYHERE_MODE ?? "sandbox") as "sandbox" | "live",
   },
+  /**
+   * The *public* half of this project's Web Push certificate — Firebase
+   * console → Project settings → Cloud Messaging. Public by design: a browser
+   * has to present it to subscribe. Sending is authorised by the service
+   * account, so there is no matching private value anywhere in the client.
+   */
+  vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY ?? "",
 } as const;
 
 /** Reads a required server-side secret, failing loudly rather than silently misbehaving. */

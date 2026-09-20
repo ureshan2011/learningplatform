@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { StatusPill } from "@/components/ui/StatusPill";
+import { Badge } from "@/components/ds";
 import { formatDate, formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import type { BoundDevice, Enrollment, HowHeardSource, Payment, Role } from "@/lib/types";
@@ -62,10 +62,10 @@ interface ActivitySummaryView {
   currentStreak: number;
 }
 
-const ROLE_TONE: Record<Role, "accent" | "neutral" | "success" | "warn"> = {
-  admin: "accent",
+const ROLE_TONE: Record<Role, "brand" | "neutral" | "success" | "warning"> = {
+  admin: "brand",
   teacher: "success",
-  parent: "warn",
+  parent: "warning",
   student: "neutral",
 };
 
@@ -150,8 +150,8 @@ export function UserDirectory({
   return (
     <div>
       <div className="flex flex-wrap gap-2">
-        <div className="flex min-w-[14rem] flex-1 items-center gap-2 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 focus-within:border-(--color-awaken-accent)">
-          <Icon name="search" className="!text-base text-(--color-awaken-ink-soft)" />
+        <div className="flex min-w-[14rem] flex-1 items-center gap-2 rounded-full border border-ict-line bg-ict-surface-card px-3 focus-within:border-ict-orange-500">
+          <Icon name="search" className="!text-base text-ict-fg-soft" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -161,7 +161,7 @@ export function UserDirectory({
           />
           {query ? (
             <button onClick={() => setQuery("")} aria-label="Clear search">
-              <Icon name="close" className="!text-base text-(--color-awaken-ink-soft)" />
+              <Icon name="close" className="!text-base text-ict-fg-soft" />
             </button>
           ) : null}
         </div>
@@ -169,7 +169,7 @@ export function UserDirectory({
           value={role}
           onChange={(e) => setRole(e.target.value as "all" | Role)}
           aria-label="Filter by role"
-          className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-sm outline-none focus:border-(--color-awaken-accent)"
+          className="rounded-full border border-ict-line bg-ict-surface-card px-3 py-2.5 text-sm outline-none focus:border-ict-orange-500"
         >
           <option value="all">Everyone</option>
           <option value="student">Students</option>
@@ -179,7 +179,7 @@ export function UserDirectory({
         </select>
       </div>
 
-      <p className="mt-3 text-sm text-(--color-awaken-ink-soft)">
+      <p className="mt-3 text-sm text-ict-fg-soft">
         {loading
           ? "Loading…"
           : `${users.length} ${users.length === 1 ? "person" : "people"}` +
@@ -189,13 +189,13 @@ export function UserDirectory({
       </p>
 
       {error ? (
-        <p className="mt-3 rounded-lg bg-(--color-awaken-danger-soft) p-3 text-sm text-(--color-awaken-danger)">
+        <p className="mt-3 rounded-ict-md bg-ict-red-500/15 p-3 text-sm text-ict-danger-fg">
           {error}
         </p>
       ) : null}
 
       {!loading && users.length === 0 && !error ? (
-        <p className="mt-6 rounded-xl border border-dashed border-(--color-awaken-line) p-6 text-center text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-6 rounded-ict-md border border-dashed border-ict-line p-6 text-center text-sm text-ict-fg-soft">
           {query ? "Nobody matches that." : "No accounts yet."}
         </p>
       ) : null}
@@ -204,31 +204,31 @@ export function UserDirectory({
         {users.map((user) => (
           <li
             key={user.uid}
-            className="overflow-hidden rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+            className="overflow-hidden rounded-ict-md border border-ict-line bg-ict-surface-card shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
           >
             <button
               onClick={() => setOpenUid((current) => (current === user.uid ? null : user.uid))}
               aria-expanded={openUid === user.uid}
-              className="flex w-full items-center gap-3 p-4 text-left hover:bg-(--color-awaken-bg)"
+              className="flex w-full items-center gap-3 p-4 text-left hover:bg-ict-surface"
             >
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-(--color-awaken-accent-soft) font-bold text-(--color-awaken-accent)">
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ict-surface-raised font-bold text-ict-accent-fg">
                 {user.name.trim().charAt(0).toUpperCase() || "?"}
               </span>
               <span className="min-w-0 flex-1">
                 <span className="flex flex-wrap items-center gap-2">
                   <span className="truncate font-semibold">{user.name}</span>
                   {user.role !== "student" ? (
-                    <StatusPill tone={ROLE_TONE[user.role]}>{user.role}</StatusPill>
+                    <Badge tone={ROLE_TONE[user.role]}>{user.role}</Badge>
                   ) : null}
-                  {user.disabled ? <StatusPill tone="danger">switched off</StatusPill> : null}
+                  {user.disabled ? <Badge tone="danger">switched off</Badge> : null}
                 </span>
-                <span className="mt-0.5 block truncate text-sm text-(--color-awaken-ink-soft)">
+                <span className="mt-0.5 block truncate text-sm text-ict-fg-soft">
                   {formatLocal(user.phone)}
                   {user.school ? ` · ${user.school}` : ""}
                   {` · joined ${formatDate(user.createdAt)}`}
                 </span>
               </span>
-              <span className="hidden shrink-0 text-right text-xs text-(--color-awaken-ink-soft) sm:block">
+              <span className="hidden shrink-0 text-right text-xs text-ict-fg-soft sm:block">
                 <span className="block">
                   {user.deviceCount} device{user.deviceCount === 1 ? "" : "s"}
                 </span>
@@ -238,7 +238,7 @@ export function UserDirectory({
               </span>
               <Icon
                 name={openUid === user.uid ? "chevron_left" : "expand_more"}
-                className="shrink-0 text-(--color-awaken-ink-soft)"
+                className="shrink-0 text-ict-fg-soft"
               />
             </button>
 
@@ -317,11 +317,11 @@ function UserPanel({
   }
 
   if (error && !detail) {
-    return <p className="border-t border-(--color-awaken-line) p-4 text-sm text-(--color-awaken-danger)">{error}</p>;
+    return <p className="border-t border-ict-line p-4 text-sm text-ict-danger-fg">{error}</p>;
   }
   if (!detail) {
     return (
-      <p className="border-t border-(--color-awaken-line) p-4 text-sm text-(--color-awaken-ink-soft)">
+      <p className="border-t border-ict-line p-4 text-sm text-ict-fg-soft">
         Loading…
       </p>
     );
@@ -330,7 +330,7 @@ function UserPanel({
   const { user, enrollments, payments, totalPaidLKR, activity, activitySummary } = detail;
 
   return (
-    <div className="border-t border-(--color-awaken-line) bg-(--color-awaken-bg) p-4 text-sm">
+    <div className="border-t border-ict-line bg-ict-surface p-4 text-sm">
       <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
         <Row label="Phone" value={formatLocal(user.phone)} />
         <Row label="Role" value={user.role} />
@@ -360,17 +360,17 @@ function UserPanel({
 
       <Section title="Subscriptions">
         {enrollments.length === 0 ? (
-          <p className="text-(--color-awaken-ink-soft)">None.</p>
+          <p className="text-ict-fg-soft">None.</p>
         ) : (
           <ul className="space-y-1">
             {enrollments.map((e) => (
               <li key={e.id} className="flex flex-wrap items-center justify-between gap-2">
                 <span>
-                  {e.subjectId} <span className="text-(--color-awaken-ink-soft)">· {e.source}</span>
+                  {e.subjectId} <span className="text-ict-fg-soft">· {e.source}</span>
                 </span>
-                <StatusPill tone={e.status === "active" ? "success" : "neutral"}>
+                <Badge tone={e.status === "active" ? "success" : "neutral"}>
                   {e.status === "active" ? `until ${formatDate(e.currentPeriodEnd)}` : e.status}
-                </StatusPill>
+                </Badge>
               </li>
             ))}
           </ul>
@@ -379,21 +379,21 @@ function UserPanel({
 
       <Section title={`Payments (${payments.length})`}>
         {payments.length === 0 ? (
-          <p className="text-(--color-awaken-ink-soft)">None.</p>
+          <p className="text-ict-fg-soft">None.</p>
         ) : (
           <ul className="space-y-1">
             {payments.slice(0, 8).map((p) => (
               <li key={p.id} className="flex flex-wrap items-center justify-between gap-2">
                 <span>
                   {formatLKR(p.amountLKR)}{" "}
-                  <span className="text-(--color-awaken-ink-soft)">
+                  <span className="text-ict-fg-soft">
                     · {p.provider} · {formatDate(p.paidAt ?? p.createdAt)}
                     {p.receiptNo ? ` · ${p.receiptNo}` : ""}
                   </span>
                 </span>
-                <StatusPill tone={p.status === "paid" ? "success" : p.status === "pending" ? "warn" : "neutral"}>
+                <Badge tone={p.status === "paid" ? "success" : p.status === "pending" ? "warning" : "neutral"}>
                   {p.status}
-                </StatusPill>
+                </Badge>
               </li>
             ))}
           </ul>
@@ -410,7 +410,7 @@ function UserPanel({
 
       <Section title={`Devices (${user.devices.length})`}>
         {user.devices.length === 0 ? (
-          <p className="text-(--color-awaken-ink-soft)">
+          <p className="text-ict-fg-soft">
             None bound — they can sign in on any device.
           </p>
         ) : (
@@ -418,9 +418,9 @@ function UserPanel({
             {user.devices.map((d) => (
               <li key={d.deviceHash} className="flex flex-wrap items-center justify-between gap-2">
                 <span className="flex items-center gap-1.5">
-                  <Icon name="smartphone" className="!text-base text-(--color-awaken-ink-soft)" />
+                  <Icon name="smartphone" className="!text-base text-ict-fg-soft" />
                   {d.label}
-                  <span className="text-xs text-(--color-awaken-ink-soft)">
+                  <span className="text-xs text-ict-fg-soft">
                     last used {formatDate(d.lastSeenAt)}
                   </span>
                 </span>
@@ -439,7 +439,7 @@ function UserPanel({
         )}
       </Section>
 
-      <div className="mt-5 flex flex-wrap gap-2 border-t border-(--color-awaken-line) pt-4">
+      <div className="mt-5 flex flex-wrap gap-2 border-t border-ict-line pt-4">
         {user.devices.length > 0 ? (
           <button
             onClick={() => act({ action: "release_devices" }, "All device slots freed.")}
@@ -460,12 +460,12 @@ function UserPanel({
 
         {canSetRole ? (
           <label className="inline-flex items-center gap-2">
-            <span className="text-(--color-awaken-ink-soft)">Role</span>
+            <span className="text-ict-fg-soft">Role</span>
             <select
               value={user.role}
               disabled={busy || isSelf}
               onChange={(e) => act({ action: "set_role", role: e.target.value }, "Role changed.")}
-              className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-2 py-1.5 text-sm disabled:opacity-50"
+              className="rounded-full border border-ict-line bg-ict-surface-card px-2 py-1.5 text-sm disabled:opacity-50"
             >
               {ROLES.map((r) => (
                 <option key={r} value={r} disabled={!isAdmin && r !== "admin" && r !== user.role}>
@@ -497,21 +497,21 @@ function UserPanel({
                   void act({ action: "disable", reason }, "Account switched off.");
                 }}
                 disabled={busy || isSelf}
-                className={`${smallButton} hover:border-(--color-awaken-danger)/40 hover:text-(--color-awaken-danger)`}
+                className={`${smallButton} hover:border-ict-red-500/40 hover:text-ict-danger-fg`}
               >
                 Switch account off
               </button>
             )}
           </>
         ) : (
-          <span className="self-center text-xs text-(--color-awaken-ink-soft)">
+          <span className="self-center text-xs text-ict-fg-soft">
             Switching accounts off is admin-only.
           </span>
         )}
       </div>
 
-      {note ? <p className="mt-3 font-semibold text-(--color-awaken-success)">{note}</p> : null}
-      {error ? <p className="mt-3 text-(--color-awaken-danger)">{error}</p> : null}
+      {note ? <p className="mt-3 font-semibold text-ict-green-500">{note}</p> : null}
+      {error ? <p className="mt-3 text-ict-danger-fg">{error}</p> : null}
     </div>
   );
 }
@@ -525,7 +525,7 @@ const ACTION_ERRORS: Record<string, string> = {
 };
 
 const smallButton =
-  "rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-1.5 text-xs font-semibold hover:border-(--color-awaken-accent)/40 disabled:opacity-50";
+  "rounded-full border border-ict-line bg-ict-surface-card px-3 py-1.5 text-xs font-semibold hover:border-ict-orange-500/40 disabled:opacity-50";
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
@@ -533,8 +533,8 @@ function Row({ label, value }: { label: string; value: string }) {
     // sm:grid-cols-2`), and its `truncate`d `<dd>` (an account id or a long
     // school name) would otherwise force the item to its content's full
     // width instead of shrinking to the grid track, overflowing on a phone.
-    <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-(--color-awaken-line)/60 py-1">
-      <dt className="shrink-0 text-(--color-awaken-ink-soft)">{label}</dt>
+    <div className="flex min-w-0 items-baseline justify-between gap-3 border-b border-ict-line/60 py-1">
+      <dt className="shrink-0 text-ict-fg-soft">{label}</dt>
       <dd className="truncate text-right font-medium">{value}</dd>
     </div>
   );
@@ -572,7 +572,7 @@ function ActivitySection({
   return (
     <Section title="Activity (last 30 days)">
       {!summary || days.length === 0 ? (
-        <p className="text-(--color-awaken-ink-soft)">
+        <p className="text-ict-fg-soft">
           Nothing recorded yet. Only study actions are logged — practice, mock exams, the Code
           Lab, live classes and downloads — so simply browsing the site leaves no rows here.
         </p>
@@ -592,7 +592,7 @@ function ActivitySection({
               {summary.topAreas.map((area) => (
                 <span
                   key={area.group}
-                  className="rounded-full border border-(--color-awaken-line) px-2.5 py-0.5 text-xs"
+                  className="rounded-full border border-ict-line px-2.5 py-0.5 text-xs"
                 >
                   {area.group} · {area.count}
                 </span>
@@ -603,7 +603,7 @@ function ActivitySection({
           <div className="space-y-3">
             {shown.map((day) => (
               <div key={day.date}>
-                <p className="mb-1 text-xs font-semibold text-(--color-awaken-ink-soft)">
+                <p className="mb-1 text-xs font-semibold text-ict-fg-soft">
                   {formatDate(Date.parse(`${day.date}T12:00:00+05:30`))}
                   {day.truncated ? " · busiest hours only" : ""}
                 </p>
@@ -612,10 +612,10 @@ function ActivitySection({
                     <li key={`${event.at}-${i}`} className="flex items-baseline gap-2">
                       <Icon
                         name={event.icon}
-                        className="!text-sm shrink-0 translate-y-0.5 text-(--color-awaken-ink-soft)"
+                        className="!text-sm shrink-0 translate-y-0.5 text-ict-fg-soft"
                       />
                       <span className="min-w-0 flex-1 break-words">{event.label}</span>
-                      <span className="shrink-0 text-xs tabular-nums text-(--color-awaken-ink-soft)">
+                      <span className="shrink-0 text-xs tabular-nums text-ict-fg-soft">
                         {clockTime(event.at)}
                       </span>
                     </li>
@@ -662,7 +662,7 @@ function clockTime(at: number): string {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-5">
-      <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-(--color-awaken-ink-soft)">
+      <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-ict-fg-soft">
         {title}
       </h3>
       {children}

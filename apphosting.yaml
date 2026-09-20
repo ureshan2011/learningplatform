@@ -110,6 +110,34 @@ env:
 #    availability: [RUNTIME]
 
 # ---------------------------------------------------------------------------
+# LATER: class reminders (web push).
+#
+# Two steps, both in a browser, both free:
+#
+#  1. Firebase console -> Project settings -> Cloud Messaging -> Web Push
+#     certificates -> Generate key pair. Copy the PUBLIC key into the variable
+#     below. That is the only value that goes anywhere — sending is authorised
+#     by the service account this project already has, so there is no secret
+#     and no second account.
+#
+#  2. Google Cloud console -> Cloud Scheduler -> Create job. Every five
+#     minutes ("*/5 * * * *", Asia/Colombo), HTTP POST to
+#     https://ictcampus.lk/api/cron/class-reminders, with a header
+#     `x-cron-secret` whose value matches CRON_SECRET below.
+#
+# Without step 1 the toggle on a student's Account page says reminders are not
+# set up. Without step 2 a student can turn them on and nothing will ever
+# arrive, so do both or neither. See docs/services.md.
+#
+#  - variable: NEXT_PUBLIC_FIREBASE_VAPID_KEY
+#    value: your-public-web-push-key
+#    availability: [BUILD, RUNTIME]
+#  - variable: CRON_SECRET
+#    secret: cron-secret
+#    availability: [RUNTIME]
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
 # Notes, past papers and replays need no entry here at all: they live in
 # Cloud Storage for Firebase, the same project as everything else, using the
 # NEXT_PUBLIC_FIREBASE_* values already injected automatically above. The

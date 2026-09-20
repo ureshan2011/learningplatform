@@ -19,11 +19,17 @@ import { ButtonLink } from "@/components/ds-cream";
  * page. Several free-resource pages (`/notes`, `/past-papers`,
  * `/command-words`, ...) pass `null` on purpose even to a signed-in
  * visitor, to stay statically generated for SEO — see the comment on
- * `/notes`. Left alone, that makes a signed-in student who taps one of
- * those links from their own dashboard sidebar land on a page whose header
- * still offers "Sign in" and has no way back except the browser's back
- * button. `useSignedInClient` recovers the signed-in nav after hydration
- * whenever a real user wasn't resolved server-side.
+ * `/notes`. `useSignedInClient` recovers the signed-in nav after hydration
+ * whenever a real user wasn't resolved server-side, so the header at least
+ * offers a way back into the app rather than a "Sign in" button to someone
+ * who already is.
+ *
+ * This used to be load-bearing: the student sidebar linked straight to those
+ * pages, so tapping "Free notes" from a dark rail landed you on a cream page
+ * with a guest header and no rail at all. It no longer does — the rail goes to
+ * `/library` and `/subjects/{id}/syllabus`, which render inside the app shell.
+ * What remains is the real case this was always for: a signed-in student
+ * arriving on a public page from a search result or a shared link.
  */
 export function SiteHeader({ user }: { user: SessionUser | null }) {
   const isStaff = user?.role === "teacher" || user?.role === "admin";

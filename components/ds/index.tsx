@@ -12,6 +12,27 @@ import { Icon, type IconName } from "@/components/ui/Icon";
  * only when the thing you need genuinely is not in here, and then consider
  * adding it here instead.
  *
+ * ## These work in both worlds
+ *
+ * Nothing below names a palette colour for a surface, a border or body text.
+ * They ask for a **role** — `bg-ict-surface-card`, `border-ict-line`,
+ * `text-ict-fg` — and `app/globals.css` answers that role twice: once at
+ * `:root` for the cream world, once inside `.ict-app` for the dark one. So a
+ * `Card` is a white card with a soft shadow on `/notes` and a near-black panel
+ * with an inset highlight on the dashboard, from the same line of code.
+ *
+ * That is what lets one component tree — the syllabus, a lesson, the free
+ * library — serve a public SEO page and a signed-in screen without a duplicate
+ * file or an `isDark` prop threaded through it.
+ *
+ * Two things stay literal on purpose: `Button variant="secondary"` and
+ * `IconBadge tone="tile"` are a near-black pill and a white tile in *both*
+ * worlds, because that is what they mean. If you add a colour here and it has
+ * no sensible answer on cream, it does not belong in this file.
+ *
+ * `components/ds-cream/` is the older cream-only twin, still used by the
+ * marketing pages. New shared work should come from here.
+ *
  * The rules encoded below, so they cannot be forgotten at a call site:
  *
  *   - **Pills for actions, soft-squares for containers.** Buttons, chips, tabs,
@@ -45,9 +66,9 @@ const BUTTON_SKIN: Record<ButtonVariant, string> = {
   secondary:
     "bg-ict-ink-900 text-ict-paper-50 hover:bg-ict-ink-700 disabled:opacity-45 border border-ict-border-dark",
   ghost:
-    "bg-transparent text-ict-paper-50 hover:bg-ict-ink-800 disabled:opacity-45",
+    "bg-transparent text-ict-fg hover:bg-ict-surface-hover disabled:opacity-45",
   outline:
-    "bg-transparent text-ict-paper-50 border-[1.5px] border-ict-ink-500 hover:border-ict-ink-300 disabled:opacity-45",
+    "bg-transparent text-ict-fg border-[1.5px] border-ict-line-strong hover:border-ict-line-strong-hover disabled:opacity-45",
 };
 
 const BADGE_SKIN: Record<ButtonVariant, string> = {
@@ -163,12 +184,15 @@ export function ButtonLink({
 type CardVariant = "dark" | "raised" | "feature" | "framed" | "brand";
 
 const CARD_SKIN: Record<CardVariant, string> = {
-  /** The default panel on dark: hairline border, inset top highlight, no drop shadow. */
-  dark: "bg-ict-ink-850 border border-ict-border-dark shadow-ict-inset",
+  /** The default panel: hairline border, and whatever "sits above the page"
+   *  means in this world — an inset top highlight on dark, a soft drop shadow
+   *  on cream. */
+  dark: "bg-ict-surface-card border border-ict-line shadow-(--shadow-ict-card)",
   /** One step up from the page — nested panels, rows inside a card. */
-  raised: "bg-ict-ink-800 border border-ict-border-dark",
-  /** The cocoa banner. The system permits exactly ONE of these per screen. */
-  feature: "bg-ict-cocoa-700 border border-ict-cocoa-600",
+  raised: "bg-ict-surface-raised border border-ict-line",
+  /** The feature banner — cocoa on dark, near-black on cream. The system
+   *  permits exactly ONE of these per screen. */
+  feature: "bg-ict-feature border border-ict-feature-line text-ict-on-feature",
   /** Near-black frame for a featured item. */
   framed: "bg-ict-ink-900 border-2 border-ict-ink-900",
   /** Solid orange. Rationed — an upsell or a single decisive call to action. */
@@ -203,7 +227,7 @@ export function Card({
         "min-w-0",
         { md: "rounded-ict-md", card: "rounded-ict-card", panel: "rounded-ict-panel" }[radius],
         CARD_SKIN[variant],
-        hoverable && "ict-lift hover:border-ict-ink-500",
+        hoverable && "ict-lift hover:border-ict-line-strong",
         className,
       )}
       {...rest}
@@ -232,7 +256,7 @@ export function CardLink({
       href={href}
       className={clsx(
         // See the matching comment on `Card` above — same grid/flex shrink fix.
-        "block min-w-0 ict-lift hover:border-ict-ink-500",
+        "block min-w-0 ict-lift hover:border-ict-line-strong",
         { md: "rounded-ict-md", card: "rounded-ict-card", panel: "rounded-ict-panel" }[radius],
         CARD_SKIN[variant],
         className,
@@ -271,7 +295,7 @@ export function SectionHeading({
   as?: "h1" | "h2" | "h3";
 }) {
   return (
-    <Tag className={clsx("font-display text-xl font-extrabold tracking-[-0.02em] text-ict-paper-50 sm:text-2xl", className)}>
+    <Tag className={clsx("font-display text-xl font-extrabold tracking-[-0.02em] text-ict-fg sm:text-2xl", className)}>
       {children}
       {period ? <span className="text-ict-orange-500">.</span> : null}
     </Tag>
@@ -296,11 +320,11 @@ export function PageHeader({
     <header className="flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         {eyebrow ? <Eyebrow className="mb-2">{eyebrow}</Eyebrow> : null}
-        <h1 className="font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-paper-50 sm:text-[30px]">
+        <h1 className="font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-fg sm:text-[30px]">
           {title}
           {period ? <span className="text-ict-orange-500">.</span> : null}
         </h1>
-        {subtitle ? <p className="mt-1.5 text-sm text-ict-ink-300">{subtitle}</p> : null}
+        {subtitle ? <p className="mt-1.5 text-sm text-ict-fg-soft">{subtitle}</p> : null}
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
     </header>
@@ -320,7 +344,7 @@ const DOT_COLOR: Record<StatusTone, string> = {
   info: "bg-ict-blue-500",
   event: "bg-ict-violet-500",
   brand: "bg-ict-orange-500",
-  neutral: "bg-ict-ink-300",
+  neutral: "bg-ict-fg-soft",
 };
 
 /**
@@ -348,7 +372,7 @@ export function StatusChip({
   return (
     <span
       className={clsx(
-        "inline-flex h-[26px] items-center gap-1.5 rounded-full bg-ict-ink-800 px-2.5 text-xs font-semibold text-ict-paper-50",
+        "inline-flex h-[26px] items-center gap-1.5 rounded-full bg-ict-surface-raised px-2.5 text-xs font-semibold text-ict-fg",
         className,
       )}
     >
@@ -371,11 +395,11 @@ export function Badge({
   const skin: Record<StatusTone, string> = {
     success: "bg-ict-green-500/15 text-ict-green-500",
     warning: "bg-ict-amber-500/15 text-ict-amber-500",
-    danger: "bg-ict-red-500/20 text-[#f0685a]",
+    danger: "bg-ict-red-500/20 text-ict-danger-fg",
     info: "bg-ict-blue-500/15 text-ict-blue-500",
     event: "bg-ict-violet-500/15 text-ict-violet-500",
-    brand: "bg-ict-orange-500/15 text-ict-orange-400",
-    neutral: "bg-ict-ink-700 text-ict-ink-200",
+    brand: "bg-ict-orange-500/15 text-ict-accent-fg",
+    neutral: "bg-ict-surface-sunken text-ict-fg-soft",
   };
   return (
     <span
@@ -406,11 +430,11 @@ export function Chip({
     <span
       className={clsx(
         "inline-flex h-[30px] items-center gap-1.5 rounded-full px-3 text-xs font-semibold",
-        active ? "bg-ict-orange-500 text-white" : "bg-ict-ink-800 text-ict-paper-50",
+        active ? "bg-ict-orange-500 text-white" : "bg-ict-surface-raised text-ict-fg",
         className,
       )}
     >
-      {icon ? <Icon name={icon} className={clsx("!text-sm", active ? "" : "text-ict-orange-400")} /> : null}
+      {icon ? <Icon name={icon} className={clsx("!text-sm", active ? "" : "text-ict-accent-fg")} /> : null}
       {children}
     </span>
   );
@@ -440,9 +464,9 @@ export function IconBadge({
   className?: string;
 }) {
   const skin = {
-    dark: "bg-ict-ink-800 text-ict-ink-200",
+    dark: "bg-ict-surface-raised text-ict-fg-soft",
     brand: "bg-ict-orange-500 text-white",
-    soft: "bg-ict-orange-500/12 text-ict-orange-400",
+    soft: "bg-ict-orange-500/12 text-ict-accent-fg",
     tile: "bg-white text-ict-ink-900",
   }[tone];
 
@@ -458,7 +482,7 @@ export function IconBadge({
     >
       <Icon name={icon} className="!text-[1.1rem]" />
       {done ? (
-        <span className="absolute -right-1 -bottom-1 grid size-4 place-items-center rounded-full border-2 border-ict-ink-850 bg-ict-orange-500">
+        <span className="absolute -right-1 -bottom-1 grid size-4 place-items-center rounded-full border-2 border-ict-surface-card bg-ict-orange-500">
           <Icon name="done" className="!text-[8px] text-white" strokeWidth={4} />
         </span>
       ) : null}
@@ -479,13 +503,13 @@ export function ProgressBar({
   const pct = Math.max(0, Math.min(100, Math.round(value)));
   return (
     <div className={clsx("flex items-center gap-3", className)}>
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-ict-ink-700">
+      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-ict-surface-sunken">
         <div
           style={{ width: `${pct}%` }}
           className="h-full rounded-full bg-ict-orange-500 transition-[width] duration-[340ms] ease-ict-out"
         />
       </div>
-      {showLabel ? <span className="text-sm font-semibold tabular-nums text-ict-paper-50">{pct}%</span> : null}
+      {showLabel ? <span className="text-sm font-semibold tabular-nums text-ict-fg">{pct}%</span> : null}
     </div>
   );
 }
@@ -517,13 +541,13 @@ export function StatCard({
       <div className="flex items-center gap-2">
         <Icon
           name={icon}
-          className={clsx("!text-base", tone === "neutral" ? "text-ict-ink-300" : "text-ict-orange-400")}
+          className={clsx("!text-base", tone === "neutral" ? "text-ict-fg-soft" : "text-ict-accent-fg")}
         />
-        <span className="text-xs font-bold uppercase tracking-[0.12em] text-ict-ink-300">{label}</span>
+        <span className="text-xs font-bold uppercase tracking-[0.12em] text-ict-fg-soft">{label}</span>
       </div>
-      <p className="mt-2 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-paper-50">{value}</p>
+      <p className="mt-2 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-fg">{value}</p>
       {hint ? (
-        <p className="mt-1 flex items-center gap-1.5 text-xs text-ict-ink-300">
+        <p className="mt-1 flex items-center gap-1.5 text-xs text-ict-fg-soft">
           {tone !== "neutral" ? <StatusDot tone={tone} /> : null}
           {hint}
         </p>
@@ -566,7 +590,7 @@ export function Avatar({
     <span
       style={{ width: size, height: size, fontSize: Math.round(size * 0.36) }}
       className={clsx(
-        "grid shrink-0 place-items-center rounded-full bg-ict-ink-700 font-semibold text-ict-paper-50",
+        "grid shrink-0 place-items-center rounded-full bg-ict-surface-sunken font-semibold text-ict-fg",
         className,
       )}
     >
@@ -597,8 +621,8 @@ export function EmptyState({
   return (
     <Card radius="card" className="flex flex-col items-center px-6 py-10 text-center">
       <IconBadge icon={icon} tone="soft" size={48} />
-      <p className="mt-4 font-display text-base font-bold text-ict-paper-50">{title}</p>
-      {body ? <p className="mt-1.5 max-w-sm text-sm text-ict-ink-300">{body}</p> : null}
+      <p className="mt-4 font-display text-base font-bold text-ict-fg">{title}</p>
+      {body ? <p className="mt-1.5 max-w-sm text-sm text-ict-fg-soft">{body}</p> : null}
       {action ? <div className="mt-5">{action}</div> : null}
     </Card>
   );
@@ -626,16 +650,16 @@ export function Field({
   return (
     <label className="block">
       {label ? (
-        <span className="mb-1.5 block text-sm font-medium text-ict-ink-300">{label}</span>
+        <span className="mb-1.5 block text-sm font-medium text-ict-fg-soft">{label}</span>
       ) : null}
       {children}
       {error ? (
-        <span className="mt-1.5 flex items-center gap-1.5 text-xs text-ict-ink-300">
+        <span className="mt-1.5 flex items-center gap-1.5 text-xs text-ict-fg-soft">
           <StatusDot tone="danger" className="shrink-0" />
           {error}
         </span>
       ) : hint ? (
-        <span className="mt-1.5 block text-xs text-ict-ink-300">{hint}</span>
+        <span className="mt-1.5 block text-xs text-ict-fg-soft">{hint}</span>
       ) : null}
     </label>
   );
@@ -668,20 +692,20 @@ export const Input = forwardRef<
   return (
     <div
       className={clsx(
-        "flex items-center overflow-hidden rounded-full border border-ict-border-dark bg-ict-ink-800 transition-colors duration-[120ms] ease-ict focus-within:border-ict-orange-500",
+        "flex items-center overflow-hidden rounded-full border border-ict-line bg-ict-surface-raised transition-colors duration-[120ms] ease-ict focus-within:border-ict-orange-500",
         INPUT_HEIGHT[size],
         className,
       )}
     >
       {prefix ? (
-        <span className="flex h-full shrink-0 items-center border-r border-ict-border-dark px-4 text-ict-ink-300 select-none">
+        <span className="flex h-full shrink-0 items-center border-r border-ict-line px-4 text-ict-fg-soft select-none">
           {prefix}
         </span>
       ) : null}
       <input
         ref={ref}
         className={clsx(
-          "min-w-0 flex-1 bg-transparent px-4 text-ict-paper-50 outline-none placeholder:text-ict-ink-400",
+          "min-w-0 flex-1 bg-transparent px-4 text-ict-fg outline-none placeholder:text-ict-fg-mute",
           INPUT_TEXT[size],
         )}
         {...rest}
@@ -711,7 +735,7 @@ export function Notice({
     <p
       role={tone === "danger" ? "alert" : "status"}
       className={clsx(
-        "flex items-start gap-2.5 rounded-ict-md border border-ict-border-dark bg-ict-ink-850 px-3.5 py-3 text-sm text-ict-paper-50",
+        "flex items-start gap-2.5 rounded-ict-md border border-ict-line bg-ict-surface-card px-3.5 py-3 text-sm text-ict-fg",
         className,
       )}
     >
@@ -739,12 +763,12 @@ export function SectionBar({
         <SectionHeading as="h2" className="!text-lg">
           {title}
         </SectionHeading>
-        {hint ? <p className="mt-0.5 text-sm text-ict-ink-300">{hint}</p> : null}
+        {hint ? <p className="mt-0.5 text-sm text-ict-fg-soft">{hint}</p> : null}
       </div>
       {href ? (
         <Link
           href={href}
-          className="shrink-0 text-sm font-semibold text-ict-ink-300 transition-colors duration-[120ms] hover:text-ict-orange-400"
+          className="shrink-0 text-sm font-semibold text-ict-fg-soft transition-colors duration-[120ms] hover:text-ict-accent-fg"
         >
           {linkLabel}
         </Link>

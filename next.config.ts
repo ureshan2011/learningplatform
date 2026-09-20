@@ -63,6 +63,10 @@ const firebasePublicEnv: Record<string, string> = {
   // type a measurement ID in by hand.
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID:
     process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || injected.measurementId || "",
+  // Not part of FIREBASE_WEBAPP_CONFIG — the Web Push certificate is generated
+  // separately (console → Cloud Messaging) and has to be pasted in once.
+  // Empty simply means class reminders report themselves as not set up.
+  NEXT_PUBLIC_FIREBASE_VAPID_KEY: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || "",
 };
 
 /**
@@ -125,6 +129,14 @@ const nextConfig: NextConfig = {
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
+      },
+      {
+        // The service worker decides which version of the app every returning
+        // student runs, so it must never be served from a CDN edge that is a
+        // deploy behind. Browsers already bypass the HTTP cache for a worker
+        // script, but App Hosting's CDN sits in front of them and does not.
+        source: "/sw.js",
+        headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }],
       },
     ];
   },

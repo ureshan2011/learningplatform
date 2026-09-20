@@ -12,7 +12,7 @@ import {
 import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { paymentsPaused } from "@/lib/payments/launch";
-import { getT, localeAttrs, type Translator } from "@/lib/i18n/server";
+import { getT, type Translator } from "@/lib/i18n/server";
 import { LaunchNotice } from "@/components/payments/LaunchNotice";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
@@ -30,6 +30,10 @@ import {
   StatusChip,
   StatusDot,
 } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
+import { ReferralCard } from "@/components/account/ReferralCard";
+import { col } from "@/lib/firebase/admin";
+import { publicEnv } from "@/lib/env";
 import type { MessageKey } from "@/lib/i18n/dictionary";
 import type { ClassSession, Subject } from "@/lib/types";
 import { CAMPUS_READY } from "@/lib/content/campus-ready";
@@ -53,13 +57,12 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const user = await requirePageUser("/dashboard");
 
-  const [enrollments, subjects, cohorts, products, t, loc] = await Promise.all([
+  const [enrollments, subjects, cohorts, products, t] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
     listCohorts(),
     listProducts(),
     getT(),
-    localeAttrs(),
   ]);
 
   // Server Component: this renders once per request, so reading the clock here
@@ -98,8 +101,26 @@ export default async function DashboardPage() {
   const [nextSession, ...laterSessions] = sessions;
   const firstName = user.name.trim().split(/\s+/)[0] || "there";
 
+  // One extra document read, and only for a student who is actually
+  // subscribed — which is the same condition the invite card has always been
+  // shown under. `SessionUser` carries no referral code (it comes from the
+  // cookie's claims, not from Firestore), and the card is worth more here than
+  // behind a second tap on /account: it used to be a teaser that sent students
+  // to another screen to find the link they came for.
+  const referralLink = activeSubjectIds.length > 0
+    ? await col
+        .users()
+        .doc(user.uid)
+        .get()
+        .then((snap) => {
+          const code = (snap.data() as { referralCode?: string } | undefined)?.referralCode;
+          return code ? `${publicEnv.appUrl}/signin?ref=${code}` : null;
+        })
+        .catch(() => null)
+    : null;
+
   return (
-    <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
+    <PageShell>
       {/* ------------------------------------------------------------------ */}
       {/* Feature banner — the system permits exactly one cocoa surface per    */}
       {/* screen, so it carries the single thing that matters most right now.  */}
@@ -304,9 +325,14 @@ export default async function DashboardPage() {
           <Card radius="card" className="p-5">
             <div className="flex items-center justify-between">
               <p className="font-display text-base font-extrabold text-ict-paper-50">{t("dash.timetable")}</p>
-              {sessions.length > 0 ? (
-                <span className="text-xs text-ict-ink-300">{t("dash.timetableNext", { count: sessions.length })}</span>
-              ) : null}
+              {/* This column shows the next few; `/classes` is the whole
+                  timetable, and the replay of everything already sat. */}
+              <Link
+                href="/classes"
+                className="shrink-0 text-xs font-semibold text-ict-ink-300 transition-colors duration-[120ms] hover:text-ict-orange-400"
+              >
+                {t("classes.title")}
+              </Link>
             </div>
 
             {sessions.length === 0 ? (
@@ -330,20 +356,14 @@ export default async function DashboardPage() {
             )}
           </Card>
 
-          {activeSubjectIds.length > 0 ? (
-            <Card radius="card" className="mt-3 p-5">
-              <p className="font-display text-base font-extrabold text-ict-paper-50">
-                {t("dash.inviteTitle")}
-              </p>
-              <p className="mt-1 text-sm text-ict-ink-300">{t("dash.inviteBody")}</p>
-              <ButtonLink href="/account" variant="outline" size="sm" arrow="right" className="mt-4">
-                {t("dash.inviteCta")}
-              </ButtonLink>
-            </Card>
+          {referralLink ? (
+            <div className="mt-3">
+              <ReferralCard link={referralLink} t={t} />
+            </div>
           ) : null}
         </aside>
       </div>
-    </main>
+    </PageShell>
   );
 }
 

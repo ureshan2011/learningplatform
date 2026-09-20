@@ -1,6 +1,7 @@
 import { SubjectTabs } from "@/components/subject/SubjectTabs";
-import { getT, localeAttrs } from "@/lib/i18n/server";
+import { getT } from "@/lib/i18n/server";
 import { ButtonLink, Card, Eyebrow, PageHeader } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import type { AccessResult } from "@/lib/types";
 
 /**
@@ -30,12 +31,9 @@ export async function SubjectPageShell({
   lockedBody: string;
   children: React.ReactNode;
 }) {
-  const [t, loc] = await Promise.all([getT(), localeAttrs()]);
+  const t = await getT();
   return (
-    <main
-      lang={loc.lang}
-      className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}
-    >
+    <PageShell>
       <PageHeader eyebrow={subjectName} title={title} subtitle={subtitle} />
 
       <div className="mt-5">
@@ -48,6 +46,7 @@ export async function SubjectPageShell({
             mockExams: t("nav.mockExams"),
             predictedPaper: t("nav.predictedPaper"),
             codeLab: t("nav.codeLab"),
+            syllabus: t("nav.syllabus"),
             certificate: t("nav.certificate"),
           }}
         />
@@ -60,7 +59,7 @@ export async function SubjectPageShell({
           <SubjectLocked subjectId={subjectId} access={access} body={lockedBody} />
         )}
       </div>
-    </main>
+    </PageShell>
   );
 }
 

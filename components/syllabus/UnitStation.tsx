@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { EmailCaptureForm } from "@/components/marketing/EmailCaptureForm";
 import { isJoinableNow, type TopicClass } from "@/lib/content/topic-classes";
-import { isHighYield, unitColors, unitIcon } from "@/lib/content/unit-visuals";
+import { isHighYield, UNIT_TONE, unitIcon } from "@/lib/content/unit-visuals";
 import { ClassCta, ClassStatus, LivePill } from "@/components/syllabus/ClassCta";
-import { cssVars, useNow, useTilt } from "@/components/syllabus/motion";
+import { cssVars, useNow } from "@/components/syllabus/motion";
 import type { Unit } from "@/lib/types";
 
 /**
@@ -23,6 +23,7 @@ export function UnitStation({
   index,
   weight,
   subjectId,
+  unitHrefBase,
   unitClasses,
   classesByLesson,
   open,
@@ -34,15 +35,21 @@ export function UnitStation({
   /** This unit's periods as a share of the heaviest unit, 0-1. Drives the weight bar. */
   weight: number;
   subjectId: string;
+  /**
+   * Where a unit's own page lives, which differs by world: `/syllabus/{id}`
+   * on the public site, `/subjects/{id}/syllabus` inside the app. Passed down
+   * rather than derived, so this component never has to know which of the two
+   * it is rendering in.
+   */
+  unitHrefBase: string;
   unitClasses: TopicClass[];
   classesByLesson: Record<string, TopicClass[]>;
   open: boolean;
   onToggle: () => void;
   matchedLessonIds: string[];
 }) {
-  const tone = unitColors(unit.competencyNumber);
+  const tone = UNIT_TONE;
   const now = useNow();
-  const tilt = useTilt(3.5);
 
   const liveClass = now === null ? undefined : unitClasses.find((c) => isJoinableNow(c, now));
   const nextClass = unitClasses[0];
@@ -67,36 +74,16 @@ export function UnitStation({
     >
       {/* The rail node. Sits on the vertical line drawn by the explorer. */}
       <span
-        className="absolute top-5 left-0 z-10 flex size-9 items-center justify-center rounded-ict-md text-sm font-extrabold text-white shadow-ict-md transition-transform duration-300 sm:top-6 sm:size-12 sm:text-base"
-        style={{
-          background: tone.gradTo,
-          transform: open ? "scale(1.08)" : undefined,
-        }}
+        className="absolute top-5 left-0 z-10 flex size-9 items-center justify-center rounded-ict-md text-sm font-extrabold text-white sm:top-6 sm:size-12 sm:text-base"
+        style={{ background: tone.accent }}
       >
         {unit.competencyNumber}
-        {liveClass ? (
-          <span
-            className="syl-pulse-ring absolute inset-0 rounded-ict-md border-2"
-            style={{ borderColor: tone.gradTo }}
-            aria-hidden
-          />
-        ) : null}
       </span>
 
-      {/* Tilt only while collapsed: a tall expanded panel swaying under the
-          pointer is distracting, and its content has to stay easy to read. */}
       <article
-        onPointerMove={open ? undefined : tilt.onPointerMove}
-        onPointerLeave={open ? undefined : tilt.onPointerLeave}
-        className={`group relative mb-5 overflow-hidden rounded-ict-panel border bg-ict-paper-0 shadow-ict-sm transition-shadow duration-300 ${open ? "" : "syl-tilt"}`}
-        style={{
-          borderColor: open ? tone.line : "var(--color-ict-paper-300)",
-          boxShadow: open ? `0 18px 44px -20px rgba(${tone.rgb}, 0.5)` : undefined,
-        }}
+        className={`group relative mb-5 overflow-hidden rounded-ict-panel border bg-ict-surface-card shadow-(--shadow-ict-card) ${open ? "" : "ict-lift"}`}
+        style={{ borderColor: open ? tone.line : "var(--color-ict-line)" }}
       >
-        {/* Tone stripe down the leading edge — the fastest way to tell two units apart. */}
-        <span aria-hidden className="absolute inset-y-0 left-0 w-1" style={{ background: tone.gradTo }} />
-        <span aria-hidden className="syl-sheen pointer-events-none absolute inset-0" />
 
         <button
           type="button"
@@ -106,8 +93,8 @@ export function UnitStation({
           className="relative flex w-full items-start gap-3 p-4 text-left sm:gap-4 sm:p-6"
         >
           <span
-            className={`flex size-10 shrink-0 items-center justify-center rounded-ict-md text-white transition-transform duration-300 group-hover:scale-105 sm:size-12 ${open ? "" : "syl-float"}`}
-            style={{ background: tone.gradTo }}
+            className="flex size-10 shrink-0 items-center justify-center rounded-ict-md text-white sm:size-12"
+            style={{ background: tone.accent }}
           >
             <Icon name={unitIcon(unit.competencyNumber)} className="!text-2xl" />
           </span>
@@ -117,45 +104,42 @@ export function UnitStation({
               <Chip tone={tone}>Grade {unit.gradeYear}</Chip>
               <Chip tone={tone}>{unit.periods} periods</Chip>
               {isHighYield(unit.periods) ? (
-                <span
-                  className="rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-white uppercase"
-                  style={{ background: tone.gradTo }}
-                >
+                <span className="rounded-full bg-ict-surface-sunken px-2.5 py-0.5 text-xs font-bold tracking-[0.02em] text-ict-fg uppercase">
                   High-yield
                 </span>
               ) : null}
               {liveClass ? <LivePill /> : null}
             </span>
 
-            <span className="mt-2 block text-lg leading-snug font-extrabold tracking-tight text-ict-ink-900">
+            <span className="mt-2 block text-lg leading-snug font-extrabold tracking-tight text-ict-fg">
               {unit.title}
             </span>
             <span
-              className={`mt-1 block text-sm text-ict-ink-400 ${open ? "" : "line-clamp-2"}`}
+              className={`mt-1 block text-sm text-ict-fg-mute ${open ? "" : "line-clamp-2"}`}
             >
               {unit.competencyStatement}
             </span>
 
             {/* Period weight, drawn as a share of the heaviest unit on the page. */}
             <span className="mt-4 block">
-              <span className="block h-1.5 w-full overflow-hidden rounded-full bg-ict-paper-200">
+              <span className="block h-1.5 w-full overflow-hidden rounded-full bg-ict-surface-sunken">
                 <span
-                  className="block h-full origin-left rounded-full transition-transform duration-[900ms] ease-out"
+                  className="block h-full origin-left rounded-full transition-transform duration-[340ms] ease-ict-out"
                   style={{
-                    background: tone.gradTo,
+                    background: tone.accent,
                     // Scaling a full-width bar keeps this on the compositor;
                     // animating `width` would reflow on every frame.
                     transform: `scaleX(var(--weight, 0.1))`,
                   }}
                 />
               </span>
-              <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ict-ink-400">
+              <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ict-fg-mute">
                 <span className="inline-flex items-center gap-1">
                   <Icon name="description" className="!text-sm" />
                   {unit.lessons.length} lesson{unit.lessons.length === 1 ? "" : "s"}
                 </span>
                 {nextClass ? (
-                  <span className="inline-flex items-center gap-1" style={{ color: tone.ink }}>
+                  <span className="inline-flex items-center gap-1 text-ict-accent-fg">
                     <Icon name="live_tv" className="!text-sm" />
                     <ClassStatus topicClass={nextClass} />
                   </span>
@@ -172,7 +156,7 @@ export function UnitStation({
           <span className="flex shrink-0 flex-col items-end gap-3">
             <Icon
               name="expand_more"
-              className={`!text-2xl text-ict-ink-400 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+              className={`!text-2xl text-ict-fg-mute transition-transform duration-[200ms] ease-ict ${open ? "rotate-180" : ""}`}
             />
           </span>
         </button>
@@ -181,16 +165,16 @@ export function UnitStation({
             yet, which is the one way to get a smooth open on variable content. */}
         <div
           id={panelId}
-          className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+          className={`grid transition-[grid-template-rows] duration-[340ms] ease-ict-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
         >
           <div className="overflow-hidden">
             <div className="border-t px-4 pt-5 pb-6 sm:px-6" style={{ borderColor: tone.line }}>
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-xs font-bold tracking-wide text-ict-ink-400 uppercase">
+                <p className="text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
                   Join the class for any topic below
                 </p>
                 <Link
-                  href={`/syllabus/${subjectId}/${unit.id}`}
+                  href={`${unitHrefBase}/${unit.id}`}
                   className="inline-flex items-center gap-1 text-xs font-semibold hover:underline"
                   style={{ color: tone.ink }}
                 >
@@ -206,14 +190,14 @@ export function UnitStation({
                   return (
                     <li
                       key={lesson.id}
-                      className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-ict-card border p-3 transition-colors duration-200"
+                      className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-ict-card border p-3 transition-colors duration-[120ms] ease-ict"
                       style={{
-                        borderColor: isMatch ? tone.line : "var(--color-ict-paper-300)",
+                        borderColor: isMatch ? tone.line : "var(--color-ict-line)",
                         background: isMatch ? tone.soft : undefined,
                       }}
                     >
                       <span
-                        className="flex size-9 shrink-0 items-center justify-center rounded-xl text-xs font-extrabold"
+                        className="flex size-9 shrink-0 items-center justify-center rounded-ict-md text-xs font-extrabold"
                         style={{ background: tone.soft, color: tone.ink }}
                       >
                         {lesson.id}
@@ -223,7 +207,7 @@ export function UnitStation({
                           crushing the lesson title into a column of one word. */}
                       <span className="min-w-[10rem] flex-1">
                         <span className="block leading-snug font-semibold">{lesson.title}</span>
-                        <span className="mt-0.5 block text-xs text-ict-ink-400">
+                        <span className="mt-0.5 block text-xs text-ict-fg-mute">
                           {lesson.periods} periods · {lesson.examObjectives.length} exam objectives
                         </span>
                       </span>
@@ -264,7 +248,7 @@ export function UnitStation({
                           </span>
                           <ClassStatus
                             topicClass={topicClass}
-                            className="block text-xs text-ict-ink-400"
+                            className="block text-xs text-ict-fg-mute"
                           />
                         </span>
                         <ClassCta
@@ -278,14 +262,14 @@ export function UnitStation({
                   </ul>
                 </div>
               ) : (
-                <div className="mt-4 rounded-ict-card border border-dashed border-ict-paper-300 p-4">
-                  <p className="flex items-center gap-1.5 text-sm font-semibold text-ict-ink-900">
+                <div className="mt-4 rounded-ict-card border border-dashed border-ict-line p-4">
+                  <p className="flex items-center gap-1.5 text-sm font-semibold text-ict-fg">
                     <span style={{ color: tone.ink }}>
                       <Icon name="notifications_active" className="!text-base" />
                     </span>
                     Want this unit taught live?
                   </p>
-                  <p className="mt-1 text-xs text-ict-ink-400">
+                  <p className="mt-1 text-xs text-ict-fg-mute">
                     Leave your email and we&apos;ll tell you the moment a class on{" "}
                     {unit.title.toLowerCase()} is scheduled.
                   </p>
@@ -313,7 +297,7 @@ function Chip({
 }) {
   return (
     <span
-      className="rounded-full px-2 py-0.5 text-[11px] font-bold"
+      className="rounded-full px-2 py-0.5 text-xs font-bold"
       style={{ background: tone.soft, color: tone.ink }}
     >
       {children}

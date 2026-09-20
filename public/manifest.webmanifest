@@ -1,17 +1,24 @@
 {
+  "id": "/dashboard",
   "name": "ICT Campus — O/L & A/L ICT Tuition",
   "short_name": "ICT Campus",
   "description": "Live interactive ICT tuition for Sri Lankan O/L and A/L students.",
   "start_url": "/dashboard",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#0b1020",
-  "theme_color": "#0b1020",
+  "background_color": "#0e0c0b",
+  "theme_color": "#0e0c0b",
   "categories": ["education"],
   "lang": "en",
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "My classes", "short_name": "Classes", "url": "/classes" },
+    { "name": "Free library", "short_name": "Library", "url": "/library" },
+    { "name": "Account & billing", "short_name": "Account", "url": "/account" }
   ]
 }

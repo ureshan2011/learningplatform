@@ -6,7 +6,7 @@ import { hasAccess } from "@/lib/payments/entitlements";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { paymentsPaused } from "@/lib/payments/launch";
 import { formatDate, formatLKR } from "@/lib/format";
-import { getT, getLocale, localeAttrs } from "@/lib/i18n/server";
+import { getT, getLocale } from "@/lib/i18n/server";
 import {
   AI_NOTE,
   PACK_BUNDLED_FILES,
@@ -30,6 +30,7 @@ import {
   StatusChip,
   StatusDot,
 } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 
 /**
  * The Campus Survival Pack, for a signed-in student.
@@ -55,13 +56,12 @@ export default async function PackPage({
   if (!subject?.product) notFound();
   const product = subject.product;
 
-  const [access, payhere, paymentSettings, items, t, loc, locale] = await Promise.all([
+  const [access, payhere, paymentSettings, items, t, locale] = await Promise.all([
     hasAccess(user.uid, subjectId),
     getPayHereConfig(),
     getPaymentSettings(),
     listContent(subjectId),
     getT(),
-    localeAttrs(),
     getLocale(),
   ]);
 
@@ -90,7 +90,7 @@ export default async function PackPage({
     subject.id === SURVIVAL_PACK.id ? PACK_BUNDLED_FILES.filter((f) => !f.slot) : [];
 
   return (
-    <main lang={loc.lang} className={loc.className}>
+    <PageShell width="reading">
       <PageHeader title={subject.name} subtitle={pick(SURVIVAL_PACK.tagline, locale)} />
 
       <div className="mt-5 space-y-3">
@@ -241,6 +241,6 @@ export default async function PackPage({
 
         <p className="pt-2 text-xs text-ict-ink-400">{pick(AI_NOTE, locale)}</p>
       </div>
-    </main>
+    </PageShell>
   );
 }

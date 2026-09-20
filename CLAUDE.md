@@ -79,15 +79,50 @@ Rules that are easy to break:
 8. Motion is a 8-12px translate plus fade, 120/200/340ms, `--ease-ict`. No
    bounce, no spring, no infinite loops, never scale-from-zero.
 
+Rules 1, 2 and 8 are enforced by `eslint.config.mjs` across **everything
+behind sign-in** and the components it is built from — gradient fills,
+off-brand radii, off-scale durations and infinite decorative animation are
+warnings, not prose. The whole signed-in surface is at zero. Only the public
+marketing pages, which still use their own `--lp-*` aliases, sit outside it.
+
+**Colour is asked for by role, not by name.** `components/ds/` never writes
+`bg-ict-ink-850`; it writes `bg-ict-surface-card`, `border-ict-line`,
+`text-ict-fg`, `bg-ict-feature`. Those roles are declared twice at the top of
+`globals.css` — once at `:root` for cream, once inside `.ict-app` for dark —
+so **one component renders correctly in both worlds**. That is what lets the
+syllabus, the lesson pages and the free library serve a public SEO route and a
+signed-in screen from the same file. Card elevation is the one exception:
+Tailwind resolves a shadow theme value at build time, so it lives in a plain
+`:root` and is used as `shadow-(--shadow-ict-card)`.
+
+`components/ds-cream/` is the older cream-only twin, still used by the
+marketing pages. New shared work comes from `components/ds/`.
+
 The `.ict-app` scope also remaps the legacy `--color-awaken-*` variables to
 their dark equivalents, so a screen nobody has migrated yet still renders
-correctly on near-black. That is a floor, not a licence to skip the redesign.
+correctly on near-black. That is a floor, not a licence to skip the redesign —
+and nothing behind sign-in stands on it any more: the teacher console was the
+last holdout and is on the role tokens now. The remap is kept for the public
+pages and as a safety net for anything pasted in from the old world.
 
 **Navigation is `components/nav/AppShell.tsx`** for both roles: a 232px dark
 rail on desktop, a bottom tab bar plus a "More" sheet on mobile. Route-group
 layouts (`app/(student)/layout.tsx`, `app/(teacher)/layout.tsx`) build the nav;
 pages render only their own content. Never add a per-page header or a "back to
 console" link — the rail is the way back.
+
+**Never link a signed-in screen to a public page.** The rail used to send
+students to `/syllabus/{id}`, `/notes`, `/past-papers` and `/command-words` —
+cream pages with the marketing header and no rail — which is how the product
+came to look like two different sites. The in-app equivalents are
+`/subjects/{id}/syllabus`, `/subjects/{id}/syllabus/{unitId}` and `/library`;
+the public routes stay put for search traffic and must keep their static
+generation, so never read a session on one.
+
+**Every signed-in page is wrapped in `PageShell`** (`components/ds/PageShell`),
+which owns the container and the `lang`/Sinhala attributes. It takes an intent
+— `wide`, `reading` or `narrow` — never a max-width. A fourth width is a
+design decision and belongs in that file.
 
 The supplied system is written for a New Zealand provider and its copy examples
 use NZ register ("Kia ora", "programme"). **Ignore that half** — this is a Sri

@@ -1,3 +1,12 @@
+import type { Viewport } from "next";
+
+/**
+ * The warm near-black behind the Android address bar, so the browser chrome
+ * matches `.ict-app` rather than flashing the public site's cream over a dark
+ * screen. Overrides the root layout's cream for this route group only.
+ */
+export const viewport: Viewport = { themeColor: "#0e0c0b" };
+
 import { resolveSession, isStaff } from "@/lib/auth/session";
 import { col } from "@/lib/firebase/admin";
 import { publicEnv } from "@/lib/env";

@@ -187,6 +187,91 @@
   --color-awaken-whatsapp: #25d366;
 }
 
+/*
+ * ============================================================================
+ * Role tokens — what a colour is FOR, rather than which colour it is.
+ * ============================================================================
+ *
+ * The palette above says what the colours are. This says what each one does on
+ * a screen: which is a card, which is a hairline, which is body text. The two
+ * worlds disagree about the answer — a card is white on cream and ink-850 on
+ * near-black — so the roles are declared twice, here for the cream world and
+ * again inside `.ict-app` for the dark one, and a component that asks for the
+ * role gets the right answer in both.
+ *
+ * That is what makes a component portable. `components/ds/` is written against
+ * these, so a card built once renders white on `/notes` and near-black on the
+ * dashboard with no branch, no duplicate file, and no `isDark` prop threaded
+ * through twelve levels of tree. It is the same mechanism the legacy
+ * `--color-awaken-*` remap uses further down, but chosen rather than inherited:
+ * those names describe a palette nobody uses any more, these describe a job.
+ *
+ * `static` because the `.ict-app` block below overrides them unconditionally,
+ * and a token Tailwind tree-shook out of `:root` would leave the cream world
+ * resolving against nothing.
+ *
+ * Adding one: it must be a job a screen actually has, and it must have a
+ * sensible answer in BOTH worlds. "The colour of the syllabus rail" is not a
+ * role, it is a call site.
+ */
+@theme static {
+  /* Surfaces, from the page backwards. */
+  --color-ict-surface: var(--color-ict-paper-100);
+  --color-ict-surface-card: var(--color-ict-paper-0);
+  --color-ict-surface-raised: var(--color-ict-paper-50);
+  --color-ict-surface-sunken: var(--color-ict-paper-200);
+  /* The wash under a transparent control on hover. */
+  --color-ict-surface-hover: var(--color-ict-paper-200);
+
+  /* Lines. `line` is the hairline around a card; `line-strong` is a border
+     meant to be read as an edge — an outline button, a selected state. */
+  --color-ict-line: var(--color-ict-paper-300);
+  --color-ict-line-strong: var(--color-ict-ink-900);
+  --color-ict-line-strong-hover: var(--color-ict-orange-500);
+
+  /* Text, in descending order of how much it wants to be read. */
+  --color-ict-fg: var(--color-ict-ink-900);
+  --color-ict-fg-soft: var(--color-ict-ink-500);
+  --color-ict-fg-mute: var(--color-ict-ink-400);
+  --color-ict-fg-dim: var(--color-ict-ink-300);
+
+  /* Orange and red as TEXT, which wants a darker step than the same hue as a
+     fill — the ramp that reads on near-black is washed out on white. */
+  --color-ict-accent-fg: var(--color-ict-orange-600);
+  --color-ict-danger-fg: var(--color-ict-red-500);
+
+  /*
+   * The one surface per screen that steps outside the base palette to carry
+   * the most important thing on it. The system inverts it deliberately
+   * between worlds: cocoa on near-black, near-black on cream.
+   */
+  --color-ict-feature: var(--color-ict-ink-900);
+  --color-ict-feature-line: var(--color-ict-ink-900);
+  --color-ict-on-feature: var(--color-ict-paper-50);
+  --color-ict-on-feature-soft: var(--color-ict-ink-200);
+
+}
+
+/*
+ * Card elevation — the one role that cannot live in `@theme`.
+ *
+ * A drop shadow is how a white card separates from cream; on near-black it
+ * does nothing at all, so there the same role is the inset top highlight
+ * instead. Both mean "this card sits above the page".
+ *
+ * It sits in a plain `:root` rather than the block above because Tailwind
+ * resolves a *shadow* theme value at compile time — `shadow-ict-card` would
+ * have been emitted as a literal `var(--shadow-ict-sm)` and the `.ict-app`
+ * override below would have done nothing, quietly giving every dark card a
+ * drop shadow it cannot show. Colour utilities are emitted as `var(--color-…)`
+ * and do resolve at runtime, which is why every other role works from
+ * `@theme`. Call sites use `shadow-(--shadow-ict-card)`, the arbitrary-property
+ * form, which always indirects.
+ */
+:root {
+  --shadow-ict-card: var(--shadow-ict-sm);
+}
+
 /* Slow, cheap drift for the hero's gradient blobs — pure CSS, GPU-composited,
    no images, so it costs nothing on a slow connection. */
 @keyframes awaken-drift {
@@ -217,104 +302,63 @@
 /*
  * Syllabus explorer motion.
  *
- * Every animation below moves only `transform`, `opacity` or `filter`, so the
- * compositor handles it on the GPU and a mid-range Android phone on a slow
- * connection still scrolls at 60fps. Nothing here animates layout properties
- * (width, top, height) — those force a reflow on every frame, which is what
- * makes "rich" pages feel broken on the devices most students actually use.
+ * Every animation here moves only `transform` and `opacity`, so the compositor
+ * handles it on the GPU and a mid-range Android phone on a slow connection
+ * still scrolls at 60fps. Nothing animates a layout property (width, top,
+ * height) — those force a reflow on every frame, which is what makes "rich"
+ * pages feel broken on the devices most students actually use.
+ *
+ * ## What was removed, and why
+ *
+ * This block used to hold five more effects: a pointer-tracked 3D tilt, a
+ * white light sweeping across each card on hover, an icon bobbing on a 5.5s
+ * loop, a spark travelling down the rail forever, and a pulsing ring behind
+ * every "live" dot. They were the syllabus's own vocabulary, and none of it
+ * appears anywhere else in the product — which is most of why these pages read
+ * as a different site from the dashboard.
+ *
+ * The system's motion rule is one line (CLAUDE.md, "Design system", rule 8):
+ * an 8-12px translate plus a fade, at 120/200/340ms on `--ease-ict`, no bounce
+ * and **no infinite loops**. A card that lifts 2px on hover says "this is
+ * pressable" just as well as one that tilts in perspective, and it says it in
+ * the same language as every card on the dashboard. `ict-lift` and `ict-press`
+ * already existed; the syllabus now uses them.
+ *
+ * What stays is the one thing that carries information rather than decoration:
+ * content arriving as you scroll to it. Retuned from 26px-plus-a-scale over
+ * 650ms to the system's 10px over 340ms.
  */
 
 /* Cards, rows and stations fade up as they scroll into view. The delay is set
    per element from React as --reveal-delay, which is what staggers a grid. */
 .syl-reveal {
   opacity: 0;
-  transform: translate3d(0, 26px, 0) scale(0.985);
+  transform: translate3d(0, 10px, 0);
   transition:
-    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 340ms var(--ease-ict-out),
+    transform 340ms var(--ease-ict-out);
   transition-delay: var(--reveal-delay, 0ms);
   will-change: transform, opacity;
+
+  /* Weight bars inside a revealed block grow from nothing to their real share
+     as the block arrives, so the comparison between units is something you
+     watch happen rather than something already drawn. The element carrying
+     --weight-target sets its own value; the bar inside only reads --weight. */
+  --weight: 0.04;
 }
 
 .syl-reveal[data-revealed="true"] {
   opacity: 1;
   transform: none;
-}
-
-/* Weight bars inside a revealed block grow from nothing to their real share
-   as the block arrives, so the comparison between units is something you
-   watch happen rather than something already drawn. The element carrying
-   --weight-target sets its own value; the bar inside only reads --weight. */
-.syl-reveal {
-  --weight: 0.04;
-}
-
-.syl-reveal[data-revealed="true"] {
   --weight: var(--weight-target, 1);
 }
 
-/* A light sweeps across the card on hover — the whole effect is one pseudo
-   element translating, so it costs nothing when nobody is hovering. */
-.syl-sheen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.6) 50%, transparent 58%);
-  transform: translate3d(-130%, 0, 0);
-  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.group:hover .syl-sheen::after,
-.group:focus-visible .syl-sheen::after {
-  transform: translate3d(130%, 0, 0);
-}
-
-/* Pointer-tracked tilt. React writes --tilt-x/--tilt-y on mousemove; the
-   element itself only ever reads them, so no re-render happens per frame. */
-.syl-tilt {
-  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
-    translate3d(0, var(--lift, 0), 0);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-style: preserve-3d;
-}
-
-@keyframes syl-pulse-ring {
-  0% { transform: scale(0.85); opacity: 0.75; }
-  70% { transform: scale(2.1); opacity: 0; }
-  100% { transform: scale(2.1); opacity: 0; }
-}
-
-.syl-pulse-ring {
-  animation: syl-pulse-ring 1.9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-}
-
-@keyframes syl-float {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(0, -7px, 0); }
-}
-
-.syl-float {
-  animation: syl-float 5.5s ease-in-out infinite;
-}
-
-/* The rail's travelling highlight — shows the path is live, not a static line. */
-@keyframes syl-rail-spark {
-  0% { transform: translate3d(0, -40px, 0); opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { transform: translate3d(0, calc(100% + 40px), 0); opacity: 0; }
-}
-
-.syl-rail-spark {
-  animation: syl-rail-spark 4.5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-}
-
-/* Faint dotted graph paper behind the hero — a data-free texture that costs
-   one gradient rather than an image request. */
+/* Faint dotted graph paper behind the hero — a texture, not a fill, and the
+   only gradient left in this file. Tinted from the hairline role so it is a
+   warm grey on cream and a warm near-black on dark, rather than the fixed
+   cool rgba it was, which vanished entirely inside `.ict-app`. */
 .syl-grid-bg {
-  background-image: radial-gradient(circle at 1px 1px, rgba(21, 23, 31, 0.07) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, var(--color-ict-line) 1px, transparent 0);
   background-size: 26px 26px;
   mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 35%, transparent 78%);
 }
@@ -322,19 +366,6 @@
 @media (prefers-reduced-motion: reduce) {
   .syl-reveal {
     opacity: 1;
-    transform: none;
-    transition: none;
-  }
-
-  .syl-sheen::after,
-  .syl-pulse-ring,
-  .syl-float,
-  .syl-rail-spark {
-    animation: none;
-    transition: none;
-  }
-
-  .syl-tilt {
     transform: none;
     transition: none;
   }
@@ -401,6 +432,40 @@ body {
   --color-awaken-warn-soft: rgba(232, 163, 23, 0.15);
   --color-awaken-indigo: var(--color-ict-ink-200);
   --color-awaken-indigo-soft: var(--color-ict-ink-700);
+
+  /*
+   * The dark world's answers to the role tokens declared near the top of this
+   * file. Same jobs, different colours — this is the whole of what makes a
+   * `components/ds/` component render correctly in both worlds.
+   */
+  --color-ict-surface: var(--color-ict-ink-900);
+  --color-ict-surface-card: var(--color-ict-ink-850);
+  --color-ict-surface-raised: var(--color-ict-ink-800);
+  --color-ict-surface-sunken: var(--color-ict-ink-700);
+  --color-ict-surface-hover: var(--color-ict-ink-800);
+
+  --color-ict-line: var(--color-ict-border-dark);
+  --color-ict-line-strong: var(--color-ict-ink-500);
+  --color-ict-line-strong-hover: var(--color-ict-ink-300);
+
+  --color-ict-fg: var(--color-ict-paper-50);
+  --color-ict-fg-soft: var(--color-ict-ink-300);
+  --color-ict-fg-mute: var(--color-ict-ink-400);
+  --color-ict-fg-dim: var(--color-ict-ink-500);
+
+  --color-ict-accent-fg: var(--color-ict-orange-400);
+  /* The system red lightened for near-black; `--color-ict-red-500` itself
+     muddies against it. Was an inline `#f0685a` in four components. */
+  --color-ict-danger-fg: #f0685a;
+
+  /* Cocoa here, near-black on cream — the deliberate inversion. */
+  --color-ict-feature: var(--color-ict-cocoa-700);
+  --color-ict-feature-line: var(--color-ict-cocoa-600);
+  --color-ict-on-feature: var(--color-ict-paper-50);
+  --color-ict-on-feature-soft: var(--color-ict-orange-200);
+
+  /* A drop shadow does not read on near-black; the inset highlight does. */
+  --shadow-ict-card: var(--shadow-ict-inset);
 
   background: var(--color-ict-ink-900);
   color: var(--color-ict-paper-50);

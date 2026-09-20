@@ -30,3 +30,6 @@ coverage/
 .campus-match-pdfs/
 __pycache__/
 *.pyc
+
+# Build artifact of a pinned dependency — see scripts/copy-pdf-worker.mjs
+public/pdf.worker.min.mjs

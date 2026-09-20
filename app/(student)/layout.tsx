@@ -1,3 +1,12 @@
+import type { Viewport } from "next";
+
+/**
+ * The warm near-black behind the Android address bar, so the browser chrome
+ * matches `.ict-app` rather than flashing the public site's cream over a dark
+ * screen. Overrides the root layout's cream for this route group only.
+ */
+export const viewport: Viewport = { themeColor: "#0e0c0b" };
+
 import { resolveSession } from "@/lib/auth/session";
 import { listCohorts, listEnrollments, listProducts, listSubjects } from "@/lib/queries";
 import { getLocale, getT } from "@/lib/i18n/server";
@@ -10,6 +19,8 @@ import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { Chip } from "@/components/ds";
+import { SearchTrigger } from "@/components/search/SearchTrigger";
+import type { SearchEntry } from "@/lib/search";
 
 /**
  * The shell for the whole signed-in student area.
@@ -69,7 +80,14 @@ export default async function StudentLayout({ children }: { children: React.Reac
   const groups: NavGroup[] = [];
   const mobileTabs: NavItem[] = [{ href: "/dashboard", label: t("nav.home"), icon: "home" }];
 
-  groups.push({ items: [{ href: "/dashboard", label: t("nav.dashboard"), icon: "home" }] });
+  groups.push({
+    items: [
+      { href: "/dashboard", label: t("nav.dashboard"), icon: "home" },
+      // Above the subject group on purpose: "when is my next class" is the
+      // question a student opens this app to answer more often than any other.
+      { href: "/classes", label: t("nav.classes"), icon: "event" },
+    ],
+  });
 
   if (primary) {
     const study: NavItem[] = [
@@ -82,7 +100,16 @@ export default async function StudentLayout({ children }: { children: React.Reac
       },
       { href: `/subjects/${primary.id}/lab`, label: t("nav.codeLab"), icon: "code" },
       { href: `/subjects/${primary.id}`, label: t("nav.notesPapers"), icon: "description" },
-      { href: `/syllabus/${primary.id}`, label: t("nav.syllabus"), icon: "auto_stories" },
+      {
+        // The in-app roadmap, not the public `/syllabus/{id}` page. The public
+        // one stays for search traffic; sending a signed-in student there
+        // dropped them out of the dark world onto a cream page with a guest
+        // header and no rail.
+        href: `/subjects/${primary.id}/syllabus`,
+        label: t("nav.syllabus"),
+        icon: "auto_stories",
+        matchPrefix: true,
+      },
       {
         href: `/subjects/${primary.id}/certificate`,
         label: t("nav.certificate"),
@@ -91,14 +118,13 @@ export default async function StudentLayout({ children }: { children: React.Reac
     ];
     groups.push({ label: primary.name, items: study });
     mobileTabs.push(
+      { href: "/classes", label: t("nav.classes"), icon: "event" },
       { href: study[0].href, label: t("nav.practice"), icon: "quiz" },
       { href: study[1].href, label: t("nav.mocks"), icon: "schedule", matchPrefix: true },
-      { href: study[3].href, label: t("nav.notes"), icon: "description" },
     );
   } else {
     mobileTabs.push(
-      { href: "/notes", label: t("nav.notes"), icon: "description" },
-      { href: "/syllabus", label: t("nav.syllabus"), icon: "auto_stories" },
+      { href: "/library", label: t("nav.notes"), icon: "description" },
       { href: "/account", label: t("nav.account"), icon: "account_circle" },
     );
   }
@@ -136,13 +162,13 @@ export default async function StudentLayout({ children }: { children: React.Reac
     groups.push({ label: t("campus.title"), items: campusItems });
   }
 
+  // One in-app destination rather than three links out to the public site.
+  // `/notes`, `/past-papers` and `/command-words` are still there for search
+  // traffic; `/library` is the same material for someone already signed in,
+  // with per-click signed download URLs the cached public page cannot offer.
   groups.push({
     label: t("nav.groupFree"),
-    items: [
-      { href: "/notes", label: t("nav.freeNotes"), icon: "description" },
-      { href: "/past-papers", label: t("nav.pastPapers"), icon: "receipt_long" },
-      { href: "/command-words", label: t("nav.commandWords"), icon: "fact_check" },
-    ],
+    items: [{ href: "/library", label: t("nav.library"), icon: "description" }],
   });
 
   groups.push({
@@ -163,6 +189,19 @@ export default async function StudentLayout({ children }: { children: React.Reac
       ],
     });
   }
+
+  // Every screen the rail offers, as search entries. Derived from `groups`
+  // rather than written out again: a nav item added above is searchable
+  // without anyone remembering to add it here twice.
+  const searchPages: SearchEntry[] = groups.flatMap((group) =>
+    group.items.map((item) => ({
+      t: item.label,
+      s: group.label ?? t("nav.dashboard"),
+      h: item.href,
+      k: "page" as const,
+      q: `${item.label} ${group.label ?? ""}`.toLowerCase(),
+    })),
+  );
 
   const promo: ShellPromo | undefined =
     activeIds.size === 0 && !isStaff && primary
@@ -201,11 +240,31 @@ export default async function StudentLayout({ children }: { children: React.Reac
         signOut: t("nav.signOut"),
       }}
       topbarRight={
-        activeIds.size > 0 ? (
-          <Chip icon="check_circle">{t("status.subscribed")}</Chip>
-        ) : (
-          <Chip icon="lock">{t("status.notSubscribed")}</Chip>
-        )
+        <>
+          {/* The rail's own screens are seeded into search from here, so a
+              student who types "mock" reaches mock exams whether or not the
+              index has loaded — and so search works at all when it cannot. */}
+          <SearchTrigger
+            staticPages={searchPages}
+            labels={{
+              search: t("search.search"),
+              placeholder: t("search.placeholder"),
+              empty: t("search.empty"),
+              hint: t("search.hint"),
+              close: t("search.close"),
+              failed: t("search.failed"),
+            }}
+          />
+          {activeIds.size > 0 ? (
+            <Chip icon="check_circle" className="hidden sm:inline-flex">
+              {t("status.subscribed")}
+            </Chip>
+          ) : (
+            <Chip icon="lock" className="hidden sm:inline-flex">
+              {t("status.notSubscribed")}
+            </Chip>
+          )}
+        </>
       }
     >
       {/* Students only. The owner opens these same screens on a laptop, a phone

@@ -4,12 +4,9 @@ import type { Metadata } from "next";
 import { getSubject, listSubjectSessions, listUnits } from "@/lib/queries";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Icon } from "@/components/ui/Icon";
-import { SyllabusHero } from "@/components/syllabus/SyllabusHero";
-import { SyllabusExplorer } from "@/components/syllabus/SyllabusExplorer";
-import { indexClassesBySyllabus, toTopicClass } from "@/lib/content/topic-classes";
+import { SubjectSyllabusBody } from "@/components/syllabus/SubjectSyllabusBody";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { courseJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
-import { ButtonLink, Card } from "@/components/ds-cream";
 import type { ClassSession } from "@/lib/types";
 
 /**
@@ -55,11 +52,6 @@ export default async function SubjectSyllabusPage({
     return [] as ClassSession[];
   });
 
-  const classIndex = indexClassesBySyllabus(units, sessions);
-  const totalLessons = units.reduce((n, u) => n + u.lessons.length, 0);
-  const totalPeriods = units.reduce((n, u) => n + u.periods, 0);
-  const nextClass = sessions[0] ? toTopicClass(sessions[0]) : undefined;
-
   return (
     <>
       <JsonLd
@@ -76,50 +68,20 @@ export default async function SubjectSyllabusPage({
       <main className="mx-auto max-w-6xl px-5 py-8 md:px-8">
         <Link
           href="/syllabus"
-          className="inline-flex items-center gap-1 text-sm text-ict-ink-400 transition-colors duration-[120ms] hover:text-ict-ink-900"
+          className="inline-flex items-center gap-1 text-sm text-ict-fg-mute transition-colors duration-[120ms] hover:text-ict-fg"
         >
           <Icon name="arrow_back" className="!text-base" />
           All syllabuses
         </Link>
 
         <div className="mt-4">
-          <SyllabusHero
-            subjectId={subjectId}
-            subjectName={subject.name}
-            gradeLabel={`A/L · ${subject.medium[0].toUpperCase()}${subject.medium.slice(1)} medium`}
-            unitCount={units.length}
-            lessonCount={totalLessons}
-            periodCount={totalPeriods}
-            classCount={sessions.length}
-            nextClass={nextClass}
+          <SubjectSyllabusBody
+            subject={subject}
+            units={units}
+            sessions={sessions}
+            unitHrefBase={`/syllabus/${subjectId}`}
           />
         </div>
-
-        <div id="roadmap" className="mt-10 scroll-mt-4">
-          {units.length === 0 ? (
-            <Card radius="card" className="p-6 text-sm text-ict-ink-400">
-              No syllabus breakdown has been loaded for {subject.name} yet.
-            </Card>
-          ) : (
-            <SyllabusExplorer subjectId={subjectId} units={units} classIndex={classIndex} />
-          )}
-        </div>
-
-        <Card variant="dark" radius="panel" className="mt-16 p-8 sm:p-12">
-          <div className="max-w-xl">
-            <h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-paper-50 sm:text-3xl">
-              Pick a topic. Sit in the class that teaches it.
-            </h2>
-            <p className="mt-3 leading-relaxed text-ict-ink-300">
-              Live lessons in Sinhala, quizzes during class, an island-wide leaderboard
-              and every past paper worked through step by step. Every subject starts
-              with a free 7-day trial — no card needed.
-            </p>
-            <ButtonLink href={`/go?do=trial&subject=${subjectId}`} variant="primary" className="mt-6">
-              Start my free trial
-            </ButtonLink>
-          </div>
-        </Card>
       </main>
     </>
   );

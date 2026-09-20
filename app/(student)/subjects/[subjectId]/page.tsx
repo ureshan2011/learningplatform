@@ -4,7 +4,7 @@ import { requirePageUser } from "@/lib/auth/session";
 import { getSubject, listContent, listUnits } from "@/lib/queries";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { formatDate, formatLKR, formatSessionTime } from "@/lib/format";
-import { DownloadButton } from "@/components/content/DownloadButton";
+import { ResourceActions } from "@/components/content/ResourceActions";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { SubjectTabs } from "@/components/subject/SubjectTabs";
@@ -21,9 +21,11 @@ import {
   SectionBar,
   StatusChip,
 } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { paymentsPaused } from "@/lib/payments/launch";
-import { getT, localeAttrs } from "@/lib/i18n/server";
+import { getT } from "@/lib/i18n/server";
+import { resourceLabels } from "@/lib/i18n/resource-labels";
 import type { ContentKind } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -35,6 +37,11 @@ const KIND_LABEL: Record<ContentKind, string> = {
   replay: "Class replay",
   pack: "Pack file",
 };
+
+/** Kinds the in-app reader can actually render. A replay is video and a pack
+ *  file is whatever the teacher uploaded, so both stay download-only rather
+ *  than opening a reader that shows nothing. */
+const READABLE_KINDS: ReadonlySet<ContentKind> = new Set(["notes", "past_paper", "marking_scheme"]);
 
 const KIND_ICON: Record<ContentKind, IconName> = {
   notes: "description",
@@ -64,11 +71,10 @@ export default async function SubjectPage({
   if (!subject) notFound();
 
   const access = await hasAccess(user.uid, subjectId);
-  const [items, units, t, loc] = await Promise.all([
+  const [items, units, t] = await Promise.all([
     listContent(subjectId),
     listUnits(subjectId),
     getT(),
-    localeAttrs(),
   ]);
 
   // Locked students still see the catalogue — knowing what they are missing is
@@ -88,7 +94,7 @@ export default async function SubjectPage({
   const trialSpent = paused && Boolean(access.enrollment);
 
   return (
-    <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
+    <PageShell>
       <PageHeader
         eyebrow={`${subject.grade} · ${subject.medium} medium`}
         title={subject.name}
@@ -116,6 +122,7 @@ export default async function SubjectPage({
             mockExams: t("nav.mockExams"),
             predictedPaper: t("nav.predictedPaper"),
             codeLab: t("nav.codeLab"),
+            syllabus: t("nav.syllabus"),
             certificate: t("nav.certificate"),
           }}
         />
@@ -198,8 +205,8 @@ export default async function SubjectPage({
                 title={t("subject.nothingPublished")}
                 body="Your teacher has not uploaded notes for this subject. Free notes are available meanwhile."
                 action={
-                  <ButtonLink href="/notes" variant="outline" size="sm" arrow="right">
-                    Browse free notes
+                  <ButtonLink href="/library" variant="outline" size="sm" arrow="right">
+                    Browse the free library
                   </ButtonLink>
                 }
               />
@@ -222,7 +229,12 @@ export default async function SubjectPage({
                         </p>
                       </div>
                     </div>
-                    <DownloadButton contentId={item.id} label={t("subject.download")} />
+                    <ResourceActions
+                      contentId={item.id}
+                      title={item.title}
+                      readable={READABLE_KINDS.has(item.kind)}
+                      labels={resourceLabels(t)}
+                    />
                   </li>
                 ))}
               </ul>
@@ -234,14 +246,14 @@ export default async function SubjectPage({
               <SectionBar
                 title="Syllabus"
                 hint={`${units.length} units · ${units.reduce((n, u) => n + u.lessons.length, 0)} lessons`}
-                href={`/syllabus/${subjectId}`}
+                href={`/subjects/${subjectId}/syllabus`}
                 linkLabel="Full breakdown"
               />
               <div className="grid gap-2 sm:grid-cols-2">
                 {units.slice(0, 6).map((unit) => (
                   <CardLink
                     key={unit.id}
-                    href={`/syllabus/${subjectId}/${unit.id}`}
+                    href={`/subjects/${subjectId}/syllabus/${unit.id}`}
                     radius="md"
                     className="flex items-start gap-3 p-4"
                   >
@@ -371,7 +383,7 @@ export default async function SubjectPage({
           </Card>
         </aside>
       </div>
-    </main>
+    </PageShell>
   );
 }
 

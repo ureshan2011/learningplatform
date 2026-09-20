@@ -61,7 +61,7 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
 
   if (slips.length === 0) {
     return (
-      <p className="mt-3 rounded-xl border border-dashed border-(--color-awaken-line) bg-(--color-awaken-card) p-5 text-sm text-(--color-awaken-ink-soft)">
+      <p className="mt-3 rounded-ict-md border border-dashed border-ict-line bg-ict-surface-card p-5 text-sm text-ict-fg-soft">
         No slips waiting.
       </p>
     );
@@ -73,27 +73,27 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
         {slips.map((slip) => (
           <li
             key={slip.id}
-            className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+            className="rounded-ict-md border border-ict-line bg-ict-surface-card p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-(--color-awaken-indigo-soft) text-sm font-bold text-(--color-awaken-indigo)">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ict-surface-sunken text-sm font-bold text-ict-fg-soft">
                   {slip.studentName.trim().charAt(0).toUpperCase() || "?"}
                 </span>
                 <div className="min-w-0">
                   <p className="truncate font-semibold">{slip.studentName}</p>
-                  <p className="mt-0.5 truncate text-sm text-(--color-awaken-ink-soft)">
+                  <p className="mt-0.5 truncate text-sm text-ict-fg-soft">
                     {slip.subjectName} · {slip.submittedAt}
                     {slip.studentPhone ? ` · ${slip.studentPhone}` : ""}
                   </p>
                 </div>
               </div>
-              <p className="shrink-0 text-lg font-bold text-(--color-awaken-accent)">{slip.amount}</p>
+              <p className="shrink-0 text-lg font-bold text-ict-accent-fg">{slip.amount}</p>
             </div>
 
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <label className="block">
-                <span className="mb-1 block text-xs font-semibold text-(--color-awaken-ink-soft)">
+                <span className="mb-1 block text-xs font-semibold text-ict-fg-soft">
                   Amount actually deposited (Rs)
                 </span>
                 <input
@@ -103,11 +103,11 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
                   onChange={(e) =>
                     setAmounts((prev) => ({ ...prev, [slip.id]: Number(e.target.value) }))
                   }
-                  className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2 text-sm outline-none focus:border-(--color-awaken-accent)"
+                  className="w-full rounded-full border border-ict-line bg-ict-surface-card px-3 py-2 text-sm outline-none focus:border-ict-orange-500"
                 />
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs font-semibold text-(--color-awaken-ink-soft)">
+                <span className="mb-1 block text-xs font-semibold text-ict-fg-soft">
                   Deposit reference on the slip
                 </span>
                 <input
@@ -115,18 +115,18 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
                   onChange={(e) => setRefs((prev) => ({ ...prev, [slip.id]: e.target.value }))}
                   placeholder="Optional"
                   maxLength={120}
-                  className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2 text-sm outline-none focus:border-(--color-awaken-accent)"
+                  className="w-full rounded-full border border-ict-line bg-ict-surface-card px-3 py-2 text-sm outline-none focus:border-ict-orange-500"
                 />
               </label>
             </div>
 
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-(--color-awaken-line) pt-3">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-ict-line pt-3">
               {slip.slipUrl ? (
                 <a
                   href={slip.slipUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm font-medium text-(--color-awaken-deep) underline"
+                  className="inline-flex items-center gap-1 text-sm font-medium text-ict-accent-fg underline"
                 >
                   <Icon name="image" className="!text-base" />
                   View slip
@@ -138,7 +138,7 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
                 <button
                   onClick={() => review(slip.id, "reject")}
                   disabled={busyId === slip.id}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-3 py-2 text-sm font-medium hover:border-(--color-awaken-danger)/40 hover:text-(--color-awaken-danger) disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-ict-line px-3 py-2 text-sm font-medium hover:border-ict-red-500/40 hover:text-ict-danger-fg disabled:opacity-50"
                 >
                   <Icon name="cancel" className="!text-base" />
                   Reject
@@ -146,7 +146,7 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
                 <button
                   onClick={() => review(slip.id, "approve")}
                   disabled={busyId === slip.id}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-(--color-awaken-success) px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-ict-green-500 px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
                 >
                   <Icon name="check_circle" className="!text-base" />
                   Approve &amp; unlock
@@ -156,7 +156,7 @@ export function SlipReviewList({ slips }: { slips: PendingSlip[] }) {
           </li>
         ))}
       </ul>
-      {error ? <p className="mt-2 text-sm text-(--color-awaken-danger)">{error}</p> : null}
+      {error ? <p className="mt-2 text-sm text-ict-danger-fg">{error}</p> : null}
     </>
   );
 }

@@ -49,13 +49,13 @@ export function CampusMatchPublishToggle({
   }
 
   return (
-    <div className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+    <div className="rounded-ict-md border border-ict-line bg-ict-surface-card p-5 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="font-semibold">
             {published ? "On sale — students can buy this" : "Not on sale — hidden from students"}
           </p>
-          <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+          <p className="mt-1 text-sm text-ict-fg-soft">
             {published
               ? "Take it off sale if a figure looks wrong, or as soon as the UGC publishes a newer round."
               : "Read SOURCES.md and BACKTEST.md, and look at ten degree profiles, before you flip this."}
@@ -66,20 +66,20 @@ export function CampusMatchPublishToggle({
           disabled={busy || (stale && !published)}
           className={
             published
-              ? "shrink-0 rounded-lg border border-(--color-awaken-line) px-5 py-2.5 font-semibold disabled:opacity-50"
-              : "shrink-0 rounded-lg bg-(--color-awaken-accent) px-5 py-2.5 font-semibold text-white disabled:opacity-50"
+              ? "shrink-0 rounded-full border border-ict-line px-5 py-2.5 font-semibold disabled:opacity-50"
+              : "shrink-0 rounded-full bg-ict-orange-500 px-5 py-2.5 font-semibold text-white disabled:opacity-50"
           }
         >
           {busy ? "Saving…" : published ? "Take off sale" : "Put on sale"}
         </button>
       </div>
       {stale && !published ? (
-        <p className="mt-2 text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-2 text-sm text-ict-fg-soft">
           The data is out of date, so this cannot go on sale until the pipeline has run for the
           newest round.
         </p>
       ) : null}
-      {error ? <p className="mt-2 text-sm text-(--color-awaken-danger)">{error}</p> : null}
+      {error ? <p className="mt-2 text-sm text-ict-danger-fg">{error}</p> : null}
     </div>
   );
 }

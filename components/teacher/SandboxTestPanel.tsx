@@ -78,7 +78,7 @@ export function SandboxTestPanel({
     <form onSubmit={run} className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-3">
         <label className="block">
-          <span className="mb-1 block text-xs font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1 block text-xs font-semibold text-ict-fg-soft">
             Test student&apos;s phone
           </span>
           <input
@@ -86,16 +86,16 @@ export function SandboxTestPanel({
             required
             inputMode="tel"
             placeholder="077 123 4567"
-            className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2 text-sm outline-none focus:border-(--color-awaken-accent)"
+            className="w-full rounded-full border border-ict-line bg-ict-surface-card px-3 py-2 text-sm outline-none focus:border-ict-orange-500"
           />
         </label>
         <label className="block">
-          <span className="mb-1 block text-xs font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1 block text-xs font-semibold text-ict-fg-soft">
             Subject
           </span>
           <select
             name="subjectId"
-            className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2 text-sm"
+            className="w-full rounded-full border border-ict-line bg-ict-surface-card px-3 py-2 text-sm"
           >
             {subjects.map((s) => (
               <option key={s.id} value={s.id}>
@@ -105,12 +105,12 @@ export function SandboxTestPanel({
           </select>
         </label>
         <label className="block">
-          <span className="mb-1 block text-xs font-semibold text-(--color-awaken-ink-soft)">
+          <span className="mb-1 block text-xs font-semibold text-ict-fg-soft">
             Outcome to rehearse
           </span>
           <select
             name="statusCode"
-            className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2 text-sm"
+            className="w-full rounded-full border border-ict-line bg-ict-surface-card px-3 py-2 text-sm"
           >
             <option value="2">Payment successful</option>
             <option value="0">Pending</option>
@@ -118,7 +118,7 @@ export function SandboxTestPanel({
             <option value="-2">Failed</option>
             <option value="-3">Chargeback — ends this student&apos;s access</option>
           </select>
-          <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">
+          <span className="mt-1 block text-xs text-ict-fg-soft">
             The rehearsal runs the real handler, so a chargeback really does end the access this
             student has for the subject above. Pick a test account, not a paying one.
           </span>
@@ -128,16 +128,16 @@ export function SandboxTestPanel({
       <button
         type="submit"
         disabled={busy}
-        className="inline-flex items-center gap-2 rounded-lg border border-(--color-awaken-accent)/40 bg-(--color-awaken-accent-soft) px-4 py-2 text-sm font-semibold text-(--color-awaken-accent) disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-full border border-ict-orange-500/40 bg-ict-surface-raised px-4 py-2 text-sm font-semibold text-ict-accent-fg disabled:opacity-50"
       >
         <Icon name="rule" className="!text-base" />
         {busy ? "Running…" : "Run a sandbox test payment"}
       </button>
 
       {result ? (
-        <p className="text-sm font-semibold text-(--color-awaken-success)">{result}</p>
+        <p className="text-sm font-semibold text-ict-green-500">{result}</p>
       ) : null}
-      {error ? <p className="text-sm text-(--color-awaken-danger)">{error}</p> : null}
+      {error ? <p className="text-sm text-ict-danger-fg">{error}</p> : null}
     </form>
   );
 }

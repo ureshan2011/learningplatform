@@ -5,12 +5,13 @@ import { listEnrollments, listSubjects } from "@/lib/queries";
 import { formatDate, formatLKR } from "@/lib/format";
 import { formatLocal } from "@/lib/phone";
 import { publicEnv } from "@/lib/env";
-import { WhatsAppShareButton } from "@/components/ui/WhatsAppShareButton";
 import { ParentLinkPanel } from "@/components/account/ParentLinkPanel";
 import { DeleteMatchAnswers } from "@/components/account/DeleteMatchAnswers";
 import { getInputs } from "@/lib/campus-match/inputs";
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
-import { getLocale, getT, localeAttrs } from "@/lib/i18n/server";
+import { ReferralCard } from "@/components/account/ReferralCard";
+import { ReminderToggle } from "@/components/push/ReminderToggle";
+import { getLocale, getT } from "@/lib/i18n/server";
 import { Icon } from "@/components/ui/Icon";
 import {
   Badge,
@@ -22,6 +23,7 @@ import {
   SectionBar,
   StatusChip,
 } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import { MAX_DEVICES_PER_USER, type Payment, type User } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -44,7 +46,7 @@ const ROLE_LABEL: Record<string, string> = {
 export default async function AccountPage() {
   const session = await requirePageUser("/account");
 
-  const [t, locale, loc] = await Promise.all([getT(), getLocale(), localeAttrs()]);
+  const [t, locale] = await Promise.all([getT(), getLocale()]);
 
   const [snap, enrollments, subjects, payments, matchInputs] = await Promise.all([
     col.users().doc(session.uid).get(),
@@ -77,7 +79,7 @@ export default async function AccountPage() {
     .reduce((sum, p) => sum + p.amountLKR, 0);
 
   return (
-    <main lang={loc.lang} className={`mx-auto max-w-[1180px] px-4 py-5 sm:px-6 sm:py-6 ${loc.className}`}>
+    <PageShell>
       <PageHeader
         eyebrow={t("account.title")}
         title={user.name}
@@ -216,21 +218,22 @@ export default async function AccountPage() {
             </div>
           </Card>
 
-          <Card radius="card" className="p-5">
-            <Eyebrow>{t("dash.inviteTitle")}</Eyebrow>
-            <p className="mt-2 text-sm text-ict-ink-300">
-              Share your code — when they subscribe, you both get{" "}
-              <strong className="text-ict-paper-50">3 free days</strong>.
-            </p>
-            <p className="mt-3 truncate rounded-ict-sm border border-ict-border-dark bg-ict-ink-900 px-3 py-2 font-mono text-xs text-ict-ink-300">
-              {referralLink}
-            </p>
-            <div className="mt-3">
-              <WhatsAppShareButton
-                text={`Join me on ICT Campus for A/L ICT tuition — sign up with my code and we both get 3 free days.\n${referralLink}`}
-              />
-            </div>
-          </Card>
+          <ReminderToggle
+            vapidKey={publicEnv.vapidKey}
+            labels={{
+              title: t("remind.title"),
+              body: t("remind.body"),
+              on: t("remind.on"),
+              off: t("remind.enable"),
+              enable: t("remind.enable"),
+              disable: t("remind.disable"),
+              blocked: t("remind.blocked"),
+              unsupported: t("remind.unsupported"),
+              notConfigured: t("remind.notConfigured"),
+            }}
+          />
+
+          <ReferralCard link={referralLink} t={t} />
 
           <Card radius="card" className="p-5">
             <div className="flex items-center justify-between">
@@ -284,6 +287,6 @@ export default async function AccountPage() {
           ) : null}
         </aside>
       </div>
-    </main>
+    </PageShell>
   );
 }

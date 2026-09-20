@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { Icon } from "@/components/ui/Icon";
-import { ButtonLink, Card } from "@/components/ds-cream";
+import { ButtonLink, Card, StatusDot } from "@/components/ds-cream";
 import { track } from "@/lib/analytics";
 import { fetchWithSession, signInHref } from "@/lib/auth/session-client";
 
@@ -210,7 +210,10 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
   return (
     <Card radius="card" className="p-5 text-sm">
       <p className="flex items-center justify-center gap-2 font-semibold text-ict-ink-900">
-        <span className="size-2 animate-ping rounded-full bg-ict-orange-500" />
+        {/* A 6px dot, not a ping. `animate-ping` scales from nothing on an
+            endless loop, and the system rules out both; the dot says "working
+            on it" in the same language as every other status on the site. */}
+        <StatusDot tone="brand" />
         Confirming your payment…
       </p>
       <p className="mt-1 text-center text-ict-ink-400">

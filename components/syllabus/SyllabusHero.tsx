@@ -2,10 +2,10 @@
 
 import { Icon, type IconName } from "@/components/ui/Icon";
 import type { TopicClass } from "@/lib/content/topic-classes";
-import { TONE } from "@/lib/content/unit-visuals";
+import { UNIT_TONE } from "@/lib/content/unit-visuals";
 import { ClassCta, ClassStatus } from "@/components/syllabus/ClassCta";
-import { CountUp } from "@/components/syllabus/motion";
-import { ButtonLink, Card, Chip, IconBadge } from "@/components/ds-cream";
+import { CountUp, cssVars } from "@/components/syllabus/motion";
+import { ButtonLink, Card, Chip, IconBadge } from "@/components/ds";
 
 /**
  * The opening of the syllabus page.
@@ -48,23 +48,23 @@ export function SyllabusHero({
       <div aria-hidden className="syl-grid-bg pointer-events-none absolute inset-0" />
 
       <div className="relative">
-        <div className="awaken-rise flex flex-wrap items-center gap-2">
+        <div className="ict-enter flex flex-wrap items-center gap-2">
           <Chip active>{gradeLabel}</Chip>
           <Chip>Official NIE syllabus</Chip>
           <Chip>Free to explore · no sign-up</Chip>
         </div>
 
         <h1
-          className="awaken-rise mt-5 max-w-3xl font-display text-4xl leading-[1.08] font-extrabold tracking-[-0.02em] text-ict-ink-900 sm:text-5xl"
-          style={{ animationDelay: "0.05s" }}
+          className="ict-enter mt-5 max-w-3xl font-display text-4xl leading-[1.08] font-extrabold tracking-[-0.02em] text-ict-fg sm:text-5xl"
+          style={cssVars({ "--enter-delay": "60ms" })}
         >
           {subjectName}
-          <span className="block text-ict-orange-600">every topic, and the class that teaches it.</span>
+          <span className="block text-ict-accent-fg">every topic, and the class that teaches it.</span>
         </h1>
 
         <p
-          className="awaken-rise mt-5 max-w-2xl text-lg leading-relaxed text-ict-ink-400"
-          style={{ animationDelay: "0.1s" }}
+          className="ict-enter mt-5 max-w-2xl text-lg leading-relaxed text-ict-fg-mute"
+          style={cssVars({ "--enter-delay": "120ms" })}
         >
           Follow the whole syllabus as a roadmap — unit by unit, competency by
           competency, with exam objectives and where the marks actually sit. Found
@@ -72,16 +72,16 @@ export function SyllabusHero({
         </p>
 
         <div
-          className="awaken-rise mt-7 grid grid-cols-2 gap-3 sm:max-w-2xl sm:grid-cols-4"
-          style={{ animationDelay: "0.15s" }}
+          className="ict-enter mt-7 grid grid-cols-2 gap-3 sm:max-w-2xl sm:grid-cols-4"
+          style={cssVars({ "--enter-delay": "180ms" })}
         >
           {stats.map((stat) => (
-            <div key={stat.label} className="rounded-ict-md border border-ict-paper-300 bg-ict-paper-0 p-4">
-              <p className="flex items-center gap-1.5 text-[11px] font-bold tracking-wide text-ict-ink-400 uppercase">
+            <div key={stat.label} className="rounded-ict-md border border-ict-line bg-ict-surface-card p-4">
+              <p className="flex items-center gap-1.5 text-xs font-bold tracking-wide text-ict-fg-mute uppercase">
                 <Icon name={stat.icon} className="!text-base" />
                 {stat.label}
               </p>
-              <p className="mt-1 font-display text-3xl font-extrabold tracking-[-0.02em] text-ict-ink-900">
+              <p className="mt-1 font-display text-3xl font-extrabold tracking-[-0.02em] text-ict-fg">
                 <CountUp value={stat.value} />
               </p>
             </div>
@@ -89,17 +89,17 @@ export function SyllabusHero({
         </div>
 
         <div
-          className="awaken-rise mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
-          style={{ animationDelay: "0.2s" }}
+          className="ict-enter mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
+          style={cssVars({ "--enter-delay": "240ms" })}
         >
           {nextClass ? (
-            <div className="flex flex-1 flex-wrap items-center gap-3 rounded-ict-md border border-ict-orange-200 bg-ict-orange-50 p-3 sm:flex-nowrap">
-              <IconBadge icon="live_tv" tone="brand" size={40} />
+            <div className="flex flex-1 flex-wrap items-center gap-3 rounded-ict-md border border-ict-line bg-ict-surface-raised p-3 sm:flex-nowrap">
+              <IconBadge icon="live_tv" tone="soft" size={40} round />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-bold text-ict-ink-900">{nextClass.title}</span>
-                <ClassStatus topicClass={nextClass} className="block text-xs text-ict-ink-400" />
+                <span className="block truncate text-sm font-bold text-ict-fg">{nextClass.title}</span>
+                <ClassStatus topicClass={nextClass} className="block text-xs text-ict-fg-mute" />
               </span>
-              <ClassCta subjectId={subjectId} topicClass={nextClass} tone={TONE.ember} />
+              <ClassCta subjectId={subjectId} topicClass={nextClass} tone={UNIT_TONE} />
             </div>
           ) : (
             <ButtonLink href={`/go?do=trial&subject=${subjectId}`} variant="primary" size="lg">

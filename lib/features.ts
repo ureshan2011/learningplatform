@@ -14,7 +14,7 @@
  * exposing them.
  */
 
-export type Feature = "zoom" | "payhere";
+export type Feature = "zoom" | "payhere" | "push";
 
 /** Server secrets are absent in the browser, so presence checks run server-side. */
 function serverHas(name: string): boolean {
@@ -52,12 +52,31 @@ export function payhereConfigured(): boolean {
   );
 }
 
+/**
+ * Class reminders over web push.
+ *
+ * Needs one value: the *public* Web Push certificate key from Firebase console
+ * → Project settings → Cloud Messaging. Sending is authorised by the service
+ * account already present, so there is no second secret and no second account
+ * — the same reasoning that put media on Cloud Storage.
+ *
+ * Actually delivering on a schedule also needs Cloud Scheduler pointed at
+ * `/api/cron/class-reminders`; see `docs/services.md`. Without it a student
+ * can still turn reminders on and nothing will arrive, which is why the
+ * toggle says so.
+ */
+export function pushConfigured(): boolean {
+  return Boolean(process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY);
+}
+
 export function isConfigured(feature: Feature): boolean {
   switch (feature) {
     case "zoom":
       return zoomConfigured();
     case "payhere":
       return payhereConfigured();
+    case "push":
+      return pushConfigured();
   }
 }
 
@@ -65,9 +84,11 @@ export function isConfigured(feature: Feature): boolean {
 export const FEATURE_LABEL: Record<Feature, string> = {
   zoom: "Live classes",
   payhere: "Card payments",
+  push: "Class reminders",
 };
 
 export const FEATURE_HINT: Record<Feature, string> = {
   zoom: "Zoom is not connected yet, so classes cannot be scheduled or joined.",
   payhere: "Card payment is not connected yet. Students can still send a bank deposit slip.",
+  push: "Class reminders are not set up yet, so nothing is sent before a class starts.",
 };

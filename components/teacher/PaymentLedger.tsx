@@ -10,12 +10,12 @@ import type { PaymentStatus } from "@/lib/types";
 import { fetchWithSession } from "@/lib/auth/session-client";
 
 const STATUS_TONE: Record<PaymentStatus, string> = {
-  paid: "bg-(--color-awaken-success-soft) text-(--color-awaken-success)",
-  pending: "bg-(--color-awaken-warn-soft) text-(--color-awaken-warn)",
-  failed: "bg-(--color-awaken-danger-soft) text-(--color-awaken-danger)",
-  cancelled: "bg-(--color-awaken-bg) text-(--color-awaken-ink-soft)",
-  chargeback: "bg-(--color-awaken-danger-soft) text-(--color-awaken-danger)",
-  refunded: "bg-(--color-awaken-indigo-soft) text-(--color-awaken-indigo)",
+  paid: "bg-ict-green-500/15 text-ict-green-500",
+  pending: "bg-ict-amber-500/15 text-ict-amber-500",
+  failed: "bg-ict-red-500/15 text-ict-danger-fg",
+  cancelled: "bg-ict-surface text-ict-fg-soft",
+  chargeback: "bg-ict-red-500/15 text-ict-danger-fg",
+  refunded: "bg-ict-surface-sunken text-ict-fg-soft",
 };
 
 const STATUS_TEXT: Record<PaymentStatus, string> = {
@@ -99,20 +99,20 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
           <span className="sr-only">Search payments</span>
           <Icon
             name="search"
-            className="pointer-events-none absolute top-1/2 left-3 !text-lg -translate-y-1/2 text-(--color-awaken-ink-soft)"
+            className="pointer-events-none absolute top-1/2 left-3 !text-lg -translate-y-1/2 text-ict-fg-soft"
           />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Name, phone, receipt or reference…"
-            className="w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) py-2.5 pr-3 pl-10 text-sm outline-none focus:border-(--color-awaken-accent)"
+            className="w-full rounded-full border border-ict-line bg-ict-surface-card py-2.5 pr-3 pl-10 text-sm outline-none focus:border-ict-orange-500"
           />
         </label>
 
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value as "all" | PaymentStatus)}
-          className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-sm"
+          className="rounded-full border border-ict-line bg-ict-surface-card px-3 py-2.5 text-sm"
         >
           <option value="all">Every status</option>
           {(Object.keys(STATUS_TEXT) as PaymentStatus[]).map((s) => (
@@ -125,7 +125,7 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
         <select
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          className="rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-sm"
+          className="rounded-full border border-ict-line bg-ict-surface-card px-3 py-2.5 text-sm"
         >
           <option value="all">Every month</option>
           {months.map((m) => (
@@ -137,21 +137,21 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
 
         <a
           href="/api/teacher/payments/export"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-3 py-2.5 text-sm font-semibold hover:border-(--color-awaken-accent)/40"
+          className="inline-flex items-center gap-1.5 rounded-full border border-ict-line px-3 py-2.5 text-sm font-semibold hover:border-ict-orange-500/40"
         >
           <Icon name="download" className="!text-base" />
           CSV
         </a>
       </div>
 
-      <p className="mt-2 text-xs text-(--color-awaken-ink-soft)">
-        Showing <strong className="text-(--color-awaken-ink)">{filtered.length}</strong> of{" "}
+      <p className="mt-2 text-xs text-ict-fg-soft">
+        Showing <strong className="text-ict-fg">{filtered.length}</strong> of{" "}
         {rows.length} payments · paid in this view:{" "}
-        <strong className="text-(--color-awaken-ink)">{formatLKR(shownTotal)}</strong>
+        <strong className="text-ict-fg">{formatLKR(shownTotal)}</strong>
       </p>
 
       {filtered.length === 0 ? (
-        <p className="mt-4 rounded-xl border border-dashed border-(--color-awaken-line) p-6 text-center text-sm text-(--color-awaken-ink-soft)">
+        <p className="mt-4 rounded-ict-md border border-dashed border-ict-line p-6 text-center text-sm text-ict-fg-soft">
           No payments match that.
         </p>
       ) : (
@@ -159,7 +159,7 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
           {filtered.map((row) => (
             <li
               key={row.id}
-              className="rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+              className="rounded-ict-md border border-ict-line bg-ict-surface-card p-4 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0">
@@ -171,34 +171,34 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
                       {STATUS_TEXT[row.status]}
                     </span>
                     {row.accessRevoked ? (
-                      <span className="rounded-full bg-(--color-awaken-danger-soft) px-2 py-0.5 text-[11px] font-bold text-(--color-awaken-danger)">
+                      <span className="rounded-full bg-ict-red-500/15 px-2 py-0.5 text-[11px] font-bold text-ict-danger-fg">
                         Access removed
                       </span>
                     ) : null}
                   </div>
-                  <p className="mt-1 text-sm text-(--color-awaken-ink-soft)">
+                  <p className="mt-1 text-sm text-ict-fg-soft">
                     {row.dateLabel} · {row.subjectName} · {row.method}
                   </p>
-                  <p className="mt-0.5 text-xs text-(--color-awaken-ink-soft)">
+                  <p className="mt-0.5 text-xs text-ict-fg-soft">
                     {row.receiptNo ? `Receipt ${row.receiptNo}` : "No receipt number"}
                     {row.studentPhone ? ` · ${row.studentPhone}` : ""}
                     {row.providerRef ? ` · ref ${row.providerRef}` : ""}
                     {row.bankRef ? ` · bank ${row.bankRef}` : ""}
                   </p>
                   {row.note ? (
-                    <p className="mt-1 text-xs text-(--color-awaken-ink-soft) italic">{row.note}</p>
+                    <p className="mt-1 text-xs text-ict-fg-soft italic">{row.note}</p>
                   ) : null}
                 </div>
-                <p className="shrink-0 text-lg font-bold text-(--color-awaken-accent)">
+                <p className="shrink-0 text-lg font-bold text-ict-accent-fg">
                   {formatLKR(row.amountLKR)}
                 </p>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-(--color-awaken-line) pt-3 text-sm">
+              <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-ict-line pt-3 text-sm">
                 {row.receiptNo ? (
                   <Link
                     href={`/receipt/${row.id}`}
-                    className="inline-flex items-center gap-1 font-medium text-(--color-awaken-deep) underline"
+                    className="inline-flex items-center gap-1 font-medium text-ict-accent-fg underline"
                   >
                     <Icon name="receipt_long" className="!text-base" />
                     Receipt
@@ -209,7 +209,7 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
                     href={row.slipUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-medium text-(--color-awaken-deep) underline"
+                    className="inline-flex items-center gap-1 font-medium text-ict-accent-fg underline"
                   >
                     <Icon name="image" className="!text-base" />
                     Slip
@@ -221,7 +221,7 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
                       <button
                         onClick={() => act(row, "revoke")}
                         disabled={busyId === row.id}
-                        className="rounded-lg border border-(--color-awaken-line) px-3 py-1.5 text-xs font-medium hover:border-(--color-awaken-danger)/40 hover:text-(--color-awaken-danger) disabled:opacity-50"
+                        className="rounded-full border border-ict-line px-3 py-1.5 text-xs font-medium hover:border-ict-red-500/40 hover:text-ict-danger-fg disabled:opacity-50"
                       >
                         Remove access
                       </button>
@@ -229,7 +229,7 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
                     <button
                       onClick={() => act(row, "refund")}
                       disabled={busyId === row.id}
-                      className="rounded-lg border border-(--color-awaken-line) px-3 py-1.5 text-xs font-medium hover:border-(--color-awaken-danger)/40 hover:text-(--color-awaken-danger) disabled:opacity-50"
+                      className="rounded-full border border-ict-line px-3 py-1.5 text-xs font-medium hover:border-ict-red-500/40 hover:text-ict-danger-fg disabled:opacity-50"
                     >
                       Mark refunded
                     </button>
@@ -241,7 +241,7 @@ export function PaymentLedger({ rows }: { rows: LedgerRow[] }) {
         </ul>
       )}
 
-      {error ? <p className="mt-2 text-sm text-(--color-awaken-danger)">{error}</p> : null}
+      {error ? <p className="mt-2 text-sm text-ict-danger-fg">{error}</p> : null}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { isHighYield, unitColors } from "@/lib/content/unit-visuals";
+import { isHighYield, UNIT_TONE } from "@/lib/content/unit-visuals";
 import type { LandingUnit, SyllabusTotals } from "@/lib/content/landing-syllabus";
 import {
   ArrowRightIcon,
@@ -180,7 +180,7 @@ export function SyllabusShowcase({
 
   if (!active) return null;
 
-  const tone = unitColors(active.competencyNumber);
+  const tone = UNIT_TONE;
   const years = Array.from(new Set(units.map((u) => u.gradeYear))).sort((a, b) => a - b);
 
   function selectUnit(unit: LandingUnit) {
@@ -266,7 +266,7 @@ export function SyllabusShowcase({
             aria-label="Syllabus units"
           >
             {visible.map((unit) => {
-              const unitTone = unitColors(unit.competencyNumber);
+              const unitTone = UNIT_TONE;
               const on = unit.id === active.id;
               return (
                 <li key={unit.id} className="w-[240px] shrink-0 snap-start lg:w-full lg:shrink">
@@ -274,7 +274,7 @@ export function SyllabusShowcase({
                     type="button"
                     onClick={() => selectUnit(unit)}
                     aria-pressed={on}
-                    className={`flex w-full items-start gap-3 rounded-[var(--lp-radius-md)] border p-3 text-left transition-all duration-200 ${
+                    className={`flex w-full items-start gap-3 rounded-[var(--lp-radius-md)] border p-3 text-left transition-all duration-[200ms] ease-ict ${
                       on
                         ? "border-transparent bg-(--lp-ink-900) shadow-[var(--lp-shadow-md)]"
                         : "border-(--lp-border-subtle) bg-(--lp-paper-0) hover:-translate-y-0.5 hover:shadow-[var(--lp-shadow-sm)]"
@@ -283,7 +283,7 @@ export function SyllabusShowcase({
                     <span
                       className="grid size-9 shrink-0 place-items-center rounded-[10px] text-sm font-extrabold text-white"
                       style={{
-                        backgroundImage: `linear-gradient(140deg, ${unitTone.gradFrom}, ${unitTone.gradTo})`,
+                        background: unitTone.accent,
                       }}
                     >
                       {unit.competencyNumber}
@@ -311,7 +311,7 @@ export function SyllabusShowcase({
                         <span
                           className="block h-full origin-left rounded-full transition-transform duration-500"
                           style={{
-                            backgroundImage: `linear-gradient(90deg, ${unitTone.gradFrom}, ${unitTone.gradTo})`,
+                            background: unitTone.accent,
                             transform: `scaleX(${(unit.periods / maxPeriods).toFixed(3)})`,
                           }}
                         />
@@ -327,13 +327,8 @@ export function SyllabusShowcase({
           <div className="lp-reveal relative overflow-hidden rounded-[var(--lp-radius-panel)] border border-(--lp-border-subtle) bg-(--lp-paper-0) shadow-[var(--lp-shadow-sm)]">
             <span
               aria-hidden
-              className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full opacity-60"
-              style={{ background: `radial-gradient(circle, ${tone.soft}, transparent 70%)` }}
-            />
-            <span
-              aria-hidden
               className="absolute inset-x-0 top-0 h-1"
-              style={{ backgroundImage: `linear-gradient(90deg, ${tone.gradFrom}, ${tone.gradTo})` }}
+              style={{ background: tone.accent }}
             />
 
             <div className="relative p-[clamp(18px,3vw,28px)]">
@@ -351,7 +346,7 @@ export function SyllabusShowcase({
                   <span
                     className="rounded-full px-2.5 py-1 text-[11px] font-extrabold tracking-wide text-white uppercase"
                     style={{
-                      backgroundImage: `linear-gradient(120deg, ${tone.gradFrom}, ${tone.gradTo})`,
+                      background: tone.accent,
                     }}
                   >
                     High-yield
@@ -419,7 +414,7 @@ export function SyllabusShowcase({
                           </span>
                         </span>
                         <span
-                          className={`grid size-7 shrink-0 place-items-center rounded-full border transition-transform duration-300 ${open ? "rotate-90" : ""}`}
+                          className={`grid size-7 shrink-0 place-items-center rounded-full border transition-transform duration-[200ms] ease-ict ${open ? "rotate-90" : ""}`}
                           style={{ borderColor: tone.line, color: tone.ink }}
                         >
                           <ArrowRightIcon className="size-3.5" />
@@ -430,7 +425,7 @@ export function SyllabusShowcase({
                           which is the one way to open variable content smoothly. */}
                       <div
                         id={panelId}
-                        className={`grid transition-[grid-template-rows] duration-[400ms] ease-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                        className={`grid transition-[grid-template-rows] duration-[340ms] ease-ict-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
                       >
                         <div className="overflow-hidden">
                           <div className="border-t px-3 pt-3 pb-4" style={{ borderColor: tone.line }}>

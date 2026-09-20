@@ -10,7 +10,7 @@ import {
   useActiveStation,
   useRevealScope,
 } from "@/components/syllabus/motion";
-import { Button, EmptyState } from "@/components/ds-cream";
+import { Button, EmptyState } from "@/components/ds";
 import type { Unit } from "@/lib/types";
 
 type GradeFilter = "all" | 12 | 13;
@@ -47,10 +47,13 @@ function fold(text: string): string {
  */
 export function SyllabusExplorer({
   subjectId,
+  unitHrefBase,
   units,
   classIndex,
 }: {
   subjectId: string;
+  /** Where a unit's own page lives — see `UnitStation`. */
+  unitHrefBase: string;
   units: Unit[];
   classIndex: TopicClassIndex;
 }) {
@@ -143,7 +146,7 @@ export function SyllabusExplorer({
 
   return (
     <div ref={scopeRef}>
-      <div className="sticky top-0 z-30 -mx-5 border-y border-ict-paper-300 bg-ict-paper-100/85 px-5 py-3 backdrop-blur-xl md:-mx-8 md:px-8">
+      <div className="sticky top-0 z-30 -mx-5 border-y border-ict-line bg-ict-surface/85 px-5 py-3 backdrop-blur-xl md:-mx-8 md:px-8">
         <div className="flex flex-wrap items-center gap-2">
           {/* Order is swapped on a phone so the search box and the view toggle
               share the first row — the filter bar is sticky, and three stacked
@@ -152,19 +155,19 @@ export function SyllabusExplorer({
             <span className="sr-only">Search the syllabus</span>
             <Icon
               name="search"
-              className="pointer-events-none absolute top-1/2 left-3 !text-lg -translate-y-1/2 text-ict-ink-400"
+              className="pointer-events-none absolute top-1/2 left-3 !text-lg -translate-y-1/2 text-ict-fg-mute"
             />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search a topic — databases, HTML, truth tables…"
-              className="w-full rounded-full border border-ict-paper-300 bg-ict-paper-0 py-2 pr-10 pl-10 text-sm outline-none transition-colors duration-[120ms] ease-ict focus:border-ict-orange-500 sm:py-2.5"
+              className="w-full rounded-full border border-ict-line bg-ict-surface-card py-2 pr-10 pl-10 text-sm outline-none transition-colors duration-[120ms] ease-ict focus:border-ict-orange-500 sm:py-2.5"
             />
             {query ? (
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-ict-ink-400 hover:bg-ict-paper-200"
+                className="absolute top-1/2 right-2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-ict-fg-mute hover:bg-ict-surface-sunken"
               >
                 <span className="sr-only">Clear search</span>
                 <Icon name="close" className="!text-base" />
@@ -209,7 +212,7 @@ export function SyllabusExplorer({
             className={`ict-press order-4 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-semibold transition-colors duration-[120ms] ease-ict sm:order-3 sm:px-3.5 sm:py-2 sm:text-sm ${
               classesOnly
                 ? "border-transparent bg-ict-orange-500 text-white"
-                : "border-ict-paper-300 bg-ict-paper-0 text-ict-ink-400 hover:text-ict-ink-900"
+                : "border-ict-line bg-ict-surface-card text-ict-fg-mute hover:text-ict-fg"
             }`}
           >
             <Icon name="live_tv" className="!text-base" />
@@ -217,14 +220,14 @@ export function SyllabusExplorer({
           </button>
         </div>
 
-        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ict-ink-400">
+        <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ict-fg-mute">
           <span>
-            <strong className="font-bold text-ict-ink-900">{results.length}</strong>{" "}
+            <strong className="font-bold text-ict-fg">{results.length}</strong>{" "}
             unit{results.length === 1 ? "" : "s"}
             {searching ? (
               <>
                 {" "}
-                · <strong className="font-bold text-ict-ink-900">{lessonMatchCount}</strong>{" "}
+                · <strong className="font-bold text-ict-fg">{lessonMatchCount}</strong>{" "}
                 matching lesson{lessonMatchCount === 1 ? "" : "s"}
               </>
             ) : null}
@@ -236,7 +239,7 @@ export function SyllabusExplorer({
             </span>
           ) : null}
           {classIndex.total > 0 ? (
-            <span className="inline-flex items-center gap-1 font-semibold text-ict-orange-600">
+            <span className="inline-flex items-center gap-1 font-semibold text-ict-accent-fg">
               <Icon name="videocam" className="!text-sm" />
               {classIndex.total} class{classIndex.total === 1 ? "" : "es"} scheduled
             </span>
@@ -282,13 +285,12 @@ export function SyllabusExplorer({
           {/* The roadmap rail. Fills as you travel down the syllabus. */}
           <div
             aria-hidden
-            className="pointer-events-none absolute top-4 bottom-10 left-[17px] w-[2px] overflow-hidden rounded-full bg-ict-paper-300 sm:left-[23px]"
+            className="pointer-events-none absolute top-4 bottom-10 left-[17px] w-[2px] overflow-hidden rounded-full bg-ict-surface-sunken sm:left-[23px]"
           >
             <div
-              className="absolute inset-0 origin-top rounded-full bg-ict-orange-500 transition-transform duration-700 ease-out"
+              className="absolute inset-0 origin-top rounded-full bg-ict-orange-500 transition-transform duration-[340ms] ease-ict-out"
               style={{ transform: `scaleY(${railFill.toFixed(3)})` }}
             />
-            <div className="syl-rail-spark absolute inset-x-0 h-12 rounded-full bg-gradient-to-b from-transparent via-white/90 to-transparent" />
           </div>
 
           <ol className="relative">
@@ -299,6 +301,7 @@ export function SyllabusExplorer({
                 index={i}
                 weight={unit.periods / maxPeriods}
                 subjectId={subjectId}
+                unitHrefBase={unitHrefBase}
                 unitClasses={classIndex.byUnit[unit.id] ?? []}
                 classesByLesson={classIndex.byLesson}
                 // While searching, matched units open themselves — hiding the
@@ -311,7 +314,7 @@ export function SyllabusExplorer({
             ))}
           </ol>
 
-          <p className="relative flex items-center gap-3 pl-11 text-sm font-semibold text-ict-ink-400 sm:pl-16">
+          <p className="relative flex items-center gap-3 pl-11 text-sm font-semibold text-ict-fg-mute sm:pl-16">
             <span className="absolute left-0 flex size-9 items-center justify-center rounded-ict-md bg-ict-orange-500 text-white sm:size-12">
               <Icon name="flag" className="!text-xl" />
             </span>
@@ -341,7 +344,7 @@ function Segmented<T extends string | number>({
 }) {
   return (
     <div
-      className={`inline-flex gap-1 rounded-full border border-ict-paper-300 bg-ict-paper-0 p-1 ${className ?? ""}`}
+      className={`inline-flex gap-1 rounded-full border border-ict-line bg-ict-surface-card p-1 ${className ?? ""}`}
     >
       {options.map((option) => {
         const active = option.value === value;
@@ -354,7 +357,7 @@ function Segmented<T extends string | number>({
             className={`ict-press inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-semibold transition-colors duration-[120ms] ease-ict sm:px-3.5 sm:text-sm ${
               active
                 ? "bg-ict-orange-500 text-white shadow-ict-brand"
-                : "text-ict-ink-400 hover:text-ict-ink-900"
+                : "text-ict-fg-mute hover:text-ict-fg"
             }`}
           >
             {option.icon ? (

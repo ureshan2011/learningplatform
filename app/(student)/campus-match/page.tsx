@@ -19,6 +19,7 @@ import {
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { Badge, Card, Eyebrow, Notice, PageHeader } from "@/components/ds";
+import { PageShell } from "@/components/ds/PageShell";
 import { ButtonLink as CreamButtonLink, Card as CreamCard, Eyebrow as CreamEyebrow } from "@/components/ds-cream";
 import districts from "@/lib/content/ugc/districts.json";
 import streams from "@/lib/content/ugc/streams.json";
@@ -185,7 +186,7 @@ export default async function CampusMatchPage({
   const bankSlipOn = !paused && onSale && isBankSlipEnabled(paymentSettings);
 
   return (
-    <main className="mx-auto max-w-[820px] px-4 py-5 sm:px-6 sm:py-6">
+    <PageShell width="reading">
       <PageHeader
         eyebrow={`${ADMISSION_ROUND} admission round`}
         title={CAMPUS_MATCH_NAME}
@@ -269,6 +270,6 @@ export default async function CampusMatchPage({
           Check last round&rsquo;s cut-offs free
         </Link>
       </p>
-    </main>
+    </PageShell>
   );
 }

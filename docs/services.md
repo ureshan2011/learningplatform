@@ -1,8 +1,8 @@
 # Adding services
 
-Reference for the optional services — Zoom and PayHere. **You don't need
-either to go live** — see `SETUP.md`. Add them one at a time, and just ask in
-chat rather than working through this by hand.
+Reference for the optional services — Zoom, PayHere and class reminders.
+**You don't need any of them to go live** — see `SETUP.md`. Add them one at a
+time, and just ask in chat rather than working through this by hand.
 
 Until one is connected, the app says "not set up yet" where it would appear
 (`lib/features.ts` decides this). Nothing breaks.
@@ -196,3 +196,58 @@ firebase apphosting:secrets:set zoom-sdk-secret
 ```
 
 Each service has a commented-out block in `apphosting.yaml` ready to uncomment.
+
+
+---
+
+## Class reminders — web push
+
+"Your class starts in 15 minutes", on a student's phone. Free: no SMS, no
+per-message cost, no extra account. Chrome on Android is what most students
+use and it supports this; iPhone needs the site added to the home screen
+first, which is worth saying to the students who ask.
+
+Two steps, both in a browser.
+
+**1. The Web Push key.** Firebase console → Project settings → Cloud Messaging
+→ *Web Push certificates* → **Generate key pair**. Copy the public key into
+`NEXT_PUBLIC_FIREBASE_VAPID_KEY` (there is a commented block for it in
+`apphosting.yaml`). This is the only value that goes anywhere — sending is
+authorised by the service account this project already has, so there is no
+secret to store and nothing to rotate.
+
+After this deploys, the *Class reminders* card on a student's Account page
+becomes a working "Turn on reminders" button.
+
+**2. The schedule.** App Hosting has no cron, so something has to call the
+send endpoint. Google Cloud console → **Cloud Scheduler** → Create job:
+
+| | |
+| --- | --- |
+| Frequency | `*/5 * * * *` |
+| Timezone | Asia/Colombo |
+| Target | HTTP |
+| URL | `https://ictcampus.lk/api/cron/class-reminders` |
+| Method | POST |
+| Header | `x-cron-secret` = the value of `CRON_SECRET` |
+
+Set `CRON_SECRET` to any long random string, stored as a secret:
+
+```
+firebase apphosting:secrets:set cron-secret
+```
+
+The endpoint refuses outright when `CRON_SECRET` is unset, and compares it in
+constant time — it is the one route that can notify every student at once.
+
+**Why both steps or neither.** Step 1 alone lets a student turn reminders on
+and nothing ever arrives, which is worse than the button saying it is not set
+up. Step 2 alone does nothing, because no browser is subscribed.
+
+**What gets sent.** One notification per class, 15 minutes before it starts, to
+students with an active subscription to that subject who have turned reminders
+on. `remindedAt` is written to the class in a transaction before anything is
+sent, so a scheduler that fires twice — or retries after a timeout — cannot
+notify a thousand students the same thing twice. Dead tokens (uninstalled app,
+cleared site data, revoked permission) are pruned automatically on the next
+send.

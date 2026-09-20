@@ -8,7 +8,7 @@ import { fetchWithSession } from "@/lib/auth/session-client";
 import { SANDBOX_TEST_VALUES, looksLikeSandboxTestData, type SettableField } from "@/lib/payments/sandbox-test-values";
 
 const inputClass =
-  "w-full rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) px-3 py-2.5 text-base outline-none focus:border-(--color-awaken-accent)";
+  "w-full rounded-full border border-ict-line bg-ict-surface-card px-3 py-2.5 text-base outline-none focus:border-ict-orange-500";
 
 const BANK_FIELDS: Array<{ name: SettableField; label: string; hint?: string; required?: boolean }> = [
   { name: "bankName", label: "Bank", hint: "e.g. Bank of Ceylon", required: true },
@@ -117,7 +117,7 @@ export function PaymentSettingsForm({
   return (
     <form ref={formRef} onSubmit={submit} className="space-y-6">
       {isTestData ? (
-        <div className="flex items-start gap-2 rounded-lg border border-(--color-awaken-warn)/40 bg-(--color-awaken-warn-soft) p-3.5 text-sm text-(--color-awaken-warn)">
+        <div className="flex items-start gap-2 rounded-ict-md border border-ict-amber-500/40 bg-ict-amber-500/15 p-3.5 text-sm text-ict-amber-500">
           <Icon name="priority_high" className="!text-base mt-0.5 shrink-0" />
           <span>
             One or more fields below still hold sandbox test details (from &quot;Fill with test
@@ -129,7 +129,7 @@ export function PaymentSettingsForm({
       ) : null}
 
       <div>
-        <label className="flex items-start gap-2.5 rounded-lg border border-(--color-awaken-line) bg-(--color-awaken-card) p-3.5">
+        <label className="flex items-start gap-2.5 rounded-ict-md border border-ict-line bg-ict-surface-card p-3.5">
           <input
             type="checkbox"
             checked={bankSlipEnabled}
@@ -138,7 +138,7 @@ export function PaymentSettingsForm({
           />
           <span>
             <span className="block text-sm font-semibold">Accept bank deposit slips</span>
-            <span className="mt-0.5 block text-xs text-(--color-awaken-ink-soft)">
+            <span className="mt-0.5 block text-xs text-ict-fg-soft">
               Off by default — card payment (PayHere) is the only way to pay while this is
               unticked. Students already submitted slips still show up for review either way.
             </span>
@@ -167,7 +167,7 @@ export function PaymentSettingsForm({
 
       <div>
         <h3 className="text-sm font-bold">Card payments (PayHere)</h3>
-        <p className="mt-1 text-xs text-(--color-awaken-ink-soft)">
+        <p className="mt-1 text-xs text-ict-fg-soft">
           {secretFromEnv
             ? "This deployment supplies PayHere credentials through its environment, and those win. Anything entered here is ignored until they are removed."
             : "Sandbox and live are separate accounts with separate credentials — sandbox ones come from sandbox.payhere.lk. Your domain must also be added and approved under Settings → Domains & Credentials in the PayHere portal, or checkout is refused."}
@@ -175,7 +175,7 @@ export function PaymentSettingsForm({
 
         <div className="mt-3 grid gap-4 sm:grid-cols-2">
           <label className="block">
-            <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+            <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
               Merchant ID
             </span>
             <input
@@ -189,7 +189,7 @@ export function PaymentSettingsForm({
           </label>
 
           <label className="block">
-            <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+            <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
               Merchant secret
             </span>
             <input
@@ -201,13 +201,13 @@ export function PaymentSettingsForm({
               disabled={secretFromEnv}
               className={inputClass}
             />
-            <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">
+            <span className="mt-1 block text-xs text-ict-fg-soft">
               Never shown again after saving, and never sent to a browser.
             </span>
           </label>
 
           <label className="block">
-            <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+            <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
               Mode
             </span>
             <select
@@ -227,7 +227,7 @@ export function PaymentSettingsForm({
         <button
           type="submit"
           disabled={busy}
-          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-(--color-awaken-accent) to-(--color-awaken-rose) px-5 py-2.5 font-semibold text-white disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-full bg-ict-orange-500 hover:bg-ict-orange-600 px-5 py-2.5 font-semibold text-white disabled:opacity-50"
         >
           <Icon name="save" className="!text-base" />
           {busy ? "Saving…" : "Save details"}
@@ -235,7 +235,7 @@ export function PaymentSettingsForm({
         <button
           type="button"
           onClick={fillTestDetails}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-(--color-awaken-line) px-4 py-2.5 text-sm font-medium hover:border-(--color-awaken-accent)/40"
+          className="inline-flex items-center gap-1.5 rounded-full border border-ict-line px-4 py-2.5 text-sm font-medium hover:border-ict-orange-500/40"
         >
           <Icon name="rule" className="!text-base" />
           Fill with test details
@@ -243,11 +243,11 @@ export function PaymentSettingsForm({
       </div>
 
       {saved ? (
-        <p className="text-sm font-semibold text-(--color-awaken-success)">
+        <p className="text-sm font-semibold text-ict-green-500">
           Saved. Students paying by deposit now see these details.
         </p>
       ) : null}
-      {error ? <p className="text-sm text-(--color-awaken-danger)">{error}</p> : null}
+      {error ? <p className="text-sm text-ict-danger-fg">{error}</p> : null}
     </form>
   );
 }
@@ -269,15 +269,15 @@ function Section({
   return (
     <div>
       <h3 className="text-sm font-bold">{title}</h3>
-      <p className="mt-1 text-xs text-(--color-awaken-ink-soft)">{note}</p>
+      <p className="mt-1 text-xs text-ict-fg-soft">{note}</p>
       <div className="mt-3 grid gap-4 sm:grid-cols-2">
         {fields.map((field) => {
           const required = requireFields && field.required;
           return (
             <label key={field.name} className="block">
-              <span className="mb-1.5 block text-sm font-semibold text-(--color-awaken-ink-soft)">
+              <span className="mb-1.5 block text-sm font-semibold text-ict-fg-soft">
                 {field.label}
-                {required ? <span className="text-(--color-awaken-danger)"> *</span> : null}
+                {required ? <span className="text-ict-danger-fg"> *</span> : null}
               </span>
               <input
                 name={field.name}
@@ -287,7 +287,7 @@ function Section({
                 className={inputClass}
               />
               {field.hint ? (
-                <span className="mt-1 block text-xs text-(--color-awaken-ink-soft)">{field.hint}</span>
+                <span className="mt-1 block text-xs text-ict-fg-soft">{field.hint}</span>
               ) : null}
             </label>
           );

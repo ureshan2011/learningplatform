@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { fontVariables } from "@/lib/fonts";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { SessionKeeper } from "@/components/auth/SessionKeeper";
+import { ServiceWorker } from "@/components/pwa/ServiceWorker";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { graphJsonLd, organizationJsonLd, personJsonLd, webSiteJsonLd } from "@/lib/seo/json-ld";
 import { publicEnv } from "@/lib/env";
@@ -80,7 +81,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fafbf9",
+  /*
+   * The cream ground, which is what a visitor to a public page sees behind
+   * the Android address bar. Was `#fafbf9`, the legacy `--color-awaken-bg`:
+   * a cool off-white that is nowhere in the ICTCAMPUS palette.
+   *
+   * The signed-in area overrides this to the warm near-black in its own
+   * route-group layouts, so the browser chrome matches the world the student
+   * is actually in rather than flipping to cream over a dark page.
+   */
+  themeColor: "#fdf4ee",
   width: "device-width",
   initialScale: 1,
   // Students pinch-zoom diagrams and code on small screens. Never lock this.
@@ -104,6 +114,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           WhatsApp link.
         */}
         <SessionKeeper />
+        {/*
+          Also renders nothing. Caches the app shell's static chunks so a
+          returning student is not re-downloading a megabyte of JavaScript over
+          3G, and gives a failed navigation a page that explains itself. It
+          caches no HTML and never touches `/api/` — see `public/sw.js`.
+        */}
+        <ServiceWorker />
         {children}
       </body>
     </html>

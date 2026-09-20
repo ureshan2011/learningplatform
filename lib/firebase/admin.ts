@@ -5,6 +5,7 @@ import { getAuth, type Auth } from "firebase-admin/auth";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
 import { getDatabase, type Database } from "firebase-admin/database";
 import { getStorage, type Storage } from "firebase-admin/storage";
+import { getMessaging, type Messaging } from "firebase-admin/messaging";
 import { optionalServerEnv, requireServerEnv, publicEnv } from "@/lib/env";
 
 let cached: App | undefined;
@@ -94,6 +95,15 @@ export function adminRtdb(): Database {
 /** Cloud Storage for Firebase — same project, same credentials, already the bucket `SlipUploadForm` uploads deposit slips into. */
 export function adminStorage(): Storage {
   return getStorage(adminApp());
+}
+
+/**
+ * Cloud Messaging — the same project again, so class reminders need no new
+ * account and no new secret. Only the public Web Push certificate goes in the
+ * environment; sending is authorised by the service account already here.
+ */
+export function adminMessaging(): Messaging {
+  return getMessaging(adminApp());
 }
 
 /**

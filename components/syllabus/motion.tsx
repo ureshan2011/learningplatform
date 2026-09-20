@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Shared motion primitives for the syllabus explorer.
@@ -101,39 +101,6 @@ export function useActiveStation(
   }, [root, count]);
 
   return active;
-}
-
-/**
- * Pointer-tracked 3D tilt. Returns handlers to spread onto a `.syl-tilt`
- * element; the element re-reads the CSS variables written here, so tilting
- * never triggers a React render.
- *
- * Ignored on touch (`pointerType !== "mouse"`) — a phone has no hover, and
- * tilting under a finger just makes tap targets move.
- */
-export function useTilt(maxDegrees = 5) {
-  const onPointerMove = useCallback(
-    (event: React.PointerEvent<HTMLElement>) => {
-      if (event.pointerType !== "mouse" || prefersReducedMotion()) return;
-      const el = event.currentTarget;
-      const box = el.getBoundingClientRect();
-      const x = (event.clientX - box.left) / box.width - 0.5;
-      const y = (event.clientY - box.top) / box.height - 0.5;
-      el.style.setProperty("--tilt-y", `${(x * maxDegrees).toFixed(2)}deg`);
-      el.style.setProperty("--tilt-x", `${(-y * maxDegrees).toFixed(2)}deg`);
-      el.style.setProperty("--lift", "-4px");
-    },
-    [maxDegrees],
-  );
-
-  const onPointerLeave = useCallback((event: React.PointerEvent<HTMLElement>) => {
-    const el = event.currentTarget;
-    el.style.setProperty("--tilt-y", "0deg");
-    el.style.setProperty("--tilt-x", "0deg");
-    el.style.setProperty("--lift", "0px");
-  }, []);
-
-  return { onPointerMove, onPointerLeave };
 }
 
 /**

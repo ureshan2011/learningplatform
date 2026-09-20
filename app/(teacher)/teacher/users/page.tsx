@@ -42,21 +42,21 @@ export default async function PeoplePage() {
         />
 
         {user.role === "admin" ? null : noAdminYet ? (
-          <p className="mt-5 flex gap-2 rounded-xl border border-(--color-awaken-accent)/30 bg-(--color-awaken-accent-soft) p-4 text-sm">
-            <Icon name="info" className="!text-base shrink-0 text-(--color-awaken-accent)" />
+          <p className="mt-5 flex gap-2 rounded-ict-md border border-ict-orange-500/30 bg-ict-surface-raised p-4 text-sm">
+            <Icon name="info" className="!text-base shrink-0 text-ict-accent-fg" />
             <span>
               <strong>Nobody is an admin yet.</strong> Find yourself in the list below, open your
               row, and set <strong>Role</strong> to <strong>admin</strong>. You will be signed out
               — sign back in and you will have the full set of controls.
-              <span className="mt-1 block text-(--color-awaken-ink-soft)">
+              <span className="mt-1 block text-ict-fg-soft">
                 A teacher can only do this while the admin seat is empty. After that, only an admin
                 can change roles.
               </span>
             </span>
           </p>
         ) : (
-          <p className="mt-5 flex gap-2 rounded-xl border border-(--color-awaken-line) bg-(--color-awaken-card) p-4 text-sm">
-            <Icon name="info" className="!text-base shrink-0 text-(--color-awaken-ink-soft)" />
+          <p className="mt-5 flex gap-2 rounded-ict-md border border-ict-line bg-ict-surface-card p-4 text-sm">
+            <Icon name="info" className="!text-base shrink-0 text-ict-fg-soft" />
             <span>
               You are signed in as a <strong>teacher</strong>. You can free devices and sign people
               out. Changing someone&apos;s role or switching an account off is admin-only.
