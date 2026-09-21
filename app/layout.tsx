@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { fontVariables } from "@/lib/fonts";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { SessionKeeper } from "@/components/auth/SessionKeeper";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { ServiceWorker } from "@/components/pwa/ServiceWorker";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { graphJsonLd, organizationJsonLd, personJsonLd, webSiteJsonLd } from "@/lib/seo/json-ld";
@@ -121,6 +122,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           caches no HTML and never touches `/api/` — see `public/sw.js`.
         */}
         <ServiceWorker />
+        {/*
+          Also renders nothing until it decides to show its own floating
+          banner. A returning visitor on Chrome/Edge/Android gets a real
+          "Install" button; iOS gets instructions instead, since no browser
+          there exposes a programmatic install. Already-installed visitors
+          never see it. See components/pwa/InstallPrompt.tsx.
+        */}
+        <InstallPrompt />
         {children}
       </body>
     </html>
