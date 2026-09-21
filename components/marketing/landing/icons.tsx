@@ -248,3 +248,32 @@ export function BellIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function PhoneIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <rect x="6.5" y="2.5" width="11" height="19" rx="2.5" />
+      <path d="M11 18.2h2" />
+    </svg>
+  );
+}
+
+export function WalletIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h11A2.5 2.5 0 0 1 19 7.5V8H5.5A2.5 2.5 0 0 1 3 5.5" />
+      <rect x="3" y="8" width="18" height="11" rx="2.2" />
+      <circle cx="15.5" cy="13.5" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function LanguageIcon({ className }: IconProps) {
+  return (
+    <svg {...base} className={className} aria-hidden>
+      <path d="M4 6h9M8.5 4v2.3C8.5 10 6 13 3.5 14.3" />
+      <path d="M6 10.5c1 1.6 3.2 2.8 5.5 3.2" />
+      <path d="M13.5 20l3.6-9 3.4 9M15 17h4.5" />
+    </svg>
+  );
+}
