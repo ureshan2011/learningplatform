@@ -60,6 +60,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/number-systems`, lastModified, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/logic-gates`, lastModified, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/revision-plan`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    // Off-syllabus teaching content, so a low priority: it is here to be
+    // findable by the person who needs it, not to compete for A/L ICT terms.
+    {
+      url: `${base}/business-model-canvas`,
+      lastModified,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
     { url: `${base}/contact`, lastModified, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/terms`, lastModified, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/privacy`, lastModified, changeFrequency: "yearly", priority: 0.2 },
