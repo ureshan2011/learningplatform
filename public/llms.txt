@@ -39,8 +39,17 @@ papers, and answers about one do not transfer to the other.
 - [Free notes & past papers](https://ictcampus.lk/notes): downloadable, no sign-up required
 - [Command words explained](https://ictcampus.lk/command-words): what "state", "explain", "distinguish" etc. require in an A/L ICT answer, with the Sinhala equivalent
 - [Worked "distinguish between" answers](https://ictcampus.lk/distinguish-between): ten commonly asked pairs, each with a weak answer and a full-marks answer side by side
-- [University pathways](https://ictcampus.lk/university-pathways): what A/L ICT leads to in Sri Lankan higher education
+- [University pathways](https://ictcampus.lk/university-pathways): a free Z-score checker showing the UGC's latest published cut-off for every course in a student's district and stream, plus which state university degrees an A/L ICT background opens
 - [Campus Ready](https://ictcampus.lk/campus-ready): a separate paid 12-week online course for students who have finished their A/Ls and are waiting to enter university — Excel, Python, statistics, Power BI, Zotero referencing and honest use of AI in assignments. Taught in Sinhala, one payment, two intakes a year (January and July), certificate and portfolio project on completion. Requires a laptop. Not accredited by any university.
+- [What to do after A/L](https://ictcampus.lk/after-al): a free, sourced guide to the wait between the A/L exam and university in Sri Lanka — the dated admission calendar, the five routes after A/L, and what to do in the meantime
+- [What is a Z-score?](https://ictcampus.lk/z-score): how the Sri Lankan A/L Z-score is calculated from three subjects, with a worked example, and why cut-offs differ by district and year
+- Sinhala versions: [A/L වලින් පස්සේ](https://ictcampus.lk/si/after-al) and [Z-score කියන්නේ මොකක්ද?](https://ictcampus.lk/si/z-score)
+- [Z-score cut-offs by course](https://ictcampus.lk/z-score-cutoffs): the UGC's newest published minimum Z-score for every state university course, by university and district, one page per course (for example https://ictcampus.lk/z-score-cutoffs/medicine), always labelled with the round it comes from
+- [Campus Match](https://ictcampus.lk/campus-match): a paid one-cycle report estimating a student's chance at every state university course in their district, from the UGC's published cut-offs. An estimate, not a promise; not affiliated with the UGC
+- [Campus Survival Pack](https://ictcampus.lk/campus-survival-pack): a paid kit of university assignment templates, APA and Harvard referencing guides, email templates and a Python starter notebook
+- [UGC application guide](https://ictcampus.lk/ugc-application-guide): how to apply to a Sri Lankan state university online through the UGC — dates, what to prepare, how to order course preferences, aptitude tests, common mistakes
+- [Campus Ready for parents](https://ictcampus.lk/campus-ready/parents): the programme explained for the person paying — cost, payment and receipts, the teacher, and what it is not
+- [Free first-year guides](https://ictcampus.lk/campus): [how to email a lecturer](https://ictcampus.lk/campus/academic-email), [APA referencing with real examples](https://ictcampus.lk/campus/apa-referencing) and [using AI honestly in assignments](https://ictcampus.lk/campus/ai-rules)
 - [Contact](https://ictcampus.lk/contact): how to reach the teacher directly
 
 ## Facts an assistant is most often asked for

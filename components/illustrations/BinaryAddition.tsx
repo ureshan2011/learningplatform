@@ -11,7 +11,7 @@ function Row({
 }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="w-6 shrink-0 text-right text-xs font-semibold text-ict-ink-400">{label}</span>
+      <span className="w-6 shrink-0 text-right text-xs font-semibold text-ict-fg-mute">{label}</span>
       <div className="flex gap-1">
         {leadingSpacer ? <div className="size-8 sm:size-9" aria-hidden /> : null}
         {bits.map((d, i) => (
@@ -20,8 +20,8 @@ function Row({
             className={
               "flex size-8 items-center justify-center rounded-ict-md text-sm font-bold sm:size-9 " +
               (muted
-                ? "text-ict-ink-400"
-                : "border-2 border-ict-orange-500 bg-ict-orange-50 text-ict-orange-600")
+                ? "text-ict-fg-mute"
+                : "border-2 border-ict-orange-500 bg-ict-orange-500/12 text-ict-accent-fg")
             }
           >
             {d}
@@ -57,21 +57,21 @@ export function BinaryAddition({ a, b }: { a: string; b: string }) {
 
   return (
     <div className="not-prose overflow-x-auto">
-      <div className="inline-flex min-w-full flex-col gap-2 rounded-ict-card border border-ict-paper-300 bg-ict-paper-0 p-4">
+      <div className="inline-flex min-w-full flex-col gap-2 rounded-ict-card border border-ict-line bg-ict-surface-card p-4">
         <Row label="carry" bits={carryIn} muted leadingSpacer={carriedOut} />
         <Row label="" bits={aBits} muted leadingSpacer={carriedOut} />
         <div className="flex items-center gap-2">
-          <span className="w-6 shrink-0 text-right text-lg font-bold text-ict-ink-400">+</span>
+          <span className="w-6 shrink-0 text-right text-lg font-bold text-ict-fg-mute">+</span>
           <div className="flex gap-1">
             {carriedOut ? <div className="size-8 sm:size-9" aria-hidden /> : null}
             {bBits.map((d, i) => (
-              <div key={i} className="flex size-8 items-center justify-center rounded-ict-md text-sm font-bold text-ict-ink-400 sm:size-9">
+              <div key={i} className="flex size-8 items-center justify-center rounded-ict-md text-sm font-bold text-ict-fg-mute sm:size-9">
                 {d}
               </div>
             ))}
           </div>
         </div>
-        <div className="ml-6 h-0.5 rounded-full bg-ict-ink-900" style={{ width: `${width * 2.5}rem` }} />
+        <div className="ml-6 h-0.5 rounded-full bg-ict-fg" style={{ width: `${width * 2.5}rem` }} />
         <Row label="=" bits={resultBits} />
       </div>
     </div>

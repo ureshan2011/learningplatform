@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { publicEnv } from "@/lib/env";
 import { listSubjects, listUnits } from "@/lib/queries";
+import { listCutoffCourses } from "@/lib/campus-match/cutoff-pages";
+import ugcManifest from "@/lib/content/ugc/manifest.json";
 
 /**
  * Every public, crawlable URL — static pages plus one entry per subject and
@@ -22,14 +24,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ignore the field entirely.
   const lastModified = new Date();
 
+  // The cut-off pages change only when the UGC dataset does, so they carry the
+  // date it was fetched rather than the deploy date.
+  const ugcDataDate = new Date(`${ugcManifest.newestFetchedAt}T00:00:00Z`);
+
   const staticEntries: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified, changeFrequency: "daily", priority: 1 },
     { url: `${base}/al-ict-classes`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/campus-ready`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/campus-survival-pack`, lastModified, changeFrequency: "weekly", priority: 0.9 },
     // Signed out this route renders the public sales page; the report behind it
-    // is `noindex` and is never listed here.
-    { url: `${base}/campus-match`, lastModified, changeFrequency: "weekly", priority: 0.95 },
+    // is `noindex` and is never listed here. Below the free pages that feed it:
+    // a short sales page is not what this cluster should rank first.
+    { url: `${base}/campus-match`, lastModified, changeFrequency: "weekly", priority: 0.6 },
+    // The informational half of the Campus Ready cluster.
+    { url: `${base}/after-al`, lastModified, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/z-score`, lastModified, changeFrequency: "monthly", priority: 0.9 },
+    // Sinhala twins, each pointing at its pair so the two are read as one page
+    // in two languages rather than as duplicates.
+    ...(["after-al", "z-score"] as const).map((p) => ({
+      url: `${base}/si/${p}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+      alternates: { languages: { "en-LK": `${base}/${p}`, "si-LK": `${base}/si/${p}` } },
+    })),
+    { url: `${base}/z-score-cutoffs`, lastModified: ugcDataDate, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/ugc-application-guide`, lastModified, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/campus-ready/parents`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/campus`, lastModified, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${base}/campus/apa-referencing`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/campus/ai-rules`, lastModified, changeFrequency: "monthly", priority: 0.8 },
     {
       url: `${base}/campus/academic-email`,
       lastModified,
@@ -89,5 +114,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   ).flat();
 
-  return [...staticEntries, ...subjectEntries, ...unitEntries];
+  const cutoffEntries: MetadataRoute.Sitemap = listCutoffCourses().map((c) => ({
+    url: `${base}/z-score-cutoffs/${c.slug}`,
+    lastModified: ugcDataDate,
+    changeFrequency: "yearly",
+    priority: 0.7,
+  }));
+
+  return [...staticEntries, ...subjectEntries, ...unitEntries, ...cutoffEntries];
 }

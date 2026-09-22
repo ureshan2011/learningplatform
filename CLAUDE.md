@@ -41,11 +41,17 @@ Zoom · PayHere.
 The ICTCAMPUS system runs **two worlds from one palette**, and which one a
 screen belongs to is decided by whether the visitor has signed in.
 
-- **Cream world** — every public page. `.landing-ict` and the marketing
-  components. Already built to the system.
-- **Dark world** — everything behind sign-in, plus the sign-in page itself,
-  scoped by `.ict-app` (see `app/globals.css`). Warm near-black surfaces,
-  orange accent, cocoa for one feature banner per screen.
+- **Cream world** — the marketing pages only: the homepage, classes, Campus
+  Ready, the lecturer page, policies. `.landing-ict` and the marketing
+  components.
+- **Dark world** — everything behind sign-in, the sign-in page itself, and the
+  free-resource pages (syllabus, notes, past papers, command words, the
+  reference pages), scoped by `.ict-app` (see `app/globals.css`). Warm
+  near-black surfaces, orange accent, cocoa for one feature banner per screen.
+  The free-resource pages live in the `app/(public)/(resources)/` route group,
+  whose layout supplies `.ict-app` and the header, so a student sees the same
+  look whether they arrive from Google or from the app. A new free study page
+  goes in that group and is built from `components/ds/`.
 
 Tokens live once, at the top of `app/globals.css`, as `--color-ict-*`,
 `--radius-ict-*`, `--shadow-ict-*`, `--ease-ict*`. `.landing-ict` aliases them,
@@ -94,6 +100,16 @@ syllabus, the lesson pages and the free library serve a public SEO route and a
 signed-in screen from the same file. Card elevation is the one exception:
 Tailwind resolves a shadow theme value at build time, so it lives in a plain
 `:root` and is used as `shadow-(--shadow-ict-card)`.
+
+**The after-A/L cluster** (Campus Ready's free pages: `/after-al`,
+`/z-score`, `/z-score-cutoffs/*`, `/ugc-application-guide`, `/campus/*`,
+`/campus-ready/parents`, and the `/si/` twins) never leads with "A/L ICT" in a
+title or slug — those words belong to the tuition pages. Build its metadata
+with `campusMetadata()` (`lib/seo/campus.ts`) and end its pages with
+`CampusFooter`, not `FreeResourcesFooter`. Two files need a person once a
+cycle: `lib/content/admission-calendar.ts` when the UGC announces dates, and
+the UGC dataset under `lib/content/ugc/` when a new cut-off round is
+published — the 100 cut-off pages rebuild from it on the next deploy.
 
 `components/ds-cream/` is the older cream-only twin, still used by the
 marketing pages. New shared work comes from `components/ds/`.

@@ -16,7 +16,7 @@ export function PrintPageButton() {
     <button
       type="button"
       onClick={() => window.print()}
-      className="ict-press inline-flex h-10 items-center gap-2 rounded-full border-[1.5px] border-ict-ink-900 px-5 text-sm font-semibold text-ict-ink-900 transition-colors duration-[120ms] ease-ict hover:border-ict-orange-500 hover:text-ict-orange-600"
+      className="ict-press inline-flex h-10 items-center gap-2 rounded-full border-[1.5px] border-ict-line-strong px-5 text-sm font-semibold text-ict-fg transition-colors duration-[120ms] ease-ict hover:border-ict-line-strong-hover hover:text-ict-accent-fg"
     >
       <Icon name="print" className="!text-base" />
       Save as PDF

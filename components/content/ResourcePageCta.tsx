@@ -1,7 +1,7 @@
 "use client";
 
 import { useSignedInClient } from "@/lib/auth/use-signed-in-client";
-import { ButtonLink } from "@/components/ds-cream";
+import { ButtonLink } from "@/components/ds";
 
 /**
  * The closing pitch on a free-resource page (`/notes`, `/command-words`,
@@ -26,11 +26,11 @@ export function ResourcePageCta({
   const signedIn = useSignedInClient(false);
 
   return (
-    <section className="mt-8 rounded-ict-card border border-ict-orange-200 bg-ict-orange-50 p-6">
-      <h2 className="font-display text-lg font-extrabold text-ict-ink-900">
+    <section className="mt-8 rounded-ict-card border border-ict-orange-500/30 bg-ict-orange-500/12 p-6">
+      <h2 className="font-display text-lg font-extrabold text-ict-fg">
         {signedIn ? "Back to your dashboard" : title}
       </h2>
-      <p className="mt-2 text-sm text-ict-ink-500">
+      <p className="mt-2 text-sm text-ict-fg-soft">
         {signedIn
           ? "You're already signed in — practice, mock exams and your notes are all one tap away."
           : body}
