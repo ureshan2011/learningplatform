@@ -60,7 +60,7 @@ export default function AcademicEmailPage() {
           faqJsonLd(FAQS),
           breadcrumbJsonLd([
             { name: "Home", path: "/" },
-            { name: "Campus Ready", path: "/campus-ready" },
+            { name: "Campus guides", path: "/campus" },
             { name: "Emailing a lecturer", path: "/campus/academic-email" },
           ]),
         ])}

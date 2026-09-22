@@ -178,7 +178,11 @@ export default function AfterAlPage() {
             <Link href="/z-score-cutoffs" className="font-semibold text-ict-accent-fg underline underline-offset-4">
               one page per course
             </Link>
-            . Or see where they sit against your own Z-score:{" "}
+            . When results are out,{" "}
+            <Link href="/ugc-application-guide" className="font-semibold text-ict-accent-fg underline underline-offset-4">
+              here is how the UGC application works
+            </Link>
+            . Or see where last round&apos;s cut-offs sit against your own Z-score:{" "}
             <Link
               href="/university-pathways#check"
               className="font-semibold text-ict-accent-fg underline underline-offset-4"

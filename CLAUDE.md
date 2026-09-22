@@ -101,6 +101,16 @@ signed-in screen from the same file. Card elevation is the one exception:
 Tailwind resolves a shadow theme value at build time, so it lives in a plain
 `:root` and is used as `shadow-(--shadow-ict-card)`.
 
+**The after-A/L cluster** (Campus Ready's free pages: `/after-al`,
+`/z-score`, `/z-score-cutoffs/*`, `/ugc-application-guide`, `/campus/*`,
+`/campus-ready/parents`, and the `/si/` twins) never leads with "A/L ICT" in a
+title or slug — those words belong to the tuition pages. Build its metadata
+with `campusMetadata()` (`lib/seo/campus.ts`) and end its pages with
+`CampusFooter`, not `FreeResourcesFooter`. Two files need a person once a
+cycle: `lib/content/admission-calendar.ts` when the UGC announces dates, and
+the UGC dataset under `lib/content/ugc/` when a new cut-off round is
+published — the 100 cut-off pages rebuild from it on the next deploy.
+
 `components/ds-cream/` is the older cream-only twin, still used by the
 marketing pages. New shared work comes from `components/ds/`.
 

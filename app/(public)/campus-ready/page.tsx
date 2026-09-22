@@ -121,7 +121,9 @@ const AFTER_AL_LINKS = [
   { href: "/z-score-cutoffs", label: "Z-score cut-offs by course" },
   { href: "/university-pathways#check", label: "Free Z-score cut-off checker" },
   { href: "/campus-match", label: "Campus Match" },
-  { href: "/campus/academic-email", label: "How to email a lecturer" },
+  { href: "/ugc-application-guide", label: "UGC application guide" },
+  { href: "/campus", label: "Free first-year guides" },
+  { href: "/campus-ready/parents", label: "For parents" },
 ] as const;
 
 const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";

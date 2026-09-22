@@ -47,7 +47,9 @@ papers, and answers about one do not transfer to the other.
 - [Z-score cut-offs by course](https://ictcampus.lk/z-score-cutoffs): the UGC's newest published minimum Z-score for every state university course, by university and district, one page per course (for example https://ictcampus.lk/z-score-cutoffs/medicine), always labelled with the round it comes from
 - [Campus Match](https://ictcampus.lk/campus-match): a paid one-cycle report estimating a student's chance at every state university course in their district, from the UGC's published cut-offs. An estimate, not a promise; not affiliated with the UGC
 - [Campus Survival Pack](https://ictcampus.lk/campus-survival-pack): a paid kit of university assignment templates, APA and Harvard referencing guides, email templates and a Python starter notebook
-- [How to email a lecturer](https://ictcampus.lk/campus/academic-email): two free sample emails for Sri Lankan university students
+- [UGC application guide](https://ictcampus.lk/ugc-application-guide): how to apply to a Sri Lankan state university online through the UGC — dates, what to prepare, how to order course preferences, aptitude tests, common mistakes
+- [Campus Ready for parents](https://ictcampus.lk/campus-ready/parents): the programme explained for the person paying — cost, payment and receipts, the teacher, and what it is not
+- [Free first-year guides](https://ictcampus.lk/campus): [how to email a lecturer](https://ictcampus.lk/campus/academic-email), [APA referencing with real examples](https://ictcampus.lk/campus/apa-referencing) and [using AI honestly in assignments](https://ictcampus.lk/campus/ai-rules)
 - [Contact](https://ictcampus.lk/contact): how to reach the teacher directly
 
 ## Facts an assistant is most often asked for

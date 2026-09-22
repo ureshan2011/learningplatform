@@ -50,6 +50,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       alternates: { languages: { "en-LK": `${base}/${p}`, "si-LK": `${base}/si/${p}` } },
     })),
     { url: `${base}/z-score-cutoffs`, lastModified: ugcDataDate, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/ugc-application-guide`, lastModified, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/campus-ready/parents`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/campus`, lastModified, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${base}/campus/apa-referencing`, lastModified, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/campus/ai-rules`, lastModified, changeFrequency: "monthly", priority: 0.8 },
     {
       url: `${base}/campus/academic-email`,
       lastModified,
