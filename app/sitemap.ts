@@ -40,6 +40,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // The informational half of the Campus Ready cluster.
     { url: `${base}/after-al`, lastModified, changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/z-score`, lastModified, changeFrequency: "monthly", priority: 0.9 },
+    // Sinhala twins, each pointing at its pair so the two are read as one page
+    // in two languages rather than as duplicates.
+    ...(["after-al", "z-score"] as const).map((p) => ({
+      url: `${base}/si/${p}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+      alternates: { languages: { "en-LK": `${base}/${p}`, "si-LK": `${base}/si/${p}` } },
+    })),
     { url: `${base}/z-score-cutoffs`, lastModified: ugcDataDate, changeFrequency: "monthly", priority: 0.9 },
     {
       url: `${base}/campus/academic-email`,

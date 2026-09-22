@@ -17,6 +17,7 @@ export const metadata: Metadata = campusMetadata({
   title: TITLE,
   description: DESCRIPTION,
   path: "/z-score",
+  languages: { en: "/z-score", si: "/si/z-score" },
   keywords: [
     "what is z score",
     "z score A/L",
@@ -84,6 +85,15 @@ export default function ZScorePage() {
         ])}
       />
       <main className="mx-auto max-w-3xl px-5 py-12">
+        <p className="mb-4 text-sm">
+          <Link
+            href="/si/z-score"
+            lang="si"
+            className="text-ict-fg-mute underline underline-offset-4 hover:text-ict-fg"
+          >
+            සිංහලෙන් කියවන්න
+          </Link>
+        </p>
         <PageHeader
           eyebrow="Free guide · university admission"
           title="What is a Z-score?"

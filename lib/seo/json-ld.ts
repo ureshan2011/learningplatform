@@ -256,6 +256,8 @@ export function productJsonLd(product: {
   description: string;
   path: string;
   priceLKR: number;
+  /** Defaults to in stock. Pass PreOrder while the product cannot be bought yet. */
+  availability?: "InStock" | "PreOrder";
 }) {
   return {
     "@type": "Product",
@@ -269,7 +271,7 @@ export function productJsonLd(product: {
       "@type": "Offer",
       price: String(product.priceLKR),
       priceCurrency: "LKR",
-      availability: "https://schema.org/InStock",
+      availability: `https://schema.org/${product.availability ?? "InStock"}`,
       url: `${base()}${product.path}`,
       seller: { "@id": ORG_ID() },
     },

@@ -23,6 +23,7 @@ export const metadata: Metadata = campusMetadata({
   title: TITLE,
   description: DESCRIPTION,
   path: "/after-al",
+  languages: { en: "/after-al", si: "/si/after-al" },
   keywords: [
     "what to do after A/L",
     "after A/L Sri Lanka",
@@ -136,6 +137,15 @@ export default function AfterAlPage() {
         ])}
       />
       <main className="mx-auto max-w-3xl px-5 py-12">
+        <p className="mb-4 text-sm">
+          <Link
+            href="/si/after-al"
+            lang="si"
+            className="text-ict-fg-mute underline underline-offset-4 hover:text-ict-fg"
+          >
+            සිංහලෙන් කියවන්න
+          </Link>
+        </p>
         <PageHeader
           eyebrow="Free guide · after A/L"
           title="What to do after A/L"

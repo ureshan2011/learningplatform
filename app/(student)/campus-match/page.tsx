@@ -18,9 +18,22 @@ import {
 } from "@/lib/campus-match/cycle";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
 import { SiteHeader } from "@/components/nav/SiteHeader";
-import { Badge, Card, Eyebrow, Notice, PageHeader } from "@/components/ds";
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  Eyebrow,
+  Notice,
+  PageHeader,
+  SectionHeading,
+  StatusDot,
+  type StatusTone,
+} from "@/components/ds";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { CampusFooter } from "@/components/content/CampusFooter";
+import { FaqList } from "@/components/content/FaqList";
+import { breadcrumbJsonLd, faqJsonLd, graphJsonLd, productJsonLd } from "@/lib/seo/json-ld";
 import { PageShell } from "@/components/ds/PageShell";
-import { ButtonLink as CreamButtonLink, Card as CreamCard, Eyebrow as CreamEyebrow } from "@/components/ds-cream";
 import districts from "@/lib/content/ugc/districts.json";
 import { campusMetadata } from "@/lib/seo/campus";
 import streams from "@/lib/content/ugc/streams.json";
@@ -53,6 +66,51 @@ const WHAT_YOU_GET = [
   "An application-order builder that shows what your list is likely to return",
   "What each degree actually teaches in first year, in Sinhala or English",
   "A printable report and a share card",
+];
+
+const HOW_IT_WORKS = [
+  {
+    title: "Tell it your Z-score, district and stream",
+    body: "The three things on your results sheet. If you came from the free checker, they are already filled in.",
+  },
+  {
+    title: "It reads every published round for your district",
+    body: "The UGC's cut-off tables from 2018/2019 to the newest round, for every course your stream can apply for, and estimates where each course's line is likely to fall next round.",
+  },
+  {
+    title: "You get a chance for every course, and an order to apply in",
+    body: "Each course sorted into a band, and a builder that shows what the list you are about to submit is likely to return.",
+  },
+];
+
+const BANDS: { name: string; range: string; tone: StatusTone; body: string }[] = [
+  { name: "Likely", range: "70% or more", tone: "success", body: "Your Z-score is comfortably above what these have needed." },
+  { name: "Possible", range: "35% to 69%", tone: "warning", body: "Could go either way. This is where the order of your list matters most." },
+  { name: "Reach", range: "10% to 34%", tone: "info", body: "Below what these usually need, but not out of reach in a soft year." },
+  { name: "Unlikely", range: "under 10%", tone: "neutral", body: "Well below recent cut-offs. Listed so you see the whole picture." },
+];
+
+const SALES_FAQS = [
+  {
+    q: "Is this the official UGC result?",
+    a: "No. It is an estimate from the UGC's own published cut-offs, made by ICT Campus. ICT Campus is not affiliated with the UGC. Selection is decided only by the UGC, and its handbook is the authority on who may apply for what.",
+  },
+  {
+    q: "How accurate is it?",
+    a: "The method was tested by forecasting six past rounds using only the rounds before each one. On average the forecast cut-off was within about 0.14 of the real one, and students it called Likely got in far more often than not. It is still an estimate, not a promise — every screen says so.",
+  },
+  {
+    q: "What does it cost, and how long do I keep it?",
+    a: "One payment, not a subscription. It stays open for the whole admission cycle — results, the application window, selection and any appeal — so you can come back when the cut-offs are published.",
+  },
+  {
+    q: "Do I need a laptop?",
+    a: "No. It is built for a phone, for results day.",
+  },
+  {
+    q: "Can I try it before paying?",
+    a: "Yes. The free checker shows last round's cut-off for every course your stream can apply for in your district. Campus Match adds the forecast, the chance, the bands and the order builder.",
+  },
 ];
 
 function summarise(
@@ -102,19 +160,44 @@ export default async function CampusMatchPage({
   }
 
   /* ---------------------------------------------------------------------- */
-  /* Signed out: the public sales page, on the cream system                   */
+  /* Signed out: the public sales page, on the app's dark system              */
   /* ---------------------------------------------------------------------- */
+  // Dark like the rest of the after-A/L cluster — the cut-off pages and the
+  // Z-score guide send people here, and a student should not feel they have
+  // left the site between the free half and the paid half.
+  //
+  // This is also the version search engines see, so it carries the content a
+  // results-day searcher needs to decide: how it works, what the bands mean,
+  // where the numbers come from, and how far to trust them.
   if (!user) {
+    const paused = paymentsPaused();
     return (
-      <div>
+      <div className="ict-app min-h-dvh">
+        <JsonLd
+          data={graphJsonLd([
+            productJsonLd({
+              name: CAMPUS_MATCH_NAME,
+              description:
+                "A one-payment report estimating a student's chance at every state university course in their district for the coming admission round, from the UGC's published cut-offs.",
+              path: "/campus-match",
+              priceLKR: subject?.product?.feeLKR ?? CAMPUS_MATCH_FEE_LKR,
+              availability: paused || freshness.stale ? "PreOrder" : "InStock",
+            }),
+            faqJsonLd(SALES_FAQS),
+            breadcrumbJsonLd([
+              { name: "Home", path: "/" },
+              { name: "Campus Match", path: "/campus-match" },
+            ]),
+          ])}
+        />
         <SiteHeader user={null} />
         <main className="mx-auto w-full max-w-[760px] px-5 py-10 sm:py-14">
-          <CreamEyebrow>{ADMISSION_ROUND} admission round</CreamEyebrow>
-          <h1 className="mt-2.5 font-display text-[clamp(30px,5vw,46px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ict-ink-900">
+          <Eyebrow>{ADMISSION_ROUND} admission round</Eyebrow>
+          <h1 className="mt-2.5 font-display text-[clamp(30px,5vw,46px)] leading-[1.05] font-extrabold tracking-[-0.03em] text-ict-fg">
             Which degrees your Z-score can actually reach
             <span className="text-ict-orange-500">.</span>
           </h1>
-          <p className="mt-4 max-w-[56ch] text-lg text-ict-ink-400">
+          <p className="mt-4 max-w-[56ch] text-lg text-ict-fg-mute">
             An estimated chance at every state university course your stream can apply for, in your
             own district, for the {ADMISSION_ROUND} round — built from the UGC&rsquo;s own
             published cut-offs.
@@ -123,23 +206,20 @@ export default async function CampusMatchPage({
           {chips.length > 0 ? (
             <p className="mt-5 flex flex-wrap gap-2">
               {chips.map((c) => (
-                <span
-                  key={c.label}
-                  className="inline-flex h-8 items-center rounded-full bg-ict-paper-200 px-3 text-xs font-semibold text-ict-ink-900"
-                >
+                <Badge key={c.label} tone="neutral">
                   {c.label}: {c.value}
-                </span>
+                </Badge>
               ))}
             </p>
           ) : null}
 
-          <CreamCard radius="card" className="mt-6 p-6">
-            <p className="font-display text-2xl font-extrabold text-ict-ink-900">{fee}</p>
-            <p className="mt-1 text-sm text-ict-ink-400">One payment. Yours for the whole cycle.</p>
-            <ul className="mt-4 space-y-2">
+          <Card variant="feature" radius="panel" className="mt-6 p-6 sm:p-8">
+            <p className="font-display text-3xl font-extrabold tracking-[-0.03em]">{fee}</p>
+            <p className="mt-1 text-sm text-ict-on-feature-soft">One payment. Yours for the whole cycle.</p>
+            <ul className="mt-5 space-y-2">
               {WHAT_YOU_GET.map((line) => (
-                <li key={line} className="flex gap-2.5 text-sm text-ict-ink-500">
-                  <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-ict-orange-500" />
+                <li key={line} className="flex gap-2.5 text-sm text-ict-on-feature-soft">
+                  <span className="mt-[7px] size-1.5 shrink-0 rounded-full bg-ict-orange-400" />
                   {line}
                 </li>
               ))}
@@ -148,27 +228,73 @@ export default async function CampusMatchPage({
                 This used to link to this same page, which for a signed-out
                 visitor is this same card — a loop every results-day visitor
                 from the free checker fell into. */}
-            <CreamButtonLink
+            <ButtonLink
               href={signInUrl(query ? `/campus-match?${query}` : "/campus-match")}
               variant="primary"
-              className="mt-5"
+              className="mt-6"
             >
               Sign in to continue
-            </CreamButtonLink>
-            <p className="mt-2 text-xs text-ict-ink-400">
+            </ButtonLink>
+            <p className="mt-2 text-xs text-ict-on-feature-soft">
               One SMS code, no password. Everything you typed is kept.
             </p>
-          </CreamCard>
+          </Card>
 
-          <p className="mt-6 text-xs leading-relaxed text-ict-ink-400">{sourceLine}</p>
+          <section className="mt-12">
+            <SectionHeading as="h2">How it works</SectionHeading>
+            <ol className="mt-4 space-y-3">
+              {HOW_IT_WORKS.map((step, i) => (
+                <li key={step.title}>
+                  <Card radius="card" className="flex gap-4 p-5">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ict-surface-raised font-display text-sm font-bold text-ict-fg">
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="font-display text-base font-bold text-ict-fg">{step.title}</h3>
+                      <p className="mt-1 text-sm leading-relaxed text-ict-fg-soft">{step.body}</p>
+                    </div>
+                  </Card>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section className="mt-12">
+            <SectionHeading as="h2">The four bands</SectionHeading>
+            <p className="mt-2 text-sm text-ict-fg-mute">
+              Every course gets an estimated chance. The bands sort the list so you can see at a
+              glance where your application is safe and where it is a gamble.
+            </p>
+            <Card radius="card" className="mt-4 p-2">
+              <ul>
+                {BANDS.map((b) => (
+                  <li key={b.name} className="flex items-start gap-3 rounded-ict-md px-3 py-3">
+                    <StatusDot tone={b.tone} className="mt-2" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-ict-fg">
+                        {b.name} <span className="font-normal text-ict-fg-mute">· {b.range}</span>
+                      </p>
+                      <p className="mt-0.5 text-sm text-ict-fg-soft">{b.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </section>
+
+          <FaqList faqs={SALES_FAQS} heading="Before you buy" />
+
+          <p className="mt-10 text-xs leading-relaxed text-ict-fg-dim">{sourceLine}</p>
           <p className="mt-3 text-sm">
             <Link
               href={query ? `/university-pathways?${query}` : "/university-pathways"}
-              className="font-semibold text-ict-orange-600 underline underline-offset-4"
+              className="font-semibold text-ict-accent-fg underline underline-offset-4"
             >
               Check last round&rsquo;s cut-offs free first
             </Link>
           </p>
+
+          <CampusFooter exclude={["/campus-match"]} />
         </main>
       </div>
     );
