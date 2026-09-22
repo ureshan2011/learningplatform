@@ -75,6 +75,10 @@ const config = [
     files: [
       "app/(student)/**/*.tsx",
       "app/(teacher)/**/*.tsx",
+      // The free-resource pages render inside `.ict-app` too.
+      "app/(public)/(resources)/**/*.tsx",
+      "components/illustrations/**/*.tsx",
+      "components/papers/**/*.tsx",
       "components/ds/**/*.tsx",
       "components/syllabus/**/*.tsx",
       "components/subject/**/*.tsx",

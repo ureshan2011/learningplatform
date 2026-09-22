@@ -6,7 +6,7 @@ import type { SessionUser } from "@/lib/auth/session";
 import { useSignedInClient } from "@/lib/auth/use-signed-in-client";
 import { SignOutButton } from "@/components/auth/SignOutButton";
 import { Icon } from "@/components/ui/Icon";
-import { ButtonLink } from "@/components/ds-cream";
+import { ButtonLink } from "@/components/ds";
 
 /**
  * The one navigation bar every page (other than the landing hero, which has
@@ -30,6 +30,10 @@ import { ButtonLink } from "@/components/ds-cream";
  * `/library` and `/subjects/{id}/syllabus`, which render inside the app shell.
  * What remains is the real case this was always for: a signed-in student
  * arriving on a public page from a search result or a shared link.
+ *
+ * It names no palette colour, only role tokens, so it is white on the cream
+ * marketing pages and near-black on the free-resource pages, which sit inside
+ * `.ict-app` (see `app/(public)/(resources)/layout.tsx`).
  */
 export function SiteHeader({ user }: { user: SessionUser | null }) {
   const isStaff = user?.role === "teacher" || user?.role === "admin";
@@ -44,13 +48,13 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
   const signInHref = skipNext ? "/signin" : `/signin?next=${encodeURIComponent(pathname)}`;
 
   return (
-    <header className="border-b border-ict-paper-300 bg-ict-paper-0">
+    <header className="border-b border-ict-line bg-ict-surface-card">
       <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-4">
         <Link href={showSignedInNav ? "/dashboard" : "/"} className="flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-full bg-ict-orange-500 text-white">
             <Icon name="school" className="!text-lg" />
           </span>
-          <span className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-ink-900">
+          <span className="font-display text-lg font-extrabold tracking-[-0.02em] text-ict-fg">
             ICT<span className="text-ict-orange-500">Campus</span>
           </span>
         </Link>
@@ -80,7 +84,7 @@ export function SiteHeader({ user }: { user: SessionUser | null }) {
               {isStaff ? <NavLink href="/teacher">Teacher console</NavLink> : null}
               <NavLink href="/account">Account</NavLink>
               <div className="ml-1">
-                <SignOutButton className="rounded-full border-[1.5px] border-ict-ink-900 px-4 py-2 text-sm font-semibold text-ict-ink-900 transition-colors duration-[120ms] hover:border-ict-orange-500 hover:text-ict-orange-600" />
+                <SignOutButton className="rounded-full border-[1.5px] border-ict-line-strong px-4 py-2 text-sm font-semibold text-ict-fg transition-colors duration-[120ms] hover:border-ict-line-strong-hover" />
               </div>
             </>
           )}
@@ -94,7 +98,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-medium text-ict-ink-500 transition-colors duration-[120ms] hover:bg-ict-paper-100 hover:text-ict-ink-900"
+      className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-medium text-ict-fg-soft transition-colors duration-[120ms] hover:bg-ict-surface-hover hover:text-ict-fg"
     >
       {children}
     </Link>

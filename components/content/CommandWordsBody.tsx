@@ -10,7 +10,7 @@ import { Badge, Card } from "@/components/ds";
  * no palette colour, so it is white cards on the public route and near-black
  * panels inside `.ict-app`.
  *
- * The tip line used to be `bg-ict-orange-50` with `text-ict-orange-600` — a
+ * The tip line used to be `bg-ict-orange-500/12` with `text-ict-accent-fg` — a
  * pale orange wash that reads as "gently highlighted" on cream and as a
  * glowing slab on near-black, and a second orange in a card that already has
  * one. It is a raised neutral row with an orange glyph now: same emphasis,

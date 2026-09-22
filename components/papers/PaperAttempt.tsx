@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { Icon } from "@/components/ui/Icon";
-import { Badge, Button, ButtonLink, Card } from "@/components/ds-cream";
+import { Badge, Button, ButtonLink, Card } from "@/components/ds";
 import { DisclaimerNote } from "@/components/papers/DisclaimerNote";
 import { track } from "@/lib/analytics";
 import {
@@ -45,7 +45,7 @@ function formatClock(totalSeconds: number): string {
 function OptionText({ text }: { text: string }) {
   if (!text.includes("\\n")) return <>{text}</>;
   return (
-    <pre className="mt-1 overflow-x-auto rounded-ict-sm bg-ict-paper-100 p-2 font-mono text-xs whitespace-pre">
+    <pre className="mt-1 overflow-x-auto rounded-ict-sm bg-ict-surface p-2 font-mono text-xs whitespace-pre">
       {text.split("\\n").join("\n")}
     </pre>
   );
@@ -108,7 +108,7 @@ export function PaperAttempt() {
   const low = secondsLeft <= 5 * 60;
 
   return (
-    <div className="bg-ict-paper-100">
+    <div className="bg-ict-surface">
       <div className="mx-auto max-w-3xl px-5 py-8">
         <LangToggle lang={lang} onChange={setLang} />
 
@@ -121,17 +121,17 @@ export function PaperAttempt() {
                 "sticky top-0 z-20 -mx-5 mb-6 flex items-center justify-between gap-3 border-b px-5 py-3 backdrop-blur",
                 phase === "attempting" && low
                   ? "border-ict-red-500/30 bg-ict-red-50/95"
-                  : "border-ict-paper-300 bg-ict-paper-100/95",
+                  : "border-ict-line bg-ict-surface/95",
               )}
             >
-              <div className="flex items-center gap-2 font-mono text-lg font-bold tabular-nums text-ict-ink-900">
+              <div className="flex items-center gap-2 font-mono text-lg font-bold tabular-nums text-ict-fg">
                 <Icon
                   name="timer"
-                  className={clsx("!text-xl", phase === "attempting" && low ? "text-ict-red-500" : "text-ict-orange-500")}
+                  className={clsx("!text-xl", phase === "attempting" && low ? "text-ict-danger-fg" : "text-ict-orange-500")}
                 />
                 {phase === "attempting" ? formatClock(secondsLeft) : "—"}
               </div>
-              <div className="text-sm text-ict-ink-400">
+              <div className="text-sm text-ict-fg-mute">
                 {phase === "attempting"
                   ? lang === "si"
                     ? `පිළිතුරු ${answeredCount}/${PAPER_QUESTION_COUNT}`
@@ -171,7 +171,7 @@ export function PaperAttempt() {
               </Button>
             ) : (
               <Card radius="card" className="mt-8 flex flex-wrap items-center justify-between gap-3 p-5">
-                <p className="text-sm text-ict-ink-400">
+                <p className="text-sm text-ict-fg-mute">
                   {lang === "si"
                     ? "වැඩිදුර පුහුණුව අවශ්‍යද? සජීවී පන්තියක් සමඟ ගුරුවරයාගෙන් සෘජුව ඉගෙන ගන්න."
                     : "Want more practice like this? Learn live with a teacher who marks your work."}
@@ -191,12 +191,12 @@ export function PaperAttempt() {
 function LangToggle({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
   return (
     <div className="mb-4 flex justify-end">
-      <div className="inline-flex rounded-full border border-ict-paper-300 bg-ict-paper-0 p-1 text-xs font-semibold shadow-ict-xs">
+      <div className="inline-flex rounded-full border border-ict-line bg-ict-surface-card p-1 text-xs font-semibold shadow-ict-xs">
         <button
           onClick={() => onChange("si")}
           className={clsx(
             "ict-press rounded-full px-3 py-1.5 transition-colors duration-[120ms]",
-            lang === "si" ? "bg-ict-orange-500 text-white" : "text-ict-ink-400",
+            lang === "si" ? "bg-ict-orange-500 text-white" : "text-ict-fg-mute",
           )}
         >
           සිංහල
@@ -205,7 +205,7 @@ function LangToggle({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => voi
           onClick={() => onChange("en")}
           className={clsx(
             "ict-press rounded-full px-3 py-1.5 transition-colors duration-[120ms]",
-            lang === "en" ? "bg-ict-orange-500 text-white" : "text-ict-ink-400",
+            lang === "en" ? "bg-ict-orange-500 text-white" : "text-ict-fg-mute",
           )}
         >
           English
@@ -219,13 +219,13 @@ function IntroScreen({ lang, onStart }: { lang: Lang; onStart: () => void }) {
   const replacedCount = AL_ICT_2026_PAPER1.filter((q) => q.replaced).length;
   return (
     <Card radius="card" className="p-6">
-      <h1 className="flex items-center gap-2 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-ink-900">
+      <h1 className="flex items-center gap-2 font-display text-2xl font-extrabold tracking-[-0.02em] text-ict-fg">
         <Icon name="quiz" className="text-ict-orange-500" />
         {lang === "si"
           ? "උසස් පෙළ තොරතුරු හා සන්නිවේදන තාක්ෂණය 2026 — I ප්‍රශ්න පත්‍රය"
           : "A/L ICT 2026 — Paper I (MCQ)"}
       </h1>
-      <ul className="mt-4 space-y-2 text-sm text-ict-ink-400">
+      <ul className="mt-4 space-y-2 text-sm text-ict-fg-mute">
         <li className="flex items-center gap-2">
           <Icon name="quiz" className="!text-base text-ict-orange-500" />
           {lang === "si" ? `ප්‍රශ්න 50ක්` : `${PAPER_QUESTION_COUNT} questions`}
@@ -258,11 +258,11 @@ function IntroScreen({ lang, onStart }: { lang: Lang; onStart: () => void }) {
 function ResultBanner({ lang, score }: { lang: Lang; score: number }) {
   const pct = Math.round((score / PAPER_QUESTION_COUNT) * 100);
   return (
-    <div className="mb-6 rounded-ict-card border border-ict-green-500/30 bg-ict-green-50 p-5 text-center">
+    <div className="mb-6 rounded-ict-card border border-ict-green-500/30 bg-ict-green-500/12 p-5 text-center">
       <p className="font-display text-3xl font-extrabold text-ict-green-500">
         {score}/{PAPER_QUESTION_COUNT}
       </p>
-      <p className="mt-1 text-sm text-ict-ink-400">
+      <p className="mt-1 text-sm text-ict-fg-mute">
         {lang === "si" ? `(${pct}%) — නිවැරදි පිළිතුරු පහත දැක්වේ` : `(${pct}%) — correct answers shown below`}
       </p>
     </div>
@@ -289,10 +289,10 @@ function QuestionCard({
   const isCorrectOverall = selected === question.correctIndex;
 
   return (
-    <li id={`q${question.id}`} className="rounded-ict-card border border-ict-paper-300 bg-ict-paper-0 p-5 shadow-ict-sm">
+    <li id={`q${question.id}`} className="rounded-ict-card border border-ict-line bg-ict-surface-card p-5 shadow-ict-sm">
       <div className="flex items-start justify-between gap-3">
-        <p className="font-semibold text-ict-ink-900">
-          <span className="text-ict-ink-400">{index}.</span> {t.stem}
+        <p className="font-semibold text-ict-fg">
+          <span className="text-ict-fg-mute">{index}.</span> {t.stem}
         </p>
         {isSubmitted ? (
           <Badge tone={isCorrectOverall ? "success" : selected === undefined ? "neutral" : "danger"} className="shrink-0">
@@ -302,7 +302,7 @@ function QuestionCard({
       </div>
 
       {question.replaced ? (
-        <p className="mt-1 text-xs text-ict-ink-400 italic">
+        <p className="mt-1 text-xs text-ict-fg-mute italic">
           {lang === "si" ? "* ප්‍රතිස්ථාපිත ප්‍රශ්නයකි — හැඳින්වීම බලන්න." : "* Replacement question — see the note above."}
         </p>
       ) : null}
@@ -311,12 +311,12 @@ function QuestionCard({
         {t.options.map((opt, i) => {
           const isSelected = selected === i;
           const isCorrect = i === question.correctIndex;
-          let stateClass = "border-ict-paper-300";
+          let stateClass = "border-ict-line";
           if (isSubmitted) {
-            if (isCorrect) stateClass = "border-ict-green-500 bg-ict-green-50";
-            else if (isSelected) stateClass = "border-ict-red-500 bg-ict-red-50";
+            if (isCorrect) stateClass = "border-ict-green-500 bg-ict-green-500/12";
+            else if (isSelected) stateClass = "border-ict-red-500 bg-ict-red-500/12";
           } else if (isSelected) {
-            stateClass = "border-ict-orange-500 bg-ict-orange-50";
+            stateClass = "border-ict-orange-500 bg-ict-orange-500/12";
           }
           return (
             <button
@@ -325,7 +325,7 @@ function QuestionCard({
               disabled={isSubmitted}
               onClick={() => onSelect(i)}
               className={clsx(
-                "ict-press flex w-full items-start gap-2.5 rounded-ict-md border px-3.5 py-2.5 text-left text-sm text-ict-ink-900 transition-colors duration-[120ms] disabled:cursor-default",
+                "ict-press flex w-full items-start gap-2.5 rounded-ict-md border px-3.5 py-2.5 text-left text-sm text-ict-fg transition-colors duration-[120ms] disabled:cursor-default",
                 stateClass,
               )}
             >
@@ -336,7 +336,7 @@ function QuestionCard({
                     ? "border-ict-green-500 bg-ict-green-500 text-white"
                     : isSelected
                       ? "border-ict-orange-500 bg-ict-orange-500 text-white"
-                      : "border-ict-paper-300 text-ict-ink-400",
+                      : "border-ict-line text-ict-fg-mute",
                 )}
               >
                 {i + 1}

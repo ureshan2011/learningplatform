@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { Card, SectionHeading } from "@/components/ds-cream";
+import { Card, SectionHeading } from "@/components/ds";
 
 interface ResourceLink {
   href: string;
@@ -48,7 +48,7 @@ export function FreeResourcesFooter({ exclude = [] }: { exclude?: string[] }) {
           <li key={r.href}>
             <Link
               href={r.href}
-              className="flex items-center gap-2 rounded-ict-md px-3 py-2 text-sm text-ict-ink-500 transition-colors duration-[120ms] hover:bg-ict-paper-100 hover:text-ict-orange-600"
+              className="flex items-center gap-2 rounded-ict-md px-3 py-2 text-sm text-ict-fg-soft transition-colors duration-[120ms] hover:bg-ict-surface-hover hover:text-ict-accent-fg"
             >
               <Icon name={r.icon} className="!text-base text-ict-orange-500" />
               {r.label}
@@ -64,14 +64,14 @@ export function FreeResourcesFooter({ exclude = [] }: { exclude?: string[] }) {
           labelled as a course, on every free page. */}
       <Link
         href="/campus-ready"
-        className="mt-5 flex items-center gap-3 rounded-ict-md border border-ict-paper-300 px-3.5 py-3 transition-colors duration-[120ms] hover:border-ict-orange-500 hover:bg-ict-paper-100"
+        className="mt-5 flex items-center gap-3 rounded-ict-md border border-ict-line px-3.5 py-3 transition-colors duration-[120ms] hover:border-ict-line-strong-hover hover:bg-ict-surface-hover"
       >
         <Icon name="north_east" className="!text-base shrink-0 text-ict-orange-500" />
         <span className="min-w-0">
-          <span className="block text-sm font-semibold text-ict-ink-900">
+          <span className="block text-sm font-semibold text-ict-fg">
             Finished your A/Ls? Campus Ready
           </span>
-          <span className="block text-xs text-ict-ink-400">
+          <span className="block text-xs text-ict-fg-mute">
             A 12-week course in data, Python and research skills for the wait before university.
             Paid, with two intakes a year.
           </span>
