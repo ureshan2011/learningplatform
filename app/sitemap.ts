@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { publicEnv } from "@/lib/env";
 import { listSubjects, listUnits } from "@/lib/queries";
+import { listCutoffCourses } from "@/lib/campus-match/cutoff-pages";
+import ugcManifest from "@/lib/content/ugc/manifest.json";
 
 /**
  * Every public, crawlable URL — static pages plus one entry per subject and
@@ -22,6 +24,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ignore the field entirely.
   const lastModified = new Date();
 
+  // The cut-off pages change only when the UGC dataset does, so they carry the
+  // date it was fetched rather than the deploy date.
+  const ugcDataDate = new Date(`${ugcManifest.newestFetchedAt}T00:00:00Z`);
+
   const staticEntries: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified, changeFrequency: "daily", priority: 1 },
     { url: `${base}/al-ict-classes`, lastModified, changeFrequency: "weekly", priority: 0.95 },
@@ -33,6 +39,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/campus-match`, lastModified, changeFrequency: "weekly", priority: 0.6 },
     // The informational half of the Campus Ready cluster.
     { url: `${base}/after-al`, lastModified, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/z-score`, lastModified, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/z-score-cutoffs`, lastModified: ugcDataDate, changeFrequency: "monthly", priority: 0.9 },
     {
       url: `${base}/campus/academic-email`,
       lastModified,
@@ -92,5 +100,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   ).flat();
 
-  return [...staticEntries, ...subjectEntries, ...unitEntries];
+  const cutoffEntries: MetadataRoute.Sitemap = listCutoffCourses().map((c) => ({
+    url: `${base}/z-score-cutoffs/${c.slug}`,
+    lastModified: ugcDataDate,
+    changeFrequency: "yearly",
+    priority: 0.7,
+  }));
+
+  return [...staticEntries, ...subjectEntries, ...unitEntries, ...cutoffEntries];
 }

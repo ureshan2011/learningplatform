@@ -22,6 +22,8 @@ interface CampusLink {
  */
 const LINKS: CampusLink[] = [
   { href: "/after-al", label: "After A/L — what to do while you wait", icon: "route" },
+  { href: "/z-score", label: "What is a Z-score? How it is calculated", icon: "help" },
+  { href: "/z-score-cutoffs", label: "Z-score cut-offs for every course", icon: "grid_view" },
   { href: "/university-pathways#check", label: "Free checker — last round's cut-offs in your district", icon: "search" },
   { href: "/campus-match", label: "Campus Match — your chance at every course", icon: "insights" },
   { href: "/campus/academic-email", label: "How to email a lecturer", icon: "mail" },

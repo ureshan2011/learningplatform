@@ -140,6 +140,9 @@ export default function UniversityPathwaysPage() {
                   <Link href="/campus-match" className="text-ict-orange-600 underline underline-offset-4">
                     Campus Match
                   </Link>
+                  <Link href="/z-score-cutoffs" className="text-ict-orange-600 underline underline-offset-4">
+                    Cut-offs for every course
+                  </Link>
                   <Link href="/after-al" className="text-ict-orange-600 underline underline-offset-4">
                     What to do after A/L
                   </Link>

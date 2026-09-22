@@ -307,6 +307,42 @@ export function articleJsonLd(article: {
 }
 
 /**
+ * A published table of figures, as a `Dataset`.
+ *
+ * The UGC cut-off pages republish one round of the UGC's own table, and
+ * `Dataset` is the type that says so honestly: who created the numbers (the
+ * UGC, not us), which year they cover, and where the original is. It is also
+ * what makes a page eligible for Google Dataset Search.
+ */
+export function datasetJsonLd(dataset: {
+  name: string;
+  description: string;
+  path: string;
+  temporalCoverage: string;
+  sourceUrl: string;
+  keywords?: string[];
+}) {
+  return {
+    "@type": "Dataset",
+    "@id": `${base()}${dataset.path}#dataset`,
+    name: dataset.name,
+    description: dataset.description,
+    url: `${base()}${dataset.path}`,
+    isAccessibleForFree: true,
+    temporalCoverage: dataset.temporalCoverage,
+    spatialCoverage: { "@type": "Place", name: COUNTRY },
+    creator: {
+      "@type": "GovernmentOrganization",
+      name: "University Grants Commission, Sri Lanka",
+      url: "https://www.ugc.ac.lk/",
+    },
+    publisher: { "@id": ORG_ID() },
+    isBasedOn: dataset.sourceUrl,
+    ...(dataset.keywords ? { keywords: dataset.keywords } : {}),
+  };
+}
+
+/**
  * Wraps a set of nodes in a single `@graph`. One script tag per page holding
  * one graph beats several disconnected scripts: the `@id` references above
  * only resolve into one coherent picture when the nodes ship together.

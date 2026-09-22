@@ -117,6 +117,8 @@ export const revalidate = 3600;
  */
 const AFTER_AL_LINKS = [
   { href: "/after-al", label: "What to do after A/L" },
+  { href: "/z-score", label: "What is a Z-score?" },
+  { href: "/z-score-cutoffs", label: "Z-score cut-offs by course" },
   { href: "/university-pathways#check", label: "Free Z-score cut-off checker" },
   { href: "/campus-match", label: "Campus Match" },
   { href: "/campus/academic-email", label: "How to email a lecturer" },

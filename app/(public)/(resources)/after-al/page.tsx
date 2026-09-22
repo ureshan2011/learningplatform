@@ -160,7 +160,15 @@ export default function AfterAlPage() {
           </div>
 
           <p className="mt-5 text-sm text-ict-fg-soft">
-            Want to see where last round&apos;s cut-offs sit against your own Z-score?{" "}
+            New to Z-scores?{" "}
+            <Link href="/z-score" className="font-semibold text-ict-accent-fg underline underline-offset-4">
+              How the Z-score works
+            </Link>
+            . Last round&apos;s cut-off for every course is on{" "}
+            <Link href="/z-score-cutoffs" className="font-semibold text-ict-accent-fg underline underline-offset-4">
+              one page per course
+            </Link>
+            . Or see where they sit against your own Z-score:{" "}
             <Link
               href="/university-pathways#check"
               className="font-semibold text-ict-accent-fg underline underline-offset-4"
