@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { ScrollEffects } from "@/components/marketing/landing/ScrollEffects";
@@ -11,23 +12,37 @@ import { ALSO_WORTH_KNOWING } from "@/lib/content/university-pathways";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { Eyebrow, Card, ButtonLink } from "@/components/ds-cream";
+import { campusMetadata } from "@/lib/seo/campus";
+import { breadcrumbJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
+import manifest from "@/lib/content/ugc/manifest.json";
+import newestCutoffs from "@/lib/content/ugc/cutoffs/2025-2026.json";
 
 // Same three self-hosted fonts as the main landing page, scoped to this page
 // only — this page is built to feel like an extension of it, not a plain
 // reference article.
 
-export const metadata: Metadata = {
-  title: "A/L ICT University Degrees Sri Lanka — Z-Score Cutoffs & Eligibility",
+// The bridge between the two clusters: it keeps its A/L ICT framing, which is
+// what it has ranked for, but it is also where the free Z-score checker lives,
+// so it takes the Campus cluster's share card rather than inheriting the home
+// page's. Title kept under 60 characters with the suffix.
+export const metadata: Metadata = campusMetadata({
+  title: "A/L ICT degrees & Z-score cut-offs, Sri Lanka",
   description:
-    "Which state university degrees an A/L ICT background makes you eligible for, with real Z-score cutoff ranges from the UGC's own latest published admission round — free, interactive, sourced and clearly disclaimed.",
-  alternates: { canonical: "/university-pathways" },
-};
+    "Free Z-score checker: last round's UGC cut-off for every course in your district, plus which state university degrees an A/L ICT background opens. Sourced and disclaimed.",
+  path: "/university-pathways",
+});
 
 const CONTAINER = "mx-auto w-full max-w-[900px] px-[clamp(20px,4vw,32px)]";
 
 function jsonLd() {
+  return graphJsonLd([itemList(), breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "University pathways", path: "/university-pathways" },
+  ])]);
+}
+
+function itemList() {
   return {
-    "@context": "https://schema.org",
     "@type": "ItemList",
     name: "University degrees eligible with an A/L ICT background in Sri Lanka",
     itemListElement: [
@@ -111,6 +126,28 @@ export default function UniversityPathwaysPage() {
             </div>
           </section>
 
+          {/* A student who already has results is past the A/L ICT pitch at
+              the bottom of this page. This is where they go next. */}
+          <section className="w-full pb-[clamp(32px,6vw,72px)]">
+            <div className={CONTAINER}>
+              <Card radius="card" className="lp-reveal p-[clamp(18px,2.4vw,26px)]">
+                <p className="font-bold text-ict-ink-900">Already have your results?</p>
+                <p className="mt-1 text-sm text-ict-ink-400">
+                  Last round&apos;s cut-off is where to start, not where to stop. See your estimated
+                  chance at every course for the coming round, or read what to do while you wait.
+                </p>
+                <p className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+                  <Link href="/campus-match" className="text-ict-orange-600 underline underline-offset-4">
+                    Campus Match
+                  </Link>
+                  <Link href="/after-al" className="text-ict-orange-600 underline underline-offset-4">
+                    What to do after A/L
+                  </Link>
+                </p>
+              </Card>
+            </div>
+          </section>
+
           {/* The older ICT-only explorer, kept below the checker: it answers a
               different question — which degrees an ICT background opens at all —
               and it is what this page has ranked for. */}
@@ -156,6 +193,20 @@ export default function UniversityPathwaysPage() {
                 <ul className="space-y-2">
                 <li>
                   <a
+                    href={newestCutoffs.source}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-ict-orange-600 underline"
+                  >
+                    University Grants Commission — Minimum Z-Scores for University Admission,{" "}
+                    {manifest.newestCoverYear}
+                  </a>{" "}
+                  <span className="text-ict-ink-400">
+                    (the newest round the UGC has published). Every cut-off the checker above shows.
+                  </span>
+                </li>
+                <li>
+                  <a
                     href="https://www.ugc.ac.lk/downloads/admissions/cutoff_2025/COP_2024_2025-ENGLISH_Final.pdf"
                     target="_blank"
                     rel="noreferrer"
@@ -164,7 +215,8 @@ export default function UniversityPathwaysPage() {
                     University Grants Commission — Minimum Z-Scores for University Admission
                   </a>{" "}
                   <span className="text-ict-ink-400">
-                    (2024/2025 academic year, based on the 2024 A/L examination — the most recent round published at time of writing). Every Z-score figure on this page.
+                    (2024/2025 academic year, based on the 2024 A/L examination). The ranges in the
+                    degree explorer, which was written from that round and has not been redone yet.
                   </span>
                 </li>
                 <li>

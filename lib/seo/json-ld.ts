@@ -162,6 +162,22 @@ export interface CourseOffering {
   priceCategory?: "Subscription" | "Fee";
   /** ISO 8601 duration for one instance, e.g. "P12W". */
   workload?: string;
+  /**
+   * Whether a seat can be bought today. Defaults to in stock, which is true of
+   * the monthly A/L class. A programme with intakes is not always on sale, and
+   * a result that says "in stock" to someone who then finds enrolment shut is
+   * structured data Google is entitled to stop trusting.
+   */
+  availability?: "InStock" | "PreOrder" | "SoldOut";
+  /** The next instance's dates, as ISO dates, when there is one. */
+  startDate?: string;
+  endDate?: string;
+  /**
+   * How often it meets, for a programme that runs on a timetable — e.g. one
+   * class a week for twelve weeks. Replaces `workload`, which describes the
+   * student's effort per instance, not the length of the programme.
+   */
+  schedule?: { repeatCount: number; repeatFrequency: string; duration?: string };
 }
 
 /**
@@ -193,7 +209,18 @@ export function courseJsonLd(course: CourseOffering) {
     hasCourseInstance: {
       "@type": "CourseInstance",
       courseMode: "online",
-      courseWorkload: course.workload ?? "P4H",
+      ...(course.schedule
+        ? {
+            courseSchedule: {
+              "@type": "Schedule",
+              repeatCount: course.schedule.repeatCount,
+              repeatFrequency: course.schedule.repeatFrequency,
+              ...(course.schedule.duration ? { duration: course.schedule.duration } : {}),
+            },
+          }
+        : { courseWorkload: course.workload ?? "P4H" }),
+      ...(course.startDate ? { startDate: course.startDate } : {}),
+      ...(course.endDate ? { endDate: course.endDate } : {}),
       inLanguage: "si",
       location: { "@type": "VirtualLocation", url: `${base()}${course.path}` },
       instructor: { "@id": TEACHER_ID() },
@@ -205,7 +232,7 @@ export function courseJsonLd(course: CourseOffering) {
             category: course.priceCategory ?? "Subscription",
             price: String(course.priceLKR),
             priceCurrency: "LKR",
-            availability: "https://schema.org/InStock",
+            availability: `https://schema.org/${course.availability ?? "InStock"}`,
             url: `${base()}${course.path}`,
             // The trial is the offer's most persuasive term and belongs in the
             // structured data, not only in the marketing copy above it.
@@ -246,6 +273,36 @@ export function productJsonLd(product: {
       url: `${base()}${product.path}`,
       seller: { "@id": ORG_ID() },
     },
+  };
+}
+
+/**
+ * A guide or explainer, as an `Article` with the teacher as its author.
+ *
+ * For an advice page — what to do after A/L, how a Z-score works — who wrote
+ * it and when it was last checked are the two things a quality rater and an AI
+ * assistant weigh first. `dateModified` should be the day the facts on the
+ * page were last checked, not the deploy date.
+ */
+export function articleJsonLd(article: {
+  headline: string;
+  description: string;
+  path: string;
+  dateModified: string;
+  inLanguage?: "en" | "si";
+}) {
+  return {
+    "@type": "Article",
+    "@id": `${base()}${article.path}#article`,
+    headline: article.headline,
+    description: article.description,
+    url: `${base()}${article.path}`,
+    mainEntityOfPage: `${base()}${article.path}`,
+    inLanguage: article.inLanguage ?? "en",
+    dateModified: article.dateModified,
+    author: { "@id": TEACHER_ID() },
+    publisher: { "@id": ORG_ID() },
+    image: `${base()}/images/dr-yasas.png`,
   };
 }
 

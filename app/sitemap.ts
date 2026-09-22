@@ -28,8 +28,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/campus-ready`, lastModified, changeFrequency: "weekly", priority: 0.95 },
     { url: `${base}/campus-survival-pack`, lastModified, changeFrequency: "weekly", priority: 0.9 },
     // Signed out this route renders the public sales page; the report behind it
-    // is `noindex` and is never listed here.
-    { url: `${base}/campus-match`, lastModified, changeFrequency: "weekly", priority: 0.95 },
+    // is `noindex` and is never listed here. Below the free pages that feed it:
+    // a short sales page is not what this cluster should rank first.
+    { url: `${base}/campus-match`, lastModified, changeFrequency: "weekly", priority: 0.6 },
+    // The informational half of the Campus Ready cluster.
+    { url: `${base}/after-al`, lastModified, changeFrequency: "monthly", priority: 0.9 },
     {
       url: `${base}/campus/academic-email`,
       lastModified,

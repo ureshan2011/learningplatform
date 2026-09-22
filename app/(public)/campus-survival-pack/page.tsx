@@ -11,15 +11,17 @@ import { CrossPromoBand } from "@/components/marketing/landing/CrossPromoBand";
 import { CampusReadyMark } from "@/components/marketing/CampusReadyLogo";
 import { breadcrumbJsonLd, faqJsonLd, graphJsonLd, productJsonLd } from "@/lib/seo/json-ld";
 import { TEACHER_NAME } from "@/lib/seo/site";
+import { campusMetadata } from "@/lib/seo/campus";
 
-const TITLE = "University Assignment Template, APA Guide & Study Kit for Sri Lankan Students";
+// Under 60 characters with the " | ICT Campus" suffix, so Google shows all of it.
+const TITLE = "University assignment template and APA guide";
 const DESCRIPTION =
   "A Word assignment template with automatic contents, an APA 7 and Harvard guide with real Sri Lankan examples, a Python starter notebook, a Zotero library and email templates. One payment, yours for three years.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = campusMetadata({
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: "/campus-survival-pack" },
+  path: "/campus-survival-pack",
   keywords: [
     "university assignment template Word",
     "assignment format Sri Lanka",
@@ -34,13 +36,7 @@ export const metadata: Metadata = {
     "APA reference එකක් ලියන හැටි",
     "campus එකට ලෑස්ති වෙන්න",
   ],
-  openGraph: {
-    type: "website",
-    title: TITLE,
-    description: DESCRIPTION,
-    url: "/campus-survival-pack",
-  },
-};
+});
 
 /**
  * The pack's sales page.

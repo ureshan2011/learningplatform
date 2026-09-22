@@ -30,6 +30,7 @@ import {
 } from "@/components/marketing/landing/icons";
 import { breadcrumbJsonLd, courseJsonLd, faqJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
 import { COUNTRY, TEACHER_NAME } from "@/lib/seo/site";
+import { campusMetadata } from "@/lib/seo/campus";
 import { LAUNCH_NOTE, paymentsPaused } from "@/lib/payments/launch";
 import type { Subject } from "@/lib/types";
 
@@ -74,14 +75,18 @@ type LandingIcon = (props: { className?: string }) => React.JSX.Element;
  * after a student has paid Rs 30,000.
  */
 
-const TITLE = "After A/L: Data, Python & Research Skills for University";
+// The brand, the moment and the language, inside 60 characters with the
+// " | ICT Campus" suffix. The old title ran to 69 and was cut before the brand.
+const TITLE = "Campus Ready: after A/L skills course in Sinhala";
+// The first ~155 characters are what Google shows, so they carry the
+// moment, the language and the one-payment fact; the rest is for AI answers.
 const DESCRIPTION =
-  "Campus Ready is a 12-week online course for Sri Lankan students waiting to enter university after their A/Ls. Learn Excel, Python, statistics, Power BI, Zotero referencing and how to use AI honestly in your assignments — in Sinhala, from Dr. Yasas Sri Wickramasinghe, PhD, former lecturer at the University of Moratuwa. One payment, certificate on completion.";
+  "A 12-week online course in Sinhala for the wait between A/Ls and university: Excel, Python, statistics and referencing. One payment. Campus Ready is a 12-week online course for Sri Lankan students waiting to enter university after their A/Ls. Learn Excel, Python, statistics, Power BI, Zotero referencing and how to use AI honestly in your assignments — in Sinhala, from Dr. Yasas Sri Wickramasinghe, PhD, former lecturer at the University of Moratuwa. One payment, certificate on completion.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = campusMetadata({
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: "/campus-ready" },
+  path: "/campus-ready",
   keywords: [
     "after A/L courses",
     "after A/L what to do",
@@ -99,18 +104,23 @@ export const metadata: Metadata = {
     "උසස් පෙළින් පස්සේ පාඨමාලා",
     "campus යන්න කලින්",
   ],
-  openGraph: {
-    type: "website",
-    title: TITLE,
-    description: DESCRIPTION,
-    url: "/campus-ready",
-    images: ["/images/dr-yasas.png"],
-  },
-};
+});
 
 // Public and crawlable, so it renders from cached data rather than a
 // per-visitor read — same reasoning as the home page.
 export const revalidate = 3600;
+
+/**
+ * The rest of the after-A/L cluster. These are the free pages that answer what
+ * a student searches before they are ready to pay for anything, and linking
+ * them from here is what tells a search engine they belong together.
+ */
+const AFTER_AL_LINKS = [
+  { href: "/after-al", label: "What to do after A/L" },
+  { href: "/university-pathways#check", label: "Free Z-score cut-off checker" },
+  { href: "/campus-match", label: "Campus Match" },
+  { href: "/campus/academic-email", label: "How to email a lecturer" },
+] as const;
 
 const CONTAINER = "mx-auto w-full max-w-[1180px] px-[clamp(20px,4vw,32px)]";
 const EYEBROW = "text-[13px] font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase";
@@ -248,6 +258,14 @@ export default async function CampusReadyPage() {
   // page says why, rather than asking for Rs 30,000 it will refuse to take.
   const paused = paymentsPaused();
 
+  // The next intake a student could actually join, for the dates and the
+  // availability the structured data states. Nothing open means pre-order:
+  // the page is collecting names for the next one, not selling a seat.
+  const upcoming = cohorts
+    .filter((c) => c.cohort && c.cohort.startsAt > now)
+    .sort((a, b) => (a.cohort?.startsAt ?? 0) - (b.cohort?.startsAt ?? 0))[0]?.cohort;
+  const isoDate = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+
   const schema = graphJsonLd([
     courseJsonLd({
       name: `Campus Ready — ${CAMPUS_READY.certificateTitle}`,
@@ -259,20 +277,22 @@ export default async function CampusReadyPage() {
       teaches:
         "Data analysis, spreadsheets, Python, statistics, Power BI, academic referencing and research skills",
       audienceType: `${COUNTRY} students preparing to enter university`,
-      workload: `P${CAMPUS_READY.weeks}W`,
+      schedule: { repeatCount: CAMPUS_READY.weeks, repeatFrequency: "P1W" },
+      availability: enrolling && !paused ? "InStock" : "PreOrder",
+      ...(upcoming
+        ? { startDate: isoDate(upcoming.startsAt), endDate: isoDate(upcoming.endsAt) }
+        : {}),
     }),
+    faqJsonLd(FAQS),
+    breadcrumbJsonLd([
+      { name: "Home", path: "/" },
+      { name: "Campus Ready", path: "/campus-ready" },
+    ]),
   ]);
 
   return (
     <div>
       <JsonLd data={schema} />
-      <JsonLd data={faqJsonLd(FAQS)} />
-      <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", path: "/" },
-          { name: "Campus Ready", path: "/campus-ready" },
-        ])}
-      />
 
       <ScrollEffects>
         <div data-lp-progress className="fixed top-0 left-0 z-[60] h-[3px] w-0 bg-(--lp-orange-500)" />
@@ -867,6 +887,22 @@ export default async function CampusReadyPage() {
                 <a href="#faq" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">
                   Questions
                 </a>
+              </div>
+            </div>
+            <div>
+              <div className="mb-3.5 text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">
+                After A/L
+              </div>
+              <div className="flex flex-col gap-2.5">
+                {AFTER_AL_LINKS.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
               </div>
             </div>
             <div>

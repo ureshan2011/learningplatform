@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { resolveSession } from "@/lib/auth/session";
+import { resolveSession, signInUrl } from "@/lib/auth/session";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { getProduct } from "@/lib/queries";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
@@ -22,16 +22,17 @@ import { Badge, Card, Eyebrow, Notice, PageHeader } from "@/components/ds";
 import { PageShell } from "@/components/ds/PageShell";
 import { ButtonLink as CreamButtonLink, Card as CreamCard, Eyebrow as CreamEyebrow } from "@/components/ds-cream";
 import districts from "@/lib/content/ugc/districts.json";
+import { campusMetadata } from "@/lib/seo/campus";
 import streams from "@/lib/content/ugc/streams.json";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = campusMetadata({
   title: "Campus Match — which degrees your Z-score can reach",
   description:
     "A one-payment report estimating your chance at every state university course in your district for the coming admission round, from the UGC's own published cut-offs. An estimate, not a promise.",
-  alternates: { canonical: "/campus-match" },
-};
+  path: "/campus-match",
+});
 
 /**
  * Campus Match: the sales page, the checkout, and the door to the report.
@@ -143,8 +144,12 @@ export default async function CampusMatchPage({
                 </li>
               ))}
             </ul>
+            {/* Through sign-in and back here with the checker's answers intact.
+                This used to link to this same page, which for a signed-out
+                visitor is this same card — a loop every results-day visitor
+                from the free checker fell into. */}
             <CreamButtonLink
-              href={query ? `/campus-match?${query}` : "/campus-match"}
+              href={signInUrl(query ? `/campus-match?${query}` : "/campus-match")}
               variant="primary"
               className="mt-5"
             >

@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import { PACK_GUIDES, SURVIVAL_PACK } from "@/lib/content/survival-pack";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { breadcrumbJsonLd, faqJsonLd } from "@/lib/seo/json-ld";
-import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
+import { breadcrumbJsonLd, faqJsonLd, graphJsonLd } from "@/lib/seo/json-ld";
+import { CampusFooter } from "@/components/content/CampusFooter";
+import { FaqList } from "@/components/content/FaqList";
+import { campusMetadata } from "@/lib/seo/campus";
 import { ResourcePageCta } from "@/components/content/ResourcePageCta";
 import { Card, PageHeader } from "@/components/ds";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = campusMetadata({
   title: "How to email a lecturer — sample emails for Sri Lankan students",
   description:
     "Two ready-to-copy emails: asking a lecturer a question, and requesting an extension. What to put in the subject line, which title to use, and what not to write.",
-  alternates: { canonical: "/campus/academic-email" },
+  path: "/campus/academic-email",
   keywords: [
     "email to lecturer sample",
     "how to email a lecturer Sri Lanka",
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     "academic email format",
     "lecturer ට email එකක් ලියන හැටි",
   ],
-};
+});
 
 export const revalidate = 86400;
 
@@ -53,11 +55,14 @@ const FAQS = [
 export default function AcademicEmailPage() {
   return (
     <>
-      <JsonLd data={faqJsonLd(FAQS)} />
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Home", path: "/" },
-          { name: "Emailing a lecturer", path: "/campus/academic-email" },
+        data={graphJsonLd([
+          faqJsonLd(FAQS),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Campus Ready", path: "/campus-ready" },
+            { name: "Emailing a lecturer", path: "/campus/academic-email" },
+          ]),
         ])}
       />
       <main className="bg-ict-surface">
@@ -107,6 +112,10 @@ export default function AcademicEmailPage() {
             </p>
           </Card>
 
+          {/* The same three answers the FAQPage schema above carries. Google only
+              accepts FAQ markup for questions a reader can actually see. */}
+          <FaqList faqs={FAQS} heading="Common questions" />
+
           <div className="mt-8">
             <ResourcePageCta
               title={SURVIVAL_PACK.name}
@@ -116,7 +125,7 @@ export default function AcademicEmailPage() {
             />
           </div>
 
-          <FreeResourcesFooter />
+          <CampusFooter exclude={["/campus/academic-email"]} />
         </div>
       </main>
     </>
