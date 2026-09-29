@@ -7,6 +7,7 @@ import { clsx } from "clsx";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Avatar, ButtonLink } from "@/components/ds";
 import { SignOutButton } from "@/components/auth/SignOutButton";
+import { WelcomeTour, type TourConfig } from "@/components/tour/WelcomeTour";
 
 export interface NavItem {
   href: string;
@@ -67,6 +68,7 @@ export function AppShell({
   promo,
   topbarRight,
   languageToggle,
+  tour,
   labels,
   children,
 }: {
@@ -78,11 +80,14 @@ export function AppShell({
   topbarRight?: React.ReactNode;
   /** Rendered above the account block, in the rail — so it is reachable from every screen. */
   languageToggle?: React.ReactNode;
+  /** The welcome tour. When present, the rail gets a row that replays it. */
+  tour?: TourConfig & { openLabel: string };
   labels: { menu: string; more: string; yourAccount: string; signOut: string };
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
 
   // The drawer must close when a link inside it navigates. This component sits
   // above `children` and survives route changes, so the state is adjusted
@@ -183,6 +188,22 @@ export function AppShell({
           </div>
         ) : null}
 
+        {tour ? (
+          <div className="border-t border-ict-border-dark px-3 py-2">
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                setTourOpen(true);
+              }}
+              className="flex h-10 w-full items-center gap-3 rounded-full px-3.5 text-sm font-semibold text-ict-ink-300 transition-colors duration-[120ms] ease-ict hover:bg-ict-ink-800 hover:text-ict-paper-50"
+            >
+              <Icon name="auto_awesome" className="!text-lg" />
+              <span className="flex-1 truncate text-left">{tour.openLabel}</span>
+            </button>
+          </div>
+        ) : null}
+
         {languageToggle ? (
           <div className="border-t border-ict-border-dark px-3 py-3">{languageToggle}</div>
         ) : null}
@@ -235,6 +256,10 @@ export function AppShell({
           <span className="text-[11px] font-semibold">{labels.more}</span>
         </button>
       </nav>
+
+      {tour ? (
+        <WelcomeTour config={tour} open={tourOpen} onOpenChange={setTourOpen} pathname={pathname} />
+      ) : null}
     </div>
   );
 }
