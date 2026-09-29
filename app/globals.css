@@ -550,13 +550,59 @@ body {
   animation: ict-enter 200ms var(--ease-ict) both;
 }
 
+/*
+ * The welcome tour (components/tour). A slide arrives from the side it was
+ * asked for — 12px, never a full-width push, which on a phone reads as the
+ * whole page lurching — and the scrim behind it fades rather than snapping.
+ */
+@keyframes ict-tour-next {
+  from {
+    opacity: 0;
+    transform: translate3d(12px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ict-tour-prev {
+  from {
+    opacity: 0;
+    transform: translate3d(-12px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes ict-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.ict-tour-next {
+  animation: ict-tour-next 340ms var(--ease-ict-out) both;
+}
+.ict-tour-prev {
+  animation: ict-tour-prev 340ms var(--ease-ict-out) both;
+}
+.ict-tour-scrim {
+  animation: ict-fade 200ms var(--ease-ict) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ict-lift:hover,
   .ict-press:active {
     transform: none;
   }
   .ict-enter,
-  .ict-step-enter {
+  .ict-step-enter,
+  .ict-tour-next,
+  .ict-tour-prev,
+  .ict-tour-scrim {
     animation: none;
   }
 }

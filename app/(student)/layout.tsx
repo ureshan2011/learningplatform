@@ -20,6 +20,8 @@ import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/compon
 import { LanguageToggle } from "@/components/i18n/LanguageToggle";
 import { Chip } from "@/components/ds";
 import { SearchTrigger } from "@/components/search/SearchTrigger";
+import type { TourConfig, TourSlide } from "@/components/tour/WelcomeTour";
+import { LOCALE_LABEL } from "@/lib/i18n/dictionary";
 import type { SearchEntry } from "@/lib/search";
 
 /**
@@ -226,6 +228,93 @@ export default async function StudentLayout({ children }: { children: React.Reac
         }
       : undefined;
 
+  // The welcome tour, most striking features first. Subject-bound stops link
+  // into the student's own subject — or, before they have one, the first
+  // subject, whose pages show what a subscription opens.
+  const tourSubject = primary ?? subjects[0];
+  const subjectHref = (path: string) => (tourSubject ? `/subjects/${tourSubject.id}${path}` : undefined);
+  const stop = (
+    key: "live" | "lab" | "mocks" | "practice" | "syllabus" | "library" | "certificate" | "everywhere",
+    extra: Pick<TourSlide, "href" | "access">,
+  ): TourSlide => ({
+    scene: key,
+    eyebrow: t(`tour.${key}.eyebrow`),
+    title: t(`tour.${key}.title`),
+    body: t(`tour.${key}.body`),
+    points: (["p1", "p2", "p3"] as const).map((p) => t(`tour.${key}.${p}`)),
+    cta: key === "everywhere" ? undefined : t(`tour.${key}.cta`),
+    ...extra,
+  });
+  const tour: TourConfig & { openLabel: string } = {
+    openLabel: t("tour.open"),
+    // Students only: the owner opens the dashboard on every device they test
+    // with and does not need welcoming on each one. The rail row still works.
+    autoStart: !isStaff,
+    slides: [
+      {
+        scene: "welcome",
+        eyebrow: t("tour.welcome.eyebrow"),
+        title: t("tour.welcome.title"),
+        body: t("tour.welcome.body"),
+        points: [t("tour.welcome.p1"), t("tour.welcome.p2"), t("tour.welcome.p3")],
+      },
+      stop("live", { href: "/classes", access: "included" }),
+      stop("lab", { href: subjectHref("/lab"), access: "included" }),
+      stop("mocks", { href: subjectHref("/mock-exams"), access: "included" }),
+      stop("practice", { href: subjectHref("/practice"), access: "included" }),
+      stop("syllabus", { href: subjectHref("/syllabus") }),
+      stop("library", { href: "/library", access: "free" }),
+      stop("certificate", { href: subjectHref("/certificate"), access: "included" }),
+      stop("everywhere", {}),
+      {
+        scene: "done",
+        eyebrow: t("tour.done.eyebrow"),
+        title: t("tour.done.title"),
+        body: t("tour.done.body"),
+        points: [],
+      },
+    ],
+    labels: {
+      skip: t("tour.skip"),
+      next: t("tour.next"),
+      back: t("tour.back"),
+      finish: t("tour.finish"),
+      close: t("tour.close"),
+      progress: t("tour.progress"),
+      goTo: t("tour.goTo"),
+      free: t("tour.free"),
+      included: t("tour.included"),
+      swipe: t("tour.swipe"),
+    },
+    scene: {
+      live: t("tour.scene.live"),
+      watching: t("tour.scene.watching"),
+      correct: t("tour.scene.correct"),
+      handUp: t("tour.scene.handUp"),
+      run: t("tour.scene.run"),
+      rows: t("tour.scene.rows"),
+      timeLeft: t("tour.scene.timeLeft"),
+      answered: t("tour.scene.answered"),
+      score: t("tour.scene.score"),
+      comesBack: t("tour.scene.comesBack"),
+      xp: t("tour.scene.xp"),
+      streak: t("dash.streakChip", { days: 7 }),
+      certificate: t("tour.scene.certificate"),
+      reminder: t("tour.scene.reminder"),
+      search: t("search.search"),
+      english: LOCALE_LABEL.en,
+      sinhala: LOCALE_LABEL.si,
+      tiles: [
+        t("nav.classes"),
+        t("nav.codeLab"),
+        t("nav.mocks"),
+        t("nav.practice"),
+        t("nav.syllabus"),
+        t("nav.library"),
+      ],
+    },
+  };
+
   return (
     <AppShell
       groups={groups}
@@ -233,6 +322,7 @@ export default async function StudentLayout({ children }: { children: React.Reac
       user={{ name: user.name, role: user.role }}
       promo={promo}
       languageToggle={<LanguageToggle current={locale} className="w-full justify-center" />}
+      tour={tour}
       labels={{
         menu: t("nav.menu"),
         more: t("nav.more"),

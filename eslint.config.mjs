@@ -88,6 +88,7 @@ const config = [
       "components/packs/**/*.tsx",
       "components/content/**/*.tsx",
       "components/nav/**/*.tsx",
+      "components/tour/**/*.tsx",
       "components/payments/**/*.tsx",
       "components/teacher/**/*.tsx",
       "components/ui/**/*.tsx",
