@@ -417,6 +417,7 @@ export default async function TeacherConsolePage() {
 
 const SHORTCUTS: Array<{ href: string; title: string; blurb: string; icon: IconName }> = [
   { href: "/teacher/users", title: "People", blurb: "Every account, searchable", icon: "group" },
+  { href: "/teacher/exam-pack", title: "Exam Pack", blurb: "The flagship: sales, lives, consultations", icon: "workspace_premium" },
   { href: "/teacher/payments", title: "Payments", blurb: "Slips, ledger, receipts", icon: "payments" },
   { href: "/teacher/insights", title: "Insights", blurb: "Who needs a nudge", icon: "insights" },
   { href: "/teacher/mock-exams", title: "Mock exams", blurb: "Set a timed paper", icon: "schedule" },

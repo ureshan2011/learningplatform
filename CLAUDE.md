@@ -237,12 +237,36 @@ issued once, in a transaction, when a payment first becomes `paid`.
   again: two payments in one month then collide, the second is dismissed as a
   duplicate, and the student pays for nothing.
 
+## Exam Pack (the flagship)
+
+The A/L ICT 2027 Exam Pack (`al-ict-exam-pack-2027`) is one card payment for
+two ranked, timed Paper I sittings with walkthroughs, predicted Paper II,
+personalised print copies, one 30-minute consultation and a weekly live class
+on Google Meet. Read `docs/exam-pack-handoff.md` before touching it.
+
+- It is a `Subject` with `grade: "AL"` **and** a `product` block.
+  `listSubjects()`/`getSubject()` exclude anything with a `product` block, so it
+  is never treated as a class. Read it with `getExamPack()`.
+- **Its own switch**, `settings/examPack2027.enabled`, off by default and
+  independent of `TRIAL_ONLY_LAUNCH`: the checkout lets this one subject through
+  while everything else stays on the free trial. Never sold by bank slip.
+- Answer keys reach a browser only after a sitting is locked; marking is
+  server-side; the first sitting is the ranked one.
+- Meet links live in `examPackLives` / `consultBookings`, which no client can
+  read, and are handed out by POST inside the join window.
+
 ## Optional services
 
-Zoom, PayHere and R2 are each optional and detected at runtime by
-`lib/features.ts`. When one is unconfigured, API routes return
-`503 not_configured` and pages render a "not set up yet" card. Keep this
-property — the app must always run with Firebase alone.
+Zoom, PayHere, R2 and Google Meet are each optional and detected at runtime
+(`lib/features.ts`; Google Meet by `googleStatus()` in `lib/google/settings.ts`).
+When one is unconfigured, API routes return `503 not_configured` and pages
+render a "not set up yet" card — or, for Meet, a link the owner can paste by
+hand. Keep this property — the app must always run with Firebase alone.
+
+Google Meet is connected from Teacher console → Exam Pack with OAuth against the
+owner's own Google account (`calendar.events` scope, plain `fetch`, no SDK).
+The OAuth app must be **In production**, not Testing, or Google drops the
+connection every seven days.
 
 ## Roles and admin
 
@@ -361,6 +385,8 @@ without a command line.
 - `docs/campus-ready-plan.md` — Campus Ready, the second product: a 12-week paid
   programme for students waiting out the gap between A/Ls and university. Market
   research, positioning and the build list.
+- `docs/exam-pack-handoff.md` — the A/L ICT 2027 Exam Pack: what is built, its
+  invariants, the Google Meet integration, and what to verify.
 - `docs/campus-ready-handoff.md` — **read this before touching anything cohort-related.**
   The engineering state: how a cohort is modelled as a `Subject`, the invariants that
   must not be broken, and what to build next.

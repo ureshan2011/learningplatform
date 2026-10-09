@@ -10,6 +10,7 @@ import { PAYMENTS_PAUSED_ERROR, paymentsPaused } from "@/lib/payments/launch";
 import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
 import { getCampusMatchSettings } from "@/lib/campus-match/settings";
 import { dataFreshness } from "@/lib/campus-match/data";
+import { EXAM_PACK_ID } from "@/lib/exam-pack/config";
 import type { Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -49,6 +50,13 @@ export async function POST(req: NextRequest) {
     body = bodySchema.parse(await req.json());
   } catch {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+  }
+
+  // The Exam Pack is sold by card only, through PayHere: it unlocks the moment
+  // the payment lands, and a consultation booked against a slip still waiting
+  // for approval is a half hour promised to someone who may not have paid.
+  if (body.subjectId === EXAM_PACK_ID) {
+    return NextResponse.json({ error: "card_only" }, { status: 409 });
   }
 
   const subjectSnap = await col.subjects().doc(body.subjectId).get();

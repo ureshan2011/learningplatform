@@ -6,6 +6,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ButtonLink, Card, StatusDot } from "@/components/ds-cream";
 import { track } from "@/lib/analytics";
 import { fetchWithSession, signInHref } from "@/lib/auth/session-client";
+import { EXAM_PACK, isExamPackId } from "@/lib/exam-pack/config";
 
 type Phase = "waiting" | "unlocked" | "failed" | "slow" | "signin";
 
@@ -80,6 +81,7 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
         return;
       }
       if (data.status === "failed" || data.status === "cancelled") {
+        setSubjectId(data.subjectId ?? null);
         setPhase("failed");
         return;
       }
@@ -106,11 +108,16 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
     // Campus Match is a product too, but its report lives on its own route and
     // a buyer sent to /packs/campus-match-2027 would find nothing.
     const isMatch = isProduct && (subjectId?.startsWith("campus-match") ?? false);
+    // The Exam Pack lives at its own route too, with papers, a consultation to
+    // book and the Saturday live — nothing at `/packs/{id}`.
+    const isExamPack = isExamPackId(subjectId);
     return (
       <div className={clsx("rounded-ict-card border p-5 text-sm", "border-ict-green-500/30 bg-ict-green-50")}>
         <p className="flex items-center justify-center gap-2 font-semibold text-ict-green-500">
           <Icon name="check_circle" className="!text-lg" />
-          {isMatch
+          {isExamPack
+            ? "Your Exam Pack is ready"
+            : isMatch
             ? "Your Campus Match is ready"
             : isProduct
               ? "Your pack is ready"
@@ -122,7 +129,9 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
         <div className="mt-4 flex flex-col gap-2">
           <ButtonLink
             href={
-              isMatch
+              isExamPack
+                ? EXAM_PACK.appPath
+                : isMatch
                 ? "/campus-match/report"
                 : subjectId
                   ? isProduct
@@ -137,10 +146,16 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
           >
             <span className="inline-flex items-center gap-1.5">
               <Icon
-                name={isMatch ? "insights" : isProduct ? "inventory_2" : "school"}
+                name={isExamPack ? "workspace_premium" : isMatch ? "insights" : isProduct ? "inventory_2" : "school"}
                 className="!text-base"
               />
-              {isMatch ? "Open my report" : isProduct ? "Open my pack" : "Go to my class"}
+              {isExamPack
+                ? "Open my Exam Pack"
+                : isMatch
+                  ? "Open my report"
+                  : isProduct
+                    ? "Open my pack"
+                    : "Go to my class"}
             </span>
           </ButtonLink>
           <a href="/account" className="text-xs text-ict-ink-400 underline">
@@ -173,19 +188,32 @@ export function PaymentStatusWatcher({ orderId }: { orderId: string }) {
   }
 
   if (phase === "failed") {
+    // The Exam Pack is sold by card only, so a failed card payment there has one
+    // way forward: try again. Offering a deposit would lead to a refusal.
+    const cardOnly = isExamPackId(subjectId);
     return (
       <div className={clsx("rounded-ict-card border p-5 text-sm", "border-ict-red-500/30 bg-ict-red-50")}>
         <p className="font-semibold text-ict-red-500">That payment did not go through</p>
         <p className="mt-1 text-ict-ink-400">
-          Nothing was charged. Try again, or pay by bank deposit instead.
+          {cardOnly
+            ? "Nothing was charged. Try again with the same card or another one."
+            : "Nothing was charged. Try again, or pay by bank deposit instead."}
         </p>
         <div className="mt-4 flex flex-col gap-2">
-          <ButtonLink href="/dashboard" variant="secondary" size="md" arrow="none" className="justify-center">
-            Back to dashboard
+          <ButtonLink
+            href={cardOnly ? EXAM_PACK.appPath : "/dashboard"}
+            variant="secondary"
+            size="md"
+            arrow="none"
+            className="justify-center"
+          >
+            {cardOnly ? "Back to the Exam Pack" : "Back to dashboard"}
           </ButtonLink>
-          <a href="/pay/slip" className="text-xs text-ict-ink-400 underline">
-            Pay by bank deposit
-          </a>
+          {cardOnly ? null : (
+            <a href="/pay/slip" className="text-xs text-ict-ink-400 underline">
+              Pay by bank deposit
+            </a>
+          )}
         </div>
       </div>
     );

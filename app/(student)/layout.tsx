@@ -14,6 +14,8 @@ import { paymentsPaused } from "@/lib/payments/launch";
 import { ensureSurvivalPack } from "@/lib/content/ensure-product";
 import { ensureCampusMatch } from "@/lib/campus-match/ensure";
 import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
+import { EXAM_PACK } from "@/lib/exam-pack/config";
+import { getExamPackSettings } from "@/lib/exam-pack/settings";
 import { shouldRecordRole } from "@/lib/activity/policy";
 import { ActivityRecorder } from "@/components/activity/ActivityRecorder";
 import { AppShell, type NavGroup, type NavItem, type ShellPromo } from "@/components/nav/AppShell";
@@ -53,13 +55,14 @@ export default async function StudentLayout({ children }: { children: React.Reac
   // Campus Match is created inactive until the owner publishes it.
   await Promise.all([ensureSurvivalPack(), ensureCampusMatch()]);
 
-  const [enrollments, subjects, cohorts, products, t, locale] = await Promise.all([
+  const [enrollments, subjects, cohorts, products, t, locale, examPack] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
     listCohorts(),
     listProducts(),
     getT(),
     getLocale(),
+    getExamPackSettings(),
   ]);
 
   // Server Component: renders once per request, so reading the clock here is
@@ -129,6 +132,17 @@ export default async function StudentLayout({ children }: { children: React.Reac
       { href: "/library", label: t("nav.notes"), icon: "description" },
       { href: "/account", label: t("nav.account"), icon: "account_circle" },
     );
+  }
+
+  // The Exam Pack — the flagship. Shown to everyone while it is on sale, not
+  // only to buyers: the rail is the one place every student passes, and the
+  // pack's own page is where it is sold. A buyer keeps the entry if it is
+  // later taken off sale; staff always see it.
+  if (examPack.enabled || activeIds.has(EXAM_PACK.id) || isStaff) {
+    groups.push({
+      label: "A/L ICT 2027",
+      items: [{ href: EXAM_PACK.appPath, label: t("nav.examPack"), icon: "workspace_premium", matchPrefix: true }],
+    });
   }
 
   // A cohort the student is actually in gets its own rail entry. Not offered to

@@ -9,6 +9,7 @@ import { Icon } from "@/components/ui/Icon";
 import { fetchWithSession } from "@/lib/auth/session-client";
 import { Button, Card, Field, Input, Notice } from "@/components/ds";
 import { PACK_DOWNLOADS } from "@/lib/content/survival-pack";
+import { EXAM_PACK_ID, EXAM_PACK_SLOTS } from "@/lib/exam-pack/config";
 import type { ContentKind } from "@/lib/types";
 
 const MAX_BYTES = 200 * 1024 * 1024;
@@ -23,7 +24,18 @@ const KIND_OPTIONS: { value: ContentKind; label: string }[] = [
 
 /** Office documents, notebooks and bibliography files, beyond the PDF/image/video the rest takes. */
 const PACK_ACCEPT =
-  ".docx,.xlsx,.pptx,.ipynb,.csv,.ris,.bib,.zip,.txt,application/pdf,image/*";
+  ".docx,.xlsx,.pptx,.ipynb,.csv,.ris,.bib,.zip,.txt,application/pdf,image/*,video/*";
+
+/**
+ * The slots a pack file can fill, per product. The Exam Pack has its own
+ * (walkthroughs, model answers, revision sheets); every other pack uses the
+ * Survival Pack's list, as before.
+ */
+function slotsFor(subjectId: string): Array<{ key: string; title: string }> {
+  return subjectId === EXAM_PACK_ID
+    ? EXAM_PACK_SLOTS.map((s) => ({ key: s.key, title: s.title.en }))
+    : PACK_DOWNLOADS.map((s) => ({ key: s.key, title: s.title.en }));
+}
 
 /**
  * Uploads a note or past paper straight from the teacher's browser to
@@ -38,7 +50,7 @@ export function ContentUploadForm({ subjects }: { subjects: Array<{ id: string; 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [subjectId, setSubjectId] = useState(subjects[0]?.id ?? "");
   const [kind, setKind] = useState<ContentKind>("notes");
-  const [slug, setSlug] = useState(PACK_DOWNLOADS[0]?.key ?? "");
+  const [slug, setSlug] = useState(slotsFor(subjects[0]?.id ?? "")[0]?.key ?? "");
   const [title, setTitle] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -134,7 +146,11 @@ export function ContentUploadForm({ subjects }: { subjects: Array<{ id: string; 
           <Field label="Subject">
             <select
               value={subjectId}
-              onChange={(e) => setSubjectId(e.target.value)}
+              onChange={(e) => {
+                setSubjectId(e.target.value);
+                // A slot key from another product's list would file the upload nowhere.
+                setSlug(slotsFor(e.target.value)[0]?.key ?? "");
+              }}
               required
               className="h-12 w-full rounded-full border border-ict-border-dark bg-ict-ink-800 px-4 text-base text-ict-paper-50 outline-none focus:border-ict-orange-500"
             >
@@ -169,9 +185,9 @@ export function ContentUploadForm({ subjects }: { subjects: Array<{ id: string; 
                 onChange={(e) => setSlug(e.target.value)}
                 className="h-12 w-full rounded-full border border-ict-border-dark bg-ict-ink-800 px-4 text-base text-ict-paper-50 outline-none focus:border-ict-orange-500"
               >
-                {PACK_DOWNLOADS.map((item) => (
+                {slotsFor(subjectId).map((item) => (
                   <option key={item.key} value={item.key}>
-                    {item.title.en}
+                    {item.title}
                   </option>
                 ))}
               </select>

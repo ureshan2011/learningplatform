@@ -86,6 +86,7 @@ const config = [
       "components/mockexams/**/*.tsx",
       "components/lab/**/*.tsx",
       "components/packs/**/*.tsx",
+      "components/exam-pack/**/*.tsx",
       "components/content/**/*.tsx",
       "components/nav/**/*.tsx",
       "components/tour/**/*.tsx",

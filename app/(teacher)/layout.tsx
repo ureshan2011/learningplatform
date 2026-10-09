@@ -46,6 +46,7 @@ export default async function TeacherLayout({ children }: { children: React.Reac
       count: pendingSlips || undefined,
     },
     { href: "/teacher/insights", label: "Insights", icon: "insights" },
+    { href: "/teacher/exam-pack", label: "Exam Pack", icon: "workspace_premium" },
   ];
 
   const groups: NavGroup[] = [

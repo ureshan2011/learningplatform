@@ -176,6 +176,28 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ---- Exam Pack ----------------------------------------------------------
+    // Sittings carry a student's answers and rank; lives and bookings carry the
+    // Google Meet links that only paying students may be given; slots are the
+    // owner's calendar. Every one is read and written through the Admin SDK,
+    // behind hasAccess() or the teacher check. Spelled out rather than left to
+    // the catch-all, so a rule added by reflex later cannot leak a Meet link.
+    match /paperSittings/{sittingId} {
+      allow read, write: if false;
+    }
+    match /examPackLives/{liveId} {
+      allow read, write: if false;
+    }
+    match /examPackLiveJoins/{joinId} {
+      allow read, write: if false;
+    }
+    match /consultSlots/{slotId} {
+      allow read, write: if false;
+    }
+    match /consultBookings/{bookingId} {
+      allow read, write: if false;
+    }
+
     // Anything not matched above is denied.
     match /{document=**} {
       allow read, write: if false;

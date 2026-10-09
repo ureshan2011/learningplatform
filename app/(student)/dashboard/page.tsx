@@ -12,7 +12,11 @@ import {
 import { formatDate, formatLKR, formatSessionTime, relativeToNow } from "@/lib/format";
 import { getPayHereConfig, getPaymentSettings, isBankSlipEnabled } from "@/lib/payments/records";
 import { paymentsPaused } from "@/lib/payments/launch";
-import { getT, type Translator } from "@/lib/i18n/server";
+import { getLocale, getT, type Translator } from "@/lib/i18n/server";
+import { EXAM_PACK } from "@/lib/exam-pack/config";
+import { getExamPack } from "@/lib/exam-pack/ensure";
+import { getExamPackSettings } from "@/lib/exam-pack/settings";
+import { ExamPackDashboardCard } from "@/components/exam-pack/DashboardCard";
 import { LaunchNotice } from "@/components/payments/LaunchNotice";
 import { StartTrialButton } from "@/components/payments/StartTrialButton";
 import { SubscribeButton } from "@/components/payments/SubscribeButton";
@@ -57,12 +61,15 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const user = await requirePageUser("/dashboard");
 
-  const [enrollments, subjects, cohorts, products, t] = await Promise.all([
+  const [enrollments, subjects, cohorts, products, t, locale, examPackSettings, examPack] = await Promise.all([
     listEnrollments(user.uid),
     listSubjects(),
     listCohorts(),
     listProducts(),
     getT(),
+    getLocale(),
+    getExamPackSettings(),
+    getExamPack(),
   ]);
 
   // Server Component: this renders once per request, so reading the clock here
@@ -223,6 +230,15 @@ export default async function DashboardPage() {
                 ))}
               </div>
             </Card>
+          ) : null}
+
+          {/* The flagship, while it is on sale or once it is theirs. */}
+          {examPack?.product && (examPackSettings.enabled || activeSubjectIds.includes(EXAM_PACK.id)) ? (
+            <ExamPackDashboardCard
+              owned={activeSubjectIds.includes(EXAM_PACK.id)}
+              feeLKR={examPack.product.feeLKR}
+              locale={locale}
+            />
           ) : null}
 
           <section>
