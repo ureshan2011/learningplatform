@@ -57,10 +57,17 @@ export default async function PrivacyPage() {
             Nothing here is shared with the UGC, with any university, or with anyone else.
           </li>
           <li>
+            <strong>If you buy the A/L ICT Exam Pack:</strong> your answers to each paper, your score
+            and rank, the time you book for your consultation and anything you write for it, and when
+            you opened a live-class link. Print copies you make carry your name and part of your
+            number. Other students see only their own rank, never your name or score.
+          </li>
+          <li>
             <strong>How you use the site:</strong> which pages you opened and when, which files you
-            downloaded, and when you signed in. Your teacher can see this on your record. We do not
-            record what you type, what you search for, your location, or anything you do on other
-            websites — only which pages of this site you opened.
+            downloaded, and when you signed in. Your teacher can see this on your record. Apart from
+            what you submit in a form — a Campus Match answer, a note for your consultation — we do
+            not record what you type, what you search for, your location, or anything you do on
+            other websites.
           </li>
         </ul>
         <p>
@@ -81,8 +88,9 @@ export default async function PrivacyPage() {
 
       <Clause heading="AI-assisted study material">
         <p>
-          Some study material, including predicted papers, is drafted with AI assistance from
-          public past-paper and syllabus text, reviewed by us before publishing. Producing it never
+          Some study material, including predicted papers and the Exam Pack walkthroughs, is drafted
+          with AI assistance from public past-paper and syllabus text, reviewed by us before
+          publishing. Producing it never
           sends any student&apos;s personal data, answers or performance history to an AI provider —
           only the finished material reaches your account, the same as any other note or past
           paper.
@@ -113,7 +121,14 @@ export default async function PrivacyPage() {
             to your name or your number, and it is not used for advertising.
           </li>
           <li><strong>PayHere</strong> — card payments (a licensed Sri Lankan payment gateway).</li>
-          <li><strong>Zoom</strong> — the live class itself.</li>
+          <li><strong>Zoom</strong> — the live monthly classes.</li>
+          <li>
+            <strong>Google Meet and Google Calendar</strong> — the Exam Pack&apos;s weekly live class
+            and consultations. When you book a consultation, your name, phone number, the time and
+            your note are put into the teacher&apos;s own Google Calendar so the call can happen.
+            When you join a Meet, Google shows the host the name on your Google account. Nothing
+            else about you is sent to Google for this.
+          </li>
         </ul>
         <p>
           Each of these is used only to run the service, under their own terms. Some of them store

@@ -64,6 +64,22 @@ sitemap only while on sale). Console: `/teacher/exam-pack`.
 7. **Times are Sri Lanka wall-clock** (fixed +5:30) everywhere a student or the
    owner types or reads one. New Zealand time is display-only, on the console.
 
+## Testing before launch
+
+Two ways, neither needing the pack on sale:
+
+- **Test accounts** (`lib/exam-pack/testers.ts`). Console → Exam Pack → *Test
+  as a student* gives an existing student account the pack for 30 days with
+  `source: "test"` — through `grantProductAccess`, so `hasAccess()` stays the
+  only check. A tester's sittings are `unranked`, it is left out of the sales
+  figures, and *Reset* deletes its sittings and booking (reopening the slot and
+  deleting the Meet event). Reset and remove refuse any account whose access
+  is not a test grant; a grant refuses a real buyer and staff.
+- **Sandbox checkout.** While the pack is off sale, the checkout serves staff
+  only, and only with PayHere in sandbox (`rehearsal`). `/exam-pack?view=buyer`
+  shows the owner the buy button. Staff purchases are left out of the sales
+  figures and staff sittings are never ranked.
+
 ## Google Meet
 
 OAuth web-server flow against the owner's Google account, scope
@@ -87,14 +103,15 @@ builds, and the pure logic is unit tested (`lib/exam-pack/*.test.ts`).
    two events with Meet links appear in the owner's Google Calendar, at 4pm
    Sri Lanka time, shown in NZ time in the calendar.
 3. Publish consultation slots for tomorrow.
-4. With PayHere in **sandbox**: put the pack on sale, buy it as a student with a
-   test card, land on "Your Exam Pack is ready".
+4. Give a second number test access and go through the pack on that phone.
+   With PayHere in **sandbox**, buy it from `/exam-pack?view=buyer` with a test
+   card while it is still off sale, and land on "Your Exam Pack is ready".
 5. Sit a paper; reload mid-paper (clock continues, answers kept); submit; see
    rank, weak topics and walkthroughs; print the answers.
 6. Book a slot; check the event in Google Calendar; move it; book again.
 7. Within 15 minutes of a live, press Join as the student.
-8. Take it off sale; confirm the buyer still has everything and a new student
-   gets a 404.
+8. Take it off sale; confirm the buyer still has everything, a new student gets
+   a 404 on `/exam-pack`, and `/al-ict-exam-pack` shows the waitlist.
 9. Switch PayHere to live before selling for real.
 
 ## Open questions for the owner
@@ -104,10 +121,9 @@ builds, and the pure logic is unit tested (`lib/exam-pack/*.test.ts`).
 - **The monthly class also unlocks the predicted paper** at
   `/subjects/{id}/predicted-paper` when it is published there. Keep it, or keep
   the predicted paper exclusive to the pack.
-- **Refund wording** on the sales page: "within seven days, if you have not
-  started a paper or had your consultation". Check it matches the refund policy
-  you want.
+- **Refund wording.** The refund policy's Exam Pack clause: a full refund within
+  seven days if no paper has been started and no consultation held; also if the
+  pack never unlocked, or no consultation slot was offered before access ended.
+  Confirm it is the policy you want.
 - **More papers.** Adding one is an entry in `lib/exam-pack/papers.ts` and an id
   in `PAPER_IDS`; the sitting, ranking, review and print all follow.
-EOF
-echo ok

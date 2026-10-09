@@ -225,7 +225,12 @@ export interface Enrollment {
   /** Access is granted while now <= currentPeriodEnd. */
   currentPeriodStart: number;
   currentPeriodEnd: number;
-  source: "payhere" | "bank_slip" | "manual" | "trial" | "free_trial";
+  /**
+   * How access was granted. "test" is the owner's own test account on the
+   * Exam Pack (Teacher console → Exam Pack → Test as a student): no payment,
+   * a short period, and kept out of rankings and sales figures.
+   */
+  source: "payhere" | "bank_slip" | "manual" | "trial" | "free_trial" | "test";
   lastPaymentId?: string;
   createdAt: number;
   updatedAt: number;
@@ -901,11 +906,11 @@ export interface PaperSitting {
   /** Submitted after the deadline, so the last autosave was marked instead. */
   late?: boolean;
   /**
-   * Sat by a teacher or admin — the owner rehearsing the student experience.
-   * Kept out of every rank and count, so a test sitting at 50/50 never pushes
-   * every real student down a place.
+   * Sat by a teacher, an admin or a test account — the owner rehearsing the
+   * student experience. Kept out of every rank and count, so a test sitting at
+   * 50/50 never pushes every real student down a place.
    */
-  staff?: boolean;
+  unranked?: boolean;
   correctCount?: number;
   wrongCount?: number;
   unansweredCount?: number;

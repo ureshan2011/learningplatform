@@ -208,3 +208,8 @@ export function isPrintDocKey(value: string): value is PrintDocKey {
 export function isExamPackId(subjectId: string | null | undefined): boolean {
   return subjectId === EXAM_PACK_ID;
 }
+
+/** The access period in whole months, as the pages say it — from the console's `accessDays`, never hardcoded. */
+export function accessMonths(accessDays: number): number {
+  return Math.max(1, Math.round(accessDays / 30.44));
+}

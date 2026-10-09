@@ -21,16 +21,27 @@ export async function examPackSales(now = Date.now()): Promise<{
   paidCount: number;
   revenueLKR: number;
 }> {
-  const [enrollSnap, paySnap] = await Promise.all([
+  const [enrollSnap, paySnap, staffSnap] = await Promise.all([
     col.enrollments().where("subjectId", "==", EXAM_PACK_ID).limit(2000).get(),
     col.payments().where("subjectId", "==", EXAM_PACK_ID).limit(2000).get(),
+    col.users().where("role", "in", ["teacher", "admin"]).limit(50).get(),
   ]);
+  // Test accounts and the owner's own sandbox purchase are rehearsals, not
+  // customers — counting them would show sales before anything was sold.
+  const staff = new Set(staffSnap.docs.map((d) => d.id));
   const active = enrollSnap.docs
     .map((d) => d.data() as Enrollment)
-    .filter((e) => e.tenantId === publicEnv.tenantId && e.status === "active" && e.currentPeriodEnd > now);
+    .filter(
+      (e) =>
+        e.tenantId === publicEnv.tenantId &&
+        e.status === "active" &&
+        e.currentPeriodEnd > now &&
+        e.source !== "test" &&
+        !staff.has(e.uid),
+    );
   const paid = paySnap.docs
     .map((d) => d.data() as Payment)
-    .filter((p) => p.tenantId === publicEnv.tenantId && p.status === "paid");
+    .filter((p) => p.tenantId === publicEnv.tenantId && p.status === "paid" && !staff.has(p.uid));
   return {
     activeBuyers: active.length,
     activeBuyerUids: active.map((e) => e.uid),

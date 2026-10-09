@@ -11,6 +11,8 @@ import { examPackSales, filledSlots, sittingCounts } from "@/lib/exam-pack/conso
 import { getPaper } from "@/lib/exam-pack/papers";
 import { COLOMBO_TZ, NZ_TZ, colomboParts, formatInZone } from "@/lib/exam-pack/time";
 import { googleRedirectUri, googleStatus } from "@/lib/google/settings";
+import { TEST_ACCESS_DAYS, listTesters } from "@/lib/exam-pack/testers";
+import { formatDate } from "@/lib/format";
 import {
   ActionButton,
   CopyText,
@@ -19,6 +21,7 @@ import {
   PriceForm,
   ScheduleForm,
   SlotsForm,
+  TesterGrantForm,
 } from "@/components/teacher/exam-pack/controls";
 import { Icon } from "@/components/ui/Icon";
 import { Badge, Card, Eyebrow, Notice, PageHeader, SectionBar, StatCard, StatusChip, StatusDot } from "@/components/ds";
@@ -83,7 +86,10 @@ export default async function TeacherExamPackPage({
     section("files", () => filledSlots(), new Set<string>()),
     section("sittings", () => sittingCounts(), {} as Record<string, number>),
   ]);
-  const unbooked = await section("unbooked", () => unbookedBuyers(sales.activeBuyerUids), 0);
+  const [unbooked, testers] = await Promise.all([
+    section("unbooked", () => unbookedBuyers(sales.activeBuyerUids), 0),
+    section("testers", () => listTesters(), []),
+  ]);
 
   const feeLKR = subject?.product?.feeLKR ?? EXAM_PACK.feeLKR;
   const accessDays = subject?.product?.accessDays ?? EXAM_PACK.accessDays;
@@ -162,11 +168,88 @@ export default async function TeacherExamPackPage({
               <Link href={`${EXAM_PACK.appPath}?view=buyer`} className="underline">
                 See it as a student before buying
               </Link>
-              {settings.enabled ? (
-                <Link href={EXAM_PACK.publicPath} className="underline">
-                  Public sales page — share this link
-                </Link>
-              ) : null}
+              <Link href={EXAM_PACK.publicPath} className="underline">
+                {settings.enabled
+                  ? "Public sales page — share this link"
+                  : "Public sales page (takes a waitlist until it is on sale)"}
+              </Link>
+            </p>
+          </Card>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* Test as a student                                                 */}
+        {/* ---------------------------------------------------------------- */}
+        <section>
+          <SectionBar
+            title="Test as a student"
+            hint="Use the pack exactly as a buyer would, before anyone can buy it. Nothing is paid, and test accounts are never ranked against students or counted as sales."
+          />
+          <Card radius="card" className="p-5">
+            <ol className="list-decimal space-y-1.5 pl-5 text-sm text-ict-fg-soft">
+              <li>
+                On another phone or another browser, sign in to ictcampus.lk with a second number — a second SIM or a
+                family member&rsquo;s. Your own number is a teacher account and sees everything already.
+              </li>
+              <li>Type that number below and press Give test access ({TEST_ACCESS_DAYS} days).</li>
+              <li>
+                On the test phone, open Exam Pack in the menu. Sit a paper, print a copy, book a consultation, and press
+                Join during the live.
+              </li>
+              <li>Press Reset to go through the papers and the booking again from the start.</li>
+            </ol>
+            <div className="mt-4">
+              <TesterGrantForm />
+            </div>
+            {testers.length > 0 ? (
+              <ul className="mt-4 divide-y divide-ict-line rounded-ict-md border border-ict-line">
+                {testers.map((t) => (
+                  <li key={t.uid} className="flex flex-wrap items-center justify-between gap-3 p-3.5">
+                    <span className="min-w-0 text-sm">
+                      <span className="font-semibold text-ict-fg">{t.name}</span>{" "}
+                      <span className="text-ict-fg-soft">· {t.phone}</span>
+                      <span className="block text-xs text-ict-fg-soft">
+                        {t.active ? `Test access until ${formatDate(t.until)}` : "Test access ended"}
+                      </span>
+                    </span>
+                    <span className="flex flex-wrap gap-2">
+                      <ActionButton
+                        endpoint="/api/teacher/exam-pack/testers"
+                        body={{ action: "reset", uid: t.uid }}
+                        label="Reset papers and booking"
+                        confirm="Tap again to reset"
+                        done="Reset."
+                      />
+                      {t.active ? (
+                        <ActionButton
+                          endpoint="/api/teacher/exam-pack/testers"
+                          body={{ action: "remove", uid: t.uid }}
+                          label="Remove access"
+                          confirm="Tap again to remove"
+                        />
+                      ) : null}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-ict-fg-soft">
+              <span>Sat a paper on this teacher account?</span>
+              <ActionButton
+                endpoint="/api/teacher/exam-pack/testers"
+                body={{ action: "reset_me" }}
+                label="Reset my own papers and booking"
+                confirm="Tap again to reset"
+                done="Reset."
+              />
+            </div>
+            <p className="mt-4 text-xs text-ict-fg-soft">
+              To rehearse paying as well: switch PayHere to sandbox in Teacher → Payments, open{" "}
+              <Link href={`${EXAM_PACK.appPath}?view=buyer`} className="underline">
+                the pack as a buyer
+              </Link>{" "}
+              on this teacher account and pay with a PayHere test card. That works only in sandbox, so no real money can
+              move while the pack is off sale. Switch PayHere back to live afterwards.
             </p>
           </Card>
         </section>

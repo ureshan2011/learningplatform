@@ -27,7 +27,7 @@ export const COPY = {
   },
 
   /* ---- selling ---- */
-  onePayment: { en: "One payment · 13 months · Card only", si: "එක ගෙවීමක් · මාස 13ක් · Card එකෙන් විතරයි" },
+  onePayment: { en: "One payment · {months} months · Card only", si: "එක ගෙවීමක් · මාස {months}ක් · Card එකෙන් විතරයි" },
   buy: { en: "Get the Exam Pack — {price}", si: "Exam Pack එක ගන්න — {price}" },
   openingSoon: { en: "Opening soon", si: "ළඟදීම open කරනවා" },
   cardNotReady: {

@@ -127,7 +127,9 @@ export function emptyPaymentSettings(): PaymentSettings {
     tenantId: publicEnv.tenantId,
     businessName: "Dr. Yasas Sri Wickramasinghe",
     ownerName: "",
-    addressLine: "67/5, Ganemulla Road, Ihala Karagahamuna, Kadawatha 11850",
+    // The trading name and town only. A home address does not belong on the
+    // public policy pages or on every receipt; edit it in Teacher → Payments.
+    addressLine: "ICT Campus, Kadawatha",
     contactPhone: "0768666603",
     contactEmail: "yasassriofficial@gmail.com",
     bankName: "",

@@ -299,6 +299,36 @@ export function ManualLinkForm({
   );
 }
 
+/** Gives a student number test access to the pack — the owner's own second number. */
+export function TesterGrantForm() {
+  const [phone, setPhone] = useState("");
+  const { busy, message, submit } = useSubmit("/api/teacher/exam-pack/testers");
+  return (
+    <form
+      className="flex flex-wrap items-end gap-2"
+      onSubmit={(e) => {
+        e.preventDefault();
+        void submit({ action: "grant", phone: phone.trim() }, (data) => {
+          setPhone("");
+          return `${String(data.name ?? "That account")} now has the pack for 30 days. Sign in on that number to test.`;
+        });
+      }}
+    >
+      <div className="min-w-[220px] flex-1">
+        <Field label="Student phone number" hint="A number that has signed in once — your second SIM, or a family member's">
+          <Input inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="07X XXX XXXX" />
+        </Field>
+      </div>
+      <Button type="submit" size="sm" arrow="none" disabled={busy || phone.trim().length < 9}>
+        {busy ? "Giving access…" : "Give test access"}
+      </Button>
+      <div className="w-full">
+        <Message message={message} />
+      </div>
+    </form>
+  );
+}
+
 /** The OAuth client from the Google Cloud console. The secret is never shown back. */
 export function GoogleClientForm({ hasClient }: { hasClient: boolean }) {
   const [clientId, setClientId] = useState("");

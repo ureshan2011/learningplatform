@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { formatLKR } from "@/lib/format";
-import { EXAM_PACK, pick } from "@/lib/exam-pack/config";
+import { EXAM_PACK, accessMonths, pick } from "@/lib/exam-pack/config";
 import { COPY, INSIDE, fill } from "@/lib/exam-pack/copy";
 import { getExamPack } from "@/lib/exam-pack/ensure";
 import { getExamPackSettings } from "@/lib/exam-pack/settings";
@@ -13,6 +12,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { FaqAccordion } from "@/components/marketing/landing/FaqAccordion";
 import { SampleQuestions } from "@/components/exam-pack/SampleQuestions";
+import { EmailCaptureForm } from "@/components/marketing/EmailCaptureForm";
 import { breadcrumbJsonLd, faqJsonLd, graphJsonLd, productJsonLd } from "@/lib/seo/json-ld";
 import { TEACHER_CREDENTIALS, TEACHER_NAME } from "@/lib/seo/site";
 
@@ -49,9 +49,11 @@ export const metadata: Metadata = {
  * happens on `/exam-pack`, behind sign-in, where PayHere's checkout lives; the
  * buttons here go there, and sign-in brings the student straight back.
  *
- * 404 until the owner turns the pack on, so nothing about it is public before
- * it has been reviewed. Revalidated every five minutes, so turning it on (or
- * off, or changing the price) shows here within five minutes.
+ * Always public and indexable, so it is already ranking by the day the pack
+ * opens. While the pack is off sale nothing can be bought here: the buttons
+ * become a "tell me when it opens" list, and the structured data says
+ * pre-order. Revalidated every five minutes, so turning the pack on (or off,
+ * or changing the price) shows here within five minutes.
  */
 export const revalidate = 300;
 
@@ -62,9 +64,10 @@ const H2 =
 
 export default async function ExamPackSalesPage() {
   const [settings, subject] = await Promise.all([getExamPackSettings(), getExamPack()]);
-  if (!settings.enabled) notFound();
+  const onSale = settings.enabled;
 
   const feeLKR = subject?.product?.feeLKR ?? EXAM_PACK.feeLKR;
+  const months = accessMonths(subject?.product?.accessDays ?? EXAM_PACK.accessDays);
   const fee = formatLKR(feeLKR);
   const live = {
     title: settings.live.title,
@@ -96,7 +99,7 @@ export default async function ExamPackSalesPage() {
     },
     {
       q: "How long do I keep it?",
-      a: "Thirteen months from the day you buy it — past the 2027 exam, wherever in the year it falls.",
+      a: `${months} months from the day you buy it — past the 2027 exam, wherever in the year it falls.`,
     },
     {
       q: "Can I get a refund?",
@@ -112,7 +115,13 @@ export default async function ExamPackSalesPage() {
     <>
       <JsonLd
         data={graphJsonLd([
-          productJsonLd({ name: EXAM_PACK.name, description: DESCRIPTION, path: PATH, priceLKR: feeLKR }),
+          productJsonLd({
+            name: EXAM_PACK.name,
+            description: DESCRIPTION,
+            path: PATH,
+            priceLKR: feeLKR,
+            availability: onSale ? "InStock" : "PreOrder",
+          }),
           faqJsonLd(faqs),
           breadcrumbJsonLd([
             { name: "Home", path: "/" },
@@ -135,18 +144,32 @@ export default async function ExamPackSalesPage() {
             questions worked through. The predicted Paper II with its mark scheme. A one-to-one with
             Dr. Yasas, and a live class every {live.weekday}. In Sinhala and English.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Link
-              href={EXAM_PACK.appPath}
-              className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-6 pl-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
-            >
-              Get the Exam Pack — {fee}
-            </Link>
-            <a href="#try" className="text-base font-semibold text-(--lp-ink-900) underline decoration-(--lp-orange-500) underline-offset-4">
-              Try 8 questions free
-            </a>
-          </div>
-          <p className="mt-4 text-sm text-(--lp-ink-500)">One payment · 13 months · Card only, through PayHere</p>
+          {onSale ? (
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link
+                href={EXAM_PACK.appPath}
+                className="flex h-12 items-center gap-3 rounded-full bg-(--lp-orange-500) py-2 pr-6 pl-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
+              >
+                Get the Exam Pack — {fee}
+              </Link>
+              <a href="#try" className="text-base font-semibold text-(--lp-ink-900) underline decoration-(--lp-orange-500) underline-offset-4">
+                Try 8 questions free
+              </a>
+            </div>
+          ) : (
+            <div className="mt-8 max-w-[520px]">
+              <p className="text-sm font-semibold text-(--lp-ink-900)">
+                Opening soon. Leave your email and you will hear the day it opens.
+              </p>
+              <EmailCaptureForm source="exam_pack_waitlist" buttonLabel="Tell me when it opens" className="mt-3" />
+              <a href="#try" className="mt-4 inline-block text-base font-semibold text-(--lp-ink-900) underline decoration-(--lp-orange-500) underline-offset-4">
+                Try 8 questions free now
+              </a>
+            </div>
+          )}
+          <p className="mt-4 text-sm text-(--lp-ink-500)">
+            {fee} · One payment · {months} months · Card only, through PayHere
+          </p>
         </section>
 
         {/* Inside */}
@@ -226,14 +249,20 @@ export default async function ExamPackSalesPage() {
               Dr. Yasas එක්ක Google Meet එකේ විනාඩි {EXAM_PACK.consultMinutes}ක one-to-one එකක්, සහ හැම{" "}
               {liveSi.weekday}ම {liveSi.time}ට (ලංකාවේ වෙලාවෙන්) Live class එකක්.
             </p>
-            <p>{fee} — එක ගෙවීමක්, card එකෙන් විතරයි. මාස 13ක් ඔයාගේ.</p>
+            <p>{fee} — එක ගෙවීමක්, card එකෙන් විතරයි. මාස {months}ක් ඔයාගේ.</p>
           </div>
-          <Link
-            href={EXAM_PACK.appPath}
-            className="mt-6 inline-flex h-12 items-center rounded-full bg-(--lp-orange-500) px-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
-          >
-            Exam Pack එක ගන්න — {fee}
-          </Link>
+          {onSale ? (
+            <Link
+              href={EXAM_PACK.appPath}
+              className="mt-6 inline-flex h-12 items-center rounded-full bg-(--lp-orange-500) px-6 text-base font-semibold text-white shadow-[var(--lp-shadow-brand)] hover:bg-(--lp-orange-600) hover:text-white"
+            >
+              Exam Pack එක ගන්න — {fee}
+            </Link>
+          ) : (
+            <p className="mt-6 text-sm font-semibold text-(--lp-ink-900)">
+              ළඟදීම open කරනවා. උඩ තියෙන form එකේ email එක දාන්න — open වෙන දවස අපි කියනවා.
+            </p>
+          )}
         </section>
 
         {/* FAQ */}

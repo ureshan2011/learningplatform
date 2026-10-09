@@ -219,6 +219,18 @@ export default async function PredictedPaperPromoPage() {
             </ButtonLink>
           </Card>
 
+          {/* Linked while the pack is off sale too: its page takes a waitlist
+              until then, and search engines need the link to find it early. */}
+          {examPackOn ? null : (
+            <p className="mt-3 text-sm text-ict-fg-mute">
+              Coming soon: the{" "}
+              <Link href={EXAM_PACK.publicPath} className="font-semibold text-ict-fg underline">
+                A/L ICT 2027 Exam Pack
+              </Link>{" "}
+              — this paper and the real 2026 paper, timed and ranked, with every question worked through.
+            </p>
+          )}
+
           <FreeResourcesFooter exclude={[PATH]} />
         </section>
       </main>

@@ -59,12 +59,15 @@ export const PAYMENTS_PAUSED_ERROR = "payments_paused";
  */
 export const LAUNCH_NOTE = {
   eyebrow: "Final phase of launch",
-  title: "Free trial is open. Payments are not.",
+  // About class fees, not "any payment": the Exam Pack has its own switch and
+  // may be on sale during the launch, and a banner saying nothing can be bought
+  // beside a working buy button is a promise contradicted on the same screen.
+  title: "Free trial is open. Class fees are not.",
   body:
-    "ICT Campus is in the final phase of launch, so we are not taking any payments yet. Start the free trial now — no payment required — and you will be told the day paid classes open.",
+    "ICT Campus is in the final phase of launch, so monthly class fees are not being taken yet. Start the free trial now — no payment required — and you will be told the day paid classes open.",
   // Deliberately says nothing about the trial. This line is shown beside the
   // pack and the cohort, which have no trial, and to a student whose seven days
   // are already spent — "the free trial is open" is wrong for all three.
-  short: "We are not taking payments yet. We will tell you the day they open.",
+  short: "This is not on sale yet. We will tell you the day it opens.",
   cta: "Start free — no payment required",
 } as const;

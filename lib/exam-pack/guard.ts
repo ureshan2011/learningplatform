@@ -1,9 +1,10 @@
 import "server-only";
 
 import { NextResponse } from "next/server";
-import { getSessionUser, requireTeacher, type SessionUser } from "@/lib/auth/session";
+import { getSessionUser, isStaff, requireTeacher, type SessionUser } from "@/lib/auth/session";
 import { hasAccess } from "@/lib/payments/entitlements";
 import { EXAM_PACK_ID } from "@/lib/exam-pack/config";
+import type { AccessResult } from "@/lib/types";
 
 /**
  * The two gates every Exam Pack route stands behind, written once.
@@ -15,14 +16,26 @@ import { EXAM_PACK_ID } from "@/lib/exam-pack/config";
 
 export type Gate = { user: SessionUser; response?: undefined } | { user?: undefined; response: NextResponse };
 
-export async function buyerRoute(): Promise<Gate> {
+export type BuyerGate =
+  | { user: SessionUser; access: AccessResult; response?: undefined }
+  | { user?: undefined; access?: undefined; response: NextResponse };
+
+export async function buyerRoute(): Promise<BuyerGate> {
   const user = await getSessionUser();
   if (!user) return { response: NextResponse.json({ error: "unauthenticated" }, { status: 401 }) };
   const access = await hasAccess(user.uid, EXAM_PACK_ID);
   if (!access.allowed) {
     return { response: NextResponse.json({ error: "forbidden", reason: access.reason }, { status: 403 }) };
   }
-  return { user };
+  return { user, access };
+}
+
+/**
+ * Someone whose activity must not count as a real student's: staff, and the
+ * owner's test accounts. Their sittings are never ranked against students.
+ */
+export function isRehearsal(user: SessionUser, access: AccessResult): boolean {
+  return isStaff(user.role) || access.enrollment?.source === "test";
 }
 
 export async function teacherRoute(): Promise<Gate> {

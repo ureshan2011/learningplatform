@@ -4,6 +4,8 @@ import { DisclaimerNote } from "@/components/papers/DisclaimerNote";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { FreeResourcesFooter } from "@/components/content/FreeResourcesFooter";
 import { Icon } from "@/components/ui/Icon";
+import { ButtonLink, Card } from "@/components/ds";
+import { EXAM_PACK } from "@/lib/exam-pack/config";
 import { publicEnv } from "@/lib/env";
 import { breadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { AL_ICT_2026_PAPER1, PAPER_DURATION_MINUTES, PAPER_QUESTION_COUNT } from "@/lib/content/al-ict-2026-paper1";
@@ -13,7 +15,7 @@ const REPLACED_COUNT = AL_ICT_2026_PAPER1.filter((q) => q.replaced).length;
 export const metadata: Metadata = {
   title: "A/L ICT 2026 Paper I MCQ — Attempt Free, Answers Included",
   description:
-    "Attempt the full A/L ICT 2026 Paper I (50 MCQs) online, free, no sign-in — a live 2-hour timer, instant scoring and every correct answer explained. Sinhala and English.",
+    "Attempt the full A/L ICT 2026 Paper I (50 MCQs) online, free, no sign-in — a live 2-hour timer, instant scoring and every correct answer marked. Sinhala and English.",
   alternates: { canonical: "/papers/al-ict-2026-paper-1-mcq" },
 };
 
@@ -91,6 +93,22 @@ export default function AlIctPaper1Page() {
               </ol>
             </div>
           </details>
+
+          {/* The free page marks the right answer; the walkthrough of *why*
+              each answer is right is what the Exam Pack adds. Linked here
+              because this is where a student looking for it already is. */}
+          <Card radius="card" className="mt-6 flex flex-wrap items-center justify-between gap-4 p-5">
+            <div className="min-w-0 flex-1">
+              <p className="font-display text-base font-bold text-ict-fg">Want to know why each answer is right?</p>
+              <p className="mt-1 text-sm text-ict-fg-mute">
+                The A/L ICT 2027 Exam Pack walks through all 50 questions of this paper, and the 2027 predicted paper —
+                both timed, marked and ranked, with a one-to-one with Dr. Yasas and a weekly live class.
+              </p>
+            </div>
+            <ButtonLink href={EXAM_PACK.publicPath} variant="outline" size="sm" className="shrink-0">
+              See the Exam Pack
+            </ButtonLink>
+          </Card>
 
           <FreeResourcesFooter exclude={["/papers/al-ict-2026-paper-1-mcq"]} />
         </div>

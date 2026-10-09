@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { col, enrollmentId } from "@/lib/firebase/admin";
-import { getSessionUser } from "@/lib/auth/session";
+import { getSessionUser, isStaff } from "@/lib/auth/session";
 import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/payhere";
 import { addMonths, DAY_MS } from "@/lib/payments/entitlements";
 import { getPayHereConfig } from "@/lib/payments/records";
@@ -42,11 +42,7 @@ export async function POST(req: NextRequest) {
   // anyone who kept an old tab open would take real money during a launch we
   // have told students is free.
   const examPack = subjectId === EXAM_PACK_ID;
-  if (examPack) {
-    if (!(await getExamPackSettings()).enabled) {
-      return NextResponse.json({ error: "not_on_sale" }, { status: 409 });
-    }
-  } else if (paymentsPaused()) {
+  if (!examPack && paymentsPaused()) {
     return NextResponse.json({ error: PAYMENTS_PAUSED_ERROR }, { status: 503 });
   }
 
@@ -62,6 +58,17 @@ export async function POST(req: NextRequest) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
 
+  // While the Exam Pack is off sale, nobody can buy it — except the owner
+  // rehearsing the real checkout, and only in PayHere's sandbox, where no real
+  // money can move. That is what lets the payment path be tested before launch.
+  let rehearsal = false;
+  if (examPack && !(await getExamPackSettings()).enabled) {
+    if (!(isStaff(user.role) && config.mode === "sandbox")) {
+      return NextResponse.json({ error: "not_on_sale" }, { status: 409 });
+    }
+    rehearsal = true;
+  }
+
   // A student can reach checkout on a cold instance that has not rendered a
   // page which creates the pack yet. Cheap, and once per instance.
   await Promise.all([ensureSurvivalPack(), ensureExamPack()]);
@@ -71,7 +78,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "subject_not_found" }, { status: 404 });
   }
   const subject = subjectSnap.data() as Subject;
-  if (!subject.active) {
+  if (!subject.active && !rehearsal) {
     return NextResponse.json({ error: "subject_inactive" }, { status: 409 });
   }
 

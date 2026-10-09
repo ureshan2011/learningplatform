@@ -6,7 +6,7 @@ import { FREE_TRIAL_DAYS } from "@/lib/payments/entitlements";
 export const metadata: Metadata = {
   title: "Refund & cancellation policy",
   description:
-    "When ICT Campus refunds a class fee, how to ask for one, how long it takes, and how cancelling works — there is no automatic renewal.",
+    "When ICT Campus refunds a class fee, the Exam Pack, a pack or a programme, how to ask, how long it takes, and how cancelling works — nothing renews automatically.",
   alternates: { canonical: "/refund-policy" },
 };
 
@@ -18,21 +18,24 @@ export default async function RefundPolicyPage() {
   return (
     <PolicyPage
       title="Refund & cancellation policy"
-      intro="Short version: nothing renews by itself, the first week is free, and if you paid by mistake or could not attend at all, ask and you get your money back."
+      intro="Short version: nothing renews by itself, a monthly class starts with a free week, and if you paid by mistake, ask within 7 days and you get your money back. One-off products have their own rules below, and each is shown in full before you pay."
     >
       <Clause heading="Cancelling">
         <p>
           There is no subscription running in the background and no standing charge on your card.
           Each month is paid for on its own, so <strong>cancelling is simply not paying again</strong>.
-          Access continues to the end of the month you already paid for.
+          Access continues to the end of the month you already paid for. One-off products — the
+          A/L ICT Exam Pack, a pack, Campus Match or a Campus Ready intake — are paid once and never
+          charge again.
         </p>
       </Clause>
 
       <Clause heading="The free trial">
         <p>
-          Every subject starts with a free {FREE_TRIAL_DAYS}-day trial, with no card details taken.
-          Use it to sit in on a real class before paying anything. Nothing to cancel and nothing to
-          refund.
+          Every monthly subject starts with a free {FREE_TRIAL_DAYS}-day trial, with no card details
+          taken. Use it to sit in on a real class before paying anything. Nothing to cancel and
+          nothing to refund. One-off products have no trial; instead, what they contain is listed in
+          full, with free samples, before you pay.
         </p>
       </Clause>
 
@@ -72,6 +75,42 @@ export default async function RefundPolicyPage() {
             one case with no refund at all.
           </li>
         </ul>
+      </Clause>
+
+      <Clause heading="The A/L ICT Exam Pack">
+        <p>
+          The Exam Pack is bought once, by card only. If you ask within 7 days of buying, and you have
+          not started a paper or had your consultation, we refund it in full.
+        </p>
+        <p className="mt-2">
+          After that, or once a paper has been started or the consultation has taken place, there is no
+          refund — the papers, walkthroughs and print copies cannot be returned once seen. If the pack
+          never unlocked after you paid, or we could not offer you a consultation time before your
+          access ended, we refund in full.
+        </p>
+        <p className="mt-2">
+          The weekly live class runs most weeks until the examination. If we cancel a week, we say so
+          on the pack page and hold it another day where we can; a single cancelled week is not
+          refunded on its own, because the price is for the whole pack.
+        </p>
+      </Clause>
+
+      <Clause heading="Campus Ready">
+        <p>
+          If you ask before your intake starts, we refund the programme fee in full. After it starts,
+          if you cannot continue — illness, a family emergency — tell us and we refund the weeks that
+          have not yet run, counted in whole weeks. There is no refund for weeks that have already run,
+          or for finding out after enrolling that you do not have a laptop: the sales page says before
+          you pay that one is required.
+        </p>
+      </Clause>
+
+      <Clause heading="Campus Match">
+        <p>
+          If you ask within 7 days of buying and have not opened your report, we refund it in full.
+          Once the report has been opened there is no refund, because what you paid for has been
+          delivered. A forecast that differs from the UGC&apos;s later cut-off is covered above.
+        </p>
       </Clause>
 
       <Clause heading="Digital packs">

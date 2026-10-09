@@ -268,7 +268,7 @@ export default async function PastPapersPage() {
                 </div>
                 <p className="mt-2 text-sm text-ict-on-feature-soft">
                   All {PAPER_QUESTION_COUNT} questions with a live {EXAM_STRUCTURE.paper1.durationMinutes}-minute
-                  exam timer, instant scoring and every correct answer explained. Sinhala and English. The full
+                  exam timer, instant scoring and every correct answer marked. Sinhala and English. The full
                   paper is also readable as plain text if you only want to check one answer.
                 </p>
                 <span className="mt-3 flex items-center gap-1 text-sm font-semibold text-ict-orange-400">

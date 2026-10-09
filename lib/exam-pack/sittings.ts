@@ -43,8 +43,8 @@ export async function startSitting(params: {
   uid: string;
   tenantId: string;
   paperId: PaperId;
-  /** A teacher or admin rehearsing — their sitting is never ranked against students. */
-  staff: boolean;
+  /** A teacher, admin or test account rehearsing — never ranked against students. */
+  unranked: boolean;
 }): Promise<StartOutcome> {
   const paper = getPaper(params.paperId);
   const ref = col.paperSittings().doc(sittingId(params.uid, params.paperId));
@@ -62,7 +62,7 @@ export async function startSitting(params: {
       subjectId: EXAM_PACK_ID,
       paperId: params.paperId,
       startedAt: now,
-      ...(params.staff ? { staff: true } : {}),
+      ...(params.unranked ? { unranked: true } : {}),
       updatedAt: now,
     };
     tx.set(ref, fresh);
@@ -281,7 +281,7 @@ export async function countSubmitted(paperId: PaperId): Promise<number> {
   const snap = await col.paperSittings().where("paperId", "==", paperId).limit(SCAN_WINDOW).get();
   return snap.docs
     .map((d) => d.data() as PaperSitting)
-    .filter((s) => s.tenantId === publicEnv.tenantId && s.submittedAt && !s.staff).length;
+    .filter((s) => s.tenantId === publicEnv.tenantId && s.submittedAt && !s.unranked).length;
 }
 
 async function otherScores(paperId: PaperId, ownId: string): Promise<number[]> {
@@ -289,6 +289,6 @@ async function otherScores(paperId: PaperId, ownId: string): Promise<number[]> {
   return snap.docs
     .filter((d) => d.id !== ownId)
     .map((d) => d.data() as PaperSitting)
-    .filter((s) => s.tenantId === publicEnv.tenantId && s.submittedAt !== undefined && !s.staff)
+    .filter((s) => s.tenantId === publicEnv.tenantId && s.submittedAt !== undefined && !s.unranked)
     .map((s) => s.correctCount ?? 0);
 }

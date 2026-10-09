@@ -168,7 +168,7 @@ const FAQS = [
   },
   {
     q: "Do I have to pay to read the articles or watch the videos?",
-    a: "No. Every article, video discussion and downloadable note is free, permanently. Live classes are the only paid part, and those start with a free 7-day trial.",
+    a: "No. Every article, video discussion and downloadable note is free, permanently. What is paid is the live monthly class, which starts with a free 7-day trial, and a few optional one-off products such as the A/L ICT Exam Pack — each priced on its own page before you buy.",
   },
   {
     q: "How often is new content published?",
@@ -188,7 +188,7 @@ const FAQS = [
   },
   {
     q: "Is paying for live classes safe?",
-    a: "Payments go through PayHere, a licensed Sri Lankan payment gateway. You can also upload a bank deposit slip instead.",
+    a: "Card payments go through PayHere, a licensed Sri Lankan payment gateway — your card details never reach this site. For monthly classes you can also pay by bank deposit when that option is open. The A/L ICT Exam Pack is sold by card only.",
   },
 ] as const;
 
@@ -564,7 +564,7 @@ export default async function LandingPage() {
             ) : (
               <p className="mt-6 flex items-center gap-1.5 text-xs text-(--lp-ink-400)">
                 <CheckCircleIcon className="size-4 text-(--lp-green-500)" />
-                Secure payments via PayHere, or pay by bank deposit slip.
+                Secure card payments via PayHere. Bank deposit for classes when that option is open.
               </p>
             )}
           </div>
@@ -811,7 +811,7 @@ export default async function LandingPage() {
               <div className="mb-3.5 text-xs font-bold tracking-[0.14em] text-(--lp-orange-500) uppercase">Pay</div>
               <div className="flex flex-col gap-2.5">
                 <span className="text-xs text-(--lp-ink-300)">PayHere card payments</span>
-                <span className="text-xs text-(--lp-ink-300)">Bank deposit slip</span>
+                <span className="text-xs text-(--lp-ink-300)">Bank deposit, when open</span>
                 <Link href="/refund-policy" className="text-xs text-(--lp-ink-300) hover:text-(--lp-paper-50)">
                   Refunds &amp; cancellation
                 </Link>

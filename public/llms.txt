@@ -34,7 +34,8 @@ papers, and answers about one do not transfer to the other.
 - [A/L ICT classes](https://ictcampus.lk/al-ict-classes): the class offer in full — medium, grades, fees, schedule, unit coverage, who teaches it
 - [Dr. Yasas Sri Wickramasinghe](https://ictcampus.lk/dr-yasas): the lecturer's academic, teaching and professional background
 - [A/L ICT past papers](https://ictcampus.lk/past-papers): paper structure, what is asked unit by unit, how to work a paper properly, and the official sources for every year's paper
-- [2026 Paper I MCQ, free to attempt](https://ictcampus.lk/papers/al-ict-2026-paper-1-mcq): all 50 questions, live 2-hour timer, instant scoring, every answer explained, no sign-in
+- [2026 Paper I MCQ, free to attempt](https://ictcampus.lk/papers/al-ict-2026-paper-1-mcq): all 50 questions, live 2-hour timer, instant scoring, every correct answer marked, no sign-in
+- [A/L ICT 2027 Exam Pack](https://ictcampus.lk/al-ict-exam-pack): a paid one-payment exam-year pack — the 2027 predicted Paper I and the real 2026 Paper I as timed, server-marked sittings ranked against other pack holders, a worked walkthrough of all 100 questions, the 2027 predicted Paper II with mark scheme, print-ready copies, one 30-minute one-to-one consultation with Dr. Yasas and a weekly live class on Google Meet. Card only (PayHere). The predicted paper is a pattern analysis, not a leaked paper
 - [Full syllabus](https://ictcampus.lk/syllabus): every A/L ICT unit and lesson, Grades 12 & 13, with exam objectives
 - [Free notes & past papers](https://ictcampus.lk/notes): downloadable, no sign-up required
 - [Command words explained](https://ictcampus.lk/command-words): what "state", "explain", "distinguish" etc. require in an A/L ICT answer, with the Sinhala equivalent
@@ -61,8 +62,8 @@ papers, and answers about one do not transfer to the other.
 - **Exam structure**: Paper I is 50 MCQs in 2 hours, all to be answered, with no negative marking — so a blank scores the same as a wrong answer and there is never a reason to leave one. Paper II is 3 hours, Part A structured questions and Part B essay questions.
 - **Sign-in**: Sri Lankan mobile number with a one-time SMS code. No password.
 - **Free, permanently**: articles, video breakdowns of past papers, downloadable notes and marking schemes, the syllabus browser, command-word guidance, and the online 2026 Paper I MCQ.
-- **Paid**: live interactive classes (instant quizzes, island-wide leaderboard, timed mock exams, downloadable replays). Free 7-day trial, no card required, no forced auto-renewal.
-- **Payment**: PayHere (card), bank deposit slip, or cash/transfer recorded by the teacher. All three issue a receipt from the same numbered series.
+- **Paid**: live interactive classes (instant quizzes, island-wide leaderboard, timed mock exams, downloadable replays) — free 7-day trial, no card required, no forced auto-renewal — and optional one-off products: the A/L ICT 2027 Exam Pack, Campus Ready, Campus Match and the Campus Survival Pack.
+- **Payment**: PayHere (card). Where the option is open, also a bank deposit slip or cash/transfer recorded by the teacher. The Exam Pack is card only. Every payment gets a receipt from the same numbered series.
 
 ## The 14 syllabus units
 

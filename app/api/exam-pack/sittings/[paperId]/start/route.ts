@@ -1,8 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { buyerRoute } from "@/lib/exam-pack/guard";
+import { buyerRoute, isRehearsal } from "@/lib/exam-pack/guard";
 import { isPaperId } from "@/lib/exam-pack/config";
 import { startSitting } from "@/lib/exam-pack/sittings";
-import { isStaff } from "@/lib/auth/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -23,7 +22,7 @@ export async function POST(_req: NextRequest, ctx: { params: Promise<{ paperId: 
     uid: gate.user.uid,
     tenantId: gate.user.tenantId,
     paperId,
-    staff: isStaff(gate.user.role),
+    unranked: isRehearsal(gate.user, gate.access),
   });
   if (outcome.state === "submitted") {
     return NextResponse.json({ error: "already_submitted" }, { status: 409 });

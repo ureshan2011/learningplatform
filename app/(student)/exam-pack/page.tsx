@@ -6,7 +6,15 @@ import { getPayHereConfig } from "@/lib/payments/records";
 import { listContent } from "@/lib/queries";
 import { formatDate, formatLKR, formatSessionTime } from "@/lib/format";
 import { getLocale } from "@/lib/i18n/server";
-import { EXAM_PACK, EXAM_PACK_ID, EXAM_PACK_SLOTS, PAPER_IDS, PRINT_DOCS, pick } from "@/lib/exam-pack/config";
+import {
+  EXAM_PACK,
+  EXAM_PACK_ID,
+  EXAM_PACK_SLOTS,
+  PAPER_IDS,
+  PRINT_DOCS,
+  accessMonths,
+  pick,
+} from "@/lib/exam-pack/config";
 import { COPY, INSIDE, c, fill } from "@/lib/exam-pack/copy";
 import { getExamPack } from "@/lib/exam-pack/ensure";
 import { getExamPackSettings } from "@/lib/exam-pack/settings";
@@ -109,10 +117,12 @@ export default async function ExamPackPage({
         ) : (
           <SellPack
             feeLKR={subject.product.feeLKR}
+            accessDays={subject.product.accessDays}
             settings={settings}
             locale={locale}
             sandbox={payhere.mode === "sandbox"}
             cardReady={payhere.configured}
+            rehearsal={staff && payhere.mode === "sandbox"}
           />
         )}
       </div>
@@ -136,16 +146,21 @@ function liveVars(settings: ExamPackSettings, locale: "en" | "si") {
 
 function SellPack({
   feeLKR,
+  accessDays,
   settings,
   locale,
   sandbox,
   cardReady,
+  rehearsal,
 }: {
   feeLKR: number;
+  accessDays: number;
   settings: ExamPackSettings;
   locale: "en" | "si";
   sandbox: boolean;
   cardReady: boolean;
+  /** The owner, with PayHere in sandbox: may rehearse the real checkout while the pack is off sale. */
+  rehearsal: boolean;
 }) {
   const price = formatLKR(feeLKR);
   const samples = previewQuestions();
@@ -156,9 +171,9 @@ function SellPack({
       <Card variant="feature" radius="panel" className="p-6 sm:p-8">
         <Eyebrow>{EXAM_PACK.name}</Eyebrow>
         <p className="mt-3 font-display text-4xl font-extrabold tracking-[-0.03em]">{price}</p>
-        <p className="mt-1 text-sm opacity-80">{pick(COPY.onePayment, locale)}</p>
+        <p className="mt-1 text-sm opacity-80">{c("onePayment", locale, { months: accessMonths(accessDays) })}</p>
         <div className="mt-5">
-          {!settings.enabled ? (
+          {!settings.enabled && !rehearsal ? (
             <StatusChip tone="neutral">{pick(COPY.openingSoon, locale)}</StatusChip>
           ) : cardReady ? (
             <SubscribeButton

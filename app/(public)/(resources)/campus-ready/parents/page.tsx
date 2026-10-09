@@ -66,7 +66,7 @@ export default async function CampusReadyParentsPage() {
     },
     {
       q: "How do we pay, and do we get a receipt?",
-      a: "By card through PayHere, by uploading a bank deposit slip, or in cash or transfer recorded by the teacher. All three issue a numbered receipt from the same series.",
+      a: "By card through PayHere — or, when the option is open, by uploading a bank deposit slip or in cash or transfer recorded by the teacher. Every payment issues a numbered receipt from the same series.",
     },
     {
       q: "Does my child need a laptop?",

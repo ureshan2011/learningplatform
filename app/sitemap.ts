@@ -4,7 +4,6 @@ import { listSubjects, listUnits } from "@/lib/queries";
 import { listCutoffCourses } from "@/lib/campus-match/cutoff-pages";
 import ugcManifest from "@/lib/content/ugc/manifest.json";
 import { EXAM_PACK } from "@/lib/exam-pack/config";
-import { getExamPackSettings } from "@/lib/exam-pack/settings";
 
 /**
  * Every public, crawlable URL — static pages plus one entry per subject and
@@ -130,11 +129,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  // The Exam Pack's sales page exists only while the pack is on sale — it 404s
-  // otherwise — so it is listed only then. An unreadable setting reads as off.
-  const examPackEntries: MetadataRoute.Sitemap = (await getExamPackSettings()).enabled
-    ? [{ url: `${base}${EXAM_PACK.publicPath}`, lastModified, changeFrequency: "weekly", priority: 0.95 }]
-    : [];
+  // The Exam Pack's sales page is public whether or not the pack is on sale
+  // (it shows a waitlist until then), so it is always listed — ranking takes
+  // weeks, and it should already be found on the day the pack opens.
+  const examPackEntries: MetadataRoute.Sitemap = [
+    { url: `${base}${EXAM_PACK.publicPath}`, lastModified, changeFrequency: "weekly", priority: 0.95 },
+  ];
 
   return [...staticEntries, ...examPackEntries, ...subjectEntries, ...unitEntries, ...cutoffEntries];
 }
