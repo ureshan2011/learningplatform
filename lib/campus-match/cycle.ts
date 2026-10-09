@@ -13,9 +13,12 @@
 /**
  * The subject id.
  *
- * Reads as the results year, which is how a student would say it: "my 2027
- * results". The admission round it forecasts is the year *before* that pair —
- * see `ADMISSION_ROUND` and the handoff's Appendix A.1.
+ * Reads as the year the student applies and enters university — "Campus Match
+ * 2027". It used to be read as the results year too, when results came out in
+ * April; the 2026 exam's results are now due before the end of 2026, so the
+ * two years no longer match and the id keeps the application year. Never
+ * renamed: payments, enrollments and the settings document all key on it.
+ * The admission round it forecasts is printed from `ADMISSION_ROUND`.
  */
 export const CAMPUS_MATCH_ID = "campus-match-2027";
 
@@ -26,14 +29,30 @@ export const CAMPUS_MATCH_NAME = "Campus Match 2027";
  *
  * Not the same number as the subject id. The UGC's own covers state that a
  * round is based on the A/L examination of the year before its first year —
- * 2025/2026 was based on the 2025 examination — so a student collecting results
- * in April 2027 is applying for admission year 2026/2027. This is the string
- * every screen prints; the id above is only a key.
+ * 2025/2026 was based on the 2025 examination — so a student collecting 2026
+ * results is applying for admission year 2026/2027. This is the string every
+ * screen prints; the id above is only a key.
  */
 export const ADMISSION_ROUND = "2026/2027";
 
-/** The results day this is sold from. */
-export const RESULTS_YEAR = 2027;
+/**
+ * The year results day falls in — the day this is sold from.
+ *
+ * 2026, not 2027: the 2026 exam ran in August and the Commissioner General has
+ * said results come out before the end of the year. That is about three months
+ * earlier than the 2025 exam's results (31 March 2026), so the sale window, the
+ * waitlist and the results-day campaign all move forward with it.
+ */
+export const RESULTS_YEAR = 2026;
+
+/**
+ * When results are expected, as the console prints it. Update it the day the
+ * Department of Examinations names a date.
+ */
+export const RESULTS_EXPECTED = "before the end of 2026, most likely December";
+
+/** When the UGC application window is expected — about four weeks after results last time. */
+export const APPLICATIONS_EXPECTED = "January 2027";
 
 /** Rs 1,490. The console can edit `product.feeLKR`; this is only the default. */
 export const CAMPUS_MATCH_FEE_LKR = 1_490;

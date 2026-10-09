@@ -223,7 +223,7 @@ grade. Needs a rubric tight enough that peer marks are not noise.
 - Public opt-in portfolio page at `/p/[handle]`.
 
 ### 5. The public SEO cluster
-Start this **early** — it needs months to index before 1 April. Follow the
+Start this **early** — it needs months to index before results day (expected December 2026 this cycle). Follow the
 `/command-words` and `/logic-gates` pattern: genuinely useful static reference
 pages that rank and convert. `/after-al`, `/campus/apa-referencing`,
 `/campus/zotero`, `/campus/turnitin`, `/campus/ai-rules`,

@@ -1,6 +1,8 @@
 # Campus Match — build handoff
 
-**What this is.** A one-payment report that tells a student who has just received A/L results which state university degrees they can realistically get into, with an estimated chance for each course in their district, the safest and riskiest picks, and a recommended order for the UGC application form. Rs 1,490. Sold from results day (1 April) through the application deadline, and again when selection results come out (1 August) as a "what now" check.
+**What this is.** A one-payment report that tells a student who has just received A/L results which state university degrees they can realistically get into, with an estimated chance for each course in their district, the safest and riskiest picks, and a recommended order for the UGC application form. Rs 1,490. Sold from results day through the application deadline, and again when selection results come out as a "what now" check.
+
+> **Dates moved (October 2026).** The 2026 A/L exam ran in August and results are due before the end of 2026, most likely December — about three months earlier than the 2025 exam's results (31 March 2026). The UGC application window is expected in January 2027. The sale window, the waitlist and the results-day campaign move forward with it; `RESULTS_EXPECTED` and `APPLICATIONS_EXPECTED` in `lib/campus-match/cycle.ts` are what the console prints. The subject id stays `campus-match-2027` (the application year).
 
 **Why it exists.** Every one of the roughly 176,000 qualified candidates and their parents asks exactly this question in the same week, and nobody sells a data-backed answer. The audience is ten times the ICT class and four times the Campus Ready cohort. Every buyer is a Campus Ready lead.
 

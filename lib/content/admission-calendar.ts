@@ -29,7 +29,7 @@ export interface CalendarStep {
 }
 
 /** When a person last checked every date below against its source. */
-export const CALENDAR_CHECKED_ON = "22 September 2026";
+export const CALENDAR_CHECKED_ON = "9 October 2026";
 
 /**
  * The cycle that has just finished: the 2025 A/L exam, admitting to the
@@ -88,38 +88,38 @@ export const NEXT_CYCLE: CalendarStep[] = [
   },
   {
     what: "2026 A/L results",
-    when: "Before the end of 2026",
+    when: "Before the end of 2026, most likely December",
     status: "expected",
-    note: "The Commissioner General of Examinations has said results will be out before year-end. Your Z-score is printed on the results sheet.",
+    note: "The Commissioner General of Examinations has said results will be out before year-end — about three months earlier than last time (31 March 2026), because the exam itself moved back to August. Your Z-score is printed on the results sheet.",
     source: {
-      label: "Ada Derana",
-      url: "https://adaderana.lk/news/cmsmupyda0005356p9rs1c5ue",
+      label: "Hiru News",
+      url: "https://hirunews.lk/en/453912/advanced-level-results-expected-before-new-year",
     },
     si: {
       what: "2026 A/L results",
-      when: "2026 අවුරුද්ද ඉවර වෙන්න කලින්",
-      note: "අවුරුද්ද ඉවර වෙන්න කලින් results දෙනවා කියලා විභාග කොමසාරිස් ජනරාල් කියලා තියෙනවා. ඔයාගේ Z-score එක results sheet එකේ තියෙනවා.",
+      when: "2026 අවුරුද්ද ඉවර වෙන්න කලින්, බොහෝ විට දෙසැම්බර්",
+      note: "අවුරුද්ද ඉවර වෙන්න කලින් results දෙනවා කියලා විභාග කොමසාරිස් ජනරාල් කියලා තියෙනවා — පහුගිය පාරට (2026 මාර්තු 31) වඩා මාස තුනක් විතර කලින්, මොකද විභාගය ආපහු අගෝස්තුවට ආවා. ඔයාගේ Z-score එක results sheet එකේ තියෙනවා.",
     },
   },
   {
     what: "UGC handbook and online application (2026/2027 intake)",
-    when: "Announced by the UGC after results",
+    when: "Expected January 2027, about four weeks after results",
     status: "expected",
-    note: "Last time the window was three weeks long. Have your course list ready before it opens, not during.",
+    note: "Last time applications opened four weeks after results and stayed open for three weeks. The UGC confirms the dates. Have your course list ready before it opens, not during.",
     si: {
       what: "UGC handbook එක සහ online application (2026/2027 intake)",
-      when: "Results ආවට පස්සේ UGC එක දවස් කියනවා",
-      note: "පහුගිය පාර application කරන්න තිබුණේ සති තුනයි. Window එක open වෙන්න කලින්ම course list එක ලෑස්ති කරගන්න, open වුණාට පස්සේ නෙවෙයි.",
+      when: "2027 ජනවාරි වෙද්දී, results ආවට සති හතරකට විතර පස්සේ",
+      note: "පහුගිය පාර results ආවට සති හතරකට පස්සේ applications open කළා, සති තුනයි තිබුණේ. හරියටම දවස් UGC එක කියනවා. Window එක open වෙන්න කලින්ම course list එක ලෑස්ති කරගන්න, open වුණාට පස්සේ නෙවෙයි.",
     },
   },
   {
     what: "Z-score cut-offs and selection",
-    when: "Several months after applications close",
+    when: "Expected around mid-2027, several months after applications close",
     status: "expected",
     note: "Selection is by Z-score, district and the order of your preferences. Aptitude-test courses have their own dates in the handbook.",
     si: {
       what: "Z-score cut-offs සහ selection",
-      when: "Applications close වෙලා මාස කීපයකට පස්සේ",
+      when: "2027 මැද විතර, applications close වෙලා මාස කීපයකට පස්සේ",
       note: "Select කරන්නේ Z-score එක, දිස්ත්‍රික්කය සහ ඔයා courses දාපු පිළිවෙළ අනුව. Aptitude test තියෙන courses වලට handbook එකේ වෙනම දවස් තියෙනවා.",
     },
   },
