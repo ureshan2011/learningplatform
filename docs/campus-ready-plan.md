@@ -188,8 +188,11 @@ version. Public reference pages are static content — the same way `/command-wo
 
 ### Timing
 
-1 April (results) and 1 August (selection results) are the largest student-search
-moments of the Sri Lankan year. The cluster must be published and indexed **months
+Results day and selection-results day are the largest student-search
+moments of the Sri Lankan year. They used to fall around 1 April and 1 August; with
+the exam back in August, the 2026 results are due before the end of 2026 (most likely
+December) and applications in January 2027 — so this cycle's dates are about three
+months earlier. The cluster must be published and indexed **months
 before**, not on the day.
 
 ---
@@ -286,7 +289,7 @@ above 90%. The binding constraint is completion rate, not demand.
 
 1. **A/L alumni first** — highest ROI. When a Grade 13 enrollment lapses, move that
    student into a Campus Ready nurture sequence automatically.
-2. **The SEO cluster** in §2, published early enough to be indexed before 1 April.
+2. **The SEO cluster** in §2, published early enough to be indexed before results day (expected December 2026).
 3. **Z-score cut-off checker** built on the existing `lib/content/university-pathways.ts`
    UGC data — results-day traffic magnet.
 4. Sinhala YouTube/TikTok shorts: "campus first year එකේ කවුරුත් කියලා දෙන්නෙ නැති දේවල්".
@@ -374,7 +377,7 @@ service — the "runs on Firebase alone" property holds.
 3. Python lab + test-case grading (largest engineering item).
 4. Submissions + peer review.
 5. Certificate extension, verify page, portfolio page.
-6. **Publish the SEO cluster early** — it needs months to index before 1 April.
+6. **Publish the SEO cluster early** — it needs months to index before results day (expected December 2026).
 7. Record weeks 1–4; write the full syllabus and rubrics.
 8. Open enrolment the week the 2026 A/L exam ends.
 

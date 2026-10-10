@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { col, enrollmentId } from "@/lib/firebase/admin";
-import { getSessionUser } from "@/lib/auth/session";
+import { getSessionUser, isStaff } from "@/lib/auth/session";
 import { buildCheckoutFields, buildOrderId, checkoutUrl } from "@/lib/payments/payhere";
 import { addMonths, DAY_MS } from "@/lib/payments/entitlements";
 import { getPayHereConfig } from "@/lib/payments/records";
@@ -11,6 +11,9 @@ import { ensureSurvivalPack } from "@/lib/content/ensure-product";
 import { CAMPUS_MATCH_ID } from "@/lib/campus-match/cycle";
 import { getCampusMatchSettings } from "@/lib/campus-match/settings";
 import { dataFreshness } from "@/lib/campus-match/data";
+import { EXAM_PACK_ID } from "@/lib/exam-pack/config";
+import { ensureExamPack } from "@/lib/exam-pack/ensure";
+import { getExamPackSettings } from "@/lib/exam-pack/settings";
 import type { Enrollment, Payment, Subject } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -25,11 +28,21 @@ const bodySchema = z.object({ subjectId: z.string().min(1).max(64) });
  * that can name its own price is a client that pays Rs 1.
  */
 export async function POST(req: NextRequest) {
-  // Trial-only launch: refused here, not merely hidden in the UI. The button is
-  // gone from every screen, but a checkout that still minted a signed PayHere
-  // form for anyone who kept an old tab open would take real money during a
-  // launch we have told students is free.
-  if (paymentsPaused()) {
+  let subjectId: string;
+  try {
+    ({ subjectId } = bodySchema.parse(await req.json()));
+  } catch {
+    return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+  }
+
+  // The Exam Pack has its own switch, set in the console, and is the one thing
+  // that may be sold while the rest of the platform is on its free trial.
+  // Everything else is still refused during the trial-only launch — here, not
+  // merely hidden in the UI: a checkout that minted a signed PayHere form for
+  // anyone who kept an old tab open would take real money during a launch we
+  // have told students is free.
+  const examPack = subjectId === EXAM_PACK_ID;
+  if (!examPack && paymentsPaused()) {
     return NextResponse.json({ error: PAYMENTS_PAUSED_ERROR }, { status: 503 });
   }
 
@@ -45,23 +58,27 @@ export async function POST(req: NextRequest) {
   const user = await getSessionUser();
   if (!user) return NextResponse.json({ error: "unauthenticated" }, { status: 401 });
 
-  let subjectId: string;
-  try {
-    ({ subjectId } = bodySchema.parse(await req.json()));
-  } catch {
-    return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+  // While the Exam Pack is off sale, nobody can buy it — except the owner
+  // rehearsing the real checkout, and only in PayHere's sandbox, where no real
+  // money can move. That is what lets the payment path be tested before launch.
+  let rehearsal = false;
+  if (examPack && !(await getExamPackSettings()).enabled) {
+    if (!(isStaff(user.role) && config.mode === "sandbox")) {
+      return NextResponse.json({ error: "not_on_sale" }, { status: 409 });
+    }
+    rehearsal = true;
   }
 
   // A student can reach checkout on a cold instance that has not rendered a
   // page which creates the pack yet. Cheap, and once per instance.
-  await ensureSurvivalPack();
+  await Promise.all([ensureSurvivalPack(), ensureExamPack()]);
 
   const subjectSnap = await col.subjects().doc(subjectId).get();
   if (!subjectSnap.exists) {
     return NextResponse.json({ error: "subject_not_found" }, { status: 404 });
   }
   const subject = subjectSnap.data() as Subject;
-  if (!subject.active) {
+  if (!subject.active && !rehearsal) {
     return NextResponse.json({ error: "subject_inactive" }, { status: 409 });
   }
 

@@ -142,7 +142,7 @@ const FAQS = [
   },
   {
     q: "How do I pay?",
-    a: "By card through PayHere, by uploading a bank deposit slip, or by cash or bank transfer recorded directly by the teacher. All three get the same numbered receipt.",
+    a: "By card through PayHere. When the option is open, also by uploading a bank deposit slip, or by cash or bank transfer recorded directly by the teacher. Every payment gets a numbered receipt from the same series.",
   },
 ] as const;
 
@@ -524,7 +524,7 @@ export default async function AlIctClassesPage() {
             ) : (
               <p className="mt-6 flex items-center gap-1.5 text-xs text-(--lp-ink-400)">
                 <CheckCircleIcon className="size-4 text-(--lp-green-500)" />
-                Secure payments via PayHere, or pay by bank deposit slip.
+                Secure card payments via PayHere. Bank deposit when that option is open.
               </p>
             )}
           </div>

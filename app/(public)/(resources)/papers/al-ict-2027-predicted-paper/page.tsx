@@ -20,6 +20,8 @@ import {
 } from "@/lib/content/al-ict-2027-predicted-paper1";
 import { AL_ICT_2027_PREDICTED_PAPER2 } from "@/lib/content/al-ict-2027-predicted-paper2";
 import { AL_ICT_2027_FOCUS_AREAS } from "@/lib/content/al-ict-2027-focus-areas";
+import { EXAM_PACK } from "@/lib/exam-pack/config";
+import { getExamPackSettings } from "@/lib/exam-pack/settings";
 
 const PATH = "/papers/al-ict-2027-predicted-paper";
 const SAMPLE_IDS = [1, 17, 31];
@@ -69,8 +71,20 @@ function jsonLd() {
   ]);
 }
 
-export default function PredictedPaperPromoPage() {
+/**
+ * Cached for five minutes rather than built once, for one reason: while the
+ * Exam Pack is on sale, the full predicted paper is sold there, so both calls
+ * to action point to it instead of to a free sign-in. While it is off, the
+ * page reads exactly as it always has.
+ */
+export const revalidate = 300;
+
+export default async function PredictedPaperPromoPage() {
   const samples = AL_ICT_2027_PREDICTED_PAPER1.filter((q) => SAMPLE_IDS.includes(q.id));
+  const examPackOn = (await getExamPackSettings()).enabled;
+  const fullPaperHref = examPackOn
+    ? EXAM_PACK.publicPath
+    : "/signin?next=/subjects/al-ict/predicted-paper&ref=predicted-paper-2027";
 
   return (
     <>
@@ -93,8 +107,8 @@ export default function PredictedPaperPromoPage() {
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <ButtonLink href={`/signin?next=/subjects/al-ict/predicted-paper&ref=predicted-paper-2027`} variant="primary" size="lg">
-              Sign in to unlock the full paper
+            <ButtonLink href={fullPaperHref} variant="primary" size="lg">
+              {examPackOn ? "Get the full paper in the Exam Pack" : "Sign in to unlock the full paper"}
             </ButtonLink>
             <ButtonLink href="#focus-areas" variant="outline" size="lg" arrow="none">
               See the free focus areas
@@ -165,8 +179,8 @@ export default function PredictedPaperPromoPage() {
           </SectionHeading>
           <p className="mt-1 text-sm text-ict-fg-mute">
             3 of {PREDICTED_PAPER1_QUESTION_COUNT} predicted MCQs. Answers, explanations and the remaining{" "}
-            {PREDICTED_PAPER1_QUESTION_COUNT - samples.length} questions plus the full Paper II unlock once you sign
-            in.
+            {PREDICTED_PAPER1_QUESTION_COUNT - samples.length} questions plus the full Paper II{" "}
+            {examPackOn ? "are in the A/L ICT 2027 Exam Pack." : "unlock once you sign in."}
           </p>
           <ol className="mt-4 space-y-4">
             {samples.map((q, i) => (
@@ -196,12 +210,26 @@ export default function PredictedPaperPromoPage() {
 
           <Card radius="card" className="mt-6 flex flex-wrap items-center justify-between gap-3 p-5">
             <p className="text-sm text-ict-fg-mute">
-              One free account unlocks the full predicted paper, live classes and every past paper on ICT Campus.
+              {examPackOn
+                ? "The Exam Pack has the full predicted paper and the real 2026 paper, timed and ranked, every question worked through, a one-to-one with Dr. Yasas and a weekly live class."
+                : "One free account unlocks the full predicted paper, live classes and every past paper on ICT Campus."}
             </p>
-            <ButtonLink href="/signin?next=/subjects/al-ict/predicted-paper&ref=predicted-paper-2027" variant="secondary" size="md" className="shrink-0">
-              Sign in — it&rsquo;s free to start
+            <ButtonLink href={fullPaperHref} variant="secondary" size="md" className="shrink-0">
+              {examPackOn ? "See the Exam Pack" : <>Sign in — it&rsquo;s free to start</>}
             </ButtonLink>
           </Card>
+
+          {/* Linked while the pack is off sale too: its page takes a waitlist
+              until then, and search engines need the link to find it early. */}
+          {examPackOn ? null : (
+            <p className="mt-3 text-sm text-ict-fg-mute">
+              Coming soon: the{" "}
+              <Link href={EXAM_PACK.publicPath} className="font-semibold text-ict-fg underline">
+                A/L ICT 2027 Exam Pack
+              </Link>{" "}
+              — this paper and the real 2026 paper, timed and ranked, with every question worked through.
+            </p>
+          )}
 
           <FreeResourcesFooter exclude={[PATH]} />
         </section>

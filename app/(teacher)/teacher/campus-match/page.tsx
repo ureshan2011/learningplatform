@@ -8,8 +8,10 @@ import { dataFreshness, handbookCoverYear, roundSpan } from "@/lib/campus-match/
 import { profileCodes } from "@/lib/campus-match/profiles";
 import {
   ADMISSION_ROUND,
+  APPLICATIONS_EXPECTED,
   CAMPUS_MATCH_FEE_LKR,
   CAMPUS_MATCH_NAME,
+  RESULTS_EXPECTED,
 } from "@/lib/campus-match/cycle";
 import { formatLKR } from "@/lib/format";
 import backtest from "@/lib/content/ugc/backtest.json";
@@ -50,6 +52,16 @@ export default async function TeacherCampusMatchPage() {
         their stream can apply for, in their own district, for the {ADMISSION_ROUND} round.{" "}
         {formatLKR(CAMPUS_MATCH_FEE_LKR)}, once, for the whole cycle.
       </p>
+
+      <section className="mt-4 rounded-ict-md border border-ict-line bg-ict-surface-card p-5">
+        <p className="font-semibold">When it sells</p>
+        <p className="mt-1 text-sm text-ict-fg-soft">
+          2026 A/L results are expected {RESULTS_EXPECTED}, about three months earlier than last
+          cycle. Applications are expected in {APPLICATIONS_EXPECTED}. Most reports sell in the
+          days between results and the application deadline, so have this on sale the morning
+          results come out, not the week after.
+        </p>
+      </section>
 
       <section className="mt-6 grid gap-3 sm:grid-cols-2">
         <Panel

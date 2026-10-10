@@ -219,7 +219,7 @@ const FAQS = [
   },
   {
     q: "How much does it cost and how do I pay?",
-    a: `${formatLKR(CAMPUS_READY.feeLKR)} for the whole ${CAMPUS_READY.weeks}-week programme — one payment, not a monthly fee. Pay by card through PayHere, by uploading a bank deposit slip, or in cash recorded by the teacher. All three issue the same numbered receipt.`,
+    a: `${formatLKR(CAMPUS_READY.feeLKR)} for the whole ${CAMPUS_READY.weeks}-week programme — one payment, not a monthly fee. Pay by card through PayHere — or, when the option is open, by uploading a bank deposit slip or in cash recorded by the teacher. Every payment issues a numbered receipt from the same series.`,
   },
   {
     q: "Is there one-to-one mentoring?",

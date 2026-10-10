@@ -46,6 +46,7 @@ const en = {
   "nav.campus": "Campus Ready",
   "nav.pack": "Survival Pack",
   "nav.match": "Campus Match",
+  "nav.examPack": "Exam Pack",
   "nav.classes": "My classes",
   "search.search": "Search",
   "remind.title": "Class reminders",
@@ -178,13 +179,13 @@ const en = {
 
   /* ---- trial-only launch (see lib/payments/launch.ts) ---- */
   "launch.eyebrow": "Final phase of launch",
-  "launch.title": "Free trial is open. Payments are not.",
+  "launch.title": "Free trial is open. Class fees are not.",
   "launch.body":
-    "We are in the final phase of launch, so no payments are being taken yet. Start the free trial now — no payment required — and we will tell you the day paid classes open.",
-  "launch.short": "We are not taking payments yet. We will tell you the day they open.",
+    "We are in the final phase of launch, so monthly class fees are not being taken yet. Start the free trial now — no payment required — and we will tell you the day paid classes open.",
+  "launch.short": "This is not on sale yet. We will tell you the day it opens.",
   "launch.trialEndedEyebrow": "Your free trial has ended",
   "launch.trialEnded":
-    "Your free 7 days are up. We are not taking payments yet, so paid classes are not open — we will tell you the day they are, and everything you did is saved until then.",
+    "Your free 7 days are up. Class fees are not being taken yet, so paid classes are not open — we will tell you the day they are, and everything you did is saved until then.",
   "launch.openingSoon": "Opens soon",
   "launch.cta": "Start free — no payment required",
   "launch.freeNow": "Free during launch",
@@ -618,6 +619,7 @@ const si: Record<MessageKey, string> = {
   "nav.campus": "Campus Ready",
   "nav.pack": "Survival Pack",
   "nav.match": "Campus Match",
+  "nav.examPack": "Exam Pack",
   "nav.classes": "මගේ පන්ති",
   "search.search": "හොයන්න",
   "remind.title": "පන්ති reminder",
@@ -747,13 +749,13 @@ const si: Record<MessageKey, string> = {
   "dash.liveBadge": "දැන් live",
 
   "launch.eyebrow": "Launch එකේ අන්තිම අදියර",
-  "launch.title": "Free trial එක open. ගෙවීම් තාම නෑ.",
+  "launch.title": "Free trial එක open. පන්ති ගාස්තු තාම නෑ.",
   "launch.body":
-    "අපි දැන් ඉන්නේ launch එකේ අන්තිම අදියරේ, ඒ නිසා තාම කිසිම ගෙවීමක් ගන්නේ නෑ. දැන්ම free trial එක පටන් ගන්න — ගෙවීමක් ඕන නෑ — ගෙවන පන්ති පටන් ගන්න දවස අපි ඔයාට කියනවා.",
-  "launch.short": "අපි තාම ගෙවීම් ගන්නේ නෑ. Open වුණාම අපි ඔයාට කියනවා.",
+    "අපි දැන් ඉන්නේ launch එකේ අන්තිම අදියරේ, ඒ නිසා මාසික පන්ති ගාස්තු තාම ගන්නේ නෑ. දැන්ම free trial එක පටන් ගන්න — ගෙවීමක් ඕන නෑ — ගෙවන පන්ති පටන් ගන්න දවස අපි ඔයාට කියනවා.",
+  "launch.short": "මේක තාම විකුණන්නේ නෑ. Open වෙන දවස අපි කියනවා.",
   "launch.trialEndedEyebrow": "Free trial එක ඉවරයි",
   "launch.trialEnded":
-    "ඔයාගේ free දවස් 7 ඉවරයි. අපි තාම ගෙවීම් ගන්නේ නෑ, ඒ නිසා ගෙවන පන්ති තාම open නෑ — open වෙන දවස අපි කියනවා. ඔයා කරපු හැම දෙයක්ම එතෙක් save වෙලා තියෙනවා.",
+    "ඔයාගේ free දවස් 7 ඉවරයි. පන්ති ගාස්තු තාම ගන්නේ නෑ, ඒ නිසා ගෙවන පන්ති තාම open නෑ — open වෙන දවස අපි කියනවා. ඔයා කරපු හැම දෙයක්ම එතෙක් save වෙලා තියෙනවා.",
   "launch.openingSoon": "ළඟදීම open වෙනවා",
   "launch.cta": "Free විදියට පටන් ගන්න — ගෙවීමක් ඕන නෑ",
   "launch.freeNow": "Launch කාලෙට free",

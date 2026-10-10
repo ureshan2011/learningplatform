@@ -3,6 +3,7 @@ import { publicEnv } from "@/lib/env";
 import { listSubjects, listUnits } from "@/lib/queries";
 import { listCutoffCourses } from "@/lib/campus-match/cutoff-pages";
 import ugcManifest from "@/lib/content/ugc/manifest.json";
+import { EXAM_PACK } from "@/lib/exam-pack/config";
 
 /**
  * Every public, crawlable URL — static pages plus one entry per subject and
@@ -15,6 +16,13 @@ import ugcManifest from "@/lib/content/ugc/manifest.json";
  * query ("A/L ICT classes") and the highest-volume informational one ("A/L
  * ICT past papers") sit just under the home page.
  */
+/**
+ * Rebuilt hourly rather than only at deploy, so something the owner switches
+ * on from the console — the Exam Pack's sales page — is listed within the hour
+ * without anyone having to push a commit. One Firestore read per hour.
+ */
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = publicEnv.appUrl;
 
@@ -121,5 +129,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticEntries, ...subjectEntries, ...unitEntries, ...cutoffEntries];
+  // The Exam Pack's sales page is public whether or not the pack is on sale
+  // (it shows a waitlist until then), so it is always listed — ranking takes
+  // weeks, and it should already be found on the day the pack opens.
+  const examPackEntries: MetadataRoute.Sitemap = [
+    { url: `${base}${EXAM_PACK.publicPath}`, lastModified, changeFrequency: "weekly", priority: 0.95 },
+  ];
+
+  return [...staticEntries, ...examPackEntries, ...subjectEntries, ...unitEntries, ...cutoffEntries];
 }

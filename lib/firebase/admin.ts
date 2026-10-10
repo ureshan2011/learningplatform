@@ -139,6 +139,16 @@ export const col = {
   activity: () => adminDb().collection("activity"),
   /** One document per student per Campus Match cycle. Server-written only. */
   campusMatch: () => adminDb().collection("campusMatch"),
+  /** Exam Pack: one timed, ranked sitting per student per paper. */
+  paperSittings: () => adminDb().collection("paperSittings"),
+  /** Exam Pack: the weekly live, one document per week. Holds Meet links — server-only. */
+  examPackLives: () => adminDb().collection("examPackLives"),
+  /** Exam Pack: who opened each week's live link. */
+  examPackLiveJoins: () => adminDb().collection("examPackLiveJoins"),
+  /** Exam Pack: consultation windows the owner has offered. */
+  consultSlots: () => adminDb().collection("consultSlots"),
+  /** Exam Pack: one consultation per student per pack. Holds Meet links — server-only. */
+  consultBookings: () => adminDb().collection("consultBookings"),
 } as const;
 
 export function enrollmentId(uid: string, subjectId: string): string {

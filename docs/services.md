@@ -1,6 +1,6 @@
 # Adding services
 
-Reference for the optional services — Zoom, PayHere and class reminders.
+Reference for the optional services — Zoom, PayHere, class reminders and Google Meet.
 **You don't need any of them to go live** — see `SETUP.md`. Add them one at a
 time, and just ask in chat rather than working through this by hand.
 
@@ -251,3 +251,56 @@ sent, so a scheduler that fires twice — or retries after a timeout — cannot
 notify a thousand students the same thing twice. Dead tokens (uninstalled app,
 cleared site data, revoked permission) are pruned automatically on the next
 send.
+
+---
+
+## Google Meet — the Exam Pack's live class and consultations
+
+The A/L ICT 2027 Exam Pack comes with a weekly live class ("Saturday live with
+Dr. Yasas from New Zealand", Saturday 4pm Sri Lanka time by default) and a
+30-minute one-to-one consultation per buyer. Both run on Google Meet. Once Google
+is connected, the platform creates every Meet link itself, in your own Google
+Calendar, with Google's reminders — you never create a meeting by hand.
+
+**Optional, like everything on this page.** Without it, the pack still sells,
+consultations are still booked and the live class still shows on the pack page;
+you paste a Meet link into each week and each booking from the console instead.
+
+All of it is done in a browser. The console walks through it too: Teacher
+console → Exam Pack → Google Meet.
+
+1. **Google Cloud console** (console.cloud.google.com), signed in as the Google
+   account whose calendar should hold the classes. Choose the project
+   `srizone-1fc76`.
+2. **APIs & Services → Library** → *Google Calendar API* → **Enable**.
+3. **APIs & Services → OAuth consent screen** → user type *External*, app name
+   "ICT Campus", your email. Add the scope `.../auth/calendar.events`. Then set
+   **Publishing status → In production**. Left in *Testing*, Google expires the
+   connection every seven days and every Meet link stops being created.
+4. **APIs & Services → Credentials → Create credentials → OAuth client ID** →
+   *Web application*. Under **Authorised redirect URIs** add exactly:
+   `https://ictcampus.lk/api/teacher/google/callback`
+5. Copy the **Client ID** and **Client secret** into Teacher console → Exam Pack
+   → Google Meet, and save.
+6. Press **Connect Google**. Google warns that the app is not verified — that is
+   expected for your own app: *Advanced → Go to ICT Campus*, and allow calendar
+   access.
+7. Press **Check the connection**.
+
+The client secret and the connection are stored in `settings/google`, which no
+browser can read (firestore.rules). `GOOGLE_OAUTH_CLIENT_ID` and
+`GOOGLE_OAUTH_CLIENT_SECRET` in the environment win over the console, the same
+way PayHere's do.
+
+**How the links behave.** Each week's live gets a new Meet, created the first
+time a buyer opens the pack (or when you press *Prepare the next two weeks
+now*), for this week and next. A student gets the link from the Join button,
+from 15 minutes before — it is never printed into a page — so a link forwarded
+to a group chat is dead the following week. Each consultation gets its own Meet
+the moment it is booked. Nobody is invited by email: students wait in the Meet
+waiting room and you let them in (*Admit all* for the live class).
+
+**Limits of a free Google account.** Group calls end at 60 minutes and hold 100
+people; one-to-one calls run up to 24 hours. Google One Premium or Google
+Workspace lifts the group limits. Students need a Google account on their phone
+to join — almost every Android phone has one.

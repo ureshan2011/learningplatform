@@ -12,7 +12,7 @@
  * policy or the Refund policy materially changes. That is what makes an old
  * acceptance visibly old.
  */
-export const POLICY_VERSION = "2026-09-12";
+export const POLICY_VERSION = "2026-10-09";
 
 /** The same date, written the way the policy pages print it. */
-export const POLICY_UPDATED = "12 September 2026";
+export const POLICY_UPDATED = "9 October 2026";

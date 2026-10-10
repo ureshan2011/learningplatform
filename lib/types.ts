@@ -225,7 +225,12 @@ export interface Enrollment {
   /** Access is granted while now <= currentPeriodEnd. */
   currentPeriodStart: number;
   currentPeriodEnd: number;
-  source: "payhere" | "bank_slip" | "manual" | "trial" | "free_trial";
+  /**
+   * How access was granted. "test" is the owner's own test account on the
+   * Exam Pack (Teacher console → Exam Pack → Test as a student): no payment,
+   * a short period, and kept out of rankings and sales figures.
+   */
+  source: "payhere" | "bank_slip" | "manual" | "trial" | "free_trial" | "test";
   lastPaymentId?: string;
   createdAt: number;
   updatedAt: number;
@@ -745,6 +750,200 @@ export interface CampusMatchInputs {
   outcomeAt?: number;
   createdAt: number;
   updatedAt: number;
+}
+
+/**
+ * The weekly live class that comes with the Exam Pack — "Saturday live with
+ * Dr. Yasas from New Zealand". Times are Sri Lanka wall-clock, because that is
+ * the clock every student reads and the one the owner advertises.
+ */
+export interface ExamPackLiveSchedule {
+  /** Whether the weekly live runs at all. Off pauses it without losing the slot. */
+  enabled: boolean;
+  /** 0 = Sunday ... 6 = Saturday, in Sri Lanka time. */
+  weekday: number;
+  /** "HH:MM", 24-hour, Sri Lanka time. */
+  time: string;
+  durationMinutes: number;
+  title: string;
+}
+
+/**
+ * The Exam Pack's switches, under `settings/examPack2027`.
+ *
+ * Same default as the predicted paper and Campus Match: a missing document
+ * reads as *off*. The pack has its own switch rather than riding on
+ * `TRIAL_ONLY_LAUNCH`, because the owner opens this one product for sale from
+ * the console while the rest of the platform stays on its free trial.
+ */
+export interface ExamPackSettings {
+  tenantId: TenantId;
+  subjectId: string;
+  /** On sale and visible to students. False until the owner turns it on. */
+  enabled: boolean;
+  enabledAt?: number;
+  enabledBy?: string;
+  live: ExamPackLiveSchedule;
+  updatedAt?: number;
+  updatedBy?: string;
+}
+
+/**
+ * One week's live class. Id `${subjectId}_${YYYY-MM-DD}` (the Sri Lanka date),
+ * so two requests that both decide "this Saturday needs creating" collide on
+ * one document instead of making two Google Meet links.
+ *
+ * Server-only: no rule grants a client read. The Meet link is handed to a
+ * student by `/api/exam-pack/live/join` after `hasAccess`, never stored where
+ * a non-buyer could read it.
+ */
+export interface ExamPackLive {
+  id: string;
+  tenantId: TenantId;
+  subjectId: string;
+  /** Sri Lanka calendar date, `YYYY-MM-DD`. */
+  date: string;
+  startsAt: number;
+  durationMinutes: number;
+  title: string;
+  status: "scheduled" | "cancelled";
+  /** The Google Calendar event that owns the Meet link. Chosen before the call, so a retry finds it. */
+  calendarEventId?: string;
+  meetUrl?: string;
+  /** A link the owner pasted by hand. Wins over `meetUrl` — the escape hatch when Google is down. */
+  manualUrl?: string;
+  /** Set while one request is creating the Meet, so a second does not create another. */
+  creatingAt?: number;
+  meetError?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+/** A student opening a live's link. Id `${liveId}_${uid}` — counted once however often they tap. */
+export interface ExamPackLiveJoin {
+  id: string;
+  tenantId: TenantId;
+  liveId: string;
+  uid: string;
+  name: string;
+  at: number;
+}
+
+/**
+ * A 30-minute window the owner has offered for one-to-one consultations.
+ *
+ * The owner publishes these from the console; a buyer picks one. A slot is
+ * booked by exactly one student, decided in a transaction.
+ */
+export interface ConsultSlot {
+  id: string;
+  tenantId: TenantId;
+  subjectId: string;
+  startsAt: number;
+  durationMinutes: number;
+  status: "open" | "booked";
+  /** The student holding it while `status` is "booked". */
+  bookedBy?: string;
+  createdAt: number;
+  createdBy: string;
+}
+
+export type ConsultBookingStatus = "booked" | "cancelled" | "completed" | "no_show";
+
+/**
+ * A student's one consultation with Dr. Yasas. Id `${uid}_${subjectId}`: each
+ * purchase of the pack carries exactly one, and a deterministic id is what
+ * makes "one" a fact rather than a rule every route has to remember.
+ *
+ * Written only by the server. A student who could write this could book a slot
+ * someone else holds, or mark their own consultation as not yet used.
+ */
+export interface ConsultBooking {
+  id: string;
+  tenantId: TenantId;
+  uid: string;
+  subjectId: string;
+  slotId: string;
+  startsAt: number;
+  durationMinutes: number;
+  status: ConsultBookingStatus;
+  studentName: string;
+  studentPhone: string;
+  /** What the student wants to talk about, so the 30 minutes start on the right topic. */
+  note?: string;
+  calendarEventId?: string;
+  meetUrl?: string;
+  manualUrl?: string;
+  creatingAt?: number;
+  meetError?: string;
+  cancelledAt?: number;
+  cancelledBy?: "student" | "staff";
+  createdAt: number;
+  updatedAt: number;
+}
+
+/**
+ * One student's timed, server-scored sitting of one Exam Pack paper. Id
+ * `${uid}_${paperId}`, the same reasoning as `MockExamAttempt`: start and
+ * submit are single-document operations, and the first sitting is the one that
+ * is ranked.
+ */
+export interface PaperSitting {
+  id: string;
+  tenantId: TenantId;
+  uid: string;
+  subjectId: string;
+  paperId: string;
+  startedAt: number;
+  submittedAt?: number;
+  /**
+   * Question id (as a string) to the option index chosen. Saved as the student
+   * goes, so a phone that dies on question 48 is marked on 47 answers, not 0.
+   */
+  answers?: Record<string, number>;
+  /** Last autosave, always inside the paper's time. */
+  savedAt?: number;
+  /** Submitted after the deadline, so the last autosave was marked instead. */
+  late?: boolean;
+  /**
+   * Sat by a teacher, an admin or a test account — the owner rehearsing the
+   * student experience. Kept out of every rank and count, so a test sitting at
+   * 50/50 never pushes every real student down a place.
+   */
+  unranked?: boolean;
+  correctCount?: number;
+  wrongCount?: number;
+  unansweredCount?: number;
+  totalQuestions?: number;
+  topicBreakdown?: Record<string, { correct: number; total: number }>;
+  rank?: number;
+  totalSittings?: number;
+  percentile?: number;
+  updatedAt: number;
+}
+
+/**
+ * The Google account the platform creates Meet links with, under
+ * `settings/google`.
+ *
+ * Entered in the console for the same reason PayHere's credentials are: the
+ * owner has no command line to set a secret with. Server-read only, like every
+ * settings document. Environment variables win when present.
+ */
+export interface GoogleSettings {
+  tenantId: TenantId;
+  /** OAuth client from the Google Cloud console — "Web application" type. */
+  clientId?: string;
+  clientSecret?: string;
+  /** Long-lived; lets the server act on the owner's calendar without them present. */
+  refreshToken?: string;
+  /** Which Google account was connected, so the console can say whose calendar it writes to. */
+  accountEmail?: string;
+  connectedAt?: number;
+  connectedBy?: string;
+  lastError?: string;
+  lastErrorAt?: number;
+  updatedAt?: number;
 }
 
 /**

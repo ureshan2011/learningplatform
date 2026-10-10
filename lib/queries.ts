@@ -56,6 +56,12 @@ const SCAN_WINDOW = 200;
  *
  * To teach O/L again, drop the filter — the data model has always supported
  * both grades.
+ *
+ * An A/L *product* — the Exam Pack, a one-off bundle with a `product` block —
+ * is not a subject we teach, so it is excluded here too. Otherwise it would
+ * appear on the landing page as a class, get a syllabus and a free trial
+ * button, and become a student's "primary" subject in the rail. It is read
+ * through `getExamPack()` and sold through `listSellableSubjects()`.
  */
 export const listSubjects = cache(async (): Promise<Subject[]> => {
   const snap = await col
@@ -63,7 +69,7 @@ export const listSubjects = cache(async (): Promise<Subject[]> => {
     .where("tenantId", "==", publicEnv.tenantId)
     .where("active", "==", true)
     .get();
-  return snap.docs.map((d) => d.data() as Subject).filter((s) => s.grade === "AL");
+  return snap.docs.map((d) => d.data() as Subject).filter(isTaughtSubject);
 });
 
 /** Same A/L-only rule as `listSubjects` — an O/L id 404s rather than half-loading a page. */
@@ -71,7 +77,12 @@ export async function getSubject(subjectId: string): Promise<Subject | null> {
   const snap = await col.subjects().doc(subjectId).get();
   if (!snap.exists) return null;
   const subject = snap.data() as Subject;
-  return subject.grade === "AL" ? subject : null;
+  return isTaughtSubject(subject) ? subject : null;
+}
+
+/** An A/L class taught month by month — not a cohort, not a one-off product. */
+function isTaughtSubject(subject: Subject): boolean {
+  return subject.grade === "AL" && !subject.product;
 }
 
 /**
